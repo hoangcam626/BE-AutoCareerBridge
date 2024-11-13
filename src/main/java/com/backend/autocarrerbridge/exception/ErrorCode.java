@@ -2,7 +2,6 @@ package com.backend.autocarrerbridge.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static com.backend.autocarrerbridge.util.Constant.*;
 

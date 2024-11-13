@@ -1,5 +1,8 @@
 package com.backend.autocarrerbridge.util.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Status {
     ACTIVE(1), INACTIVE(0);
 
@@ -9,7 +12,4 @@ public enum Status {
         this.value = value;
     }
 
-    public int getValue() {
-        return value;
-    }
 }

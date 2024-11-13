@@ -3,7 +3,6 @@ package com.backend.autocarrerbridge.service.impl;
 import com.backend.autocarrerbridge.dto.image.sdo.ImageSdo;
 import com.backend.autocarrerbridge.entity.Image;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.ImageRepo;
 import com.backend.autocarrerbridge.service.ImageService;
 import lombok.RequiredArgsConstructor;
