@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.Exception;
+package com.backend.autocarrerbridge.exception;
 
 import lombok.Getter;
 

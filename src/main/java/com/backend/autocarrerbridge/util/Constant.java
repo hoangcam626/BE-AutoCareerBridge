@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.Util;
+package com.backend.autocarrerbridge.util;
 
 public class Constant {
   // Mã trạng thái HTTP

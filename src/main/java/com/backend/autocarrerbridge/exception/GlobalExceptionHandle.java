@@ -1,6 +1,6 @@
-package com.backend.autocarrerbridge.Exception;
+package com.backend.autocarrerbridge.exception;
 
-import com.backend.autocarrerbridge.Model.API.ApiException;
+import com.backend.autocarrerbridge.model.api.ApiException;
 import java.util.Objects;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
