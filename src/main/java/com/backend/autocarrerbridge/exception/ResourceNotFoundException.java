@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.Exception;
+package com.backend.autocarrerbridge.exception;
 
 public class ResourceNotFoundException extends RuntimeException{
   public ResourceNotFoundException(String message) {
