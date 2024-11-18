@@ -4,8 +4,6 @@ import com.backend.autocarrerbridge.util.enums.StatusConnected;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
