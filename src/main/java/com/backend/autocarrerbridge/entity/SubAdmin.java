@@ -9,40 +9,36 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "university")
-public class University extends AbstractAudit{
+@Table(name = "sub_admin")
+public class SubAdmin extends AbstractAudit{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "logo_image_id")
-    private Integer logoImageId;
+    @Column(name = "subadmin_code")
+    private String subAdminCode;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "website")
-    private String website;
+    @Column(name = "gender")
+    private String gender;
 
-    @Column(name = "founded_year")
-    private Integer foundedYear;
-
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     private String email;
 
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "subadmin_image_id")
+    private Integer subAdminImageId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
 
 }

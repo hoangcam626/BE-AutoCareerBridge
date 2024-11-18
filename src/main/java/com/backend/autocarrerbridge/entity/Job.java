@@ -1,17 +1,21 @@
 package com.backend.autocarrerbridge.entity;
 
+import com.backend.autocarrerbridge.util.enums.StatusConnected;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "job")
-public class Job {
+public class Job extends AbstractAudit{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -39,34 +43,19 @@ public class Job {
     @Column(name = "working_time")
     private String workingTime;
 
-    @Column(name = "status")
-    private Integer status;
-
-    @Column(name = "`status_ browse`")
-    private Integer statusBrowse;
-
-    @Column(name = "created_at")
-    private LocalDate createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDate updatedAt;
-
-    @Column(name = "created_by")
-    private Integer createdBy;
-
-    @Column(name = "updated_by")
-    private Integer updatedBy;
+    @Column(name = "status_browse")
+    private StatusConnected statusBrowse;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "Businessid", nullable = false)
-    private Business businessid;
+    @JoinColumn(name = "business_id", nullable = false)
+    private Business business;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "Employeeid", nullable = false)
-    private Employee employeeid;
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "Industryid", nullable = false)
-    private Industry industryid;
+    @JoinColumn(name = "industry_id", nullable = false)
+    private Industry industry;
 
 }

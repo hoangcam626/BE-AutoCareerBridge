@@ -29,11 +29,11 @@ public class Ward {
     private String codeName;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "districtscode", nullable = false)
-    private District districtscode;
+    @JoinColumn(name = "districts_code", nullable = false)
+    private District districts;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "adminstrative_unitsid", nullable = false)
-    private AdminstrativeUnit adminstrativeUnitsid;
+    @JoinColumn(name = "adminstrative_units_id", nullable = false)
+    private AdministrativeUnit administrativeUnits;
 
 }

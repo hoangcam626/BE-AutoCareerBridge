@@ -1,17 +1,22 @@
 package com.backend.autocarrerbridge.entity;
 
+import com.backend.autocarrerbridge.util.enums.StatusConnected;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "workshop")
-public class Workshop {
+public class Workshop extends AbstractAudit{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -27,36 +32,21 @@ public class Workshop {
     @Column(name = "expire_date")
     private LocalDate expireDate;
 
-    @Column(name = "status")
-    private Integer status;
-
     @Column(name = "status_browse")
-    private Integer statusBrowse;
+    private StatusConnected statusBrowse;
 
     @Column(name = "start_date")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;
-
-    @Column(name = "create_at")
-    private LocalDate createAt;
-
-    @Column(name = "update_at")
-    private LocalDate updateAt;
-
-    @Column(name = "create_by")
-    private Integer createBy;
-
-    @Column(name = "update_by")
-    private Integer updateBy;
+    private LocalDateTime endDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "Universityid", nullable = false)
-    private University universityid;
+    @JoinColumn(name = "university_id", nullable = false)
+    private University university;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "Locationid", nullable = false)
-    private Location locationid;
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
 
 }

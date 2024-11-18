@@ -2,29 +2,28 @@ package com.backend.autocarrerbridge.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
 @Entity
-@Table(name = "section")
-public class Section extends AbstractAudit{
+@Table(name = "user_account")
+public class UserAccount extends AbstractAudit{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "username")
+    private String username;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "password")
+    private String password;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "university_id", nullable = false)
-    private University university;
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
 }

@@ -10,8 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "adminstrative_regions")
-public class AdminstrativeRegion {
+@Table(name = "administrative_regions")
+public class AdministrativeRegion {
+
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
