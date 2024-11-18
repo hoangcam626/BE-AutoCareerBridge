@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,21 +11,20 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "section")
-public class Section extends AbstractAudit{
+@Table(name = "role_permission")
+public class RolePermission extends AbstractAudit{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "description")
-    private String description;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "university_id", nullable = false)
-    private University university;
+    @JoinColumn(name = "permission_id", nullable = false)
+    private Permission permission;
 
 }

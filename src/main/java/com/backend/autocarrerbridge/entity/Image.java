@@ -1,8 +1,6 @@
 package com.backend.autocarrerbridge.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @NoArgsConstructor
@@ -10,10 +8,14 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-
 @Entity
 @Table(name = "image")
 public class Image extends AbstractAudit {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
     @Column(name = "file_name")
     private String filename;

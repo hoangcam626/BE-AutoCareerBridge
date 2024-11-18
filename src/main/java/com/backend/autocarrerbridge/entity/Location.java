@@ -1,45 +1,37 @@
 package com.backend.autocarrerbridge.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "location")
-public class Location {
+public class Location extends AbstractAudit{
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "created_at")
-    private LocalDate createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDate updatedAt;
-
-    @Column(name = "created_by")
-    private Integer createdBy;
-
-    @Column(name = "updated_by")
-    private Integer updatedBy;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "provinces_code", nullable = false)
+    private Province provinces;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "provincescode", nullable = false)
-    private Province provincescode;
+    @JoinColumn(name = "districts_code", nullable = false)
+    private District districts;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "districtscode", nullable = false)
-    private District districtscode;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "wardscode", nullable = false)
-    private Ward wardscode;
+    @JoinColumn(name = "wards_code", nullable = false)
+    private Ward wards;
 
 }

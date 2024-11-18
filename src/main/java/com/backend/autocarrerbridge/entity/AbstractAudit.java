@@ -17,13 +17,9 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAudit implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 3581298718616904225L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
 
     @Column(name = "status")
     private Status status;
@@ -38,11 +34,11 @@ public abstract class AbstractAudit implements Serializable {
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)
-    private Long createdBy;
+    private Integer createdBy;
 
     @LastModifiedBy
     @Column(name = "updated_by", insertable = false)
-    private Long updatedBy;
+    private Integer updatedBy;
     @PrePersist
     public void prePersist() {
         this.status = Status.ACTIVE;

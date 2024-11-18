@@ -1,9 +1,11 @@
 package com.backend.autocarrerbridge.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
@@ -28,15 +30,12 @@ public class Province {
     @Column(name = "code_name")
     private String codeName;
 
-    @Column(name = "adminstrative_regionsid", nullable = false)
-    private Integer adminstrativeRegionsid;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "adminstrative_units_id", nullable = false)
+    private AdministrativeUnit administrativeUnits;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "adminstrative_unitsid", nullable = false)
-    private AdminstrativeUnit adminstrativeUnitsid;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "adminstrative_regionsid2", nullable = false)
-    private AdminstrativeRegion adminstrativeRegionsid2;
+    @JoinColumn(name = "adminstrative_regions_id", nullable = false)
+    private AdministrativeRegion administrativeRegions;
 
 }

@@ -1,22 +1,25 @@
 package com.backend.autocarrerbridge.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
-@Table(name = "subadmin")
-public class Subadmin {
+@Table(name = "sub_admin")
+public class SubAdmin extends AbstractAudit{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Column(name = "subadmin_code")
-    private String subadminCode;
+    private String subAdminCode;
 
     @Column(name = "name")
     private String name;
@@ -34,25 +37,10 @@ public class Subadmin {
     private String address;
 
     @Column(name = "subadmin_image_id")
-    private Integer subadminImageId;
-
-    @Column(name = "status")
-    private Integer status;
-
-    @Column(name = "created_at")
-    private LocalDate createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDate updatedAt;
-
-    @Column(name = "created_by")
-    private Integer createdBy;
-
-    @Column(name = "updated_by")
-    private Integer updatedBy;
+    private Integer subAdminImageId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "UserAccountid", nullable = false)
-    private Useraccount userAccountid;
+    @JoinColumn(name = "user_account_id", nullable = false)
+    private UserAccount userAccount;
 
 }

@@ -39,7 +39,7 @@ public class ImageServiceImpl implements ImageService {
     );
 
     public Image getImage(Long id) {
-        return imageRepo.findById(id).orElseThrow(()-> new AppException((ERROR_FIND_IMAGE)));
+        return imageRepo.findById(id).orElseThrow(() -> new AppException((ERROR_FIND_IMAGE)));
     }
 
     public String getPathImage(Long id) {
@@ -63,7 +63,10 @@ public class ImageServiceImpl implements ImageService {
                 outputStream.write(req.getBytes());
             }
 
-            Image image = imageRepo.save(new Image(fileName, req.getContentType()));
+            Image image = imageRepo.save(Image.builder()
+                    .filename(fileName)
+                    .type(req.getContentType())
+                    .build());
             return image.getId();
         } catch (IOException e) {
             throw new AppException(ERROR_SAVE_FILE);
