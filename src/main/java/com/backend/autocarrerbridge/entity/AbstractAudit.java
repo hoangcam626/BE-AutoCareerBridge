@@ -22,6 +22,7 @@ public abstract class AbstractAudit implements Serializable {
     private static final long serialVersionUID = 3581298718616904225L;
 
     @Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
     private Status status;
 
     @CreatedDate
@@ -39,14 +40,14 @@ public abstract class AbstractAudit implements Serializable {
     @LastModifiedBy
     @Column(name = "updated_by", insertable = false)
     private Integer updatedBy;
-    @PrePersist
-    public void prePersist() {
-        this.status = Status.ACTIVE;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.status = Status.ACTIVE;
-    }
+//    @PrePersist
+//    public void prePersist() {
+//        this.status = Status.ACTIVE;
+//    }
+//
+//    @PreUpdate
+//    public void preUpdate() {
+//        this.status = Status.ACTIVE;
+//    }
 }
 
