@@ -47,8 +47,8 @@ public class Business extends AbstractAudit{
     @Column(name = "license_image_id")
     private Integer licenseImageId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "location_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "location_id", nullable = true)
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

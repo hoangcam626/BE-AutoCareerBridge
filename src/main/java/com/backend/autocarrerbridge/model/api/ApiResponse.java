@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.model.api;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+
 import static com.backend.autocarrerbridge.util.Constant.*;
 
 @Data
