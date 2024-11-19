@@ -10,10 +10,10 @@ import java.util.List;
 
 @Service
 public interface ImageService {
-    Image getImage(Long id);
-    String getPathImage(Long id);
-    Long uploadFile(MultipartFile req);
-    List<Long> uploadFiles(MultipartFile[] reqs);
-    void delete(Long id);
-    ImageSdo getResource(Long id) throws IOException;
+    Image getImage(Integer id);
+    String getPathImage(Integer id);
+    Integer uploadFile(MultipartFile req);
+    List<Integer> uploadFiles(MultipartFile[] reqs);
+    void delete(Integer id);
+    ImageSdo getResource(Integer id) throws IOException;
 }

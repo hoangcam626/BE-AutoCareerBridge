@@ -41,8 +41,7 @@ public class University extends AbstractAudit{
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "location_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "location_id", nullable = true)
     private Location location;
-
 }

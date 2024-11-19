@@ -26,13 +26,13 @@ public class ImageController {
         return new ApiResponse<>(res);
     }
     @PostMapping("/upload-images")
-    public ApiResponse<List<Long>> uploadImages(@RequestParam("reqs") MultipartFile[] reqs) {
+    public ApiResponse<List<Integer>> uploadImages(@RequestParam("reqs") MultipartFile[] reqs) {
         var res = imageService.uploadFiles(reqs);
         return new ApiResponse<>(res);
     }
 
     @GetMapping("/resource")
-    public ResponseEntity<Resource> getImage(@RequestParam("imageId") Long id) throws IOException {
+    public ResponseEntity<Resource> getImage(@RequestParam("imageId") Integer id) throws IOException {
 
         ImageSdo imageSdo = imageService.getResource(id);
         return ResponseEntity.ok()
@@ -40,7 +40,7 @@ public class ImageController {
                 .body(imageSdo.getResource());
     }
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteImage(@RequestParam("imageId") Long id) {
+    public ApiResponse<?> deleteImage(@RequestParam("imageId") Integer id) {
         imageService.delete(id);
         return new ApiResponse<>();
     }
