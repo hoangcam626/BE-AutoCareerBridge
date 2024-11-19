@@ -25,7 +25,9 @@ public class Constant {
   // Các thông điệp cụ thể
   public static final String ERROR_INVALID_EMAIL = "Email không hợp lệ.";
   public static final String ERROR_INVALID_PHONE_NUMBER = "Số điện thoại không hợp lệ.";
-  public static final String ERROR_USER_NOT_FOUND = "Người dùng không tìm thấy.";
+  public static final String ERROR_USER_NOT_FOUND_MESSAGE = "Người dùng không tìm thấy.";
+  public static final String ERROR_USER_EXITED_MESSAGE = "Người dùng không tìm thấy.";
+
 
   //Các lỗi image
   public static final String EMPTY_FILE_MESSAGE= "Error: File is empty";

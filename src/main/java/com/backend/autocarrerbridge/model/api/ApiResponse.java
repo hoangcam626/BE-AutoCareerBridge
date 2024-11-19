@@ -1,11 +1,13 @@
 package com.backend.autocarrerbridge.model.api;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import static com.backend.autocarrerbridge.util.Constant.*;
 
 @Data
+@Builder
 @Accessors(chain = true)
 public class ApiResponse<T> {
   private int code;
