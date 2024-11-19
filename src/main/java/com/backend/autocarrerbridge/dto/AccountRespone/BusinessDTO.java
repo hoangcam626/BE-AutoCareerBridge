@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto;
+package com.backend.autocarrerbridge.dto.AccountRespone;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,16 +11,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BusinessuniversityDTO {
+public class BusinessDTO {
      Integer id;
+     String name;
+     String taxCode;
+     String companySize;
+     String website;
+     Integer foundYear;
+     String email;
+     String phone;
+     String description;
+     Integer businessImageId;
+     Integer licenseImageId;
      Integer status;
-     Integer statusConnected;
      LocalDate createdAt;
      LocalDate updatedAt;
-     Integer createdBy;
-     Integer updatedBy;
-     Integer businessid;
-     Integer universityid;
-
-
 }

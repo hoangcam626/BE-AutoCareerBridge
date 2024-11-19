@@ -1,10 +1,10 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.*;
+import com.backend.autocarrerbridge.dto.AccountRespone.*;
 import com.backend.autocarrerbridge.entity.UserAccount;
 
 public interface UserAccountService {
-    DisplayBussinessDTO registerBussiness(UserBussinessDTO userBussinessDTO);
+    DisplayBusinessDTO registerBusiness(UserBusinessDTO userBusinessDTO);
     DisplayUniverSityDTO registerUniversity(UserUniversityDTO userUniversityDTO);
     UserAccount getUserById(Integer id);
     DisplayUserAccountDTO login(UserAccountResponeDTO useraccountDTO);

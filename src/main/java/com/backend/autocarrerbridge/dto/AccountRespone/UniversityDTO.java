@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto;
+package com.backend.autocarrerbridge.dto.AccountRespone;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

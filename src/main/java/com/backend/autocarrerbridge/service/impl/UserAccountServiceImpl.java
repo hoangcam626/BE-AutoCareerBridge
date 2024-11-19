@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.*;
+import com.backend.autocarrerbridge.dto.AccountRespone.*;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
@@ -10,80 +10,81 @@ import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.*;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.UserAccountService;
+import com.backend.autocarrerbridge.util.enums.OrganizationType;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserAccountServiceImpl implements UserAccountService {
-    private final UserAccountRepository userAccountRepository;
-    private final BussinessRepository bussinessRepository;
-    private final ModelMapper modelMapper;
-    private final ImageService imageService;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
-    private final UniversityRepository universityRepository;
+     UserAccountRepository userAccountRepository;
+     BusinessRepository businessRepository;
+     ModelMapper modelMapper;
+     ImageService imageService;
+     PasswordEncoder passwordEncoder;
+     RoleRepository roleRepository;
+     UniversityRepository universityRepository;
     @Override
-    public DisplayBussinessDTO registerBussiness(UserBussinessDTO userBussinessDTO) {
-        if (userBussinessDTO == null) {
+    public DisplayBusinessDTO registerBusiness(UserBusinessDTO userBusinessDTO) {
+        if (userBusinessDTO == null) {
             throw new IllegalArgumentException("User business data cannot be null");
         }
 
         // Check if username already exists
-        if (userAccountRepository.findByUsername(userBussinessDTO.getUsername()) != null) {
+        if (userAccountRepository.findByUsername(userBusinessDTO.getUsername()) != null) {
             throw new AppException(ErrorCode.ERROR_USER);
         }
 
         try {
             // Check if email already exists
-            Business existingBussiness = bussinessRepository.findByEmail(userBussinessDTO.getEmail());
+            Business existingBussiness = businessRepository.findByEmail(userBusinessDTO.getEmail());
             if (existingBussiness != null) {
                 throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
             }
 
             // Check password match
-            if (!userBussinessDTO.getPassword().equals(userBussinessDTO.getRePassword())) {
+            if (!userBusinessDTO.getPassword().equals(userBusinessDTO.getRePassword())) {
                 throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
             }
 
-            // Find role by ID
-            Role role = roleRepository.findById(userBussinessDTO.getIdRole()).orElse(null);
+            Role role = roleRepository.findById(OrganizationType.BUSINESS.getValue()).orElse(null);
             if (role == null) {
                 throw new AppException(ErrorCode.ERROR_USER);
             }
 
             // Save user account
-            UserAccount savedUserAccount = modelMapper.map(userBussinessDTO, UserAccount.class);
+            UserAccount savedUserAccount = modelMapper.map(userBusinessDTO, UserAccount.class);
             savedUserAccount.setRole(role);
 
-            String hashedPassword = passwordEncoder.encode(userBussinessDTO.getPassword());
+            String hashedPassword = passwordEncoder.encode(userBusinessDTO.getPassword());
             savedUserAccount.setPassword(hashedPassword);
 
             UserAccount userAccount = userAccountRepository.save(savedUserAccount);
 
             // Validate license image
-            if (userBussinessDTO.getLicenseImage() == null || userBussinessDTO.getLicenseImage().isEmpty()) {
+            if (userBusinessDTO.getLicenseImage() == null || userBusinessDTO.getLicenseImage().isEmpty()) {
                 throw new AppException(ErrorCode.ERROR_LINCESE);
             }
 
-            Integer licenseImageId = imageService.uploadFile(userBussinessDTO.getLicenseImage());
+            Integer licenseImageId = imageService.uploadFile(userBusinessDTO.getLicenseImage());
             if (licenseImageId == null) {
                 throw new AppException(ErrorCode.ERROR_LINCESE);
             }
 
             // Save business information
-            Business business = modelMapper.map(userBussinessDTO, Business.class);
+            Business business = modelMapper.map(userBusinessDTO, Business.class);
             business.setLicenseImageId(licenseImageId);
             business.setUserAccount(userAccount);
 
-            Business savedBusiness = bussinessRepository.save(business);
+            Business savedBusiness = businessRepository.save(business);
 
-            modelMapper.map(savedBusiness, userBussinessDTO);
-            return modelMapper.map(userBussinessDTO,DisplayBussinessDTO.class);
+            modelMapper.map(savedBusiness, userBusinessDTO);
+            return modelMapper.map(userBusinessDTO, DisplayBusinessDTO.class);
 
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw new AppException(ErrorCode.ERROR_NO_CONTENT);
@@ -100,7 +101,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         if(universityRepository.findByPhone(userUniversityDTO.getPhone()) != null) {
             throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
         }
-        Role role = roleRepository.findById(userUniversityDTO.getIdRole()).orElse(null);
+        Role role = roleRepository.findById(OrganizationType.UNIVERSITY.getValue()).orElse(null);
         if (role == null) {
             throw new AppException(ErrorCode.ERROR_USER);
         }
@@ -135,7 +136,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
 
         UserAccount user = userAccountRepository.findByUsername(useraccountDTO.getUsername());
-        System.out.println(user);
         if (user == null) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }

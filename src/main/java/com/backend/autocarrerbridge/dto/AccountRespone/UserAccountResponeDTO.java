@@ -1,11 +1,9 @@
-package com.backend.autocarrerbridge.dto;
+package com.backend.autocarrerbridge.dto.AccountRespone;
 
 
 
-import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
 import com.backend.autocarrerbridge.util.enums.Status;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

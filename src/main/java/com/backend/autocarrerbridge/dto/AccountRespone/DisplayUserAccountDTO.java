@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto;
+package com.backend.autocarrerbridge.dto.AccountRespone;
 
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -26,5 +25,5 @@ public class DisplayUserAccountDTO {
     @JsonIgnore
     Integer updatedBy;
     RoleDTO role;
-    AuthenticationResponse authenticationResponse;
+    String accessToken;
 }
