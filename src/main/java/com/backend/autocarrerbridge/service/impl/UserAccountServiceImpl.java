@@ -1,6 +1,8 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.*;
+import com.backend.autocarrerbridge.dto.request.UserAccountRequest;
+import com.backend.autocarrerbridge.dto.response.UserAccountResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
@@ -165,5 +167,10 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserAccount getUserByUserName(String username) {
         return userAccountRepository.findByUsername(username);
+    }
+
+    @Override
+    public UserAccountResponse createUser(UserAccountRequest request) {
+        return null;
     }
 }
