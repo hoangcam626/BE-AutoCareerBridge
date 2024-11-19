@@ -38,18 +38,18 @@ public class ImageServiceImpl implements ImageService {
             "image/jpeg", "image/png", "image/gif"
     );
 
-    public Image getImage(Long id) {
+    public Image getImage(Integer id) {
         return imageRepo.findById(id).orElseThrow(() -> new AppException((ERROR_FIND_IMAGE)));
     }
 
-    public String getPathImage(Long id) {
+    public String getPathImage(Integer id) {
 
         return imageRepo.findById(id)
                 .map(image -> imgFolder + File.separator + image.getFilename())
                 .orElse("");
     }
 
-    public Long uploadFile(MultipartFile req) {
+    public Integer uploadFile(MultipartFile req) {
 
         validateFile(req);
 
@@ -73,11 +73,11 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-    public List<Long> uploadFiles(MultipartFile[] reqs) {
+    public List<Integer> uploadFiles(MultipartFile[] reqs) {
         return Arrays.stream(reqs).map(this::uploadFile).collect(Collectors.toList());
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
 
         Image image = imageRepo.findById(id)
                 .orElseThrow(() -> new AppException(ERROR_FIND_IMAGE));
@@ -90,7 +90,7 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-    public ImageSdo getResource(Long id) throws IOException {
+    public ImageSdo getResource(Integer id) throws IOException {
         Path path = Paths.get(getPathImage(id));
         Image media = getImage(id);
         Resource resource = new UrlResource(path.toUri());
@@ -108,8 +108,11 @@ public class ImageServiceImpl implements ImageService {
 
     private void createDirectoryIfNotExists(String folderPath) {
         File dir = new File(folderPath);
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new AppException(ERROR_DIRECTORY_FILE);
+        if (!dir.exists() ) {
+            boolean checkCreated = dir.mkdirs();
+            if (!checkCreated) {
+                throw new AppException(ERROR_DIRECTORY_FILE);
+            }
         }
     }
 

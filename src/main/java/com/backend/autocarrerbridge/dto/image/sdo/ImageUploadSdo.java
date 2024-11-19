@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor(staticName = "of")
 public class ImageUploadSdo {
-    private Long id;
+    private Integer id;
 }
