@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.StatusConnected;
+import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,7 +33,7 @@ public class Workshop extends AbstractAudit{
     private LocalDate expireDate;
 
     @Column(name = "status_browse")
-    private StatusConnected statusBrowse;
+    private State statusBrowse;
 
     @Column(name = "start_date")
     private LocalDateTime startDate;

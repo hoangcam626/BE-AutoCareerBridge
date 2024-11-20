@@ -36,7 +36,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    // default co accept all quyen ko can jwt
+  //   default co accept all quyen ko can jwt
 //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 //        return httpSecurity
@@ -54,7 +54,12 @@ public class SecurityConfig {
             "/api/accounts/register/uni",
             "/api/accounts/refresh",
             "/api/accounts/login",
-            "/api/accounts/jwt-introspect"
+            "/api/accounts/jwt-introspect",
+            "/api/v1/image/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/webjars/**"
     };
 
     @Bean
@@ -71,10 +76,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class) // Thêm Filter trước xử lý JWT
                 .build();
     }
-
-
-
-
 
     @Bean
     public JwtDecoder jwtDecoder() {

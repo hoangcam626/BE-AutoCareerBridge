@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.*;
+import com.backend.autocarrerbridge.dto.useraccount.sdi.UserAccountRegisterSdi;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
@@ -10,12 +11,11 @@ import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.*;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.UserAccountService;
+import com.backend.autocarrerbridge.util.enums.State;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -67,12 +67,12 @@ public class UserAccountServiceImpl implements UserAccountService {
 
             // Validate license image
             if (userBussinessDTO.getLicenseImage() == null || userBussinessDTO.getLicenseImage().isEmpty()) {
-                throw new AppException(ErrorCode.ERROR_LINCESE);
+                throw new AppException(ErrorCode.ERROR_LICENSE);
             }
 
             Integer licenseImageId = imageService.uploadFile(userBussinessDTO.getLicenseImage());
             if (licenseImageId == null) {
-                throw new AppException(ErrorCode.ERROR_LINCESE);
+                throw new AppException(ErrorCode.ERROR_LICENSE);
             }
 
             // Save business information
@@ -121,6 +121,31 @@ public class UserAccountServiceImpl implements UserAccountService {
         university.setUserAccount(userAccount);
         universityRepository.save(university);
         return modelMapper.map(userUniversityDTO,DisplayUniverSityDTO.class);
+    }
+
+    public UserAccount register(UserAccountRegisterSdi req){
+        if(userAccountRepository.existsByUsername(req.getUsername())){
+            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
+        }
+//        if (!req.getPassword().equals(req.getRePassword())) {
+//            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
+//        }
+        Role role = roleRepository.findByName(req.getNameRole());
+        if (role == null) {
+            throw new AppException(ErrorCode.ERROR_NOT_FOUND_ROLE);
+        }
+        UserAccount newAccount = UserAccount.builder()
+                .username(req.getUsername())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .role(role)
+                .build();
+        return userAccountRepository.save(newAccount);
+
+    }
+
+    public UserAccount approvedAccount(UserAccount userAccount){
+        userAccount.setState(State.APPROVED);
+        return userAccountRepository.save(userAccount);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.StatusConnected;
+import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,7 +44,7 @@ public class Job extends AbstractAudit{
     private String workingTime;
 
     @Column(name = "status_browse")
-    private StatusConnected statusBrowse;
+    private State statusBrowse;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "business_id", nullable = false)
