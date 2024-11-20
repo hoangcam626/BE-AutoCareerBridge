@@ -32,6 +32,7 @@ public class Constant {
   public static final String LICENSE_INVALID = "Invalid license.";
   public static final String ERROR_PASSWORD = "Incorrect password.";
   public static final String ERROR_PHONE = "Phone already exists.";
+  public static final String USER_PENDING = "User is pending, please wait.";
 
   // Image-related Errors
   public static final String EMPTY_FILE_MESSAGE = "Error: File is empty";

@@ -1,16 +1,14 @@
 package com.backend.autocarrerbridge.dto.AccountRespone;
 
-import lombok.AccessLevel;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleDTO {
-     String name;
-     String description;
+public class TokenRefreshRequest {
+    @NotBlank
+    private String refreshToken;
 }

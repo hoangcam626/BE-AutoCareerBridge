@@ -49,8 +49,8 @@ public class SecurityConfig {
         return new JwtBlacklistFilter(redisTemplate, tokenService);
     }
     private static final String[] AUTH_WHITELIST = {
-            "/api/accounts/register",
-            "/api/accounts/register/uni",
+            "/api/business/register",
+            "/api/university/register",
             "/api/accounts/refresh",
             "/api/accounts/login",
             "/api/accounts/jwt-introspect"

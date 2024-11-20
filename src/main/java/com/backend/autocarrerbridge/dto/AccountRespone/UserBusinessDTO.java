@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserBusinessDTO {
-     String username;
      String name;
      String taxCode;
      String email;

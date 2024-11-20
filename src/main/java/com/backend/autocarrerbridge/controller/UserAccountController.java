@@ -1,14 +1,12 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.DisplayUserAccountDTO;
-import com.backend.autocarrerbridge.dto.AccountRespone.UserAccountResponeDTO;
-import com.backend.autocarrerbridge.dto.AccountRespone.UserBusinessDTO;
-import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
+import com.backend.autocarrerbridge.dto.AccountRespone.*;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
 import com.backend.autocarrerbridge.service.AuthenticationService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.service.UserAuthentication;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,26 +22,8 @@ public class UserAccountController {
      UserAccountService userAccountService;
      AuthenticationService authenticationService;
      UserAuthentication userAuthentication;
-    @PostMapping("/register")
-    private ApiResponse<?> registerBussiness(@ModelAttribute UserBusinessDTO userBusinessDTO){
-        return ApiResponse.builder()
-                .code(200)
-                .message("Success")
-                .data(userAccountService
-                .registerBusiness(userBusinessDTO))
-                .build();
-    }
-    @PostMapping("/register/uni")
-    private ApiResponse<?> registerUniversity(@RequestBody UserUniversityDTO userUniversityDTO){
-
-        return ApiResponse.builder()
-                .code(200)
-                .message("Success")
-                .data(userAccountService.registerUniversity(userUniversityDTO))
-                .build();
-    }
     @PostMapping("/login")
-    public ApiResponse<?> loginJWT(@RequestBody UserAccountResponeDTO accountDTO)  {
+    public ApiResponse<?> loginJWT(@RequestBody @Valid UserAccountResponeDTO accountDTO)  {
         DisplayUserAccountDTO useraccountDTO = userAccountService.login(accountDTO);
         AuthenticationResponse authenticationResponse =  userAuthentication.authenticate(accountDTO.getUsername());
         useraccountDTO.setAccessToken(authenticationResponse.getAccessToken());
@@ -61,8 +41,8 @@ public class UserAccountController {
         return ApiResponse.builder().message("Logout success").data("Logout Success").code(200).build();
     }
     @PostMapping("/refresh")
-    public ApiResponse<?> refresh(@RequestBody String token) throws ParseException {
-        String newToken = authenticationService.getNewToken(token);
+    public ApiResponse<?> refresh(@RequestBody TokenRefreshRequest token) throws ParseException {
+        String newToken = authenticationService.getNewToken(token.getRefreshToken());
         return ApiResponse.builder().message("Refresh Token Success").code(200).data(newToken).build();
     }
 }
