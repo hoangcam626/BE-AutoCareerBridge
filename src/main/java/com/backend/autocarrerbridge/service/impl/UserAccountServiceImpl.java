@@ -1,171 +1,51 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.*;
-import com.backend.autocarrerbridge.dto.useraccount.sdi.UserAccountRegisterSdi;
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.Role;
-import com.backend.autocarrerbridge.entity.University;
+import com.backend.autocarrerbridge.dto.AccountRespone.*;
+import com.backend.autocarrerbridge.emailconfig.*;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.*;
-import com.backend.autocarrerbridge.service.ImageService;
+
 import com.backend.autocarrerbridge.service.UserAccountService;
+
 import com.backend.autocarrerbridge.util.enums.State;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserAccountServiceImpl implements UserAccountService {
-    private final UserAccountRepository userAccountRepository;
-    private final BussinessRepository bussinessRepository;
-    private final ModelMapper modelMapper;
-    private final ImageService imageService;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
-    private final UniversityRepository universityRepository;
-    @Override
-    public DisplayBussinessDTO registerBussiness(UserBussinessDTO userBussinessDTO) {
-        if (userBussinessDTO == null) {
-            throw new IllegalArgumentException("User business data cannot be null");
-        }
-
-        // Check if username already exists
-        if (userAccountRepository.findByUsername(userBussinessDTO.getUsername()) != null) {
-            throw new AppException(ErrorCode.ERROR_USER);
-        }
-
-        try {
-            // Check if email already exists
-            Business existingBussiness = bussinessRepository.findByEmail(userBussinessDTO.getEmail());
-            if (existingBussiness != null) {
-                throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-            }
-
-            // Check password match
-            if (!userBussinessDTO.getPassword().equals(userBussinessDTO.getRePassword())) {
-                throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
-            }
-
-            // Find role by ID
-            Role role = roleRepository.findById(userBussinessDTO.getIdRole()).orElse(null);
-            if (role == null) {
-                throw new AppException(ErrorCode.ERROR_USER);
-            }
-
-            // Save user account
-            UserAccount savedUserAccount = modelMapper.map(userBussinessDTO, UserAccount.class);
-            savedUserAccount.setRole(role);
-
-            String hashedPassword = passwordEncoder.encode(userBussinessDTO.getPassword());
-            savedUserAccount.setPassword(hashedPassword);
-
-            UserAccount userAccount = userAccountRepository.save(savedUserAccount);
-
-            // Validate license image
-            if (userBussinessDTO.getLicenseImage() == null || userBussinessDTO.getLicenseImage().isEmpty()) {
-                throw new AppException(ErrorCode.ERROR_LICENSE);
-            }
-
-            Integer licenseImageId = imageService.uploadFile(userBussinessDTO.getLicenseImage());
-            if (licenseImageId == null) {
-                throw new AppException(ErrorCode.ERROR_LICENSE);
-            }
-
-            // Save business information
-            Business business = modelMapper.map(userBussinessDTO, Business.class);
-            business.setLicenseImageId(licenseImageId);
-            business.setUserAccount(userAccount);
-
-            Business savedBusiness = bussinessRepository.save(business);
-
-            modelMapper.map(savedBusiness, userBussinessDTO);
-            return modelMapper.map(userBussinessDTO,DisplayBussinessDTO.class);
-
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
-        } catch (Exception e) {
-            throw new AppException(ErrorCode.ERROR_USER);
-        }
-    }
+     UserAccountRepository userAccountRepository;
+     ModelMapper modelMapper;
+     PasswordEncoder passwordEncoder;
+     SendEmail sendEmail;
+     RedisTemplate<String,String> redisTemplate;
+     String codeExist = "Exist";
 
     @Override
-    public DisplayUniverSityDTO registerUniversity(UserUniversityDTO userUniversityDTO) {
-        if(universityRepository.findByEmail(userUniversityDTO.getEmail()) != null) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-        if(universityRepository.findByPhone(userUniversityDTO.getPhone()) != null) {
-            throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
-        }
-        Role role = roleRepository.findById(userUniversityDTO.getIdRole()).orElse(null);
-        if (role == null) {
-            throw new AppException(ErrorCode.ERROR_USER);
-        }
-        if (!userUniversityDTO.getPassword().equals(userUniversityDTO.getRePassword())) {
-            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
-        }
-        UserAccount savedUserAccount = modelMapper.map(userUniversityDTO, UserAccount.class);
-        savedUserAccount.setRole(role);
+    public DisplayUserAccountDTO authenticateUser(UserAccountResponeDTO useraccountDTO) {
 
-        String hashedPassword = passwordEncoder.encode(userUniversityDTO.getPassword());
-        savedUserAccount.setPassword(hashedPassword);
-
-        UserAccount userAccount = userAccountRepository.save(savedUserAccount);
-        University university = new University();
-        university.setEmail(userUniversityDTO.getEmail());
-        university.setPhone(userUniversityDTO.getPhone());
-        university.setName(userUniversityDTO.getName());
-        university.setUserAccount(userAccount);
-        universityRepository.save(university);
-        return modelMapper.map(userUniversityDTO,DisplayUniverSityDTO.class);
-    }
-
-    public UserAccount register(UserAccountRegisterSdi req){
-        if(userAccountRepository.existsByUsername(req.getUsername())){
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-//        if (!req.getPassword().equals(req.getRePassword())) {
-//            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
-//        }
-        Role role = roleRepository.findByName(req.getNameRole());
-        if (role == null) {
-            throw new AppException(ErrorCode.ERROR_NOT_FOUND_ROLE);
-        }
-        UserAccount newAccount = UserAccount.builder()
-                .username(req.getUsername())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .role(role)
-                .build();
-        return userAccountRepository.save(newAccount);
-
-    }
-
-    public UserAccount approvedAccount(UserAccount userAccount){
-        userAccount.setState(State.APPROVED);
-        return userAccountRepository.save(userAccount);
-    }
-
-    @Override
-    public UserAccount getUserById(Integer id) {
-        return userAccountRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public DisplayUserAccountDTO login(UserAccountResponeDTO useraccountDTO) {
         if (useraccountDTO.getUsername() == null || useraccountDTO.getPassword() == null) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
-
         UserAccount user = userAccountRepository.findByUsername(useraccountDTO.getUsername());
-        System.out.println(user);
         if (user == null) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
         if (passwordEncoder.matches(useraccountDTO.getPassword(), user.getPassword())) {
+            if(user.getState().equals(State.PENDING)){
+                throw new AppException(ErrorCode.ERROR_USER_PENDING);
+            }
             UserAccountResponeDTO userAccountResponeDTO = new UserAccountResponeDTO();
             userAccountResponeDTO.setStatus(user.getStatus());
             userAccountResponeDTO.setId(user.getId());
@@ -180,7 +60,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void saveRefreshToken(Integer id, String refresh_token) {
+    public void saveRefreshTokenForUser(Integer id, String refresh_token) {
         UserAccount userAccounts = userAccountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userAccounts.setRefreshToken(refresh_token);
@@ -188,7 +68,97 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount getUserByUserName(String username) {
+    public UserAccount getUserByUsername(String username) {
         return userAccountRepository.findByUsername(username);
+    }
+
+    @Override
+    public UserAccount registerUser(UserAccount userAccount) {
+
+        UserAccount newAccount = UserAccount.builder()
+                .username(userAccount.getUsername())
+                .password(passwordEncoder.encode(userAccount.getPassword()))
+                .role(userAccount.getRole())
+                .state(State.PENDING)
+                .build();
+        return userAccountRepository.save(newAccount);
+    }
+ //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+    @Override
+    public DisplayUserAccountDTO updatePassword(ChangePassWordDTO userAccountResponeDTO) {
+        UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponeDTO.getUsername());
+        if (userAccountResponeDTO.getPassword() == null || userAccountResponeDTO.getPassword().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+        }
+        if(passwordEncoder.matches(userAccountResponeDTO.getNewPassword(), userAccount.getPassword())){
+            throw new AppException(ErrorCode.ERROR_PASSWORD_SAME);
+        }
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        if(!userAccountResponeDTO.getNewPassword().equals(userAccountResponeDTO.getReNewPassword())){
+            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
+        }
+        if(!passwordEncoder.matches(userAccountResponeDTO.getPassword(), userAccount.getPassword())){
+           throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
+        }
+
+        userAccount.setPassword(passwordEncoder.encode(userAccountResponeDTO.getNewPassword()));
+        return modelMapper.map(userAccountRepository.save(userAccount),DisplayUserAccountDTO.class);
+    }
+    @Override
+    public EmailCode generateVerificationCode(String email) {
+        String code = genarateCode(email);
+        if(code.equals(codeExist)){
+            return EmailCode.builder().email(email).code("Please wait").build();
+        }
+        return EmailCode.builder().email(email).code(code).build();
+    }
+
+    @Override
+    public EmailCode generatePasswordResetCode(String email) {
+        String code = genarateCodeForgot(email);
+        if(code.equals(codeExist)){
+            return EmailCode.builder().email(email).code("Please wait").build();
+        }
+        return EmailCode.builder().email(email).code(code).build();
+    }
+
+    @Override
+    public String handleForgotPassword(ForgotPassWordDTO forgotPassWordDTO) {
+        if(forgotPassWordDTO.getEmail() == null || forgotPassWordDTO.getEmail().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+        }
+        if(userAccountRepository.findByUsername(forgotPassWordDTO.getEmail()) == null){
+            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+        }
+        if(!forgotPassWordDTO.getForgotCode().equals(redisTemplate.opsForValue().get("fg/" + forgotPassWordDTO.getEmail()))){
+            throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
+        }
+        String newPassword = RandomCodeGenerator.generatePassword();
+        UserAccount userAccount = userAccountRepository.findByUsername(forgotPassWordDTO.getEmail());
+        userAccount.setPassword(passwordEncoder.encode(newPassword));
+        userAccountRepository.save(userAccount);
+
+        return newPassword;
+    }
+
+    public String genarateCode(String emailSend) {
+        if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
+            return codeExist;
+        }
+        Email email = new Email(emailSend,"Xác nhận đăng ký tài khoản","");
+        String generatedCode = RandomCodeGenerator.generateRegistrationCode();
+        sendEmail.sendCode(email, generatedCode);
+        redisTemplate.opsForValue().set(emailSend,generatedCode,300, TimeUnit.SECONDS);
+        return generatedCode;
+    }
+    public String genarateCodeForgot(String emailSend) {
+        if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
+            return codeExist;
+        }
+        Email email = new Email(emailSend,"Mã cấp mật khẩu mới!","");
+        String generatedCode = RandomCodeGenerator.generateRegistrationCode();
+        sendEmail.sendForgot(email, generatedCode);
+        redisTemplate.opsForValue().set("fg/"+  emailSend,generatedCode,300, TimeUnit.SECONDS);
+        return generatedCode;
     }
 }

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -36,7 +35,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-  //   default co accept all quyen ko can jwt
+    // default co accept all quyen ko can jwt
 //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 //        return httpSecurity
@@ -54,6 +53,9 @@ public class SecurityConfig {
             "/api/accounts/register/uni",
             "/api/accounts/refresh",
             "/api/accounts/login",
+            "/api/accounts/verify",
+            "/api/accounts/forgot-code",
+            "/api/accounts/forgot-pass",
             "/api/accounts/jwt-introspect",
             "/api/v1/image/**",
             "/v3/api-docs/**",
