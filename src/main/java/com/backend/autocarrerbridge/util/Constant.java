@@ -9,6 +9,8 @@ public class Constant {
   public static final int INTERNAL_SERVER_ERROR = 500;
 
   // Response Messages
+  public static final String NOTIFICATION_NEW_PASSWORD = " Your new password is sent your mail";
+  public static final String NOTIFICATION_WAIT = " Your new password is sent your mail, check it";
   public static final String SUCCESS_MESSAGE = "Success";
   public static final String NO_CONTENT_MESSAGE = "No content available";
   public static final String BAD_REQUEST_MESSAGE = "Bad request";

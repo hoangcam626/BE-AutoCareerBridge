@@ -51,6 +51,21 @@ public class SendEmail {
             logger.error("Lỗi khi gửi email: {}", e.getMessage(), e);
         }
     }
+    public void sendNewPassword(Email email,String newPassword){
+        try {
+            // Kiểm tra email hợp lệ
+            if (email == null || email.getEmail() == null || email.getEmail().trim().isEmpty()) {
+                throw new IllegalArgumentException("Email người nhận không được để trống");
+            }
+
+            // Tạo và gửi email
+            MimeMessage mimeMessage = createMimeMessage(email, getVerifyCode(newPassword));
+            mailSender.send(mimeMessage);
+            logger.info("Email đã được gửi tới: {}", email.getEmail().trim());
+        } catch (MessagingException e) {
+            logger.error("Lỗi khi gửi email: {}", e.getMessage(), e);
+        }
+    }
     public void sendForgot(Email email,String verifyCode){
         try {
             // Kiểm tra email hợp lệ
@@ -298,6 +313,115 @@ public class SendEmail {
         return htmlContent;
     }
 
+    private String getNewPassword(String newPassword) {
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new IllegalArgumentException("Verification code cannot be null or empty");
+        }
+
+        // Dùng phép nối chuỗi thay vì String.format
+        String htmlContent = "<!DOCTYPE html>" +
+                "<html lang=\"vi\">" +
+                "<head>" +
+                "    <meta charset=\"UTF-8\">" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
+                "    <title>AutoCareerBridge - Mã Xác Nhận</title>" +
+                "    <style>" +
+                "        body {" +
+                "            font-family: Arial, sans-serif;" +
+                "            margin: 0;" +
+                "            padding: 0;" +
+                "            background-color: #f4f4f4;" +
+                "        }" +
+                "        table {" +
+                "            width: 100%;" +
+                "            max-width: 600px;" +
+                "            margin: 0 auto;" +
+                "            background-color: #ffffff;" +
+                "            border-radius: 8px;" +
+                "            overflow: hidden;" +
+                "        }" +
+                "        .header {" +
+                "            background-color: #0056b3;" +
+                "            padding: 30px 20px;" +
+                "            text-align: center;" +
+                "        }" +
+                "        .header h1 {" +
+                "            font-family: 'Georgia', serif;" +
+                "            font-size: 36px;" +
+                "            font-style: italic;" +
+                "            color: white;" +
+                "            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);" +
+                "            font-weight: bold;" +
+                "            letter-spacing: 2px;" +
+                "        }" +
+                "        .header h1:hover {" +
+                "            transform: scale(1.1);" +
+                "            color: #ffffff;" +
+                "            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);" +
+                "        }" +
+                "        .content {" +
+                "            padding: 30px 20px;" +
+                "        }" +
+                "        .content h2 {" +
+                "            color: #0056b3;" +
+                "            font-size: 24px;" +
+                "            margin-bottom: 20px;" +
+                "        }" +
+                "        .code-box {" +
+                "            background-color: #f0f8ff;" +
+                "            border: 2px solid #0056b3;" +
+                "            border-radius: 5px;" +
+                "            padding: 15px;" +
+                "            text-align: center;" +
+                "            margin: 20px 0;" +
+                "            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" +
+                "        }" +
+                "        .code-box h3 {" +
+                "            color: #0056b3;" +
+                "            font-size: 28px;" +
+                "            font-weight: bold;" +
+                "            margin: 0;" +
+                "        }" +
+                "        .footer {" +
+                "            background-color: #0056b3;" +
+                "            color: #ffffff;" +
+                "            padding: 15px 20px;" +
+                "            text-align: center;" +
+                "        }" +
+                "        .footer p {" +
+                "            margin: 0;" +
+                "            font-size: 14px;" +
+                "        }" +
+                "    </style>" +
+                "</head>" +
+                "<body>" +
+                "    <table>" +
+                "        <tr>" +
+                "            <td class=\"header\">" +
+                "                <h1>AutoCareerBridge</h1>" +
+                "            </td>" +
+                "        </tr>" +
+                "        <tr>" +
+                "            <td class=\"content\">" +
+                "                <h2>Xin chào!</h2>" +
+                "                <p>Cảm ơn bạn đã sử dụng AutoCareerBridge. Dưới đây là mật khẩu mới của bạn:</p>" +
+                "                <div class=\"code-box\">" +
+                "                    <h3>" + newPassword + "</h3>" +  // Nối chuỗi trực tiếp ở đây
+                "                </div>" +
+                "                <p>Nếu bạn không yêu cầu mã này, vui lòng bỏ qua email này.</p>" +
+                "            </td>" +
+                "        </tr>" +
+                "        <tr>" +
+                "            <td class=\"footer\">" +
+                "                <p>&copy; 2024 AutoCareerBridge. Tất cả các quyền được bảo lưu.</p>" +
+                "            </td>" +
+                "        </tr>" +
+                "    </table>" +
+                "</body>" +
+                "</html>";
+
+        return htmlContent;
+    }
 
 
     private String getEmailBody(Email email, String namePartner) {
