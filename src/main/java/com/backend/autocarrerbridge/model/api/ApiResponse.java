@@ -8,8 +8,8 @@ import lombok.experimental.Accessors;
 import static com.backend.autocarrerbridge.util.Constant.*;
 
 @Data
-@Accessors(chain = true)
 @Builder
+@Accessors(chain = true)
 public class ApiResponse<T> {
   private int code;
   private String message;

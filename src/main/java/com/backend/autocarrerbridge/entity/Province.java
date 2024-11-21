@@ -31,11 +31,11 @@ public class Province {
     private String codeName;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "adminstrative_unit_id", nullable = false)
+    @JoinColumn(name = "administrative_unit_id", nullable = false)
     private AdministrativeUnit administrativeUnit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "adminstrative_region_id", nullable = false)
+    @JoinColumn(name = "administrative_region_id", nullable = false)
     private AdministrativeRegion administrativeRegion;
 
 }

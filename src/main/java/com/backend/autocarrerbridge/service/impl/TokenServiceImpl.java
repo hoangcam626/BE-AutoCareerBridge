@@ -74,5 +74,18 @@ public class TokenServiceImpl implements TokenService {
         JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
         return claimsSet.getStringClaim(claim);
     }
+
+    @Override
+    public String getSub(String token) throws ParseException {
+        if(token != null && token.startsWith("Bearer ")){
+            token = token.substring(7);
+        }
+            SignedJWT signedJWT = SignedJWT.parse(token);
+
+            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+
+            // Trả về giá trị của claim 'sub'
+            return claimsSet.getSubject();
+    }
 }
 
