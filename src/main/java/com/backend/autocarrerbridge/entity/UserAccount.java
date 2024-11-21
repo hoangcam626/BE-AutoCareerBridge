@@ -28,7 +28,6 @@ public class UserAccount extends AbstractAudit{
 
     @Column(name = "refresh_token" ,length = 512)
     private String refreshToken;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;

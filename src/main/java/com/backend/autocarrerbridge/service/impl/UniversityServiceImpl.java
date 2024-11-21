@@ -2,7 +2,6 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.AccountRespone.DisplayUniverSityDTO;
 import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
-import com.backend.autocarrerbridge.emailconfig.Email;
 import com.backend.autocarrerbridge.emailconfig.SendEmail;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
@@ -14,24 +13,27 @@ import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.OrganizationType;
-import com.backend.autocarrerbridge.util.enums.State;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 @RequiredArgsConstructor
 public class UniversityServiceImpl implements UniversityService {
-    RoleService roleService;
-    ModelMapper modelMapper;
-    UserAccountService userAccountService;
-    UniversityRepository universityRepository;
-    SendEmail sendEmail;
+     RoleService roleService;
+     ModelMapper modelMapper;
+     UserAccountService userAccountService;
+     UniversityRepository universityRepository;
+     RedisTemplate<String, String> redisTemplate;
     @Override
     public DisplayUniverSityDTO registerUniversity(UserUniversityDTO userUniversityDTO) {
+
         // Kiểm tra password và rePassword có khớp không
         if (userUniversityDTO.getPassword() == null || userUniversityDTO.getRePassword() == null
                 || !userUniversityDTO.getPassword().equals(userUniversityDTO.getRePassword())) {
@@ -45,15 +47,19 @@ public class UniversityServiceImpl implements UniversityService {
         if (userUniversityDTO.getEmail() == null || userUniversityDTO.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-
+        if(!Objects.equals(redisTemplate.opsForValue().get(userUniversityDTO.getEmail()), userUniversityDTO.getVerificationCode())){
+            throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
+        }
         if (userUniversityDTO.getName() == null || userUniversityDTO.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
         // Kiểm tra xem email đã được đăng ký trước đó hay chưa
-        if (userAccountService.getUserByUserName(userUniversityDTO.getEmail()) != null) {
+        if (userAccountService.getUserByUsername(userUniversityDTO.getEmail()) != null) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
+
+
         // Set Role
          Role role =  roleService.findById(OrganizationType.UNIVERSITY.getValue());
         // Tạo UserAccount từ DTO
@@ -63,7 +69,7 @@ public class UniversityServiceImpl implements UniversityService {
         userAccount.setUsername(userUniversityDTO.getEmail());
 
         // Đăng ký tài khoản
-        UserAccount savedUserAccount = userAccountService.register(userAccount);
+        UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
         // Tạo đối tượng University
         University university = new University();
@@ -77,8 +83,7 @@ public class UniversityServiceImpl implements UniversityService {
         DisplayUniverSityDTO displayUniverSityDTO = new DisplayUniverSityDTO();
         modelMapper.map(savedUserAccount, displayUniverSityDTO);
         modelMapper.map(university, displayUniverSityDTO);
-//        Email email = new Email(displayUniverSityDTO.getEmail(),"Thông báo về yêu cầu hợp tác ","");
-//        sendEmail.sendEmail(email,displayUniverSityDTO.getName());
+
         return displayUniverSityDTO;
     }
 
@@ -86,6 +91,7 @@ public class UniversityServiceImpl implements UniversityService {
     public University findByEmail(String email) {
         return universityRepository.findByEmail(email);
     }
+
 
 
 }

@@ -17,7 +17,7 @@ public class UserAuthenticationImpl implements UserAuthentication {
     private final AuthenticationService authenticationService;
     @Override
     public AuthenticationResponse authenticate(String username) {
-        UserAccount findUserAccount = userAccountService.getUserByUserName(username);
+        UserAccount findUserAccount = userAccountService.getUserByUsername(username);
         AuthenticationResponse authenticationResponse;
         try {
             authenticationResponse = authenticationService.authenticate(findUserAccount);
@@ -25,7 +25,7 @@ public class UserAuthenticationImpl implements UserAuthentication {
             throw new RuntimeException(e);
         }
         if(authenticationResponse.getRefreshToken() != null) {
-            userAccountService.saveRefreshToken(findUserAccount.getId(), authenticationResponse.getRefreshToken());
+            userAccountService.saveRefreshTokenForUser(findUserAccount.getId(), authenticationResponse.getRefreshToken());
         }
         return authenticationResponse;
     }

@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.AccountRespone.*;
+import com.backend.autocarrerbridge.emailconfig.*;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
@@ -13,8 +14,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +27,12 @@ public class UserAccountServiceImpl implements UserAccountService {
      UserAccountRepository userAccountRepository;
      ModelMapper modelMapper;
      PasswordEncoder passwordEncoder;
+     SendEmail sendEmail;
+     RedisTemplate<String,String> redisTemplate;
+     String codeExist = "Exist";
 
     @Override
-    public DisplayUserAccountDTO login(UserAccountResponeDTO useraccountDTO) {
+    public DisplayUserAccountDTO authenticateUser(UserAccountResponeDTO useraccountDTO) {
 
         if (useraccountDTO.getUsername() == null || useraccountDTO.getPassword() == null) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
@@ -53,7 +60,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void saveRefreshToken(Integer id, String refresh_token) {
+    public void saveRefreshTokenForUser(Integer id, String refresh_token) {
         UserAccount userAccounts = userAccountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userAccounts.setRefreshToken(refresh_token);
@@ -61,12 +68,13 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount getUserByUserName(String username) {
+    public UserAccount getUserByUsername(String username) {
         return userAccountRepository.findByUsername(username);
     }
 
     @Override
-    public UserAccount register(UserAccount userAccount) {
+    public UserAccount registerUser(UserAccount userAccount) {
+
         UserAccount newAccount = UserAccount.builder()
                 .username(userAccount.getUsername())
                 .password(passwordEncoder.encode(userAccount.getPassword()))
@@ -74,5 +82,83 @@ public class UserAccountServiceImpl implements UserAccountService {
                 .state(State.PENDING)
                 .build();
         return userAccountRepository.save(newAccount);
+    }
+ //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+    @Override
+    public DisplayUserAccountDTO updatePassword(ChangePassWordDTO userAccountResponeDTO) {
+        UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponeDTO.getUsername());
+        if (userAccountResponeDTO.getPassword() == null || userAccountResponeDTO.getPassword().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+        }
+        if(passwordEncoder.matches(userAccountResponeDTO.getNewPassword(), userAccount.getPassword())){
+            throw new AppException(ErrorCode.ERROR_PASSWORD_SAME);
+        }
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        if(!userAccountResponeDTO.getNewPassword().equals(userAccountResponeDTO.getReNewPassword())){
+            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
+        }
+        if(!passwordEncoder.matches(userAccountResponeDTO.getPassword(), userAccount.getPassword())){
+           throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
+        }
+
+        userAccount.setPassword(passwordEncoder.encode(userAccountResponeDTO.getNewPassword()));
+        return modelMapper.map(userAccountRepository.save(userAccount),DisplayUserAccountDTO.class);
+    }
+    @Override
+    public EmailCode generateVerificationCode(String email) {
+        String code = genarateCode(email);
+        if(code.equals(codeExist)){
+            return EmailCode.builder().email(email).code("Please wait").build();
+        }
+        return EmailCode.builder().email(email).code(code).build();
+    }
+
+    @Override
+    public EmailCode generatePasswordResetCode(String email) {
+        String code = genarateCodeForgot(email);
+        if(code.equals(codeExist)){
+            return EmailCode.builder().email(email).code("Please wait").build();
+        }
+        return EmailCode.builder().email(email).code(code).build();
+    }
+
+    @Override
+    public String handleForgotPassword(ForgotPassWordDTO forgotPassWordDTO) {
+        if(forgotPassWordDTO.getEmail() == null || forgotPassWordDTO.getEmail().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+        }
+        if(userAccountRepository.findByUsername(forgotPassWordDTO.getEmail()) == null){
+            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+        }
+        if(!forgotPassWordDTO.getForgotCode().equals(redisTemplate.opsForValue().get("fg/" + forgotPassWordDTO.getEmail()))){
+            throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
+        }
+        String newPassword = RandomCodeGenerator.generatePassword();
+        UserAccount userAccount = userAccountRepository.findByUsername(forgotPassWordDTO.getEmail());
+        userAccount.setPassword(passwordEncoder.encode(newPassword));
+        userAccountRepository.save(userAccount);
+
+        return newPassword;
+    }
+
+    public String genarateCode(String emailSend) {
+        if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
+            return codeExist;
+        }
+        Email email = new Email(emailSend,"Xác nhận đăng ký tài khoản","");
+        String generatedCode = RandomCodeGenerator.generateRegistrationCode();
+        sendEmail.sendCode(email, generatedCode);
+        redisTemplate.opsForValue().set(emailSend,generatedCode,300, TimeUnit.SECONDS);
+        return generatedCode;
+    }
+    public String genarateCodeForgot(String emailSend) {
+        if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
+            return codeExist;
+        }
+        Email email = new Email(emailSend,"Mã cấp mật khẩu mới!","");
+        String generatedCode = RandomCodeGenerator.generateRegistrationCode();
+        sendEmail.sendForgot(email, generatedCode);
+        redisTemplate.opsForValue().set("fg/"+  emailSend,generatedCode,300, TimeUnit.SECONDS);
+        return generatedCode;
     }
 }

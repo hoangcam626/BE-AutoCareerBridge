@@ -66,7 +66,7 @@ public class BusinessServiceImpl implements BusinessService {
         modelMapper.map(userBusinessDTO, userAccount);
         userAccount.setRole(roleService.findById(OrganizationType.BUSINESS.getValue()));
         userAccount.setUsername(userBusinessDTO.getEmail());
-        UserAccount savedUserAccount = userAccountService.register(userAccount);
+        UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
         // Tạo và lưu Business
         Business business = modelMapper.map(userBusinessDTO, Business.class);

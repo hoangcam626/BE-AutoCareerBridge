@@ -8,4 +8,6 @@ import com.backend.autocarrerbridge.entity.University;
 public interface UniversityService {
     DisplayUniverSityDTO registerUniversity(UserUniversityDTO userUniversityDTO);
     University findByEmail(String email);
+
+
 }

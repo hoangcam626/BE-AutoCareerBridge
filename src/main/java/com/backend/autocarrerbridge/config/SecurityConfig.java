@@ -53,6 +53,9 @@ public class SecurityConfig {
             "/api/university/register",
             "/api/accounts/refresh",
             "/api/accounts/login",
+            "/api/accounts/verify",
+            "/api/accounts/forgot-code",
+            "/api/accounts/forgot-pass",
             "/api/accounts/jwt-introspect"
     };
 
