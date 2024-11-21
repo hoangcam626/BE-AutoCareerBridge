@@ -31,7 +31,7 @@ public class EmployeeResponse {
 
     String phone;
 
-    Business business;
+    Integer businessId;
 
-    UserAccount userAccount;
+    UserAccountResponse userAccount;
 }

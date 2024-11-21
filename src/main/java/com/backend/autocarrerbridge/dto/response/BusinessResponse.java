@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.dto.response;
 
-import com.backend.autocarrerbridge.entity.Location;
-import com.backend.autocarrerbridge.entity.UserAccount;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -24,9 +22,8 @@ public class BusinessResponse {
      String description;
      Integer businessImageId;
      Integer licenseImageId;
-     Integer status;
      LocalDate createdAt;
      LocalDate updatedAt;
-     Location location;
-     UserAccount userAccount;
+     LocationResponse locationResponse;
+     UserAccountResponse userAccountResponse;
 }

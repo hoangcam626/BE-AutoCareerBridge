@@ -19,4 +19,5 @@ public class RoleServiceImpl implements RoleService {
     public Role findById(Integer id) {
         return roleRepository.findById(id).orElse(null);
     }
+
 }

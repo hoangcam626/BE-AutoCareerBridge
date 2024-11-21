@@ -1,17 +1,15 @@
 package com.backend.autocarrerbridge.dto.request;
 
-import com.backend.autocarrerbridge.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@Getter
-@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserAccountRequest {
-    String username;
-
-    String password;
+public class RoleRequest {
+    Integer id;
+    String name;
+    String description;
 }

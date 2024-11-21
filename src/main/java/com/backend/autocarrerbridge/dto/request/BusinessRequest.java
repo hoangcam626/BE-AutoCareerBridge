@@ -30,6 +30,6 @@ public class BusinessRequest {
      Integer status;
      LocalDate createdAt;
      LocalDate updatedAt;
-     Location location;
-     UserAccount userAccount;
+     LocationRequest locationRequest;
+     UserAccountRequest userAccountRequest;
 }

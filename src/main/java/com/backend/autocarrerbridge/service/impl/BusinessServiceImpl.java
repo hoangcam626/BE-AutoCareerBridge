@@ -11,7 +11,7 @@ import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
-import com.backend.autocarrerbridge.util.enums.OrganizationType;
+import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -66,7 +66,7 @@ public class BusinessServiceImpl implements BusinessService {
         // Tạo và lưu UserAccount
         UserAccount userAccount = new UserAccount();
         modelMapper.map(userBusinessDTO, userAccount);
-        userAccount.setRole(roleService.findById(OrganizationType.BUSINESS.getValue()));
+        userAccount.setRole(roleService.findById(PredefinedRole.BUSINESS.getValue()));
         userAccount.setUsername(userBusinessDTO.getEmail());
         UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 

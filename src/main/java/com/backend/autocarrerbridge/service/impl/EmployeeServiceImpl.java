@@ -1,20 +1,21 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.request.EmployeeRequest;
-import com.backend.autocarrerbridge.dto.request.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.EmployeeResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.mapper.EmployeeMapper;
+import com.backend.autocarrerbridge.mapper.RoleMapper;
+import com.backend.autocarrerbridge.mapper.UserAccountMapper;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
-import com.backend.autocarrerbridge.service.BusinessService;
-import com.backend.autocarrerbridge.service.EmployeeService;
-import com.backend.autocarrerbridge.service.TokenService;
-import com.backend.autocarrerbridge.service.UserAccountService;
+import com.backend.autocarrerbridge.service.*;
+import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.Status;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,6 +34,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     UserAccountService userAccountService;
     TokenService tokenService;
     BusinessService businessService;
+    UserAccountMapper userAccountMapper;
+    RoleService roleService;
+    RoleMapper roleMapper;
+    BusinessMapper businessMapper;
 
     @Override
     public List<EmployeeResponse> getListEmployeee() {
@@ -46,32 +51,41 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 //    @PreAuthorize("hasRole('')")
+    @Transactional
     @Override
     public EmployeeResponse addEmployee(EmployeeRequest request, String token) {
         Employee employee=employeeMapper.toEmployee(request);
+
         try {
-            String emailBusiness= tokenService.getClaim(token,"sub");
-            Business business = businessService.findBusinessByEmail(emailBusiness);
+//            set Business fo employee
+            String emailBusiness= tokenService.getSub(token);
+            Business business = businessService.findByEmail(emailBusiness);
             employee.setBusiness(business);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
 
-//        tao tai khoan cho nhan vien
-        UserAccountRequest userAccountRequest=UserAccountRequest.builder()
+//        create UserAccount for Employee
+        UserAccount userAccount=UserAccount.builder()
                 .username(employee.getEmail())
                 .password("1234546")
+                .role(roleService.findById(PredefinedRole.EMPLOYEE.getValue()))
                 .build();
-        UserAccount accountEmployee=userAccountService.createUser(userAccountRequest);
-
+        UserAccount accountEmployee=userAccountService.registerUser(userAccount);
         employee.setUserAccount(accountEmployee);
 
+//        Save Employee
         try {
             employee=employeeRepository.save(employee);
         }catch (DataIntegrityViolationException exception){
             throw new AppException(ErrorCode.ERROR_USER_EXITED);
         }
-        return employeeMapper.toEmployeeResponse(employee);
+        EmployeeResponse employeeResponse=employeeMapper.toEmployeeResponse(employee);
+        employeeResponse.setBusinessId(employee.getBusiness().getId());
+        userAccount.setRole(employee.getUserAccount().getRole());
+        employeeResponse.setUserAccount(userAccountMapper.toUserAccountResponse(employee.getUserAccount()));
+
+        return employeeResponse;
     }
 
     @Override
