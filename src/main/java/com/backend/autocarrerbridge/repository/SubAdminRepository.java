@@ -14,9 +14,11 @@ public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
 
     boolean existsByEmail(String email);
 
-    @Query("select sa from SubAdmin sa where sa.status <> 1")
+    boolean existsBySubAdminCode(String code);
+
+    @Query("select sa from SubAdmin sa where sa.status <> 0")
     Page<SubAdmin> findAll(Pageable pageable);
 
-    @Query("select sa from SubAdmin sa where sa.status <> 1")
+    @Query("select sa from SubAdmin sa where sa.status <> 0")
     List<SubAdmin> findAll();
 }

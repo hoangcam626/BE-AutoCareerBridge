@@ -2,7 +2,6 @@ package com.backend.autocarrerbridge.controller;
 
 import com.backend.autocarrerbridge.dto.request.EmployeeRequest;
 import com.backend.autocarrerbridge.dto.response.EmployeeResponse;
-import com.backend.autocarrerbridge.mapper.EmployeeMapper;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.EmployeeService;
 import com.backend.autocarrerbridge.util.Constant;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequestMapping("employees")
 public class EmployeeController {
     EmployeeService employeeService;
-    EmployeeMapper employeeMapper;
 
     @PostMapping("/create")
     ApiResponse<EmployeeResponse> createEmployee(@RequestBody @Valid EmployeeRequest request, @RequestHeader ("Authorization") String token){

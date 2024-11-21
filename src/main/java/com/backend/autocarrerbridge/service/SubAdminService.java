@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.PageInfoDTO;
 import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminCreateSdi;
 import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminDeleteSdi;
 import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminSelfSdi;
@@ -23,7 +22,7 @@ public interface SubAdminService {
 
     SubAdminDeleteSdo delete(SubAdminDeleteSdi req);
 
-    Page<SubAdminSelfSdo> pageSubAdmins(PageInfoDTO req);
+    Page<SubAdminSelfSdo> pageSubAdmins(int page, int pageSize);
 
     List<SubAdminSelfSdo> listSubAdmins();
 }

@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.PageInfoDTO;
 import com.backend.autocarrerbridge.dto.subadmin.sdi.*;
 import com.backend.autocarrerbridge.dto.subadmin.sdo.*;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
@@ -16,7 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('SCOPE_Admin')")
-@RequestMapping("/api/v1/sub-admin")
+@RequestMapping("/api/sub-admin")
 public class SubAdminController {
     private final SubAdminService subAdminService;
     @PostMapping("/create")
@@ -49,8 +48,8 @@ public class SubAdminController {
     }
 
     @GetMapping("/page")
-    public ApiResponse<Page<SubAdminSelfSdo>> getSubAdmins(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize){
-        var res = subAdminService.pageSubAdmins(PageInfoDTO.of(page, pageSize));
+    public ApiResponse<Page<SubAdminSelfSdo>> getSubAdmins(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "pageSize", defaultValue = "5") int pageSize){
+        var res = subAdminService.pageSubAdmins(page, pageSize);
         return new ApiResponse<>(res);
     }
 }

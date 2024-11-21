@@ -2,10 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.AccountRespone.DisplayBusinessDTO;
 import com.backend.autocarrerbridge.dto.AccountRespone.UserBusinessDTO;
-import com.backend.autocarrerbridge.dto.business.sdi.BusinessApprovedSdi;
-import com.backend.autocarrerbridge.dto.university.sdi.UniversityApprovedSdi;
 import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
@@ -15,6 +12,7 @@ import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
+import com.backend.autocarrerbridge.util.enums.State;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -53,17 +51,17 @@ public class BusinessServiceImpl implements BusinessService {
 
 
         if (userBusinessDTO.getLicenseImage() == null || userBusinessDTO.getLicenseImage().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_LINCESE);
+            throw new AppException(ErrorCode.ERROR_LICENSE);
         }
 
         Integer licenseImageId;
         try {
             licenseImageId = imageService.uploadFile(userBusinessDTO.getLicenseImage());
             if (licenseImageId == null) {
-                throw new AppException(ErrorCode.ERROR_LINCESE);
+                throw new AppException(ErrorCode.ERROR_LICENSE);
             }
         } catch (Exception e) {
-            throw new AppException(ErrorCode.ERROR_LINCESE);
+            throw new AppException(ErrorCode.ERROR_LICENSE);
         }
 
         // Tạo và lưu UserAccount
@@ -71,6 +69,7 @@ public class BusinessServiceImpl implements BusinessService {
         modelMapper.map(userBusinessDTO, userAccount);
         userAccount.setRole(roleService.findById(PredefinedRole.BUSINESS.getValue()));
         userAccount.setUsername(userBusinessDTO.getEmail());
+        userAccount.setState(State.PENDING);
         UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
         // Tạo và lưu Business

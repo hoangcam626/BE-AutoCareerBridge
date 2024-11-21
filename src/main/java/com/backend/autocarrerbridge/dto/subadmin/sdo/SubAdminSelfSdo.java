@@ -27,15 +27,15 @@ public class SubAdminSelfSdo {
 
     private String address;
 
-    private MultipartFile subAdminImage;
+    private Integer subAdminImageId;
 
     private Status status;
 
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
-    private String createBy;
+    private String createdBy;
 
-    private String updateBy;
+    private String updatedBy;
 }
