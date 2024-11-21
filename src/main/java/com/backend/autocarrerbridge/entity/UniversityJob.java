@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.StatusConnected;
+import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +19,7 @@ public class UniversityJob extends AbstractAudit{
     private Integer id;
 
     @Column(name = "status_connected")
-    private StatusConnected statusConnected;
+    private State statusConnected;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "university_id", nullable = false)

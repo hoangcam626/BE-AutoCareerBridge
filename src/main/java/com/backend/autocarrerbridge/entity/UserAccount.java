@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.entity;
 
+import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.persistence.*;
 import lombok.*;
 @NoArgsConstructor
@@ -21,6 +22,10 @@ public class UserAccount extends AbstractAudit{
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "state")
+    private State state;
+
     @Column(name = "refresh_token" ,length = 512)
     private String refreshToken;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

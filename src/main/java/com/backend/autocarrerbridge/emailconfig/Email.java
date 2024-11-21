@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto;
+package com.backend.autocarrerbridge.emailconfig;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DisplayUniverSityDTO {
-    private String name;
+public class Email {
     private String email;
-    private String phone;
-
+    private String subject;
+    private String body;
 }
