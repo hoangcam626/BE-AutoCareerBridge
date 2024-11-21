@@ -11,8 +11,10 @@ import static com.backend.autocarrerbridge.util.Constant.*;
 @Builder
 @Accessors(chain = true)
 public class ApiResponse<T> {
-  private int code;
-  private String message;
+  @Builder.Default
+  private int code = SUCCESS;
+  @Builder.Default
+  private String message = SUCCESS_MESSAGE;
   public T data;
 
   public ApiResponse(){
