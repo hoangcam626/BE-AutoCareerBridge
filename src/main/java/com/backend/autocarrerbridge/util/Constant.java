@@ -32,7 +32,10 @@ public class Constant {
   public static final String LICENSE_INVALID = "Invalid license.";
   public static final String ERROR_PASSWORD = "Incorrect password.";
   public static final String ERROR_PHONE = "Phone already exists.";
-
+  public static final String ERROR_NAME_EXIST="Name already exists.";
+  public static final String ERROR_UNI_EXIST="University already exists.";
+  public static final String UNI_NOT_FOUND="University not found.";
+  public static final String ERROR_NOT_FOUND=" not found.";
   // Image-related Errors
   public static final String EMPTY_FILE_MESSAGE = "Error: File is empty";
   public static final String TYPE_FILE_MESSAGE = "Error: Invalid file type";
