@@ -37,7 +37,7 @@ public class TokenServiceImpl implements TokenService {
                 .jwtID(UUID.randomUUID().toString())
                 .issuer("AutoCarrer")
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(expirationHours, ChronoUnit.HOURS).toEpochMilli()))
+                .expirationTime(new Date(Instant.now().plus(expirationHours, ChronoUnit.MONTHS).toEpochMilli()))
                 .claim("scope", userAccount.getRole().getName())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
