@@ -31,11 +31,12 @@ public class Constant {
   public static final String USER_NOT_FOUND = "User not found.";
   public static final String LICENSE_INVALID = "Invalid license.";
   public static final String ERROR_PASSWORD = "Incorrect password.";
+  public static final String ERROR_PASSWORD_CHECK = "New password must not be the same as the old password.";
   public static final String ERROR_PHONE = "Phone already exists.";
-  public static final String ERROR_NAME_EXIST="Name already exists.";
-  public static final String ERROR_UNI_EXIST="University already exists.";
-  public static final String UNI_NOT_FOUND="University not found.";
-  public static final String ERROR_NOT_FOUND=" not found.";
+  public static final String USER_PENDING = "User is pending, please wait.";
+  public static final String ERROR_NOT_MATCH_CODE = "Code not match.";
+  public static final String ERROR_NOT_FOUND = "Not found";
+  public static final String ERROR_NAME_EXIST = "Not found";
   // Image-related Errors
   public static final String EMPTY_FILE_MESSAGE = "Error: File is empty";
   public static final String TYPE_FILE_MESSAGE = "Error: Invalid file type";

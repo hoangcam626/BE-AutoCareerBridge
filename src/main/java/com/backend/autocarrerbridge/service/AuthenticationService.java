@@ -5,7 +5,6 @@ import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
 import com.backend.autocarrerbridge.model.api.IntrospectRequest;
 import com.backend.autocarrerbridge.model.api.IntrospectResponse;
-import org.apache.catalina.User;
 
 import java.text.ParseException;
 
