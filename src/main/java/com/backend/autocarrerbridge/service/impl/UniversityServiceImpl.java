@@ -12,6 +12,7 @@ import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
+import com.backend.autocarrerbridge.util.enums.State;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -66,7 +67,7 @@ public class UniversityServiceImpl implements UniversityService {
         modelMapper.map(userUniversityDTO, userAccount);
         userAccount.setRole(role);
         userAccount.setUsername(userUniversityDTO.getEmail());
-
+        userAccount.setState(State.PENDING);
         // Đăng ký tài khoản
         UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
