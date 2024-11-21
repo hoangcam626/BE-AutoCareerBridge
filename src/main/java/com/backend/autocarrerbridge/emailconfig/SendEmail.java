@@ -59,7 +59,7 @@ public class SendEmail {
             }
 
             // Tạo và gửi email
-            MimeMessage mimeMessage = createMimeMessage(email, getVerifyCode(newPassword));
+            MimeMessage mimeMessage = createMimeMessage(email, getNewPassword(newPassword));
             mailSender.send(mimeMessage);
             logger.info("Email đã được gửi tới: {}", email.getEmail().trim());
         } catch (MessagingException e) {
