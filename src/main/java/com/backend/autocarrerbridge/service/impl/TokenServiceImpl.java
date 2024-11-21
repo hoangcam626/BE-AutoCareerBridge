@@ -1,7 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
 
-import com.backend.autocarrerbridge.dto.UseraccountDTO;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.nimbusds.jose.*;
@@ -18,12 +17,12 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+
 public class TokenServiceImpl implements TokenService {
 
     @Value("${jwt.signerKey}")

@@ -5,7 +5,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,10 +15,11 @@ import java.io.IOException;
 import java.text.ParseException;
 
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtBlacklistFilter extends OncePerRequestFilter {
 
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final TokenService tokenService;
+    RedisTemplate<String, Object> redisTemplate;
+    TokenService tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -24,13 +27,13 @@ public class JwtBlacklistFilter extends OncePerRequestFilter {
 
 
         if (token != null) {
-            String idJwt = null;
+            String idJwt;
             try {
                 idJwt = tokenService.getClaim(token, "jti");
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
-            if (idJwt != null && redisTemplate.hasKey(idJwt)) {
+            if (idJwt != null && Boolean.TRUE.equals(redisTemplate.hasKey(idJwt))) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
                 return;
             }
