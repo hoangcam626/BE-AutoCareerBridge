@@ -22,13 +22,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final TokenService tokenService;
     private final RedisTemplate<String, Boolean> redisTemplate;
-    private final Integer TIME_TO_LIVE = 1440;
     private final UserAccountService userAccountService;
 
     @Override
     public AuthenticationResponse authenticate(UserAccount userAccounts) throws ParseException {
         String accessToken = tokenService.generateToken(userAccounts, 1);
         String refreshToken = userAccounts.getRefreshToken();
+        int TIME_TO_LIVE = 1440;
         if (refreshToken == null || tokenService.getTimeToLive(refreshToken) < TIME_TO_LIVE) {
             refreshToken = tokenService.generateToken(userAccounts, 24 * 7);
         }
@@ -47,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public String getNewToken(String token) throws ParseException {
         String jti = tokenService.getClaim(token, "jti");
-        if (redisTemplate.hasKey(jti)) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(jti))) {
             throw new RuntimeException("Token in destroy");
         }
         logout(token);

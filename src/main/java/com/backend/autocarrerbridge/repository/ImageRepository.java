@@ -6,4 +6,4 @@ import org.springframework.stereotype.Repository;
 import com.backend.autocarrerbridge.entity.Image;
 
 @Repository
-public interface ImageRepo extends JpaRepository<Image, Integer> {}
+public interface ImageRepository extends JpaRepository<Image, Integer> {}

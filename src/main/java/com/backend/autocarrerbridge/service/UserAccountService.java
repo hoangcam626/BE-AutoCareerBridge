@@ -5,7 +5,7 @@ import com.backend.autocarrerbridge.emailconfig.EmailCode;
 import com.backend.autocarrerbridge.entity.UserAccount;
 
 public interface UserAccountService {
-    DisplayUserAccountDTO authenticateUser(UserAccountResponeDTO useraccountDTO);
+    DisplayUserAccountDTO authenticateUser(UserAccountResponseDTO useraccountDTO);
 
     void saveRefreshTokenForUser(Integer id, String refresh_token);
 
@@ -20,4 +20,6 @@ public interface UserAccountService {
     EmailCode generatePasswordResetCode(String email);
 
     String handleForgotPassword(ForgotPassWordDTO forgotPassWordDTO);
+
+    UserAccount approvedAccount(UserAccount userAccount);
 }

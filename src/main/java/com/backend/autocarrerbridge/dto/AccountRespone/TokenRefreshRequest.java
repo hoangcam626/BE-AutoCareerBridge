@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.dto.AccountRespone;
 
-import jakarta.validation.constraints.NotBlank;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TokenRefreshRequest {
-    @NotBlank
     private String refreshToken;
 }

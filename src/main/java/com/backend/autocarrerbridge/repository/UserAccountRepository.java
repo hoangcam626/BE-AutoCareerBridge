@@ -8,4 +8,6 @@ import com.backend.autocarrerbridge.entity.UserAccount;
 @Repository
 public interface UserAccountRepository extends JpaRepository<UserAccount, Integer> {
     UserAccount findByUsername(String username);
+
+    Boolean existsByUsername(String username);
 }

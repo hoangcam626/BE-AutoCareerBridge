@@ -1,9 +1,12 @@
 package com.backend.autocarrerbridge.emailconfig;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class RandomCodeGenerator {
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String CHARACTERS = "qwertyuiopasdfghjklzxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int CODE_LENGTH = 8; // Độ dài mã
     private static final String UPPERCASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
@@ -37,10 +40,16 @@ public class RandomCodeGenerator {
 
         // Trộn các ký tự lại để đảm bảo phân phối ngẫu nhiên
         String result = code.toString();
-        StringBuilder shuffledCode = new StringBuilder(CODE_LENGTH);
+        List<Character> charList = new ArrayList<>();
         for (int i = 0; i < result.length(); i++) {
-            int randomIndex = random.nextInt(result.length());
-            shuffledCode.append(result.charAt(randomIndex));
+            charList.add(result.charAt(i));
+        }
+        Collections.shuffle(charList, random);
+
+        // Xây dựng mật khẩu từ danh sách đã xáo trộn
+        StringBuilder shuffledCode = new StringBuilder(CODE_LENGTH);
+        for (char c : charList) {
+            shuffledCode.append(c);
         }
 
         return shuffledCode.toString();

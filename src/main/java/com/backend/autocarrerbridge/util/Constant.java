@@ -9,6 +9,8 @@ public class Constant {
     public static final int INTERNAL_SERVER_ERROR = 500;
 
     // Response Messages
+    public static final String NOTIFICATION_NEW_PASSWORD = " Your new password is sent your mail";
+    public static final String NOTIFICATION_WAIT = " Your new password is sent your mail, check it";
     public static final String SUCCESS_MESSAGE = "Success";
     public static final String NO_CONTENT_MESSAGE = "No content available";
     public static final String BAD_REQUEST_MESSAGE = "Bad request";
@@ -38,16 +40,23 @@ public class Constant {
     public static final String ERROR_USER_EXISTED = "User already existed.";
 
     // Image-related Errors
-    public static final String EMPTY_FILE_MESSAGE = "Error: File is empty";
-    public static final String TYPE_FILE_MESSAGE = "Error: Invalid file type";
-    public static final String LIMIT_SIZE_FILE_MESSAGE = "Error: File size exceeds the allowed limit";
-    public static final String DIRECTORY_FILE_MESSAGE = "Error: Failed to create directory";
-    public static final String SAVE_FILE_MESSAGE = "Error: Failed to save file";
-    public static final String OPEN_IMAGE_MESSAGE = "Error: Cannot open image";
-    public static final String FIND_IMAGE_MESSAGE = "Error: No image found";
-    public static final String DELETE_IMAGE_MESSAGE = "Error: Failed to delete file from storage";
-    public static final String NOT_FOUND_IMAGE_MESSAGE = "Error: File not found in storage";
-
+    public static final String EMPTY_FILE_MESSAGE = "File is empty";
+    public static final String TYPE_FILE_MESSAGE = "Invalid file type";
+    public static final String LIMIT_SIZE_FILE_MESSAGE = "File size exceeds the allowed limit";
+    public static final String DIRECTORY_FILE_MESSAGE = "Failed to create directory";
+    public static final String SAVE_FILE_MESSAGE = "Failed to save file";
+    public static final String OPEN_IMAGE_MESSAGE = "Cannot open image";
+    public static final String NOT_FOUND_IMAGE_MESSAGE = "No image found";
+    public static final String DELETE_IMAGE_MESSAGE = "Failed to delete file from storage";
+    public static final String NOT_FOUND_FILE_IMAGE_MESSAGE = "File not found in storage";
+    // Sub-admin Error Messages
+    public static final String NOT_FOUND_SUB_ADMIN = "Not found sub-admin by id";
+    public static final String NOT_FOUND_ROLE = "Not found role";
+    public static final String NOT_FOUND_BUSINESS_MESSAGE = "Not found business";
+    public static final String NOT_FOUND_UNIVERSITY_MESSAGE = "Not found university";
+    public static final String INVALID_LENGTH_PASSWORD_MESSAGE = "Invalid length parameters";
+    public static final String MIN_LENGTH_PASSWORD_MESSAGE =
+            "Combined minimum lengths preset character count are greater than the min length";
     // Industry
     public static final String EXIST_NAME = "Tên ngành đã tồn tại";
     public static final String EXIST_CODE = "Mã ngành đã tồn tại";

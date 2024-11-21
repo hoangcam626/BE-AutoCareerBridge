@@ -82,6 +82,7 @@ public class TokenServiceImpl implements TokenService {
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
+        assert token != null;
         SignedJWT signedJWT = SignedJWT.parse(token);
 
         JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();

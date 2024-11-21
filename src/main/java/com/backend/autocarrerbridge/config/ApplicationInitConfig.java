@@ -5,10 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.repository.RoleRepository;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
+import com.backend.autocarrerbridge.util.enums.PredefinedRole;
+import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +23,20 @@ public class ApplicationInitConfig {
     PasswordEncoder passwordEncoder;
 
     RoleRepository roleRepository;
+    String defaultUsername = "admin";
+    String defaultPassword = "admin";
 
     @Bean
     ApplicationRunner applicationRunner(UserAccountRepository accountRepository) {
-        Role role = roleRepository.findById(3).orElse(null);
+        com.backend.autocarrerbridge.entity.Role role =
+                roleRepository.findById(PredefinedRole.ADMIN.getValue()).orElse(null);
         return args -> {
-            if (accountRepository.findByUsername("admin") == null) {
+            if (accountRepository.findByUsername(defaultUsername) == null) {
                 UserAccount userAccounts = UserAccount.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("admin"))
-                        .role(role) // Sử dụng Role.ADMIN.name() để lưu chuỗi
+                        .username(defaultUsername)
+                        .password(passwordEncoder.encode(defaultPassword))
+                        .role(role)
+                        .state(State.APPROVED)
                         .build();
                 accountRepository.save(userAccounts);
             }
