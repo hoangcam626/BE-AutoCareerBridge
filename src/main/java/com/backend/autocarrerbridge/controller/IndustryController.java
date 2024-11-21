@@ -16,8 +16,18 @@ import org.springframework.web.bind.annotation.*;
 @Setter
 @Getter
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class IndustryController {
     private final IndustryService industryService;
+
+    @GetMapping("/get-all-paging")
+    public ApiResponse<Object> getAllIndustryPaging(@RequestParam(defaultValue = "0") int first,
+                                              @RequestParam(defaultValue = "10") int rows,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(required = false) String name,
+                                              @RequestParam(required = false) String code) {
+        return industryService.getAllIndustryPaging(first, rows, page, name, code);
+    }
 
     @GetMapping("/get-all")
     public ApiResponse<Object> getAllIndustry() {

@@ -49,5 +49,6 @@ public class Constant {
   public static final String EXIST_CODE="Mã ngành đã tồn tại";
   public static final String EXIST_NAME_AND_CODE="Tên ngành hoặc mã ngành đã tồn tại";
   public static final String NO_CHANGES_DETECTED="Không có gì thay đổi";
+  public static final String DELETED="Xoá thành công";
 
 }

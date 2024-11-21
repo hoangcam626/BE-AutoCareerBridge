@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import com.backend.autocarrerbridge.dto.industry.IndustryPaging;
 import com.backend.autocarrerbridge.dto.industry.IndustrySdi;
 import com.backend.autocarrerbridge.dto.industry.IndustrySdo;
 import com.backend.autocarrerbridge.dto.industry.IndustryUpdateSdi;
@@ -12,11 +13,15 @@ import com.backend.autocarrerbridge.service.IndustryService;
 import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+import static com.backend.autocarrerbridge.util.Constant.DELETED;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +30,24 @@ public class IndustryServiceImp implements IndustryService {
     private final IndustryRepo industryRepo;
 
     @Override
-    public ApiResponse<Object> getAllIndustry() {
-        List<IndustrySdo> industryList = industryRepo.getAllIndustryActive();
+    public ApiResponse<Object> getAllIndustryPaging(int first, int rows, int page, String name, String code) {
+        Pageable pageable = PageRequest.of(page, rows);
+        Page<IndustrySdo> industryList = industryRepo.getAllIndustryActivePag(name, code, pageable);
         if (industryList.isEmpty()) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryList);
+        IndustryPaging industryPaging = new IndustryPaging(industryList.getTotalElements(),
+                industryList.getContent());
+        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryPaging);
+    }
+
+    @Override
+    public ApiResponse<Object> getAllIndustry() {
+        List<IndustrySdo> list = industryRepo.getAllIndustryActive();
+        if(list.isEmpty()) {
+            throw new AppException(ERROR_CODE_NOT_FOUND);
+        }
+        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, list);
     }
 
     @Override
@@ -95,12 +112,13 @@ public class IndustryServiceImp implements IndustryService {
         if(id == null){
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
+
         Industry industry = industryRepo.getIndustriesById(id);
         if (industry == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         industry.setStatus(Status.INACTIVE);
         industryRepo.save(industry);
-        return new ApiResponse<>();
+        return new ApiResponse<>(DELETED);
     }
 }
