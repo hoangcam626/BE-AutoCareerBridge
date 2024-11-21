@@ -45,7 +45,6 @@ public class Constant {
   public static final String NOT_FOUND_IMAGE_MESSAGE = "No image found";
   public static final String DELETE_IMAGE_MESSAGE = "Failed to delete file from storage";
   public static final String NOT_FOUND_FILE_IMAGE_MESSAGE = "File not found in storage";
-
   //Sub-admin Error Messages
   public static final String NOT_FOUND_SUB_ADMIN = "Not found sub-admin by id";
   public static final String NOT_FOUND_ROLE = "Not found role";
@@ -53,5 +52,10 @@ public class Constant {
   public static final String NOT_FOUND_UNIVERSITY_MESSAGE = "Not found university";
   public static final String INVALID_LENGTH_PASSWORD_MESSAGE = "Invalid length parameters";
   public static final String MIN_LENGTH_PASSWORD_MESSAGE = "Combined minimum lengths preset character count are greater than the min length";
-
+  //Industry
+  public static final String EXIST_NAME="Tên ngành đã tồn tại";
+  public static final String EXIST_CODE="Mã ngành đã tồn tại";
+  public static final String EXIST_NAME_AND_CODE="Tên ngành hoặc mã ngành đã tồn tại";
+  public static final String NO_CHANGES_DETECTED="Không có gì thay đổi";
+  public static final String DELETED="Xoá thành công";
 }
