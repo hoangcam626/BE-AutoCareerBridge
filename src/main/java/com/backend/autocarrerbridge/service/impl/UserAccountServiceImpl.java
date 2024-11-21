@@ -9,11 +9,15 @@ import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.mapper.UserAccountMapper;
 import com.backend.autocarrerbridge.repository.*;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.UserAccountService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,14 +25,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserAccountServiceImpl implements UserAccountService {
-    private final UserAccountRepository userAccountRepository;
-    private final BussinessRepository bussinessRepository;
-    private final ModelMapper modelMapper;
-    private final ImageService imageService;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
-    private final UniversityRepository universityRepository;
+    UserAccountRepository userAccountRepository;
+    BussinessRepository bussinessRepository;
+    ModelMapper modelMapper;
+    ImageService imageService;
+    PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
+    UniversityRepository universityRepository;
+    UserAccountMapper userAccountMapper;
+
     @Override
     public DisplayBussinessDTO registerBussiness(UserBussinessDTO userBussinessDTO) {
         if (userBussinessDTO == null) {
@@ -170,7 +177,13 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccountResponse createUser(UserAccountRequest request) {
-        return null;
+    public UserAccount createUser(UserAccountRequest request) {
+        UserAccount userAccount=userAccountMapper.toUserAccount(request);
+        try {
+            userAccount=userAccountRepository.save(userAccount);
+        }catch (DataIntegrityViolationException exception){
+            throw new AppException(ErrorCode.ERROR_USER_EXITED);
+        }
+        return userAccount;
     }
 }

@@ -32,8 +32,8 @@ public class Constant {
   public static final String LICENSE_INVALID = "Invalid license.";
   public static final String ERROR_PASSWORD = "Incorrect password.";
   public static final String ERROR_PHONE = "Phone already exists.";
-  public static final String ERROR_USER_NOT_FOUND_MESSAGE = "Người dùng không tìm thấy.";
-  public static final String ERROR_USER_EXITED_MESSAGE = "Người dùng không tìm thấy.";
+  public static final String ERROR_USER_EXISTED = "User already existed.";
+
 
 
   // Image-related Errors

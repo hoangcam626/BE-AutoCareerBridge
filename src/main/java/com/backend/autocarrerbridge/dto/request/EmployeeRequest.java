@@ -29,9 +29,6 @@ public class EmployeeRequest {
 
     String phone;
 
-    Business business;
-
-    UserAccount userAccount;
 }
 
 

@@ -23,9 +23,9 @@ public class EmployeeController {
     EmployeeMapper employeeMapper;
 
     @PostMapping("/create")
-    ApiResponse<EmployeeResponse> createEmployee(@RequestBody @Valid EmployeeRequest request){
+    ApiResponse<EmployeeResponse> createEmployee(@RequestBody @Valid EmployeeRequest request, @RequestHeader ("Authorization") String token){
         return ApiResponse.<EmployeeResponse>builder()
-                .data(employeeService.addEmployee(request))
+                .data(employeeService.addEmployee(request,token))
                 .build();
     }
 

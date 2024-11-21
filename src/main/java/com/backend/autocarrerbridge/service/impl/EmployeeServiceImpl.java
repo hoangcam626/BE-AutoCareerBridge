@@ -3,16 +3,16 @@ package com.backend.autocarrerbridge.service.impl;
 import com.backend.autocarrerbridge.dto.request.EmployeeRequest;
 import com.backend.autocarrerbridge.dto.request.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.EmployeeResponse;
-import com.backend.autocarrerbridge.dto.response.UserAccountResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.mapper.EmployeeMapper;
-import com.backend.autocarrerbridge.mapper.UserAccountMapper;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
+import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.EmployeeService;
+import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.AccessLevel;
@@ -21,6 +21,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 
 @Service
@@ -30,7 +31,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     EmployeeRepository employeeRepository;
     EmployeeMapper employeeMapper;
     UserAccountService userAccountService;
-    UserAccountMapper userAccountMapper;
+    TokenService tokenService;
+    BusinessService businessService;
 
     @Override
     public List<EmployeeResponse> getListEmployeee() {
@@ -43,23 +45,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toEmployeeResponse(employeeRepository.findById(id).orElseThrow(()-> new AppException(ErrorCode.ERROR_USER_NOT_FOUND)));
     }
 
+//    @PreAuthorize("hasRole('')")
     @Override
-    public EmployeeResponse addEmployee(EmployeeRequest request) {
+    public EmployeeResponse addEmployee(EmployeeRequest request, String token) {
         Employee employee=employeeMapper.toEmployee(request);
+        try {
+            String emailBusiness= tokenService.getClaim(token,"sub");
+            Business business = businessService.findBusinessByEmail(emailBusiness);
+            employee.setBusiness(business);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
 //        tao tai khoan cho nhan vien
         UserAccountRequest userAccountRequest=UserAccountRequest.builder()
                 .username(employee.getEmail())
                 .password("1234546")
                 .build();
-        UserAccountResponse userAccountResponse=userAccountService.createUser(userAccountRequest);
+        UserAccount accountEmployee=userAccountService.createUser(userAccountRequest);
 
-        employee.setUserAccount(userAccountMapper.toUserAccount(userAccountResponse));
+        employee.setUserAccount(accountEmployee);
 
-//        fake du lieeuj
-        employee.setBusiness(new Business(1,"HHHH","1241HHF","1000","hasdf.com",1990,"HH@gmail.com"
-                ,"0239431412","cong ty thanh lap nam",1,1,null,null));
-
-//
         try {
             employee=employeeRepository.save(employee);
         }catch (DataIntegrityViolationException exception){

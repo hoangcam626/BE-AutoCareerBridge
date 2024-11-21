@@ -12,5 +12,5 @@ public interface UserAccountService {
     DisplayUserAccountDTO login(UserAccountResponeDTO useraccountDTO);
     void saveRefreshToken(Integer id, String refresh_token);
     UserAccount getUserByUserName(String username);
-    UserAccountResponse createUser(UserAccountRequest request);
+    UserAccount createUser(UserAccountRequest request);
 }
