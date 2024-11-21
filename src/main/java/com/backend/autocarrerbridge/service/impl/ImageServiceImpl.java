@@ -3,7 +3,7 @@ package com.backend.autocarrerbridge.service.impl;
 import com.backend.autocarrerbridge.dto.image.sdo.ImageSdo;
 import com.backend.autocarrerbridge.entity.Image;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.repository.ImageRepo;
+import com.backend.autocarrerbridge.repository.ImageRepository;
 import com.backend.autocarrerbridge.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
@@ -28,7 +28,7 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
-    private final ImageRepo imageRepo;
+    private final ImageRepository imageRepository;
 
     @Value("${media.img_path}")
     private String imgFolder;
@@ -39,12 +39,12 @@ public class ImageServiceImpl implements ImageService {
     );
 
     public Image getImage(Integer id) {
-        return imageRepo.findById(id).orElseThrow(() -> new AppException((ERROR_FIND_IMAGE)));
+        return imageRepository.findById(id).orElseThrow(() -> new AppException((ERROR_FIND_IMAGE)));
     }
 
     public String getPathImage(Integer id) {
 
-        return imageRepo.findById(id)
+        return imageRepository.findById(id)
                 .map(image -> imgFolder + File.separator + image.getFilename())
                 .orElse("");
     }
@@ -63,7 +63,7 @@ public class ImageServiceImpl implements ImageService {
                 outputStream.write(req.getBytes());
             }
 
-            Image image = imageRepo.save(Image.builder()
+            Image image = imageRepository.save(Image.builder()
                     .filename(fileName)
                     .type(req.getContentType())
                     .build());
@@ -79,12 +79,12 @@ public class ImageServiceImpl implements ImageService {
 
     public void delete(Integer id) {
 
-        Image image = imageRepo.findById(id)
+        Image image = imageRepository.findById(id)
                 .orElseThrow(() -> new AppException(ERROR_FIND_IMAGE));
         Path filePath = Paths.get(imgFolder, image.getFilename());
         try {
             Files.deleteIfExists(filePath);
-            imageRepo.deleteById(id);
+            imageRepository.deleteById(id);
         } catch (Exception e) {
             throw new AppException(ERROR_DELETE_IMAGE);
         }
