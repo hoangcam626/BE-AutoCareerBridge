@@ -13,5 +13,5 @@ public interface UserAccountService {
     EmailCode generateVerificationCode(String email);
     EmailCode generatePasswordResetCode(String email);
     String handleForgotPassword(ForgotPassWordDTO forgotPassWordDTO);
-
+    UserAccount approvedAccount(UserAccount userAccount);
 }
