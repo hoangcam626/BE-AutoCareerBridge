@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 
 @NoArgsConstructor
@@ -10,7 +11,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "role_permission")
-public class RolePermission extends AbstractAudit{
+public class RolePermission extends AbstractAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,5 +25,4 @@ public class RolePermission extends AbstractAudit{
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "permission_id", nullable = false)
     private Permission permission;
-
 }

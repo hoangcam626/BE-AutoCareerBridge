@@ -7,9 +7,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-
 public class ApiException {
-  private int code;
-  private String message;
-
+    private int code;
+    private String message;
 }

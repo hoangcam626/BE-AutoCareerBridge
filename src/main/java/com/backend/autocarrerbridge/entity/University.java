@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 
 @NoArgsConstructor
@@ -10,7 +11,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "university")
-public class University extends AbstractAudit{
+public class University extends AbstractAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

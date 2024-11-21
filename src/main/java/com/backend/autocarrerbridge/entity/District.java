@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.entity;
 
 import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,5 +36,4 @@ public class District {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "province_code", nullable = false)
     private Province province;
-
 }

@@ -1,7 +1,9 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.persistence.*;
+
+import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.*;
 
 @NoArgsConstructor
@@ -11,7 +13,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "university_job")
-public class UniversityJob extends AbstractAudit{
+public class UniversityJob extends AbstractAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +30,4 @@ public class UniversityJob extends AbstractAudit{
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "job_id", nullable = false)
     private Job job;
-
 }

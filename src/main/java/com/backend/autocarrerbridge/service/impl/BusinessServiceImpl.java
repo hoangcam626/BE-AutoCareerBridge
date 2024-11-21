@@ -1,5 +1,10 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.dto.AccountRespone.DisplayBusinessDTO;
 import com.backend.autocarrerbridge.dto.AccountRespone.UserBusinessDTO;
 import com.backend.autocarrerbridge.entity.Business;
@@ -12,14 +17,10 @@ import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.modelmapper.ModelMapper;
-
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -31,25 +32,24 @@ public class BusinessServiceImpl implements BusinessService {
 
     UserAccountService userAccountService;
     RoleService roleService;
+
     @Override
     public DisplayBusinessDTO registerBusiness(UserBusinessDTO userBusinessDTO) {
         if (userBusinessDTO == null) {
             throw new IllegalArgumentException("User business data cannot be null");
         }
 
-
         Business existingBusiness = businessRepository.findByEmail(userBusinessDTO.getEmail());
         if (existingBusiness != null) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
 
-
         if (!userBusinessDTO.getPassword().equals(userBusinessDTO.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
 
-
-        if (userBusinessDTO.getLicenseImage() == null || userBusinessDTO.getLicenseImage().isEmpty()) {
+        if (userBusinessDTO.getLicenseImage() == null
+                || userBusinessDTO.getLicenseImage().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LINCESE);
         }
 
@@ -78,7 +78,7 @@ public class BusinessServiceImpl implements BusinessService {
         try {
             Business savedBusiness = businessRepository.save(business);
             DisplayBusinessDTO displayBusinessDTO = new DisplayBusinessDTO();
-            modelMapper.map(savedUserAccount,displayBusinessDTO);
+            modelMapper.map(savedUserAccount, displayBusinessDTO);
             modelMapper.map(savedBusiness, displayBusinessDTO);
             return displayBusinessDTO;
         } catch (Exception e) {
@@ -112,7 +112,5 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     @Override
-    public void deleteBusiness(Integer id) {
-
-    }
+    public void deleteBusiness(Integer id) {}
 }

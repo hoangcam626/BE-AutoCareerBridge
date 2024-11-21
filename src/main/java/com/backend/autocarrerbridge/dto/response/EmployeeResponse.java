@@ -1,11 +1,10 @@
 package com.backend.autocarrerbridge.dto.response;
 
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.UserAccount;
+import java.time.LocalDate;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

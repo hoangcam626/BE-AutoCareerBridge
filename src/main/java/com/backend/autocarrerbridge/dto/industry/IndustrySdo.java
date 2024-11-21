@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.dto.industry;
 
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.util.enums.Status;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

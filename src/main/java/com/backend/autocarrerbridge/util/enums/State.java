@@ -4,7 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum State {
-    PENDING(0), APPROVED(1), REJECTED(2);
+    PENDING(0),
+    APPROVED(1),
+    REJECTED(2);
 
     private final int value;
 

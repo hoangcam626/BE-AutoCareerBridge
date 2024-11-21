@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.dto.request;
 
-import com.backend.autocarrerbridge.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

@@ -1,17 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.image.sdo.ImageSdo;
-import com.backend.autocarrerbridge.entity.Image;
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.repository.ImageRepo;
-import com.backend.autocarrerbridge.service.ImageService;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +12,20 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.backend.autocarrerbridge.dto.image.sdo.ImageSdo;
+import com.backend.autocarrerbridge.entity.Image;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.repository.ImageRepo;
+import com.backend.autocarrerbridge.service.ImageService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +34,10 @@ public class ImageServiceImpl implements ImageService {
 
     @Value("${media.img_path}")
     private String imgFolder;
+
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-    private static final List<String> ACCEPTED_CONTENT_TYPES = Arrays.asList(
-            "image/jpeg", "image/png", "image/gif"
-    );
+    private static final List<String> ACCEPTED_CONTENT_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
 
     public Image getImage(Integer id) {
         return imageRepo.findById(id).orElseThrow(() -> new AppException((ERROR_FIND_IMAGE)));
@@ -44,7 +45,8 @@ public class ImageServiceImpl implements ImageService {
 
     public String getPathImage(Integer id) {
 
-        return imageRepo.findById(id)
+        return imageRepo
+                .findById(id)
                 .map(image -> imgFolder + File.separator + image.getFilename())
                 .orElse("");
     }
@@ -79,8 +81,7 @@ public class ImageServiceImpl implements ImageService {
 
     public void delete(Integer id) {
 
-        Image image = imageRepo.findById(id)
-                .orElseThrow(() -> new AppException(ERROR_FIND_IMAGE));
+        Image image = imageRepo.findById(id).orElseThrow(() -> new AppException(ERROR_FIND_IMAGE));
         Path filePath = Paths.get(imgFolder, image.getFilename());
         try {
             Files.deleteIfExists(filePath);
@@ -108,7 +109,7 @@ public class ImageServiceImpl implements ImageService {
 
     private void createDirectoryIfNotExists(String folderPath) {
         File dir = new File(folderPath);
-        if (!dir.exists() ) {
+        if (!dir.exists()) {
             boolean checkCreated = dir.mkdirs();
             if (!checkCreated) {
                 throw new AppException(ERROR_DIRECTORY_FILE);

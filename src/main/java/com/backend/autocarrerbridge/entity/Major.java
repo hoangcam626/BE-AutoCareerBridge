@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 
 @NoArgsConstructor
@@ -10,7 +11,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "major")
-public class Major extends AbstractAudit{
+public class Major extends AbstractAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,5 +33,4 @@ public class Major extends AbstractAudit{
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
-
 }

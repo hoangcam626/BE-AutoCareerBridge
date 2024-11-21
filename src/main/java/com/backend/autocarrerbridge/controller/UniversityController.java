@@ -1,13 +1,16 @@
 package com.backend.autocarrerbridge.controller;
 
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.UniversityService;
-import jakarta.validation.Valid;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,8 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/university")
 public class UniversityController {
     UniversityService universityService;
+
     @PostMapping("/register")
-    private ApiResponse<?> registerUniversity(@RequestBody @Valid UserUniversityDTO userUniversityDTO){
+    private ApiResponse<?> registerUniversity(@RequestBody @Valid UserUniversityDTO userUniversityDTO) {
 
         return ApiResponse.builder()
                 .code(200)
