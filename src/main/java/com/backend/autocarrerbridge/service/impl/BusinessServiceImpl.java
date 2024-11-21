@@ -14,13 +14,15 @@ import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
-import com.backend.autocarrerbridge.util.enums.OrganizationType;
+import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -67,7 +69,7 @@ public class BusinessServiceImpl implements BusinessService {
         // Tạo và lưu UserAccount
         UserAccount userAccount = new UserAccount();
         modelMapper.map(userBusinessDTO, userAccount);
-        userAccount.setRole(roleService.findById(OrganizationType.BUSINESS.getValue()));
+        userAccount.setRole(roleService.findById(PredefinedRole.BUSINESS.getValue()));
         userAccount.setUsername(userBusinessDTO.getEmail());
         UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
@@ -92,13 +94,28 @@ public class BusinessServiceImpl implements BusinessService {
         return businessRepository.findByEmail(email);
     }
 
-    public void approvedBusiness(BusinessApprovedSdi req){
-        Business business = bussinessRepository.findById(req.getId()).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
-        userAccountService.approvedAccount(business.getUserAccount());
+    @Override
+    public Business updateBusiness(Integer id, Business business) {
+        return null;
     }
 
-    public void approvedUniversity(UniversityApprovedSdi req){
-        University university = universityRepository.findById(req.getId()).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
-        userAccountService.approvedAccount(university.getUserAccount());
+    @Override
+    public List<Business> getListBusiness() {
+        return List.of();
+    }
+
+    @Override
+    public Business getBusinessById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public Business addBusiness(Business request) {
+        return null;
+    }
+
+    @Override
+    public void deleteBusiness(Integer id) {
+
     }
 }

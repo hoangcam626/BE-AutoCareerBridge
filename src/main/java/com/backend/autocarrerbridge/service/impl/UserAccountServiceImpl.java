@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.backend.autocarrerbridge.util.Constant.NOTIFICATION_NEW_PASSWORD;
+import static com.backend.autocarrerbridge.util.Constant.NOTIFICATION_WAIT;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,6 +33,7 @@ public class UserAccountServiceImpl implements UserAccountService {
      SendEmail sendEmail;
      RedisTemplate<String,String> redisTemplate;
      String codeExist = "Exist";
+     Integer codeTime = 60;
 
     @Override
     public DisplayUserAccountDTO authenticateUser(UserAccountResponeDTO useraccountDTO) {
@@ -137,10 +141,20 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccount userAccount = userAccountRepository.findByUsername(forgotPassWordDTO.getEmail());
         userAccount.setPassword(passwordEncoder.encode(newPassword));
         userAccountRepository.save(userAccount);
-
-        return newPassword;
+        if(genarateNewPassword(forgotPassWordDTO.getEmail(),newPassword).equals(codeExist)){
+            return NOTIFICATION_WAIT;
+        }
+        return NOTIFICATION_NEW_PASSWORD;
     }
-
+    public String genarateNewPassword(String emailSend,String generatedCode) {
+        if(Boolean.TRUE.equals(redisTemplate.hasKey("/np"+ emailSend))){
+            return codeExist;
+        }
+        Email email = new Email(emailSend,"Xác nhận mật khẩu mới","");
+        sendEmail.sendNewPassword(email, generatedCode);
+        redisTemplate.opsForValue().set("/np" + emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
+        return generatedCode;
+    }
     public String genarateCode(String emailSend) {
         if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
             return codeExist;
@@ -148,7 +162,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         Email email = new Email(emailSend,"Xác nhận đăng ký tài khoản","");
         String generatedCode = RandomCodeGenerator.generateRegistrationCode();
         sendEmail.sendCode(email, generatedCode);
-        redisTemplate.opsForValue().set(emailSend,generatedCode,300, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }
     public String genarateCodeForgot(String emailSend) {
@@ -158,7 +172,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         Email email = new Email(emailSend,"Mã cấp mật khẩu mới!","");
         String generatedCode = RandomCodeGenerator.generateRegistrationCode();
         sendEmail.sendForgot(email, generatedCode);
-        redisTemplate.opsForValue().set("fg/"+  emailSend,generatedCode,300, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("fg/"+  emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }
 }

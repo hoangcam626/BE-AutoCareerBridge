@@ -9,6 +9,8 @@ public class Constant {
   public static final int INTERNAL_SERVER_ERROR = 500;
 
   // Response Messages
+  public static final String NOTIFICATION_NEW_PASSWORD = " Your new password is sent your mail";
+  public static final String NOTIFICATION_WAIT = " Your new password is sent your mail, check it";
   public static final String SUCCESS_MESSAGE = "Success";
   public static final String NO_CONTENT_MESSAGE = "No content available";
   public static final String BAD_REQUEST_MESSAGE = "Bad request";
@@ -35,6 +37,10 @@ public class Constant {
   public static final String ERROR_PHONE = "Phone already exists.";
   public static final String USER_PENDING = "User is pending, please wait.";
   public static final String ERROR_NOT_MATCH_CODE = "Code not match.";
+  public static final String ERROR_USER_EXISTED = "User already existed.";
+
+
+
   // Image-related Errors
   public static final String EMPTY_FILE_MESSAGE = "File is empty";
   public static final String TYPE_FILE_MESSAGE = "Invalid file type";

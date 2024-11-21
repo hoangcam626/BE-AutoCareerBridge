@@ -34,7 +34,7 @@ public class Employee extends AbstractAudit{
     @Column(name = "address")
     private String address;
 
-    @Column(name = "employee_code", nullable = false)
+    @Column(name = "employee_code", nullable = false, unique = true)
     private String employeeCode;
 
     @Column(name = "employee_image_id")

@@ -39,6 +39,6 @@ public class UserBusinessDTO {
      @NotNull(message = "Hình ảnh giấy phép không được để trống")
      MultipartFile licenseImage;
 
-     @NotBlank(message = "Vui lòng không được để trống")
+   //  @NotBlank(message = "Vui lòng không được để trống")
      String verificationCode;
 }
