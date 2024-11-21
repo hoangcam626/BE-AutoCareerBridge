@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 import static com.backend.autocarrerbridge.util.Constant.*;
 
+
 @Getter
 public enum ErrorCode {
 
@@ -24,9 +25,11 @@ public enum ErrorCode {
     ERROR_LINCESE(BAD_REQUEST,LICENSE_INVALID,HttpStatus.BAD_REQUEST),
     ERROR_PASSWORD_INCORRECT(BAD_REQUEST,ERROR_PASSWORD,HttpStatus.BAD_REQUEST),
     ERROR_PHONE_EXIST(BAD_REQUEST,ERROR_PHONE,HttpStatus.BAD_REQUEST),
+    ERROR_USER_PENDING(BAD_REQUEST,USER_PENDING,HttpStatus.BAD_REQUEST),
+    ERROR_VERIFY_CODE(BAD_REQUEST,ERROR_NOT_MATCH_CODE,HttpStatus.BAD_REQUEST),
+    ERROR_PASSWORD_SAME(BAD_REQUEST,ERROR_PASSWORD_CHECK,HttpStatus.BAD_REQUEST),
     ERROR_USER_EXITED(BAD_REQUEST,ERROR_USER_EXISTED,HttpStatus.BAD_REQUEST),
     ERROR_PASSWORD_NOT_MATCH(BAD_REQUEST,PASSWORD_NOT_MATCH,HttpStatus.BAD_REQUEST);
-
 
     private final int code;
     private final String message;

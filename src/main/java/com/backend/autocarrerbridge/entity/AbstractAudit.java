@@ -38,11 +38,11 @@ public abstract class AbstractAudit implements Serializable {
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)
-    private Integer createdBy;
+    private String createdBy;
 
     @LastModifiedBy
     @Column(name = "updated_by", insertable = false)
-    private Integer updatedBy;
+    private String updatedBy;
     @PrePersist
     public void prePersist() {
         this.status = Status.ACTIVE;

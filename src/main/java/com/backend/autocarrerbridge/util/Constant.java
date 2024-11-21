@@ -31,7 +31,10 @@ public class Constant {
   public static final String USER_NOT_FOUND = "User not found.";
   public static final String LICENSE_INVALID = "Invalid license.";
   public static final String ERROR_PASSWORD = "Incorrect password.";
+  public static final String ERROR_PASSWORD_CHECK = "New password must not be the same as the old password.";
   public static final String ERROR_PHONE = "Phone already exists.";
+  public static final String USER_PENDING = "User is pending, please wait.";
+  public static final String ERROR_NOT_MATCH_CODE = "Code not match.";
   public static final String ERROR_USER_EXISTED = "User already existed.";
 
 

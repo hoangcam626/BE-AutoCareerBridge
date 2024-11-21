@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         logout(token);
         String user_name  = tokenService.getClaim(token, "sub");
-        UserAccount userAccounts = userAccountService.getUserByUserName(user_name);
+        UserAccount userAccounts = userAccountService.getUserByUsername(user_name);
         return tokenService.generateToken(userAccounts, 1);
     }
 

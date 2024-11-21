@@ -1,15 +1,15 @@
-package com.backend.autocarrerbridge.dto;
+package com.backend.autocarrerbridge.emailconfig;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DisplayBussinessDTO {
-    private String username;
-    private String name;
-    private String taxCode;
+@Builder
+public class EmailPasswordCode {
     private String email;
+    private String password;
 }
