@@ -10,6 +10,7 @@ public enum SummerCharacterSets implements PasswordCharacterSet {
 
     private final char[] chars;
     private final int minUsage;
+
     SummerCharacterSets(char[] chars, int minUsage) {
         this.chars = chars;
         this.minUsage = minUsage;

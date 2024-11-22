@@ -1,5 +1,15 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.service.TokenService;
@@ -8,25 +18,16 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-
 public class TokenServiceImpl implements TokenService {
 
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
+
     private static final Logger log = LoggerFactory.getLogger(TokenServiceImpl.class);
 
     @Override
@@ -37,7 +38,8 @@ public class TokenServiceImpl implements TokenService {
                 .jwtID(UUID.randomUUID().toString())
                 .issuer("AutoCarrer")
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(expirationHours, ChronoUnit.DAYS).toEpochMilli()))
+                .expirationTime(new Date(
+                        Instant.now().plus(expirationHours, ChronoUnit.DAYS).toEpochMilli()))
                 .claim("scope", userAccount.getRole().getName())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -77,16 +79,15 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String getSub(String token) throws ParseException {
-        if(token != null && token.startsWith("Bearer ")){
+        if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
         assert token != null;
         SignedJWT signedJWT = SignedJWT.parse(token);
 
-            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+        JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
 
-            // Trả về giá trị của claim 'sub'
-            return claimsSet.getSubject();
+        // Trả về giá trị của claim 'sub'
+        return claimsSet.getSubject();
     }
 }
-

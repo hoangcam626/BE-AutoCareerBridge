@@ -54,5 +54,4 @@ public class RandomCodeGenerator {
 
         return shuffledCode.toString();
     }
-
 }

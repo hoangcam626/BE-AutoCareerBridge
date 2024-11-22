@@ -11,5 +11,4 @@ import lombok.experimental.FieldDefaults;
 public class LocationRequest {
     Integer id;
     String description;
-
 }
