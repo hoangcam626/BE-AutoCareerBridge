@@ -10,11 +10,9 @@ public enum PredefinedRole {
     EMPLOYEE(4),
     SUB_ADMIN(5);
 
-
     private final int value;
 
     PredefinedRole(int value) {
         this.value = value;
     }
-
 }

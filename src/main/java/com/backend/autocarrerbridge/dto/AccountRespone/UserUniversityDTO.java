@@ -12,15 +12,15 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUniversityDTO {
 
-     String name;
+    String name;
 
-     String email;
+    String email;
 
-     String phone;
+    String phone;
 
-     String password;
+    String password;
 
-     String rePassword;
+    String rePassword;
 
-     String verificationCode;
+    String verificationCode;
 }

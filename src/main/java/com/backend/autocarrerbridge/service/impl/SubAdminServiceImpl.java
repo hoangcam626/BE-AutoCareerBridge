@@ -1,5 +1,22 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import jakarta.transaction.Transactional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminCreateSdi;
 import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminDeleteSdi;
 import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminSelfSdi;
@@ -20,22 +37,8 @@ import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 import com.backend.autocarrerbridge.util.password.PasswordGenerator;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -50,17 +53,16 @@ public class SubAdminServiceImpl implements SubAdminService {
     private final ModelMapper modelMapper;
     private final SendEmail sendEmail;
 
-
     public SubAdminCreateSdo create(SubAdminCreateSdi req) throws ParseException {
 
         validateCreate(req);
 
-        //save image
+        // save image
         var subAdmin = modelMapper.map(req, SubAdmin.class);
         var imgId = imageService.uploadFile(req.getSubAdminImage());
         subAdmin.setSubAdminImageId(imgId);
 
-        //create password & create account
+        // create password & create account
         PasswordGenerator pw = new PasswordGenerator(8, 12);
         String password = pw.generatePassword();
         UserAccount newAccount = new UserAccount();
@@ -76,16 +78,15 @@ public class SubAdminServiceImpl implements SubAdminService {
         var nameAccountLogin = tokenService.getClaim(jwt.getTokenValue(), "sub");
         subAdmin.setCreatedBy(nameAccountLogin);
 
-        //save sub-admin
+        // save sub-admin
         subAdmin = subAdminRepository.save(subAdmin);
 
-        //send mail with sub-admin account
+        // send mail with sub-admin account
         Email email = new Email(subAdmin.getEmail(), "Tài Khoản Của Bạn", "");
         sendEmail.sendAccount(email, password);
 
         return SubAdminCreateSdo.of(subAdmin.getId());
     }
-
 
     public SubAdminUpdateSdo update(SubAdminUpdateSdi req) throws ParseException {
 
@@ -93,7 +94,8 @@ public class SubAdminServiceImpl implements SubAdminService {
 
         boolean isSameAddress = subAdmin.getAddress().equals(req.getAddress());
         boolean isSamePhone = subAdmin.getPhone().equals(req.getPhone());
-        boolean isNullImage = req.getSubAdminImage() == null && req.getSubAdminImage().isEmpty();
+        boolean isNullImage =
+                req.getSubAdminImage() == null && req.getSubAdminImage().isEmpty();
 
         if (isSameAddress && isSamePhone && isNullImage) {
             throw new AppException(NO_CHANGE_DETECTED);
@@ -117,7 +119,6 @@ public class SubAdminServiceImpl implements SubAdminService {
 
         subAdminRepository.save(subAdmin);
         return SubAdminUpdateSdo.of(Boolean.TRUE);
-
     }
 
     public SubAdminSelfSdo self(SubAdminSelfSdi req) {

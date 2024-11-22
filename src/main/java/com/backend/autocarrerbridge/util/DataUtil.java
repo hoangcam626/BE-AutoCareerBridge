@@ -1,9 +1,9 @@
 package com.backend.autocarrerbridge.util;
 
-import org.springframework.beans.BeanUtils;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.BeanUtils;
 
 public class DataUtil {
 
@@ -31,15 +31,11 @@ public class DataUtil {
 
     // Chuyển danh sách Entity sang DTO
     public static <E, D> List<D> toDtoList(List<E> entityList, Class<D> dtoClass) {
-        return entityList.stream()
-                .map(entity -> toDto(entity, dtoClass))
-                .collect(Collectors.toList());
+        return entityList.stream().map(entity -> toDto(entity, dtoClass)).collect(Collectors.toList());
     }
 
     // Chuyển danh sách DTO sang Entity
     public static <E, D> List<E> toEntityList(List<D> dtoList, Class<E> entityClass) {
-        return dtoList.stream()
-                .map(dto -> toEntity(dto, entityClass))
-                .collect(Collectors.toList());
+        return dtoList.stream().map(dto -> toEntity(dto, entityClass)).collect(Collectors.toList());
     }
 }
