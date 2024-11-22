@@ -1,16 +1,23 @@
 package com.backend.autocarrerbridge.controller;
 
-import org.springframework.web.bind.annotation.*;
 
-import com.backend.autocarrerbridge.dto.industry.IndustrySdi;
-import com.backend.autocarrerbridge.dto.industry.IndustrySdo;
-import com.backend.autocarrerbridge.dto.industry.IndustryUpdateSdi;
+import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
+import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
+import com.backend.autocarrerbridge.dto.request.industry.IndustryUpdateRequest;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.IndustryService;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/industry")
@@ -37,13 +44,13 @@ public class IndustryController {
     }
 
     @PostMapping("/create")
-    public ApiResponse<IndustrySdo> createIndustry(@RequestBody IndustrySdi industrySdi) {
-        return industryService.createIndustry(industrySdi);
+    public ApiResponse<IndustryResponse> createIndustry(@RequestBody IndustryRequest industryRequest) {
+        return industryService.createIndustry(industryRequest);
     }
 
     @PutMapping("/update")
-    public ApiResponse<IndustrySdo> updateIndustry(@RequestBody IndustryUpdateSdi industryUpdateSdi) {
-        return industryService.updateIndustry(industryUpdateSdi);
+    public ApiResponse<IndustryResponse> updateIndustry(@RequestBody IndustryUpdateRequest industryUpdateRequest) {
+        return industryService.updateIndustry(industryUpdateRequest);
     }
 
     @PutMapping("/inactive")

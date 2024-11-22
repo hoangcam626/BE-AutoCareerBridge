@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.AccessLevel;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,6 +15,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.text.ParseException;
+
+import static com.backend.autocarrerbridge.util.Constant.JTI;
+import static com.backend.autocarrerbridge.util.Constant.TOKEN_BLACKLIST;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,12 +34,12 @@ public class JwtBlacklistFilter extends OncePerRequestFilter {
         if (token != null) {
             String idJwt;
             try {
-                idJwt = tokenService.getClaim(token, "jti");
+                idJwt = tokenService.getClaim(token, JTI);
             } catch (ParseException e) {
                 throw new ServletException(e);
             }
             if (idJwt != null && Boolean.TRUE.equals(redisTemplate.hasKey(idJwt))) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, TOKEN_BLACKLIST);
                 return;
             }
         }

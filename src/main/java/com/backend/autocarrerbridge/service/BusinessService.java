@@ -3,12 +3,12 @@ package com.backend.autocarrerbridge.service;
 import java.util.List;
 
 
-import com.backend.autocarrerbridge.dto.accountresponse.DisplayBusinessDTO;
-import com.backend.autocarrerbridge.dto.accountresponse.UserBusinessDTO;
+import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
+import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
 import com.backend.autocarrerbridge.entity.Business;
 
 public interface BusinessService {
-    DisplayBusinessDTO registerBusiness(UserBusinessDTO userBusinessDTO);
+    BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest);
 
     Business findByEmail(String email);
 

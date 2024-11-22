@@ -1,5 +1,19 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.UUID;
+
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.nimbusds.jose.*;
@@ -7,112 +21,71 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+
+import static com.backend.autocarrerbridge.util.Constant.APPLICATION_NAME;
+import static com.backend.autocarrerbridge.util.Constant.SCOPE;
 
 @Service
 @RequiredArgsConstructor
-public class TokenServiceImpl  implements TokenService{
+public class TokenServiceImpl implements TokenService {
 
     @Value("${jwt.signerKey}")
-    private String signerKey;
+    private String jwtKey;
 
-    private static final String BEARER_PREFIX = "Bearer ";
+
 
     @Override
     public String generateToken(UserAccount userAccount, int expirationHours) {
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .subject(userAccount.getUsername())
+                .jwtID(UUID.randomUUID().toString())
+                .issuer(APPLICATION_NAME)
+                .issueTime(new Date())
+                .expirationTime(new Date(
+                        Instant.now().plus(expirationHours, ChronoUnit.DAYS).toEpochMilli()))
+                .claim(SCOPE, userAccount.getRole().getName())
+                .build();
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
+        JWSObject jwsObject = new JWSObject(header, payload);
+
         try {
-            if (userAccount == null || userAccount.getUsername() == null || userAccount.getRole() == null) {
-                throw new IllegalArgumentException("Invalid user account details for token generation");
-            }
-
-            JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-            JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                    .subject(userAccount.getUsername())
-                    .jwtID(UUID.randomUUID().toString())
-                    .issuer("AutoCarrer")
-                    .issueTime(new Date())
-                    .expirationTime(Date.from(Instant.now().plus(expirationHours, ChronoUnit.HOURS)))
-                    .claim("scope", userAccount.getRole().getName())
-                    .build();
-
-            SignedJWT signedJWT = new SignedJWT(header, claimsSet);
-            signedJWT.sign(new MACSigner(signerKey.getBytes()));
-
-            return signedJWT.serialize();
-        } catch (Exception e) {
-            throw new RuntimeException("Token generation failed",e);
+            jwsObject.sign(new MACSigner(jwtKey.getBytes()));
+            return jwsObject.serialize();
+        } catch (JOSEException e) {
+            throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
     }
 
     @Override
-    public boolean verifyToken(String token) {
-        try {
-
-            SignedJWT signedJWT = SignedJWT.parse(token);
-            JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
-
-            return signedJWT.verify(verifier);
-        } catch (ParseException | JOSEException e) {
-            return false;
-        }
+    public boolean verifyToken(String token) throws ParseException, JOSEException {
+        JWSVerifier verifier = new MACVerifier(jwtKey.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        return signedJWT.verify(verifier);
     }
 
     @Override
-    public long getTimeToLive(String token) {
-        try {
-            SignedJWT signedJWT = SignedJWT.parse(stripBearerPrefix(token));
-            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-
-            Date expirationTime = claimsSet.getExpirationTime();
-            if (expirationTime == null) {
-
-                return 0;
-            }
-
-            return Math.max((expirationTime.getTime() - System.currentTimeMillis()) / (1000 * 60), 0);
-        } catch (ParseException e) {
-
-            return 0;
-        }
+    public long getTimeToLive(String token) throws ParseException {
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+        Date issueTime = claimsSet.getIssueTime();
+        Date expirationTime = claimsSet.getExpirationTime();
+        return (expirationTime.getTime() - issueTime.getTime()) / (1000 * 60);
     }
 
     @Override
-    public String getClaim(String token, String claim) {
-        try {
-            SignedJWT signedJWT = SignedJWT.parse(stripBearerPrefix(token));
-            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-
-            return claimsSet.getStringClaim(claim);
-        } catch (Exception e) {
-
-            throw new RuntimeException("Claim retrieval failed", e);
-        }
+    public String getClaim(String token, String claim) throws ParseException {
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+        return claimsSet.getStringClaim(claim);
     }
 
     @Override
-    public String getSub(String token) {
-        try {
-            SignedJWT signedJWT = SignedJWT.parse(stripBearerPrefix(token));
-            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-
-            return claimsSet.getSubject();
-        } catch (Exception e) {
-            throw new RuntimeException("Subject retrieval failed", e);
-        }
-    }
-
-    private String stripBearerPrefix(String token) {
-        if (token != null && token.startsWith(BEARER_PREFIX)) {
-            return token.substring(BEARER_PREFIX.length());
-        }
-        return token;
+    public String getJWT(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        return jwt.getTokenValue();
     }
 }

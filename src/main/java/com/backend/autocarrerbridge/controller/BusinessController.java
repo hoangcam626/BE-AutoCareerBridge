@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.accountresponse.UserBusinessDTO;
+import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.BusinessService;
 import jakarta.validation.Valid;
@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -19,12 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class BusinessController {
     BusinessService businessService;
     @PostMapping("/register")
-    public ApiResponse<Object> registerBusiness(@ModelAttribute @Valid UserBusinessDTO userBusinessDTO){
+    public ApiResponse<Object> registerBusiness(@ModelAttribute @Valid UserBusinessRequest userBusinessRequest){
         return ApiResponse.builder()
-                .code(200)
-                .message("Business Successfully registered")
+                .code(SUCCESS)
+                .message(REGISTER_BUSINESS)
                 .data(businessService
-                        .registerBusiness(userBusinessDTO))
+                        .registerBusiness(userBusinessRequest))
                 .build();
     }
 }

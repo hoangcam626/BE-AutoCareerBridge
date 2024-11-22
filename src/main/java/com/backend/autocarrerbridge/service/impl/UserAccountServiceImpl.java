@@ -1,12 +1,20 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.accountresponse.*;
-import com.backend.autocarrerbridge.emailconfig.*;
+import com.backend.autocarrerbridge.dto.request.account.ForgotPasswordRequest;
+import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
+import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
+import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
+import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
+
+import com.backend.autocarrerbridge.emailconfig.EmailCode;
+import com.backend.autocarrerbridge.emailconfig.EmailDTO;
+import com.backend.autocarrerbridge.emailconfig.RandomCodeGenerator;
+import com.backend.autocarrerbridge.emailconfig.SendEmail;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.*;
 
+import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.UserAccountService;
 
 import com.backend.autocarrerbridge.util.enums.State;
@@ -21,8 +29,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.backend.autocarrerbridge.util.Constant.NOTIFICATION_NEW_PASSWORD;
+
+import static com.backend.autocarrerbridge.util.Constant.ACCEPT_NP;
+import static com.backend.autocarrerbridge.util.Constant.ACCEPT_US;
+import static com.backend.autocarrerbridge.util.Constant.NEW_CODE;
+import static com.backend.autocarrerbridge.util.Constant.NOTIFICATION_NEW_PW;
 import static com.backend.autocarrerbridge.util.Constant.NOTIFICATION_WAIT;
+import static com.backend.autocarrerbridge.util.Constant.PREFIX_FG;
+import static com.backend.autocarrerbridge.util.Constant.PREFIX_NP;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +51,7 @@ public class UserAccountServiceImpl implements UserAccountService {
      Integer codeTime = 60;
 
     @Override
-    public DisplayUserAccountDTO authenticateUser(UserAccountResponseDTO useraccountDTO) {
+    public UserAccountLoginResponse authenticateUser(UserAccountRequest useraccountDTO) {
 
         if (useraccountDTO.getUsername() == null || useraccountDTO.getPassword() == null) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
@@ -51,14 +65,14 @@ public class UserAccountServiceImpl implements UserAccountService {
             if(user.getState().equals(State.PENDING)){
                 throw new AppException(ErrorCode.ERROR_USER_PENDING);
             }
-            UserAccountResponseDTO userAccountResponseDTO = new UserAccountResponseDTO();
-            userAccountResponseDTO.setStatus(user.getStatus());
-            userAccountResponseDTO.setId(user.getId());
-            userAccountResponseDTO.setUsername(user.getUsername());
-            userAccountResponseDTO.setPassword(user.getPassword());
-            userAccountResponseDTO.setRole(modelMapper.map(user.getRole(), RoleDTO.class));
+            UserAccountRequest userAccountRequest = new UserAccountRequest();
+            userAccountRequest.setStatus(user.getStatus());
+            userAccountRequest.setId(user.getId());
+            userAccountRequest.setUsername(user.getUsername());
+            userAccountRequest.setPassword(user.getPassword());
+            userAccountRequest.setRole(modelMapper.map(user.getRole(), RoleRequest.class));
 
-            return  modelMapper.map(userAccountResponseDTO,DisplayUserAccountDTO.class);
+            return  modelMapper.map(userAccountRequest, UserAccountLoginResponse.class);
         } else {
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }
@@ -98,7 +112,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
  //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
     @Override
-    public DisplayUserAccountDTO updatePassword(ChangePassWordDTO userAccountResponeDTO) {
+    public UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccountResponeDTO) {
         UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponeDTO.getUsername());
         if (userAccountResponeDTO.getPassword() == null || userAccountResponeDTO.getPassword().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
@@ -115,7 +129,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
 
         userAccount.setPassword(passwordEncoder.encode(userAccountResponeDTO.getNewPassword()));
-        return modelMapper.map(userAccountRepository.save(userAccount),DisplayUserAccountDTO.class);
+        return modelMapper.map(userAccountRepository.save(userAccount), UserAccountLoginResponse.class);
     }
     @Override
     public EmailCode generateVerificationCode(String email) {
@@ -139,41 +153,41 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public String handleForgotPassword(ForgotPassWordDTO forgotPassWordDTO) {
-        if(forgotPassWordDTO.getEmail() == null || forgotPassWordDTO.getEmail().isEmpty()) {
+    public String handleForgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        if(forgotPasswordRequest.getEmail() == null || forgotPasswordRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
-        if(userAccountRepository.findByUsername(forgotPassWordDTO.getEmail()) == null){
+        if(userAccountRepository.findByUsername(forgotPasswordRequest.getEmail()) == null){
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
-        if(!forgotPassWordDTO.getForgotCode().equals(redisTemplate.opsForValue().get("fg/" + forgotPassWordDTO.getEmail()))){
+        if(!forgotPasswordRequest.getForgotCode().equals(redisTemplate.opsForValue().get(PREFIX_FG + forgotPasswordRequest.getEmail()))){
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
 
         PasswordGenerator pw = new PasswordGenerator(8, 12);
         String newPassword = pw.generatePassword();
-        UserAccount userAccount = userAccountRepository.findByUsername(forgotPassWordDTO.getEmail());
+        UserAccount userAccount = userAccountRepository.findByUsername(forgotPasswordRequest.getEmail());
         userAccount.setPassword(passwordEncoder.encode(newPassword));
         userAccountRepository.save(userAccount);
-        if(generateNewPassword(forgotPassWordDTO.getEmail(),newPassword).equals(codeExist)){
+        if(generateNewPassword(forgotPasswordRequest.getEmail(),newPassword).equals(codeExist)){
             return NOTIFICATION_WAIT;
         }
-        return NOTIFICATION_NEW_PASSWORD;
+        return NOTIFICATION_NEW_PW;
     }
     public String generateNewPassword(String emailSend, String generatedCode) {
-        if(Boolean.TRUE.equals(redisTemplate.hasKey("/np"+ emailSend))){
+        if(Boolean.TRUE.equals(redisTemplate.hasKey(PREFIX_NP+ emailSend))){
             return codeExist;
         }
-        EmailDTO emailDTO = new EmailDTO(emailSend,"Xác nhận mật khẩu mới","");
+        EmailDTO emailDTO = new EmailDTO(emailSend,ACCEPT_NP,"");
         sendEmail.sendNewPassword(emailDTO, generatedCode);
-        redisTemplate.opsForValue().set("/np" + emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(PREFIX_NP + emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }
     public String generateCode(String emailSend) {
         if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
             return codeExist;
         }
-        EmailDTO emailDTO = new EmailDTO(emailSend,"Xác nhận đăng ký tài khoản","");
+        EmailDTO emailDTO = new EmailDTO(emailSend,ACCEPT_US,"");
         String generatedCode = RandomCodeGenerator.generateRegistrationCode();
         sendEmail.sendCode(emailDTO, generatedCode);
         redisTemplate.opsForValue().set(emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
@@ -183,10 +197,10 @@ public class UserAccountServiceImpl implements UserAccountService {
         if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
             return codeExist;
         }
-        EmailDTO emailDTO = new EmailDTO(emailSend,"Mã cấp mật khẩu mới!","");
+        EmailDTO emailDTO = new EmailDTO(emailSend,NEW_CODE,"");
         String generatedCode = RandomCodeGenerator.generateRegistrationCode();
         sendEmail.sendForgot(emailDTO, generatedCode);
-        redisTemplate.opsForValue().set("fg/"+  emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(PREFIX_FG+  emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }
 }

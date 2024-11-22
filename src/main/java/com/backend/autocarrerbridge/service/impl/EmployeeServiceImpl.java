@@ -2,8 +2,12 @@ package com.backend.autocarrerbridge.service.impl;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import com.backend.autocarrerbridge.service.BusinessService;
+import com.backend.autocarrerbridge.service.EmployeeService;
+import com.backend.autocarrerbridge.service.RoleService;
+import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.service.UserAccountService;
 import jakarta.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,8 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.dto.request.EmployeeRequest;
-import com.backend.autocarrerbridge.dto.response.EmployeeResponse;
+import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
+import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -22,7 +26,6 @@ import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.mapper.EmployeeMapper;
 import com.backend.autocarrerbridge.mapper.UserAccountMapper;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
-import com.backend.autocarrerbridge.service.*;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -72,12 +75,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     //    @PreAuthorize("hasRole('')")
     @Transactional
     @Override
-    public EmployeeResponse addEmployee(EmployeeRequest request, String token) {
+    public EmployeeResponse addEmployee(EmployeeRequest request) {
         Employee employee = employeeMapper.toEmployee(request);
 
         try {
             //            set Business fo employee
-            String emailBusiness = tokenService.getSub(token);
+            String emailBusiness = tokenService.getClaim(tokenService.getJWT(), "sub");
             Business business = businessService.findByEmail(emailBusiness);
             employee.setBusiness(business);
         } catch (ParseException e) {
@@ -107,7 +110,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employeeResponse;
     }
-
     @Override
     public EmployeeResponse updateEmployee(Integer id, EmployeeRequest request) {
         Employee employee =

@@ -2,8 +2,8 @@ package com.backend.autocarrerbridge.mapper;
 
 import org.mapstruct.Mapper;
 
-import com.backend.autocarrerbridge.dto.request.UserAccountRequest;
-import com.backend.autocarrerbridge.dto.response.UserAccountResponse;
+import com.backend.autocarrerbridge.dto.request.employee.UserAccountRequest;
+import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
 import com.backend.autocarrerbridge.entity.UserAccount;
 
 @Mapper(componentModel = "spring")
