@@ -1,5 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 import com.backend.autocarrerbridge.entity.UserAccount;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
 import com.backend.autocarrerbridge.service.AuthenticationService;
 import com.backend.autocarrerbridge.service.TokenService;
@@ -45,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public String getNewToken(String token) throws ParseException {
         String jti = tokenService.getClaim(token, "jti");
         if(Boolean.TRUE.equals(redisTemplate.hasKey(jti))){
-            throw new RuntimeException("Token in destroy");
+            throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
         logout(token);
         UserAccount userAccounts = userAccountService.getUserByUsername(tokenService.getClaim(token, "sub"));

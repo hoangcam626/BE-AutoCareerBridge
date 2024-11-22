@@ -67,7 +67,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public void saveRefreshTokenForUser(Integer id, String refreshToken) {
         UserAccount userAccounts = userAccountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(ErrorCode.ERROR_USER_NOT_FOUND.getMessage()));
         userAccounts.setRefreshToken(refreshToken);
         userAccountRepository.save(userAccounts);
     }
@@ -120,8 +120,11 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public EmailCode generateVerificationCode(String email) {
         String code = generateCode(email);
+        if(userAccountRepository.findByUsername(email).getState().equals(State.APPROVED)){
+            throw new AppException(ErrorCode.ERROR_USER_APPROVED);
+        }
         if(code.equals(codeExist)){
-            return EmailCode.builder().email(email).code("Please wait").build();
+            return EmailCode.builder().email(email).code(NOTIFICATION_WAIT).build();
         }
         return EmailCode.builder().email(email).code(code).build();
     }
@@ -130,7 +133,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public EmailCode generatePasswordResetCode(String email) {
         String code = generateCodeForgot(email);
         if(code.equals(codeExist)){
-            return EmailCode.builder().email(email).code("Please wait").build();
+            return EmailCode.builder().email(email).code(NOTIFICATION_WAIT).build();
         }
         return EmailCode.builder().email(email).code(code).build();
     }
@@ -161,8 +164,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         if(Boolean.TRUE.equals(redisTemplate.hasKey("/np"+ emailSend))){
             return codeExist;
         }
-        Email email = new Email(emailSend,"Xác nhận mật khẩu mới","");
-        sendEmail.sendNewPassword(email, generatedCode);
+        EmailDTO emailDTO = new EmailDTO(emailSend,"Xác nhận mật khẩu mới","");
+        sendEmail.sendNewPassword(emailDTO, generatedCode);
         redisTemplate.opsForValue().set("/np" + emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }
@@ -170,9 +173,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
             return codeExist;
         }
-        Email email = new Email(emailSend,"Xác nhận đăng ký tài khoản","");
+        EmailDTO emailDTO = new EmailDTO(emailSend,"Xác nhận đăng ký tài khoản","");
         String generatedCode = RandomCodeGenerator.generateRegistrationCode();
-        sendEmail.sendCode(email, generatedCode);
+        sendEmail.sendCode(emailDTO, generatedCode);
         redisTemplate.opsForValue().set(emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }
@@ -180,9 +183,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         if(Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))){
             return codeExist;
         }
-        Email email = new Email(emailSend,"Mã cấp mật khẩu mới!","");
+        EmailDTO emailDTO = new EmailDTO(emailSend,"Mã cấp mật khẩu mới!","");
         String generatedCode = RandomCodeGenerator.generateRegistrationCode();
-        sendEmail.sendForgot(email, generatedCode);
+        sendEmail.sendForgot(emailDTO, generatedCode);
         redisTemplate.opsForValue().set("fg/"+  emailSend,generatedCode,codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }

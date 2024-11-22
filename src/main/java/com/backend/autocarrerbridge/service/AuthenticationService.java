@@ -3,8 +3,6 @@ package com.backend.autocarrerbridge.service;
 
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
-import com.backend.autocarrerbridge.model.api.IntrospectRequest;
-import com.backend.autocarrerbridge.model.api.IntrospectResponse;
 
 import java.text.ParseException;
 

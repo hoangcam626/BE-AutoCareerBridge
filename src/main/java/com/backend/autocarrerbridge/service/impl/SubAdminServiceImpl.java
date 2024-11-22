@@ -25,7 +25,7 @@ import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminCreateSdo;
 import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminDeleteSdo;
 import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminSelfSdo;
 import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminUpdateSdo;
-import com.backend.autocarrerbridge.emailconfig.Email;
+import com.backend.autocarrerbridge.emailconfig.EmailDTO;
 import com.backend.autocarrerbridge.emailconfig.SendEmail;
 import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -82,8 +82,8 @@ public class SubAdminServiceImpl implements SubAdminService {
         subAdmin = subAdminRepository.save(subAdmin);
 
         // send mail with sub-admin account
-        Email email = new Email(subAdmin.getEmail(), "Tài Khoản Của Bạn", "");
-        sendEmail.sendAccount(email, password);
+        EmailDTO emailDTO = new EmailDTO(subAdmin.getEmail(), "Tài Khoản Của Bạn", "");
+        sendEmail.sendAccount(emailDTO, password);
 
         return SubAdminCreateSdo.of(subAdmin.getId());
     }

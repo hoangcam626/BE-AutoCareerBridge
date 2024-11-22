@@ -10,13 +10,14 @@ public class Constant {
 
     // Response Messages
     public static final String NOTIFICATION_NEW_PASSWORD = " Your new password is sent your mail";
-    public static final String NOTIFICATION_WAIT = " Your new password is sent your mail, check it";
+    public static final String NOTIFICATION_PASSWORD_WAIT = " Your new password is sent your mail, check it";
     public static final String SUCCESS_MESSAGE = "Success";
     public static final String NO_CONTENT_MESSAGE = "No content available";
     public static final String BAD_REQUEST_MESSAGE = "Bad request";
     public static final String NOT_FOUND_MESSAGE = "Resource not found";
     public static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error";
     public static final String VALIDATION_ERROR_MESSAGE = "Validation error";
+    public static final String NOTIFICATION_WAIT = "Please wait";
 
     // Other Messages
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized access";
@@ -24,9 +25,11 @@ public class Constant {
     public static final String UNPROCESSABLE_ENTITY_MESSAGE = "Unprocessable entity";
     public static final String CONFLICT_MESSAGE = "Conflict occurred";
 
+
     // Specific Error Messages
     public static final String ERROR_INVALID_EMAIL = "Invalid email.";
     public static final String ERROR_EXIST = "Email already exists.";
+    public static final String ERROR_NOT_FOUND = "Email not found.";
     public static final String ERROR_USER_EXIST = "Username already exists.";
     public static final String PASSWORD_NOT_MATCH = "Passwords do not match";
     public static final String ERROR_INVALID_PHONE_NUMBER = "Invalid phone number.";
@@ -39,6 +42,7 @@ public class Constant {
     public static final String ERROR_NOT_MATCH_CODE = "Code not match.";
     public static final String ERROR_USER_EXISTED = "User already existed.";
     public static final String ERROR_TOKEN_INVALID_MESSAGE = "Token invalid";
+    public static final String ERROR_APPROVED = "User approved.";
 
     // Image-related Errors
     public static final String EMPTY_FILE_MESSAGE = "File is empty";
