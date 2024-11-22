@@ -1,7 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.DisplayBusinessDTO;
-import com.backend.autocarrerbridge.dto.AccountRespone.UserBusinessDTO;
+import com.backend.autocarrerbridge.dto.accountresponse.DisplayBusinessDTO;
+import com.backend.autocarrerbridge.dto.accountresponse.UserBusinessDTO;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;

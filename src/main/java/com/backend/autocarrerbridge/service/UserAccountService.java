@@ -1,12 +1,12 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.*;
+import com.backend.autocarrerbridge.dto.accountresponse.*;
 import com.backend.autocarrerbridge.emailconfig.EmailCode;
 import com.backend.autocarrerbridge.entity.UserAccount;
 
 public interface UserAccountService {
     DisplayUserAccountDTO authenticateUser(UserAccountResponseDTO useraccountDTO);
-    void saveRefreshTokenForUser(Integer id, String refresh_token);
+    void saveRefreshTokenForUser(Integer id, String refreshToken);
     UserAccount getUserByUsername(String username);
     UserAccount registerUser(UserAccount userAccount);
     DisplayUserAccountDTO updatePassword(ChangePassWordDTO userAccount);

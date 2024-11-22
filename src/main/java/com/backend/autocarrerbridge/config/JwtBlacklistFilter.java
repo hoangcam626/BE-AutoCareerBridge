@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,7 +32,7 @@ public class JwtBlacklistFilter extends OncePerRequestFilter {
             try {
                 idJwt = tokenService.getClaim(token, "jti");
             } catch (ParseException e) {
-                throw new RuntimeException(e);
+                throw new ServletException(e);
             }
             if (idJwt != null && Boolean.TRUE.equals(redisTemplate.hasKey(idJwt))) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");

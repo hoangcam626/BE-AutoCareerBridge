@@ -1,7 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.DisplayUniverSityDTO;
-import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
+import com.backend.autocarrerbridge.dto.accountresponse.DisplayUniverSityDTO;
+import com.backend.autocarrerbridge.dto.accountresponse.UserUniversityDTO;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -86,12 +86,6 @@ public class UniversityServiceImpl implements UniversityService {
 
         return displayUniverSityDTO;
     }
-
-    @Override
-    public University findByEmail(String email) {
-        return universityRepository.findByEmail(email);
-    }
-
 
 
 }

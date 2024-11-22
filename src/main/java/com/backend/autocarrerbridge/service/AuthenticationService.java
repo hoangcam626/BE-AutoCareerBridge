@@ -12,5 +12,4 @@ public interface AuthenticationService {
     AuthenticationResponse authenticate(UserAccount userAccounts) throws ParseException;
     void logout(String token) throws ParseException;
     String getNewToken(String token) throws ParseException;
-    IntrospectResponse introspect(IntrospectRequest introspectRequest) throws Exception;
 }

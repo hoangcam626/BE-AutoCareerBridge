@@ -40,7 +40,7 @@ public class ImageController {
                 .body(imageSdo.getResource());
     }
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteImage(@RequestParam("imageId") Integer id) {
+    public ApiResponse<Object> deleteImage(@RequestParam("imageId") Integer id) {
         imageService.delete(id);
         return new ApiResponse<>();
     }

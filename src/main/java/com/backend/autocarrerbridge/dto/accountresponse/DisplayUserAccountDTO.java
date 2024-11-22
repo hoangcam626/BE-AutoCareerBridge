@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.AccountRespone;
+package com.backend.autocarrerbridge.dto.accountresponse;
 
 import com.backend.autocarrerbridge.util.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;

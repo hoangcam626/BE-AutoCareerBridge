@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.dto.response;
 
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.UserAccount;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

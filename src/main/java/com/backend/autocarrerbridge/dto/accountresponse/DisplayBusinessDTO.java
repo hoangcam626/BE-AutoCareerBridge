@@ -1,5 +1,6 @@
-package com.backend.autocarrerbridge.dto.AccountRespone;
+package com.backend.autocarrerbridge.dto.accountresponse;
 
+import com.backend.autocarrerbridge.util.enums.State;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,9 +11,10 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ChangePassWordDTO {
-    String username;
-    String password;
-    String newPassword;
-    String reNewPassword;
+public class DisplayBusinessDTO {
+     String name;
+     String taxCode;
+     String email;
+     RoleDTO role;
+     State state;
 }

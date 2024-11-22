@@ -31,7 +31,7 @@ public class SendEmail {
             // Tạo và gửi email
             MimeMessage mimeMessage = createMimeMessage(email, getEmailBody(email, partner));
             mailSender.send(mimeMessage);
-            logger.info("Email đã được gửi tới: {}", email.getEmail().trim());
+
         } catch (MessagingException e) {
             logger.error("Lỗi khi gửi email: {}", e.getMessage(), e);
         }
@@ -47,7 +47,7 @@ public class SendEmail {
             // Tạo và gửi email
             MimeMessage mimeMessage = createMimeMessage(email, getVerifyCode(verifyCode));
             mailSender.send(mimeMessage);
-            logger.info("Email đã được gửi tới: {}", email.getEmail().trim());
+
         } catch (MessagingException e) {
             logger.error("Lỗi khi gửi email: {}", e.getMessage(), e);
         }
@@ -62,7 +62,6 @@ public class SendEmail {
             // Tạo và gửi email
             MimeMessage mimeMessage = createMimeMessage(email, getNewPassword(newPassword));
             mailSender.send(mimeMessage);
-            logger.info("Email đã được gửi tới: {}", email.getEmail().trim());
         } catch (MessagingException e) {
             logger.error("Lỗi khi gửi email: {}", e.getMessage(), e);
         }
@@ -77,7 +76,7 @@ public class SendEmail {
             // Tạo và gửi email
             MimeMessage mimeMessage = createMimeMessage(email, getForgotPassword(verifyCode));
             mailSender.send(mimeMessage);
-            logger.info("Email đã được gửi tới: {}", email.getEmail().trim());
+
         } catch (MessagingException e) {
             logger.error("Lỗi khi gửi email: {}", e.getMessage(), e);
         }
@@ -92,7 +91,6 @@ public class SendEmail {
             // Tạo và gửi email
             MimeMessage mimeMessage = createMimeMessage(email, getAccount(password));
             mailSender.send(mimeMessage);
-            logger.info("Email đã được gửi tới: {}", email.getEmail().trim());
         } catch (MessagingException e) {
             logger.error("Lỗi khi gửi email: {}", e.getMessage(), e);
         }

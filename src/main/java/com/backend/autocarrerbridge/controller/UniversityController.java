@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
+import com.backend.autocarrerbridge.dto.accountresponse.UserUniversityDTO;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.UniversityService;
 import jakarta.validation.Valid;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class UniversityController {
     UniversityService universityService;
     @PostMapping("/register")
-    private ApiResponse<?> registerUniversity(@RequestBody @Valid UserUniversityDTO userUniversityDTO){
+    public ApiResponse<Object> registerUniversity(@RequestBody @Valid UserUniversityDTO userUniversityDTO){
 
         return ApiResponse.builder()
                 .code(200)

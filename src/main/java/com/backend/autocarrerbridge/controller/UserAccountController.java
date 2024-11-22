@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.*;
+import com.backend.autocarrerbridge.dto.accountresponse.*;
 import com.backend.autocarrerbridge.emailconfig.EmailCodeRequest;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
@@ -24,7 +24,7 @@ public class UserAccountController {
      AuthenticationService authenticationService;
      UserAuthentication userAuthentication;
     @PostMapping("/login")
-    public ApiResponse<?> loginJWT(@RequestBody @Valid UserAccountResponseDTO accountDTO)  {
+    public ApiResponse<Object> loginJWT(@RequestBody @Valid UserAccountResponseDTO accountDTO)  {
         DisplayUserAccountDTO userAccountDTO = userAccountService.authenticateUser(accountDTO);
         AuthenticationResponse authenticationResponse =  userAuthentication.authenticate(accountDTO.getUsername());
         userAccountDTO.setAccessToken(authenticationResponse.getAccessToken());
@@ -33,7 +33,7 @@ public class UserAccountController {
     }
 
     @PostMapping("/logout")
-    public ApiResponse<?> logout(@RequestHeader("Authorization") String authorizationHeader) throws ParseException {
+    public ApiResponse<Object> logout(@RequestHeader("Authorization") String authorizationHeader) throws ParseException {
         String token = null;
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
             token = authorizationHeader.substring(7);
@@ -42,25 +42,25 @@ public class UserAccountController {
         return ApiResponse.builder().message("Logout success").data("Logout Success").code(200).build();
     }
     @PostMapping("/refresh")
-    public ApiResponse<?> refresh(@RequestBody TokenRefreshRequest token) throws ParseException {
+    public ApiResponse<Object> refresh(@RequestBody TokenRefreshRequest token) throws ParseException {
         String newToken = authenticationService.getNewToken(token.getRefreshToken());
         return ApiResponse.builder().message("Refresh Token Success").code(200).data(newToken).build();
     }
 
     @PutMapping("/change-password")
-    public ApiResponse<?> changePassword(@RequestBody @Valid ChangePassWordDTO accountDTO){
+    public ApiResponse<Object> changePassword(@RequestBody @Valid ChangePassWordDTO accountDTO){
         return ApiResponse.builder().message("Change Password Success").code(200).data(userAccountService.updatePassword(accountDTO)).build();
     }
     @PostMapping("/verify")
-    public ApiResponse<?> sendVerify(@RequestBody EmailCodeRequest emailCode){
+    public ApiResponse<Object> sendVerify(@RequestBody EmailCodeRequest emailCode){
         return ApiResponse.builder().message("Send email code success").code(200).data(userAccountService.generateVerificationCode(emailCode.getEmail())).build();
     }
     @PostMapping("/forgot-code")
-    public ApiResponse<?> sendForgotCode(@RequestBody EmailCodeRequest emailCode){
+    public ApiResponse<Object> sendForgotCode(@RequestBody EmailCodeRequest emailCode){
         return ApiResponse.builder().message("Send email code success").code(200).data(userAccountService.generatePasswordResetCode(emailCode.getEmail())).build();
     }
     @PostMapping("/forgot-pass")
-    public ApiResponse<?> handleNewPassword(@RequestBody ForgotPassWordDTO forgotPassWordDTO){
+    public ApiResponse<Object> handleNewPassword(@RequestBody ForgotPassWordDTO forgotPassWordDTO){
         return ApiResponse.builder().message("Created new password").code(200).data(userAccountService.handleForgotPassword(forgotPassWordDTO)).build();
     }
 }

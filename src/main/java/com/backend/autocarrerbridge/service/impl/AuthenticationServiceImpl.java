@@ -1,11 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
-
-
 import com.backend.autocarrerbridge.entity.UserAccount;
-
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
-import com.backend.autocarrerbridge.model.api.IntrospectRequest;
-import com.backend.autocarrerbridge.model.api.IntrospectResponse;
 import com.backend.autocarrerbridge.service.AuthenticationService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.service.UserAccountService;
@@ -24,13 +19,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TokenService tokenService;
     private final RedisTemplate<String, Boolean> redisTemplate;
     private final UserAccountService userAccountService;
+    private static final int DEFAULT_TOKEN_LIFETIME_MINUTES = 1440; // 24 giờ
+    private static final int REFRESH_TOKEN_EXPIRATION_HOURS = 24 * 7; // 7 ngày
+
     @Override
     public AuthenticationResponse  authenticate(UserAccount userAccounts) throws ParseException {
         String accessToken = tokenService.generateToken(userAccounts, 1);
         String refreshToken = userAccounts.getRefreshToken();
-        int TIME_TO_LIVE = 1440;
-        if (refreshToken == null || tokenService.getTimeToLive(refreshToken) < TIME_TO_LIVE) {
-            refreshToken = tokenService.generateToken(userAccounts, 24 * 7);
+        if (refreshToken == null || tokenService.getTimeToLive(refreshToken) < REFRESH_TOKEN_EXPIRATION_HOURS) {
+            refreshToken = tokenService.generateToken(userAccounts, DEFAULT_TOKEN_LIFETIME_MINUTES);
         }
         return AuthenticationResponse.builder()
                 .accessToken(accessToken)
@@ -51,18 +48,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException("Token in destroy");
         }
         logout(token);
-        String user_name  = tokenService.getClaim(token, "sub");
-        UserAccount userAccounts = userAccountService.getUserByUsername(user_name);
+        UserAccount userAccounts = userAccountService.getUserByUsername(tokenService.getClaim(token, "sub"));
         return tokenService.generateToken(userAccounts, 1);
     }
 
-
-    @Override
-    public IntrospectResponse introspect(IntrospectRequest introspectRequest) throws Exception {
-        String token = introspectRequest.getToken();
-        boolean valid = tokenService.verifyToken(token) &&
-                tokenService.getTimeToLive(token) > 0;
-        return IntrospectResponse.builder().valid(valid).build();
-    }
 }
 

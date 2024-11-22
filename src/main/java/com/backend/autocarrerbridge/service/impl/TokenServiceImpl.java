@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.service.impl;
 
-
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.nimbusds.jose.*;
@@ -9,8 +8,6 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,71 +19,100 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-
-public class TokenServiceImpl implements TokenService {
+public class TokenServiceImpl  implements TokenService{
 
     @Value("${jwt.signerKey}")
-    private String SIGNER_KEY;
-    private static final Logger log = LoggerFactory.getLogger(TokenServiceImpl.class);
+    private String signerKey;
+
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
     public String generateToken(UserAccount userAccount, int expirationHours) {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(userAccount.getUsername())
-                .jwtID(UUID.randomUUID().toString())
-                .issuer("AutoCarrer")
-                .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(expirationHours, ChronoUnit.DAYS).toEpochMilli()))
-                .claim("scope", userAccount.getRole().getName())
-                .build();
-        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-        JWSObject jwsObject = new JWSObject(header, payload);
-
         try {
-            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-            return jwsObject.serialize();
-        } catch (JOSEException e) {
-            log.error("Can't sign JWT object", e);
-            throw new RuntimeException(e);
+            if (userAccount == null || userAccount.getUsername() == null || userAccount.getRole() == null) {
+                throw new IllegalArgumentException("Invalid user account details for token generation");
+            }
+
+            JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+            JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                    .subject(userAccount.getUsername())
+                    .jwtID(UUID.randomUUID().toString())
+                    .issuer("AutoCarrer")
+                    .issueTime(new Date())
+                    .expirationTime(Date.from(Instant.now().plus(expirationHours, ChronoUnit.HOURS)))
+                    .claim("scope", userAccount.getRole().getName())
+                    .build();
+
+            SignedJWT signedJWT = new SignedJWT(header, claimsSet);
+            signedJWT.sign(new MACSigner(signerKey.getBytes()));
+
+            return signedJWT.serialize();
+        } catch (Exception e) {
+            throw new RuntimeException("Token generation failed",e);
         }
     }
 
     @Override
-    public boolean verifyToken(String token) throws JOSEException, ParseException {
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        return signedJWT.verify(verifier);
-    }
+    public boolean verifyToken(String token) {
+        try {
 
-    @Override
-    public long getTimeToLive(String token) throws ParseException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-        Date issueTime = claimsSet.getIssueTime();
-        Date expirationTime = claimsSet.getExpirationTime();
-        return (expirationTime.getTime() - issueTime.getTime()) / (1000 * 60);
-    }
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
 
-    @Override
-    public String getClaim(String token, String claim) throws ParseException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-        return claimsSet.getStringClaim(claim);
-    }
-
-    @Override
-    public String getSub(String token) throws ParseException {
-        if(token != null && token.startsWith("Bearer ")){
-            token = token.substring(7);
+            return signedJWT.verify(verifier);
+        } catch (ParseException | JOSEException e) {
+            return false;
         }
-        assert token != null;
-        SignedJWT signedJWT = SignedJWT.parse(token);
+    }
 
+    @Override
+    public long getTimeToLive(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(stripBearerPrefix(token));
             JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
 
-            // Trả về giá trị của claim 'sub'
+            Date expirationTime = claimsSet.getExpirationTime();
+            if (expirationTime == null) {
+
+                return 0;
+            }
+
+            return Math.max((expirationTime.getTime() - System.currentTimeMillis()) / (1000 * 60), 0);
+        } catch (ParseException e) {
+
+            return 0;
+        }
+    }
+
+    @Override
+    public String getClaim(String token, String claim) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(stripBearerPrefix(token));
+            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+
+            return claimsSet.getStringClaim(claim);
+        } catch (Exception e) {
+
+            throw new RuntimeException("Claim retrieval failed", e);
+        }
+    }
+
+    @Override
+    public String getSub(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(stripBearerPrefix(token));
+            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+
             return claimsSet.getSubject();
+        } catch (Exception e) {
+            throw new RuntimeException("Subject retrieval failed", e);
+        }
+    }
+
+    private String stripBearerPrefix(String token) {
+        if (token != null && token.startsWith(BEARER_PREFIX)) {
+            return token.substring(BEARER_PREFIX.length());
+        }
+        return token;
     }
 }
-

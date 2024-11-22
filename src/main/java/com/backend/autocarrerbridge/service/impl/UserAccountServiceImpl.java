@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.*;
+import com.backend.autocarrerbridge.dto.accountresponse.*;
 import com.backend.autocarrerbridge.emailconfig.*;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
@@ -65,10 +65,10 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public void saveRefreshTokenForUser(Integer id, String refresh_token) {
+    public void saveRefreshTokenForUser(Integer id, String refreshToken) {
         UserAccount userAccounts = userAccountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        userAccounts.setRefreshToken(refresh_token);
+        userAccounts.setRefreshToken(refreshToken);
         userAccountRepository.save(userAccounts);
     }
 
