@@ -1,9 +1,10 @@
 package com.backend.autocarrerbridge.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
+
+import jakarta.persistence.*;
+
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "instructional")
-public class Instructional extends AbstractAudit{
+public class Instructional extends AbstractAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,5 +51,4 @@ public class Instructional extends AbstractAudit{
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
-
 }

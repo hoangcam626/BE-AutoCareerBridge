@@ -1,8 +1,9 @@
 package com.backend.autocarrerbridge.dto.subadmin.sdi;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor(staticName = "of")

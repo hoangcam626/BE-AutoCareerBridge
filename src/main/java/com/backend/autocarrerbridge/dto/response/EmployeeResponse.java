@@ -1,9 +1,12 @@
 package com.backend.autocarrerbridge.dto.response;
 
+import java.time.LocalDate;
+
+import com.backend.autocarrerbridge.util.enums.Status;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -30,6 +33,8 @@ public class EmployeeResponse {
     String phone;
 
     Integer businessId;
+
+    Status status;
 
     UserAccountResponse userAccount;
 }

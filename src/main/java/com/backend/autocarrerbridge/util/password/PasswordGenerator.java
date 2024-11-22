@@ -1,10 +1,11 @@
 package com.backend.autocarrerbridge.util.password;
 
-import com.backend.autocarrerbridge.exception.AppException;
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+
 import java.security.SecureRandom;
 import java.util.*;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+import com.backend.autocarrerbridge.exception.AppException;
 
 public class PasswordGenerator {
     private final List<PasswordCharacterSet> pwSets;
@@ -24,8 +25,7 @@ public class PasswordGenerator {
                 SummerCharacterSets.ALPHA_UPPER,
                 SummerCharacterSets.ALPHA_LOWER,
                 SummerCharacterSets.NUMERIC,
-                SummerCharacterSets.SPECIAL
-        );
+                SummerCharacterSets.SPECIAL);
 
         List<PasswordCharacterSet> pwSets = new ArrayList<>();
         int pwCharacters = 0;
@@ -70,8 +70,8 @@ public class PasswordGenerator {
         return new String(pw);
     }
 
-    private static void addRandomCharacters(char[] pw, char[] characterSet,
-                                            int numCharacters, List<Integer> remainingIndexes, Random rand) {
+    private static void addRandomCharacters(
+            char[] pw, char[] characterSet, int numCharacters, List<Integer> remainingIndexes, Random rand) {
         for (int i = 0; i < numCharacters; ++i) {
             int pwIndex = remainingIndexes.remove(rand.nextInt(remainingIndexes.size()));
             int randCharIndex = rand.nextInt(characterSet.length);

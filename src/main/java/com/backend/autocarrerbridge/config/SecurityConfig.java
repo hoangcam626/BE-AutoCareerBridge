@@ -20,6 +20,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -27,7 +29,8 @@ import javax.crypto.spec.SecretKeySpec;
 @RequiredArgsConstructor
 public class SecurityConfig {
     @Value("${jwt.signerKey}")
-    private  String signerKey;
+    private String signerKey;
+
     private final RedisTemplate<String, Object> redisTemplate;
     private final TokenService tokenService;
 
@@ -36,18 +39,20 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
     // default co accept all quyen ko can jwt
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-//        return httpSecurity
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeRequests(auth -> auth
-//                        .anyRequest().permitAll() // Cho phép truy cập vào tất cả các yêu cầu mà không cần xác thực
-//                ).build();
-//    }
+    //    @Bean
+    //    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    //        return httpSecurity
+    //                .csrf(csrf -> csrf.disable())
+    //                .authorizeRequests(auth -> auth
+    //                        .anyRequest().permitAll() // Cho phép truy cập vào tất cả các yêu cầu mà không cần xác
+    // thực
+    //                ).build();
+    //    }
     @Bean
     public JwtBlacklistFilter jwtBlacklistFilter() {
         return new JwtBlacklistFilter(redisTemplate, tokenService);
     }
+
     private static final String[] AUTH_WHITELIST = {
             "/api/accounts/register",
             "/api/accounts/register/uni",
@@ -65,24 +70,28 @@ public class SecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtBlacklistFilter jwtBlacklistFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtBlacklistFilter jwtBlacklistFilter)
+            throws Exception {
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
 
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
-                .authorizeRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, AUTH_WHITELIST).permitAll()
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class) // Thêm Filter trước xử lý JWT
+                .authorizeRequests(auth -> auth.requestMatchers(HttpMethod.POST, AUTH_WHITELIST)
+                        .permitAll()
+                        .requestMatchers(AUTH_WHITELIST)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .addFilterBefore(
+                        jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class) // Thêm Filter trước xử lý JWT
                 .build();
     }
 
     @Bean
     public JwtDecoder jwtDecoder() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-        return NimbusJwtDecoder.withSecretKey(secretKeySpec).macAlgorithm(MacAlgorithm.HS512).build();
+        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
+                .macAlgorithm(MacAlgorithm.HS512)
+                .build();
     }
-
 }

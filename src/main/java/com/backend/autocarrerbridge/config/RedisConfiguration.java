@@ -1,4 +1,5 @@
 package com.backend.autocarrerbridge.config;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 public class RedisConfiguration {
     @Value("${spring.data.redis.port}")
     private Integer redisPort;
+
     @Value("${spring.data.redis.host}")
     private String redisHost;
 
@@ -38,9 +40,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    <K, F, V> HashOperations<K, F, V> hashOpertations(
-            RedisTemplate<K, V> redisTemplate
-    ) {
+    <K, F, V> HashOperations<K, F, V> hashOpertations(RedisTemplate<K, V> redisTemplate) {
         return redisTemplate.opsForHash();
     }
 }

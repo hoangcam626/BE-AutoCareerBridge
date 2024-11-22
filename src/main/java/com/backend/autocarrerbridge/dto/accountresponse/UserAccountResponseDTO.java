@@ -1,16 +1,17 @@
 package com.backend.autocarrerbridge.dto.accountresponse;
 
+import java.time.LocalDateTime;
+
 import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
 import com.backend.autocarrerbridge.util.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -38,7 +39,6 @@ public class UserAccountResponseDTO {
 
     @JsonIgnore
     Integer updatedBy;
-
 
     RoleDTO role;
 
