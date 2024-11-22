@@ -46,7 +46,7 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public SectionDTO updateSection(int id, SectionDTO sectionDTO) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUND));
+        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUNDED));
     section.setName(sectionDTO.getName());
     section.setDescription(sectionDTO.getDescription());
     section.setStatus(sectionDTO.getStatus());
@@ -59,7 +59,7 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public SectionDTO deleteSection(int id) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUND));
+        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUNDED));
     sectionRepository.delete(section);
     return SectionConverter.convertToDTO(section);
   }
@@ -76,7 +76,7 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public List<SectionDTO> getSectionById(int id) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUND));
+        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUNDED));
     return List.of(SectionConverter.convertToDTO(section));
   }
 }

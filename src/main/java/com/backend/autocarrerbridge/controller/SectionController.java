@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/section")
+@RequestMapping("/api/section")
 public class SectionController {
 
   @Autowired

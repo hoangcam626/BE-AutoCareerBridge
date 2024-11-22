@@ -47,7 +47,7 @@ public class MajorServiceImpl implements MajorService {
   @Override
   public MajorDTO updateMajor(int id, MajorDTO majorDTO) {
     Major major = majorRepository.findById(id)
-        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUND));
+        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUNDED));
     major.setCode(majorDTO.getCode());
     major.setName(majorDTO.getName());
     major.setStatus(majorDTO.getStatus());
@@ -63,7 +63,7 @@ public class MajorServiceImpl implements MajorService {
   @Override
   public MajorDTO deleteMajor(int id) {
     Major major = majorRepository.findById(id)
-        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUND));
+        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUNDED));
     majorRepository.delete(major);
     return MajorConverter.convertToDTO(major);
   }
@@ -78,7 +78,7 @@ public class MajorServiceImpl implements MajorService {
   @Override
   public List<MajorDTO> getMajorById(int id) {
     Major major = majorRepository.findById(id)
-        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUND));
+        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUNDED));
     return List.of(MajorConverter.convertToDTO(major));
   }
 }
