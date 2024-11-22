@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 
@@ -42,8 +43,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     UserAccountMapper userAccountMapper;
     RoleService roleService;
 
+
     @Override
-    public List<EmployeeResponse> getListEmployeee() throws ParseException {
+    public List<EmployeeResponse> getListEmployeee()throws ParseException {
         // get jwt, get email login
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
