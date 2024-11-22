@@ -1,11 +1,13 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.State;
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
+
+import com.backend.autocarrerbridge.util.enums.State;
+
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "workshop")
-public class Workshop extends AbstractAudit{
+public class Workshop extends AbstractAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -48,5 +50,4 @@ public class Workshop extends AbstractAudit{
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
-
 }

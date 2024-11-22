@@ -1,19 +1,22 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.Status;
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.backend.autocarrerbridge.util.enums.Status;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
 @MappedSuperclass
@@ -43,14 +46,28 @@ public abstract class AbstractAudit implements Serializable {
     @LastModifiedBy
     @Column(name = "updated_by", insertable = false)
     private String updatedBy;
+
+//    @PrePersist
+//    public void prePersist() {
+//        this.status = Status.ACTIVE;
+//    }
+//
+//    @PreUpdate
+//    public void preUpdate() {
+//        this.status = Status.ACTIVE;
+//    }
+
     @PrePersist
     public void prePersist() {
-        this.status = Status.ACTIVE;
+        if (this.status == null) {
+            this.status = Status.ACTIVE;  // Chỉ gán khi status chưa được gán
+        }
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.status = Status.ACTIVE;
+        if (this.status == null) {
+            this.status = Status.ACTIVE;  // Chỉ gán khi status chưa được gán
+        }
     }
 }
-

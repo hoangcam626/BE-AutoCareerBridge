@@ -1,5 +1,15 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+import static com.backend.autocarrerbridge.util.Constant.DELETED;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.dto.industry.IndustryPaging;
 import com.backend.autocarrerbridge.dto.industry.IndustrySdi;
 import com.backend.autocarrerbridge.dto.industry.IndustrySdo;
@@ -11,16 +21,8 @@ import com.backend.autocarrerbridge.repository.IndustryRepo;
 import com.backend.autocarrerbridge.service.IndustryService;
 import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.Status;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
-import static com.backend.autocarrerbridge.util.Constant.DELETED;
 
 @Service
 @RequiredArgsConstructor
@@ -35,15 +37,14 @@ public class IndustryServiceImp implements IndustryService {
         if (industryList.isEmpty()) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
-        IndustryPaging industryPaging = new IndustryPaging(industryList.getTotalElements(),
-                industryList.getContent());
+        IndustryPaging industryPaging = new IndustryPaging(industryList.getTotalElements(), industryList.getContent());
         return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryPaging);
     }
 
     @Override
     public ApiResponse<Object> getAllIndustry() {
         List<IndustrySdo> list = industryRepo.getAllIndustryActive();
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, list);
@@ -52,7 +53,7 @@ public class IndustryServiceImp implements IndustryService {
     @Override
     public ApiResponse<IndustrySdo> createIndustry(IndustrySdi industrySdi) {
         Industry industry = new Industry();
-        if (industrySdi.getName() == null || industrySdi.getName().isEmpty()){
+        if (industrySdi.getName() == null || industrySdi.getName().isEmpty()) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         if (industryRepo.existsByName(industrySdi.getName())) {
@@ -61,8 +62,7 @@ public class IndustryServiceImp implements IndustryService {
         if (industryRepo.existsByCode(industrySdi.getCode())) {
             throw new AppException(ERROR_EXiST_CODE);
         }
-        if(industryRepo.existsByName(industrySdi.getName())
-                && industryRepo.existsByCode(industrySdi.getCode())){
+        if (industryRepo.existsByName(industrySdi.getName()) && industryRepo.existsByCode(industrySdi.getCode())) {
             throw new AppException(ERROR_EXiST_NAME_AND_CODE);
         }
         industry.setName(industrySdi.getName());
@@ -85,7 +85,7 @@ public class IndustryServiceImp implements IndustryService {
         if (isNameSame && isCodeSame) {
             throw new AppException(NO_CHANGE_DETECTED);
         }
-        if(industryUpdateSdi.getId() == null){
+        if (industryUpdateSdi.getId() == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         if (industryRepo.existsByName(industryUpdateSdi.getName())) {
@@ -94,8 +94,8 @@ public class IndustryServiceImp implements IndustryService {
         if (industryRepo.existsByCode(industryUpdateSdi.getCode())) {
             throw new AppException(ERROR_EXiST_CODE);
         }
-        if(industryRepo.existsByName(industryUpdateSdi.getName())
-                && industryRepo.existsByCode(industryUpdateSdi.getCode())){
+        if (industryRepo.existsByName(industryUpdateSdi.getName())
+                && industryRepo.existsByCode(industryUpdateSdi.getCode())) {
             throw new AppException(ERROR_EXiST_NAME_AND_CODE);
         }
         industry.setName(industryUpdateSdi.getName());
@@ -108,7 +108,7 @@ public class IndustryServiceImp implements IndustryService {
 
     @Override
     public ApiResponse<Object> inactiveIndustry(Integer id) {
-        if(id == null){
+        if (id == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
 

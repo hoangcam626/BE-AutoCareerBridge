@@ -1,8 +1,11 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.persistence.*;
+
+import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.*;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -10,7 +13,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "user_account")
-public class UserAccount extends AbstractAudit{
+public class UserAccount extends AbstractAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +29,10 @@ public class UserAccount extends AbstractAudit{
     @Column(name = "state")
     private State state;
 
-    @Column(name = "refresh_token" ,length = 512)
+    @Column(name = "refresh_token", length = 512)
     private String refreshToken;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-
 }

@@ -1,5 +1,11 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import java.util.Objects;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.dto.AccountRespone.DisplayUniverSityDTO;
 import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
 import com.backend.autocarrerbridge.entity.Role;
@@ -12,42 +18,41 @@ import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
-import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class UniversityServiceImpl implements UniversityService {
-     RoleService roleService;
-     ModelMapper modelMapper;
-     UserAccountService userAccountService;
-     UniversityRepository universityRepository;
-     RedisTemplate<String, String> redisTemplate;
+    RoleService roleService;
+    ModelMapper modelMapper;
+    UserAccountService userAccountService;
+    UniversityRepository universityRepository;
+    RedisTemplate<String, String> redisTemplate;
+
     @Override
     public DisplayUniverSityDTO registerUniversity(UserUniversityDTO userUniversityDTO) {
 
         // Kiểm tra password và rePassword có khớp không
-        if (userUniversityDTO.getPassword() == null || userUniversityDTO.getRePassword() == null
+        if (userUniversityDTO.getPassword() == null
+                || userUniversityDTO.getRePassword() == null
                 || !userUniversityDTO.getPassword().equals(userUniversityDTO.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
 
-        if(universityRepository.findByPhone(userUniversityDTO.getPhone()) != null){
+        if (universityRepository.findByPhone(userUniversityDTO.getPhone()) != null) {
             throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
         }
 
         if (userUniversityDTO.getEmail() == null || userUniversityDTO.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-        if(!Objects.equals(redisTemplate.opsForValue().get(userUniversityDTO.getEmail()), userUniversityDTO.getVerificationCode())){
+        if (!Objects.equals(
+                redisTemplate.opsForValue().get(userUniversityDTO.getEmail()),
+                userUniversityDTO.getVerificationCode())) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
         if (userUniversityDTO.getName() == null || userUniversityDTO.getName().isEmpty()) {
@@ -59,15 +64,14 @@ public class UniversityServiceImpl implements UniversityService {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
 
-
         // Set Role
-         Role role =  roleService.findById(PredefinedRole.UNIVERSITY.getValue());
+        Role role = roleService.findById(PredefinedRole.UNIVERSITY.getValue());
         // Tạo UserAccount từ DTO
         UserAccount userAccount = new UserAccount();
         modelMapper.map(userUniversityDTO, userAccount);
         userAccount.setRole(role);
         userAccount.setUsername(userUniversityDTO.getEmail());
-        userAccount.setState(State.PENDING);
+
         // Đăng ký tài khoản
         UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
@@ -91,8 +95,4 @@ public class UniversityServiceImpl implements UniversityService {
     public University findByEmail(String email) {
         return universityRepository.findByEmail(email);
     }
-
-
-
 }
-

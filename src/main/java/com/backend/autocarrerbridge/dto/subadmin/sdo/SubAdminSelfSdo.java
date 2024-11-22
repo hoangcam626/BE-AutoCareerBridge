@@ -1,10 +1,12 @@
 package com.backend.autocarrerbridge.dto.subadmin.sdo;
 
+import java.time.LocalDateTime;
+
 import com.backend.autocarrerbridge.util.enums.Status;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor(staticName = "of")

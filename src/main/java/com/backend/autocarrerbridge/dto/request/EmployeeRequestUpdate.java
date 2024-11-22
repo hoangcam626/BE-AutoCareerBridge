@@ -1,9 +1,10 @@
 package com.backend.autocarrerbridge.dto.request;
 
-import java.time.LocalDate;
-
+import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EmployeeRequest {
+public class EmployeeRequestUpdate {
     String name;
 
     String gender;
@@ -27,4 +28,6 @@ public class EmployeeRequest {
     Integer employeeImageId;
 
     String phone;
+
+    Status status;
 }
