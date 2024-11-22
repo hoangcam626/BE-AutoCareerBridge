@@ -201,13 +201,6 @@
           </execution>
         </executions>
         <configuration>
-<!--          <excludes>-->
-<!--            <exclude>com/example/autocarrerbridge/dto/**</exclude>-->
-<!--            <exclude>com/example/autocarrerbridge/entity/**</exclude>-->
-<!--            <exclude>com/example/autocarrerbridge/mapper/**</exclude>-->
-<!--            <exclude>com/example/autocarrerbridge/configuration/**</exclude>-->
-<!--          </excludes>-->
-
         </configuration>
       </plugin>
       <plugin>
