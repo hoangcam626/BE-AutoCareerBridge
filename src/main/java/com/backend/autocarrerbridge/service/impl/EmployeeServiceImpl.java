@@ -2,10 +2,14 @@ package com.backend.autocarrerbridge.service.impl;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.EmployeeRequest;
@@ -39,25 +43,27 @@ public class EmployeeServiceImpl implements EmployeeService {
     UserAccountMapper userAccountMapper;
     RoleService roleService;
 
-    @Override
-    public List<EmployeeResponse> getListEmployeee(String token) {
-        try {
-            //            set Business fo employee
-            String emailBusiness = tokenService.getSub(token);
-            Business business = businessService.findByEmail(emailBusiness);
-            //            employee.setBusiness(business);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
 
-        var employees = employeeRepository.findAll();
-        return employees.stream().map(employeeMapper::toEmployeeResponse).toList();
+    @Override
+    public List<EmployeeResponse> getListEmployeee()throws ParseException {
+        // get jwt, get email login
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        var emailAccountLogin = tokenService.getClaim(jwt.getTokenValue(), "sub");
+        var employees = employeeRepository.findEmployeesByBusinessEmail(emailAccountLogin);
+        return employees.stream().map(employee -> {
+            EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
+            employeeResponse.setBusinessId(employee.getBusiness().getId());
+            return employeeResponse;
+        }).collect(Collectors.toList());
     }
 
     @Override
     public EmployeeResponse getEmployeeById(Integer id) {
-        return employeeMapper.toEmployeeResponse(
-                employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND)));
+        var employee = employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
+        employeeResponse.setBusinessId(employee.getBusiness().getId());
+        return employeeResponse;
     }
 
     //    @PreAuthorize("hasRole('')")
@@ -108,9 +114,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public void deleteEmployee(Integer id) {
         Employee employee =
                 employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
         employee.setStatus(Status.INACTIVE);
+        employeeRepository.save(employee);
+        employeeRepository.flush();
     }
 }

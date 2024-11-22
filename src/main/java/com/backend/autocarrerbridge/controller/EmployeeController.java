@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.controller;
 
+import java.text.ParseException;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -32,9 +33,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/getAll")
-    ApiResponse<List<EmployeeResponse>> getAllEmployee(@RequestHeader("Authorization") String token) {
+    ApiResponse<List<EmployeeResponse>> getAllEmployee() throws ParseException {
         return ApiResponse.<List<EmployeeResponse>>builder()
-                .data(employeeService.getListEmployeee(token))
+                .data(employeeService.getListEmployeee())
                 .build();
     }
 
