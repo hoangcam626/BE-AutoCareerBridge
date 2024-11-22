@@ -43,24 +43,26 @@ public class EmployeeServiceImpl implements EmployeeService {
     UserAccountMapper userAccountMapper;
     RoleService roleService;
 
-
     @Override
-    public List<EmployeeResponse> getListEmployeee()throws ParseException {
+    public List<EmployeeResponse> getListEmployeee() throws ParseException {
         // get jwt, get email login
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
         var emailAccountLogin = tokenService.getClaim(jwt.getTokenValue(), "sub");
         var employees = employeeRepository.findEmployeesByBusinessEmail(emailAccountLogin);
-        return employees.stream().map(employee -> {
-            EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
-            employeeResponse.setBusinessId(employee.getBusiness().getId());
-            return employeeResponse;
-        }).collect(Collectors.toList());
+        return employees.stream()
+                .map(employee -> {
+                    EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
+                    employeeResponse.setBusinessId(employee.getBusiness().getId());
+                    return employeeResponse;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public EmployeeResponse getEmployeeById(Integer id) {
-        var employee = employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        var employee =
+                employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
         EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
         employeeResponse.setBusinessId(employee.getBusiness().getId());
         return employeeResponse;

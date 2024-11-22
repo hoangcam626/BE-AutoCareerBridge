@@ -57,13 +57,13 @@ public class IndustryServiceImp implements IndustryService {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         if (industryRepo.existsByName(industrySdi.getName())) {
-            throw new AppException(ERROR_EXiST_NAME);
+            throw new AppException(ERROR_EXIST_NAME);
         }
         if (industryRepo.existsByCode(industrySdi.getCode())) {
-            throw new AppException(ERROR_EXiST_CODE);
+            throw new AppException(ERROR_EXIST_CODE);
         }
         if (industryRepo.existsByName(industrySdi.getName()) && industryRepo.existsByCode(industrySdi.getCode())) {
-            throw new AppException(ERROR_EXiST_NAME_AND_CODE);
+            throw new AppException(ERROR_EXIST_NAME_AND_CODE);
         }
         industry.setName(industrySdi.getName());
         industry.setCode(industrySdi.getCode());
@@ -89,14 +89,14 @@ public class IndustryServiceImp implements IndustryService {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         if (industryRepo.existsByName(industryUpdateSdi.getName())) {
-            throw new AppException(ERROR_EXiST_NAME);
+            throw new AppException(ERROR_EXIST_NAME);
         }
         if (industryRepo.existsByCode(industryUpdateSdi.getCode())) {
-            throw new AppException(ERROR_EXiST_CODE);
+            throw new AppException(ERROR_EXIST_CODE);
         }
         if (industryRepo.existsByName(industryUpdateSdi.getName())
                 && industryRepo.existsByCode(industryUpdateSdi.getCode())) {
-            throw new AppException(ERROR_EXiST_NAME_AND_CODE);
+            throw new AppException(ERROR_EXIST_NAME_AND_CODE);
         }
         industry.setName(industryUpdateSdi.getName());
         industry.setCode(industryUpdateSdi.getCode());
