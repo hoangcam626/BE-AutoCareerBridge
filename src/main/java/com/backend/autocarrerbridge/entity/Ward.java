@@ -33,7 +33,7 @@ public class Ward {
     private District district;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "adminstrative_unit_id", nullable = false)
+    @JoinColumn(name = "administrative_unit_id", nullable = false)
     private AdministrativeUnit administrativeUnit;
 
 }

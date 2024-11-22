@@ -37,7 +37,7 @@ public class TokenServiceImpl implements TokenService {
                 .jwtID(UUID.randomUUID().toString())
                 .issuer("AutoCarrer")
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(expirationHours, ChronoUnit.HOURS).toEpochMilli()))
+                .expirationTime(new Date(Instant.now().plus(expirationHours, ChronoUnit.DAYS).toEpochMilli()))
                 .claim("scope", userAccount.getRole().getName())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -73,6 +73,20 @@ public class TokenServiceImpl implements TokenService {
         SignedJWT signedJWT = SignedJWT.parse(token);
         JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
         return claimsSet.getStringClaim(claim);
+    }
+
+    @Override
+    public String getSub(String token) throws ParseException {
+        if(token != null && token.startsWith("Bearer ")){
+            token = token.substring(7);
+        }
+        assert token != null;
+        SignedJWT signedJWT = SignedJWT.parse(token);
+
+            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+
+            // Trả về giá trị của claim 'sub'
+            return claimsSet.getSubject();
     }
 }
 

@@ -49,18 +49,19 @@ public class SecurityConfig {
         return new JwtBlacklistFilter(redisTemplate, tokenService);
     }
     private static final String[] AUTH_WHITELIST = {
-            "/api/business/register",
-            "/api/university/register",
+            "/api/accounts/register",
+            "/api/accounts/register/uni",
             "/api/accounts/refresh",
             "/api/accounts/login",
             "/api/accounts/verify",
             "/api/accounts/forgot-code",
             "/api/accounts/forgot-pass",
             "/api/accounts/jwt-introspect",
-        "/v3/api-docs/**",
-        "/swagger-ui/**",
-        "/swagger-resources/**",
-        "/webjars/**"
+            "/api/v1/image/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/webjars/**"
     };
 
     @Bean
@@ -77,10 +78,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class) // Thêm Filter trước xử lý JWT
                 .build();
     }
-
-
-
-
 
     @Bean
     public JwtDecoder jwtDecoder() {

@@ -1,8 +1,9 @@
 package com.backend.autocarrerbridge.util.enums;
 
 import lombok.Getter;
+
 @Getter
-public enum OrganizationType {
+public enum PredefinedRole {
     ADMIN(1),
     BUSINESS(2),
     UNIVERSITY(3),
@@ -12,7 +13,7 @@ public enum OrganizationType {
 
     private final int value;
 
-    OrganizationType(int value) {
+    PredefinedRole(int value) {
         this.value = value;
     }
 

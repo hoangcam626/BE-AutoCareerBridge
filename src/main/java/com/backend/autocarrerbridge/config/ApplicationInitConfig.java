@@ -1,9 +1,10 @@
 package com.backend.autocarrerbridge.config;
 
-import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.repository.RoleRepository;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
+
+import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,17 +22,18 @@ public class ApplicationInitConfig {
     PasswordEncoder passwordEncoder;
 
     RoleRepository roleRepository;
-
+    String defaultUsername = "admin";
+    String defaultPassword = "admin";
 
     @Bean
     ApplicationRunner applicationRunner(UserAccountRepository accountRepository) {
-        Role role = roleRepository.findById(1).orElse(null);
+        com.backend.autocarrerbridge.entity.Role role = roleRepository.findById(PredefinedRole.ADMIN.getValue()).orElse(null);
         return args -> {
-            if (accountRepository.findByUsername("admin") == null) {
+            if (accountRepository.findByUsername(defaultUsername) == null) {
                 UserAccount userAccounts = UserAccount.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("admin"))
-                        .role(role)  // Sử dụng Role.ADMIN.name() để lưu chuỗi
+                        .username(defaultUsername)
+                        .password(passwordEncoder.encode(defaultPassword))
+                        .role(role)
                         .build();
                 accountRepository.save(userAccounts);
             }

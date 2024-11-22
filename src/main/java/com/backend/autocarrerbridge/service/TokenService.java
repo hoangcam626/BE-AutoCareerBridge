@@ -10,4 +10,5 @@ public interface TokenService {
     boolean verifyToken(String token) throws Exception;
     long getTimeToLive(String token) throws ParseException;
     String getClaim(String token, String claim) throws ParseException;
+    String getSub(String token) throws ParseException;
 }

@@ -2,7 +2,6 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.AccountRespone.DisplayUniverSityDTO;
 import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
-import com.backend.autocarrerbridge.emailconfig.SendEmail;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -12,7 +11,8 @@ import com.backend.autocarrerbridge.repository.UniversityRepository;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.UserAccountService;
-import com.backend.autocarrerbridge.util.enums.OrganizationType;
+import com.backend.autocarrerbridge.util.enums.PredefinedRole;
+import com.backend.autocarrerbridge.util.enums.State;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -61,13 +61,13 @@ public class UniversityServiceImpl implements UniversityService {
 
 
         // Set Role
-         Role role =  roleService.findById(OrganizationType.UNIVERSITY.getValue());
+         Role role =  roleService.findById(PredefinedRole.UNIVERSITY.getValue());
         // Tạo UserAccount từ DTO
         UserAccount userAccount = new UserAccount();
         modelMapper.map(userUniversityDTO, userAccount);
         userAccount.setRole(role);
         userAccount.setUsername(userUniversityDTO.getEmail());
-
+        userAccount.setState(State.PENDING);
         // Đăng ký tài khoản
         UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 

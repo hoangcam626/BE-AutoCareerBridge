@@ -24,12 +24,12 @@ public class UserAccountController {
      AuthenticationService authenticationService;
      UserAuthentication userAuthentication;
     @PostMapping("/login")
-    public ApiResponse<?> loginJWT(@RequestBody @Valid UserAccountResponeDTO accountDTO)  {
-        DisplayUserAccountDTO useraccountDTO = userAccountService.authenticateUser(accountDTO);
+    public ApiResponse<?> loginJWT(@RequestBody @Valid UserAccountResponseDTO accountDTO)  {
+        DisplayUserAccountDTO userAccountDTO = userAccountService.authenticateUser(accountDTO);
         AuthenticationResponse authenticationResponse =  userAuthentication.authenticate(accountDTO.getUsername());
-        useraccountDTO.setAccessToken(authenticationResponse.getAccessToken());
+        userAccountDTO.setAccessToken(authenticationResponse.getAccessToken());
 
-        return ApiResponse.builder().message("Login success").code(200).data(useraccountDTO).build();
+        return ApiResponse.builder().message("Login success").code(200).data(userAccountDTO).build();
     }
 
     @PostMapping("/logout")
@@ -48,19 +48,19 @@ public class UserAccountController {
     }
 
     @PutMapping("/change-password")
-    public ApiResponse<?> changePassword(@RequestBody @Valid ChangePassWordDTO accountDTO) throws ParseException {
+    public ApiResponse<?> changePassword(@RequestBody @Valid ChangePassWordDTO accountDTO){
         return ApiResponse.builder().message("Change Password Success").code(200).data(userAccountService.updatePassword(accountDTO)).build();
     }
     @PostMapping("/verify")
-    public ApiResponse<?> sendVerify(@RequestBody EmailCodeRequest emailCode) throws ParseException {
+    public ApiResponse<?> sendVerify(@RequestBody EmailCodeRequest emailCode){
         return ApiResponse.builder().message("Send email code success").code(200).data(userAccountService.generateVerificationCode(emailCode.getEmail())).build();
     }
     @PostMapping("/forgot-code")
-    public ApiResponse<?> sendForgotCode(@RequestBody EmailCodeRequest emailCode) throws ParseException {
+    public ApiResponse<?> sendForgotCode(@RequestBody EmailCodeRequest emailCode){
         return ApiResponse.builder().message("Send email code success").code(200).data(userAccountService.generatePasswordResetCode(emailCode.getEmail())).build();
     }
     @PostMapping("/forgot-pass")
-    public ApiResponse<?> handleNewPassword(@RequestBody ForgotPassWordDTO forgotPassWordDTO) throws ParseException {
+    public ApiResponse<?> handleNewPassword(@RequestBody ForgotPassWordDTO forgotPassWordDTO){
         return ApiResponse.builder().message("Created new password").code(200).data(userAccountService.handleForgotPassword(forgotPassWordDTO)).build();
     }
 }

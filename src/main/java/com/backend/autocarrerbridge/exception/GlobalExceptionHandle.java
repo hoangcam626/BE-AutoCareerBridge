@@ -2,13 +2,8 @@ package com.backend.autocarrerbridge.exception;
 
 import com.backend.autocarrerbridge.model.api.ApiException;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +42,7 @@ public class GlobalExceptionHandle {
     apiException.setMessage(errorCode.getMessage());
     return ResponseEntity.status(errorCode.getHttpStatus()).body(apiException);
   }
+<<<<<<< HEAD
 //  @ExceptionHandler(MethodArgumentNotValidException.class)
 //  public ResponseEntity<ApiException> handleValidationExceptions(MethodArgumentNotValidException ex) {
 //    // Lấy lỗi đầu tiên từ danh sách lỗi
@@ -56,5 +52,7 @@ public class GlobalExceptionHandle {
 //    // Trả về thông báo lỗi duy nhất
 //    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiException().setCode(404).setMessage(errorMessage));
 //  }
+=======
+>>>>>>> a85fd4ae2b70804ee75aa1abfe4ea86cc64d22ee
 
 }

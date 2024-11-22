@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.dto.AccountRespone;
 
-import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
 import com.backend.autocarrerbridge.util.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

@@ -12,11 +12,12 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
-    RoleRepository roleRepository;
 
+    RoleRepository roleRepository;
 
     @Override
     public Role findById(Integer id) {
         return roleRepository.findById(id).orElse(null);
     }
+
 }
