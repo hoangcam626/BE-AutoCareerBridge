@@ -1,52 +1,51 @@
 package com.backend.autocarrerbridge.controller;
 
+
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
-
-import com.backend.autocarrerbridge.dto.SectionDTO;
+import com.backend.autocarrerbridge.dto.MajorDTO;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
-import com.backend.autocarrerbridge.service.impl.SectionServiceImpl;
+import com.backend.autocarrerbridge.service.MajorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@CrossOrigin("*")
-@RequestMapping("/section")
-public class SectionController {
+@RequestMapping("/major")
+public class MajorController {
 
   @Autowired
-  private SectionServiceImpl sectionService;
+  private MajorService majorService;
 
   @PostMapping("/create")
-  public ResponseEntity<ApiResponse<Object>> create(@RequestBody SectionDTO sectionDTO) {
-    SectionDTO createSection = sectionService.createSection(sectionDTO);
+  public ResponseEntity<ApiResponse<Object>> create(@RequestBody MajorDTO MajorDTO) {
+    MajorDTO createMajor = majorService.createMajor(MajorDTO);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
-        .setData(createSection);
+        .setData(createMajor);
     return ResponseEntity.ok(response);
   }
 
   @PostMapping("/update/{id}")
   public ResponseEntity<ApiResponse<Object>> update(@PathVariable("id") int id,
-      @RequestBody SectionDTO sectionDTO) {
-    SectionDTO updateSection = sectionService.updateSection(id, sectionDTO);
+      @RequestBody MajorDTO MajorDTO) {
+    MajorDTO updateMajor = majorService.updateMajor(id, MajorDTO);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
-        .setData(updateSection);
+        .setData(updateMajor);
     return ResponseEntity.ok(response);
   }
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<ApiResponse<Object>> delete(@PathVariable("id") int id) {
-    SectionDTO deleteSection = sectionService.deleteSection(id);
+    MajorDTO deleteMajor = majorService.deleteMajor(id);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
-        .setData(deleteSection);
+        .setData(deleteMajor);
     return ResponseEntity.ok(response);
   }
 
@@ -55,7 +54,7 @@ public class SectionController {
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
-        .setData(sectionService.getSectionById(id));
+        .setData(majorService.getMajorById(id));
     return ResponseEntity.ok(response);
   }
 
@@ -65,8 +64,7 @@ public class SectionController {
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
-        .setData(sectionService.getAllSection());
+        .setData(majorService.getAllMajor());
     return ResponseEntity.ok(response);
   }
-
 }

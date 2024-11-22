@@ -56,7 +56,11 @@ public class SecurityConfig {
             "/api/accounts/verify",
             "/api/accounts/forgot-code",
             "/api/accounts/forgot-pass",
-            "/api/accounts/jwt-introspect"
+            "/api/accounts/jwt-introspect",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-resources/**",
+        "/webjars/**"
     };
 
     @Bean

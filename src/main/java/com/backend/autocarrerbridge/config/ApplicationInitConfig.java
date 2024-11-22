@@ -25,7 +25,7 @@ public class ApplicationInitConfig {
 
     @Bean
     ApplicationRunner applicationRunner(UserAccountRepository accountRepository) {
-        Role role = roleRepository.findById(3).orElse(null);
+        Role role = roleRepository.findById(1).orElse(null);
         return args -> {
             if (accountRepository.findByUsername("admin") == null) {
                 UserAccount userAccounts = UserAccount.builder()

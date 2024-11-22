@@ -23,8 +23,6 @@ public class SectionConverter {
         .build();
 
     section.setStatus(sectionDTO.getStatus() != null ? sectionDTO.getStatus() : Status.ACTIVE);
-    section.setCreatedBy(sectionDTO.getCreatedBy() != null ? sectionDTO.getCreatedBy() : 1);
-    section.setUpdatedBy(sectionDTO.getUpdatedBy() != null ? sectionDTO.getUpdatedBy() : 1);
     section.setCreatedAt(sectionDTO.getCreatedAt() != null ? sectionDTO.getCreatedAt() : LocalDateTime.now());
     section.setUpdatedAt(LocalDateTime.now());
 
@@ -46,8 +44,6 @@ public class SectionConverter {
         .status(section.getStatus())
         .createdAt(section.getCreatedAt())
         .updatedAt(section.getUpdatedAt())
-        .createdBy(section.getCreatedBy())
-        .updatedBy(section.getUpdatedBy())
         .universityId(section.getUniversity().getId())
         .build();
   }

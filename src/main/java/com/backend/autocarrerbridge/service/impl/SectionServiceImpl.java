@@ -31,7 +31,7 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public SectionDTO createSection(SectionDTO sectionDTO) {
     University university = universityRepository.findById(sectionDTO.getUniversityId())
-        .orElseThrow(() -> new AppException("Could not find University",ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+        .orElseThrow(() -> new AppException("Không tìm thấy trường đại học",ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
     if (sectionRepository.findByName(sectionDTO.getName()) != null) {
       throw new AppException("Tên khoa đã tồn tại", ErrorCode.ERROR_NAME);
     }
