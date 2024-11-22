@@ -7,13 +7,12 @@ import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.mapper.EmployeeMapper;
-import com.backend.autocarrerbridge.mapper.RoleMapper;
 import com.backend.autocarrerbridge.mapper.UserAccountMapper;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
 import com.backend.autocarrerbridge.service.*;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
+import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -36,8 +35,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     BusinessService businessService;
     UserAccountMapper userAccountMapper;
     RoleService roleService;
-    RoleMapper roleMapper;
-    BusinessMapper businessMapper;
 
     @Override
     public List<EmployeeResponse> getListEmployeee() {
@@ -70,6 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .username(employee.getEmail())
                 .password("1234546")
                 .role(roleService.findById(PredefinedRole.EMPLOYEE.getValue()))
+                .state(State.APPROVED)
                 .build();
         UserAccount accountEmployee=userAccountService.registerUser(userAccount);
         employee.setUserAccount(accountEmployee);

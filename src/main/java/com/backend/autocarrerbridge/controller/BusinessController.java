@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BusinessController {
     BusinessService businessService;
     @PostMapping("/register")
-    private ApiResponse<?> registerBussiness(@ModelAttribute @Valid UserBusinessDTO userBusinessDTO){
+    private ApiResponse<?> registerBusiness(@ModelAttribute @Valid UserBusinessDTO userBusinessDTO){
         return ApiResponse.builder()
                 .code(200)
                 .message("Business Successfully registered")

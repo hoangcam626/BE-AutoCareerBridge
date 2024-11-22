@@ -6,7 +6,6 @@ import com.backend.autocarrerbridge.dto.industry.IndustrySdo;
 import com.backend.autocarrerbridge.dto.industry.IndustryUpdateSdi;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.model.api.ApiException;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.repository.IndustryRepo;
 import com.backend.autocarrerbridge.service.IndustryService;
