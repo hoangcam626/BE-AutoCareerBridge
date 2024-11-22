@@ -88,6 +88,12 @@ public class IndustryServiceImp implements IndustryService {
         if (industryUpdateSdi.getId() == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
+        if (industryUpdateSdi.getName() == null) {
+            throw new AppException(ERROR_CODE_NOT_FOUND);
+        }
+        if (industryUpdateSdi.getCode() == null) {
+            throw new AppException(ERROR_CODE_NOT_FOUND);
+        }
         if (industryRepo.existsByName(industryUpdateSdi.getName())) {
             throw new AppException(ERROR_EXIST_NAME);
         }
