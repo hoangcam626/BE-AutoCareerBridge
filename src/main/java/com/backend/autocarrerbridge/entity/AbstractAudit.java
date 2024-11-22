@@ -47,27 +47,27 @@ public abstract class AbstractAudit implements Serializable {
     @Column(name = "updated_by", insertable = false)
     private String updatedBy;
 
-//    @PrePersist
-//    public void prePersist() {
-//        this.status = Status.ACTIVE;
-//    }
-//
-//    @PreUpdate
-//    public void preUpdate() {
-//        this.status = Status.ACTIVE;
-//    }
+    //    @PrePersist
+    //    public void prePersist() {
+    //        this.status = Status.ACTIVE;
+    //    }
+    //
+    //    @PreUpdate
+    //    public void preUpdate() {
+    //        this.status = Status.ACTIVE;
+    //    }
 
     @PrePersist
     public void prePersist() {
         if (this.status == null) {
-            this.status = Status.ACTIVE;  // Chỉ gán khi status chưa được gán
+            this.status = Status.ACTIVE; // Chỉ gán khi status chưa được gán
         }
     }
 
     @PreUpdate
     public void preUpdate() {
         if (this.status == null) {
-            this.status = Status.ACTIVE;  // Chỉ gán khi status chưa được gán
+            this.status = Status.ACTIVE; // Chỉ gán khi status chưa được gán
         }
     }
 }
