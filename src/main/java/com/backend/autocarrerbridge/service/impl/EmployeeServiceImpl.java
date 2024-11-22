@@ -43,8 +43,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     UserAccountMapper userAccountMapper;
     RoleService roleService;
 
+
     @Override
-    public List<EmployeeResponse> getListEmployeee() throws ParseException {
+    public List<EmployeeResponse> getListEmployeee()throws ParseException {
         // get jwt, get email login
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -56,7 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     employeeResponse.setBusinessId(employee.getBusiness().getId());
                     return employeeResponse;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -80,7 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             Business business = businessService.findByEmail(emailBusiness);
             employee.setBusiness(business);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
 
         //        create UserAccount for Employee
