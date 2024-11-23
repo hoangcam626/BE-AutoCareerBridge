@@ -1,7 +1,6 @@
-package com.backend.autocarrerbridge.dto.job;
+package com.backend.autocarrerbridge.dto.request.job;
 
 import com.backend.autocarrerbridge.entity.Industry;
-import com.backend.autocarrerbridge.util.enums.State;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JobSdi {
+public class JobRequest {
     Integer userId;
     String title;
     String expireDate;

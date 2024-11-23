@@ -34,6 +34,10 @@ public class BusinessController {
                 .build();
     }
 
+    /**
+     * API để lấy danh sách công việc đã đăng tuyển
+     * @apiNote để truy vấn danh sách công việc trong cơ sở dữ liệu
+     */
     @GetMapping("/get-all-job")
     private ApiResponse<Object> getAllJob() {
         return jobService.getAllJob();

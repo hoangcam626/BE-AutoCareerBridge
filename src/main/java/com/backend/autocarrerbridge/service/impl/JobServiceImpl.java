@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.job.JobSdo;
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.repository.JobRepository;
@@ -21,7 +21,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ApiResponse<Object> getAllJob() {
-        List<JobSdo> jobs = jobRepository.getAllJob();
+        List<JobResponse> jobs = jobRepository.getAllJob();
         if (jobs.isEmpty()) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }

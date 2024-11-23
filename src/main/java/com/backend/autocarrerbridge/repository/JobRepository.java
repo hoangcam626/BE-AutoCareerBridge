@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.repository;
 
-import com.backend.autocarrerbridge.dto.job.JobSdo;
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.entity.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface JobRepository extends JpaRepository<Job, Integer> {
 
-    @Query("SELECT new com.backend.autocarrerbridge.dto.job.JobSdo(job) "
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
                   + "FROM Job job")
-    List<JobSdo> getAllJob();
+    List<JobResponse> getAllJob();
 
 }

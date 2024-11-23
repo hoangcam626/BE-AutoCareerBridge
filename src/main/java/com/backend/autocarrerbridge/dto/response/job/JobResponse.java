@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.job;
+package com.backend.autocarrerbridge.dto.response.job;
 
 import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.Industry;
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JobSdo {
+public class JobResponse {
     Integer userId;
     String title;
     LocalDate expireDate;
@@ -30,7 +30,7 @@ public class JobSdo {
     Industry industry;
     Employee employee;
 
-    public JobSdo(Job job) {
+    public JobResponse(Job job) {
         this.userId = job.getBusiness().getId();
         this.title = job.getTitle();
         this.expireDate = job.getExpireDate();
