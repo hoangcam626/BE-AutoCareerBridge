@@ -1,7 +1,6 @@
 package com.backend.autocarrerbridge.service;
 
 import com.backend.autocarrerbridge.dto.MajorDTO;
-import com.backend.autocarrerbridge.dto.SectionDTO;
 import java.util.List;
 
 

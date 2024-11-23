@@ -2,7 +2,7 @@ package com.backend.autocarrerbridge.mapper;
 
 import org.mapstruct.Mapper;
 
-import com.backend.autocarrerbridge.dto.request.RoleRequest;
+import com.backend.autocarrerbridge.dto.request.employee.RoleRequest;
 import com.backend.autocarrerbridge.dto.response.RoleResponse;
 import com.backend.autocarrerbridge.entity.Role;
 

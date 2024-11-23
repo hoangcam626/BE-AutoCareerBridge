@@ -13,28 +13,30 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class MajorServiceImpl implements MajorService {
 
-  @Autowired
-  private MajorRepository majorRepository;
 
-  @Autowired
-  private SectionRepository sectionRepository;
+  private final MajorRepository majorRepository;
+
+  private final SectionRepository sectionRepository;
 
 
   @Transactional
   @Override
   public MajorDTO createMajor(MajorDTO majorDTO) {
     Section section = sectionRepository.findById(majorDTO.getSectionId())
-        .orElseThrow(() -> new AppException("Không tìm thấy khoa",
+        .orElseThrow(() -> new AppException(
             ErrorCode.ERROR_SECTION_NOT_FOUND));
     if (majorRepository.findByName(majorDTO.getName()) != null) {
-      throw new AppException("Tên khoa đã tồn tại", ErrorCode.ERROR_NAME);
+      throw new AppException(ErrorCode.ERROR_NAME);
     }
 
     Major major = MajorConverter.convertToEntity(majorDTO);
@@ -47,7 +49,7 @@ public class MajorServiceImpl implements MajorService {
   @Override
   public MajorDTO updateMajor(int id, MajorDTO majorDTO) {
     Major major = majorRepository.findById(id)
-        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUNDED));
+        .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
     major.setCode(majorDTO.getCode());
     major.setName(majorDTO.getName());
     major.setStatus(majorDTO.getStatus());
@@ -63,7 +65,7 @@ public class MajorServiceImpl implements MajorService {
   @Override
   public MajorDTO deleteMajor(int id) {
     Major major = majorRepository.findById(id)
-        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUNDED));
+        .orElseThrow(() -> new AppException( ErrorCode.NOT_FOUNDED));
     majorRepository.delete(major);
     return MajorConverter.convertToDTO(major);
   }
@@ -72,13 +74,13 @@ public class MajorServiceImpl implements MajorService {
   public List<MajorDTO> getAllMajor() {
     List<Major> majors = majorRepository.findAll();
     majors.sort(Comparator.comparingLong(Major::getId).reversed());
-    return majors.stream().map(MajorConverter::convertToDTO).collect(Collectors.toList());
+    return majors.stream().map(MajorConverter::convertToDTO).toList();
   }
 
   @Override
   public List<MajorDTO> getMajorById(int id) {
     Major major = majorRepository.findById(id)
-        .orElseThrow(() -> new AppException("Chuyên ngành không tồn tại", ErrorCode.NOT_FOUNDED));
+        .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
     return List.of(MajorConverter.convertToDTO(major));
   }
 }

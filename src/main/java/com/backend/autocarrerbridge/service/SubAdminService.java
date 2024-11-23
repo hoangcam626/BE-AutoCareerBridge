@@ -5,25 +5,25 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminCreateSdi;
-import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminDeleteSdi;
-import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminSelfSdi;
-import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminUpdateSdi;
-import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminCreateSdo;
-import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminDeleteSdo;
-import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminSelfSdo;
-import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminUpdateSdo;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminDeleteRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminSelfRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminUpdateRequest;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
 
 public interface SubAdminService {
-    SubAdminCreateSdo create(SubAdminCreateSdi req) throws ParseException;
+    SubAdminCreateResponse create(SubAdminCreateRequest req) throws ParseException;
 
-    SubAdminUpdateSdo update(SubAdminUpdateSdi req) throws ParseException;
+    SubAdminUpdateResponse update(SubAdminUpdateRequest req) throws ParseException;
 
-    SubAdminSelfSdo self(SubAdminSelfSdi req);
+    SubAdminSelfResponse self(SubAdminSelfRequest req);
 
-    SubAdminDeleteSdo delete(SubAdminDeleteSdi req);
+    SubAdminDeleteResponse delete(SubAdminDeleteRequest req);
 
-    Page<SubAdminSelfSdo> pageSubAdmins(int page, int pageSize);
+    Page<SubAdminSelfResponse> pageSubAdmins(int page, int pageSize);
 
-    List<SubAdminSelfSdo> listSubAdmins();
+    List<SubAdminSelfResponse> listSubAdmins();
 }

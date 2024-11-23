@@ -6,11 +6,17 @@ import java.util.List;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.backend.autocarrerbridge.dto.image.sdo.ImageSdo;
-import com.backend.autocarrerbridge.dto.image.sdo.ImageUploadSdo;
+import com.backend.autocarrerbridge.dto.response.image.ImageResponse;
+import com.backend.autocarrerbridge.dto.response.image.ImageUploadSdo;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.ImageService;
 
@@ -38,14 +44,14 @@ public class ImageController {
     @GetMapping("/resource")
     public ResponseEntity<Resource> getImage(@RequestParam("imageId") Integer id) throws IOException {
 
-        ImageSdo imageSdo = imageService.getResource(id);
+        ImageResponse imageResponse = imageService.getResource(id);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, imageSdo.getMediaType())
-                .body(imageSdo.getResource());
+                .header(HttpHeaders.CONTENT_TYPE, imageResponse.getMediaType())
+                .body(imageResponse.getResource());
     }
 
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteImage(@RequestParam("imageId") Integer id) {
+    public ApiResponse<Object> deleteImage(@RequestParam("imageId") Integer id) {
         imageService.delete(id);
         return new ApiResponse<>();
     }

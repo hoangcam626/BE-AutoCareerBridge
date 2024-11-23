@@ -5,10 +5,9 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.*;
 
-import com.backend.autocarrerbridge.dto.request.EmployeeRequest;
-import com.backend.autocarrerbridge.dto.response.EmployeeResponse;
+import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
+import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.EmployeeService;
 import com.backend.autocarrerbridge.util.Constant;
@@ -16,6 +15,14 @@ import com.backend.autocarrerbridge.util.Constant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,9 +33,9 @@ public class EmployeeController {
 
     @PostMapping("/create")
     ApiResponse<EmployeeResponse> createEmployee(
-            @RequestBody @Valid EmployeeRequest request, @RequestHeader("Authorization") String token) {
+            @RequestBody @Valid EmployeeRequest request) {
         return ApiResponse.<EmployeeResponse>builder()
-                .data(employeeService.addEmployee(request, token))
+                .data(employeeService.addEmployee(request))
                 .build();
     }
 

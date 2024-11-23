@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.dto.request.EmployeeRequest;
-import com.backend.autocarrerbridge.dto.response.EmployeeResponse;
+import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
+import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
 
 @Service
 public interface EmployeeService {
@@ -14,7 +14,7 @@ public interface EmployeeService {
 
     EmployeeResponse getEmployeeById(Integer id);
 
-    EmployeeResponse addEmployee(EmployeeRequest request, String token);
+    EmployeeResponse addEmployee(EmployeeRequest request);
 
     EmployeeResponse updateEmployee(Integer id, EmployeeRequest request);
 
