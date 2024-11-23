@@ -78,6 +78,7 @@ public class Constant {
     // Ngành
     public static final String EXIST_NAME = "Tên ngành đã tồn tại.";
     public static final String EXIST_CODE = "Mã ngành đã tồn tại.";
+    public static final String INACTIVE = "Không tìm thấy ngành nghề hoặc ngành nghề đã bị vô hiệu hoá";
     public static final String EXIST_NAME_AND_CODE = "Tên ngành hoặc mã ngành đã tồn tại.";
     public static final String NO_CHANGES_DETECTED = "Không có thay đổi nào.";
     public static final String DELETED = "Xóa thành công.";

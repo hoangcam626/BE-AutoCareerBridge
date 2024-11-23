@@ -3,10 +3,12 @@ package com.backend.autocarrerbridge.controller;
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.BusinessService;
+import com.backend.autocarrerbridge.service.JobService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 @RequestMapping("api/business")
 public class BusinessController {
     BusinessService businessService;
+    JobService jobService;
     @PostMapping("/register")
     public ApiResponse<Object> registerBusiness(@ModelAttribute @Valid UserBusinessRequest userBusinessRequest){
         return ApiResponse.builder()
@@ -29,5 +32,14 @@ public class BusinessController {
                 .data(businessService
                         .registerBusiness(userBusinessRequest))
                 .build();
+    }
+
+    /**
+     * API để lấy danh sách công việc đã đăng tuyển
+     * @apiNote để truy vấn danh sách công việc trong cơ sở dữ liệu
+     */
+    @GetMapping("/get-all-job")
+    private ApiResponse<Object> getAllJob() {
+        return jobService.getAllJob();
     }
 }
