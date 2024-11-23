@@ -1,11 +1,9 @@
 package com.backend.autocarrerbridge.controller;
 
+import com.backend.autocarrerbridge.service.JobService;
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.backend.autocarrerbridge.dto.AccountRespone.UserBusinessDTO;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
@@ -21,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 @RequestMapping("api/business")
 public class BusinessController {
     BusinessService businessService;
-
+    JobService jobService;
     @PostMapping("/register")
     private ApiResponse<?> registerBusiness(@ModelAttribute @Valid UserBusinessDTO userBusinessDTO) {
         return ApiResponse.builder()
@@ -29,5 +27,10 @@ public class BusinessController {
                 .message("Business Successfully registered")
                 .data(businessService.registerBusiness(userBusinessDTO))
                 .build();
+    }
+
+    @GetMapping("/get-all-job")
+    private ApiResponse<Object> getAllJob() {
+        return jobService.getAllJob();
     }
 }
