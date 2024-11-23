@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
+import com.backend.autocarrerbridge.dto.response.account.AuthenticationResponse;
 
 public interface UserAuthentication {
     AuthenticationResponse authenticate(String username);

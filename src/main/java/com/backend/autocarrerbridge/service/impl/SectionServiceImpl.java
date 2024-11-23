@@ -13,27 +13,26 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+@RequiredArgsConstructor
 @Service
 public class SectionServiceImpl implements SectionService {
 
-  @Autowired
-  private SectionRepository sectionRepository;
 
-  @Autowired
-  private UniversityRepository universityRepository;
+  private final SectionRepository sectionRepository;
+
+  private final UniversityRepository universityRepository;
 
 
   @Transactional
   @Override
   public SectionDTO createSection(SectionDTO sectionDTO) {
     University university = universityRepository.findById(sectionDTO.getUniversityId())
-        .orElseThrow(() -> new AppException("Không tìm thấy trường đại học",ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+        .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
     if (sectionRepository.findByName(sectionDTO.getName()) != null) {
-      throw new AppException("Tên khoa đã tồn tại", ErrorCode.ERROR_NAME);
+      throw new AppException(ErrorCode.ERROR_NAME);
     }
 
     Section section = SectionConverter.convertToEntity(sectionDTO);
@@ -46,7 +45,7 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public SectionDTO updateSection(int id, SectionDTO sectionDTO) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUNDED));
+        .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
     section.setName(sectionDTO.getName());
     section.setDescription(sectionDTO.getDescription());
     section.setStatus(sectionDTO.getStatus());
@@ -59,7 +58,7 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public SectionDTO deleteSection(int id) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUNDED));
+        .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
     sectionRepository.delete(section);
     return SectionConverter.convertToDTO(section);
   }
@@ -69,14 +68,14 @@ public class SectionServiceImpl implements SectionService {
     List<Section> sectionList = sectionRepository.findAll();
     sectionList.sort(Comparator.comparingLong(Section::getId).reversed());
     return sectionList.stream().map(SectionConverter::convertToDTO)
-        .collect(Collectors.toList());
+        .toList();
 
   }
 
   @Override
   public List<SectionDTO> getSectionById(int id) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException("Section không tồn tại", ErrorCode.NOT_FOUNDED));
+        .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
     return List.of(SectionConverter.convertToDTO(section));
   }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.backend.autocarrerbridge.dto.image.sdo.ImageSdo;
+import com.backend.autocarrerbridge.dto.response.image.ImageResponse;
 import com.backend.autocarrerbridge.entity.Image;
 
 public interface ImageService {
@@ -19,5 +19,5 @@ public interface ImageService {
 
     void delete(Integer id);
 
-    ImageSdo getResource(Integer id) throws IOException;
+    ImageResponse getResource(Integer id) throws IOException;
 }

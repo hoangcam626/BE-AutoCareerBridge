@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
 @Entity
+@Getter
+@Setter
 @Table(name = "business")
 public class Business extends AbstractAudit {
 

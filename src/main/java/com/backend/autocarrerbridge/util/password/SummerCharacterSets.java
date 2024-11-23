@@ -1,6 +1,10 @@
 package com.backend.autocarrerbridge.util.password;
 
-import static com.backend.autocarrerbridge.util.password.CharacterSet.*;
+
+import static com.backend.autocarrerbridge.util.password.CharacterSet.ALPHA_LOWER_CHARACTERS;
+import static com.backend.autocarrerbridge.util.password.CharacterSet.ALPHA_UPPER_CHARACTERS;
+import static com.backend.autocarrerbridge.util.password.CharacterSet.NUMERIC_CHARACTERS;
+import static com.backend.autocarrerbridge.util.password.CharacterSet.SPECIAL_CHARACTERS;
 
 public enum SummerCharacterSets implements PasswordCharacterSet {
     ALPHA_UPPER(ALPHA_UPPER_CHARACTERS, 1),

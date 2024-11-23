@@ -9,19 +9,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.backend.autocarrerbridge.dto.industry.IndustrySdo;
+import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.entity.Industry;
 
 @Repository
 public interface IndustryRepo extends JpaRepository<Industry, Integer> {
 
-    @Query("SELECT new com.backend.autocarrerbridge.dto.industry.IndustrySdo(industry) "
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustryResponse(industry) "
             + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE")
-    List<IndustrySdo> getAllIndustryActive();
+    List<IndustryResponse> getAllIndustryActive();
 
-    @Query("SELECT new com.backend.autocarrerbridge.dto.industry.IndustrySdo(industry) "
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustryResponse(industry) "
             + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE")
-    Page<IndustrySdo> getAllIndustryActivePag(
+    Page<IndustryResponse> getAllIndustryActivePag(
             @Param("name") String name, @Param("code") String code, Pageable pageable);
 
     boolean existsByName(String name);

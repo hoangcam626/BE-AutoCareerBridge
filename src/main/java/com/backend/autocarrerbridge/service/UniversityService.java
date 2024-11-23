@@ -1,11 +1,11 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.DisplayUniverSityDTO;
-import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
-import com.backend.autocarrerbridge.entity.University;
+import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
+import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
+
 
 public interface UniversityService {
-    DisplayUniverSityDTO registerUniversity(UserUniversityDTO userUniversityDTO);
+    UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest);
 
-    University findByEmail(String email);
+
 }

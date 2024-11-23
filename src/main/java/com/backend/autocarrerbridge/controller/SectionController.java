@@ -5,19 +5,28 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
 import com.backend.autocarrerbridge.dto.SectionDTO;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
-import com.backend.autocarrerbridge.service.impl.SectionServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.backend.autocarrerbridge.service.SectionService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/section")
+@RequiredArgsConstructor
 public class SectionController {
 
-  @Autowired
-  private SectionServiceImpl sectionService;
+  private final SectionService sectionService;
 
   @PostMapping("/create")
   public ResponseEntity<ApiResponse<Object>> create(@RequestBody SectionDTO sectionDTO) {
