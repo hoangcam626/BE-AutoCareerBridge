@@ -2,6 +2,8 @@ package com.backend.autocarrerbridge.exception;
 
 import java.util.Objects;
 
+
+import com.backend.autocarrerbridge.util.Constant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,14 +25,20 @@ public class GlobalExceptionHandle {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiException> handleArgumentNotValidException(MethodArgumentNotValidException exception) {
-        String enumkey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.valueOf(enumkey);
+        String enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
+
+        // Sử dụng phương thức fromMessage để lấy ErrorCode từ enumKey (message)
+        ErrorCode errorCode = ErrorCode.fromMessage(enumKey);
 
         ApiException apiException = new ApiException();
         apiException.setCode(errorCode.getCode());
         apiException.setMessage(errorCode.getMessage());
+
+        // Trả về ResponseEntity với mã lỗi và thông điệp từ errorCode
         return ResponseEntity.status(errorCode.getHttpStatus()).body(apiException);
     }
+
+
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     ResponseEntity<ApiException> handleIllegalArgumentException(IllegalArgumentException exception) {

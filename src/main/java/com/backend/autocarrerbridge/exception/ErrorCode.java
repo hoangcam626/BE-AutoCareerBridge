@@ -52,6 +52,9 @@ public enum ErrorCode {
     NOT_FOUNDED(BAD_REQUEST,EXIST_CODE ,HttpStatus.BAD_REQUEST ),
     ERROR_SECTION_NOT_FOUND(BAD_REQUEST, EXIST_NAME_AND_CODE, HttpStatus.BAD_REQUEST),
     ERROR_TOKEN_INVALID(BAD_REQUEST, ERROR_TOKEN_INVALID_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    PHONE_NOT_BLANK(BAD_REQUEST, PHONE_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
+    GENDER_NOT_BLANK(BAD_REQUEST, GENDER_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;
@@ -62,5 +65,13 @@ public enum ErrorCode {
         this.code = code;
         this.message = message;
         this.httpStatus = httpStatus;
+    }
+    public static ErrorCode fromMessage(String message) {
+        for (ErrorCode errorCode : ErrorCode.values()) {
+            if (errorCode.getMessage().equals(message)) {
+                return errorCode;
+            }
+        }
+        throw new IllegalArgumentException("No matching ErrorCode for message: " + message);
     }
 }

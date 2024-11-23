@@ -48,7 +48,7 @@ public class EmployeeController {
 
     @PutMapping("/{employeeId}")
     ApiResponse<EmployeeResponse> updateEmployee(
-            @PathVariable Integer employeeId, @RequestBody EmployeeRequest request) {
+            @PathVariable Integer employeeId, @RequestBody @Valid EmployeeRequest request) {
         return ApiResponse.<EmployeeResponse>builder()
                 .data(employeeService.updateEmployee(employeeId, request))
                 .build();

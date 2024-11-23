@@ -1,5 +1,8 @@
 package com.backend.autocarrerbridge.util;
 
+import lombok.Getter;
+
+
 public class Constant {
     // HTTP Status Codes
     public static final int SUCCESS = 200;
@@ -64,4 +67,20 @@ public class Constant {
     public static final String EXIST_NAME_AND_CODE = "Tên ngành hoặc mã ngành đã tồn tại";
     public static final String NO_CHANGES_DETECTED = "Không có gì thay đổi";
     public static final String DELETED = "Xoá thành công";
+
+    //Employee
+    public static final String NAME_NOT_BLANK_MESSAGE = "Name cannot be blank";
+    public static final String GENDER_NOT_BLANK_MESSAGE = "Gender cannot be blank";
+    public static final String DOB_NOT_BLANK_MESSAGE = "Date of birth cannot be blank";
+    public static final String EMAIL_NOT_BLANK_MESSAGE = "Email cannot be blank";
+    public static final String PHONE_NOT_BLANK_MESSAGE = "Phone can't not be blank";
+    public static final String COED_EMPLOYEE_NOT_BLANK_MESSAGE = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+
+
 }
