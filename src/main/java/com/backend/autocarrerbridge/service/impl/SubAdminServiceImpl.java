@@ -4,7 +4,6 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 
@@ -17,15 +16,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminCreateSdi;
-import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminDeleteSdi;
-import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminSelfSdi;
-import com.backend.autocarrerbridge.dto.subadmin.sdi.SubAdminUpdateSdi;
-import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminCreateSdo;
-import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminDeleteSdo;
-import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminSelfSdo;
-import com.backend.autocarrerbridge.dto.subadmin.sdo.SubAdminUpdateSdo;
-import com.backend.autocarrerbridge.emailconfig.Email;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminDeleteRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminSelfRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminUpdateRequest;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
+import com.backend.autocarrerbridge.emailconfig.EmailDTO;
 import com.backend.autocarrerbridge.emailconfig.SendEmail;
 import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -53,7 +52,7 @@ public class SubAdminServiceImpl implements SubAdminService {
     private final ModelMapper modelMapper;
     private final SendEmail sendEmail;
 
-    public SubAdminCreateSdo create(SubAdminCreateSdi req) throws ParseException {
+    public SubAdminCreateResponse create(SubAdminCreateRequest req) throws ParseException {
 
         validateCreate(req);
 
@@ -82,20 +81,20 @@ public class SubAdminServiceImpl implements SubAdminService {
         subAdmin = subAdminRepository.save(subAdmin);
 
         // send mail with sub-admin account
-        Email email = new Email(subAdmin.getEmail(), "Tài Khoản Của Bạn", "");
-        sendEmail.sendAccount(email, password);
+        EmailDTO emailDTO = new EmailDTO(subAdmin.getEmail(), "Tài Khoản Của Bạn", "");
+        sendEmail.sendAccount(emailDTO, password);
 
-        return SubAdminCreateSdo.of(subAdmin.getId());
+        return SubAdminCreateResponse.of(subAdmin.getId());
     }
 
-    public SubAdminUpdateSdo update(SubAdminUpdateSdi req) throws ParseException {
+    public SubAdminUpdateResponse update(SubAdminUpdateRequest req) throws ParseException {
 
         var subAdmin = getSubAdmin(req.getId());
 
         boolean isSameAddress = subAdmin.getAddress().equals(req.getAddress());
         boolean isSamePhone = subAdmin.getPhone().equals(req.getPhone());
         boolean isNullImage =
-                req.getSubAdminImage() == null && req.getSubAdminImage().isEmpty();
+                req.getSubAdminImage() == null || req.getSubAdminImage().isEmpty();
 
         if (isSameAddress && isSamePhone && isNullImage) {
             throw new AppException(NO_CHANGE_DETECTED);
@@ -118,40 +117,40 @@ public class SubAdminServiceImpl implements SubAdminService {
         subAdmin.setUpdatedBy(nameAccountLogin);
 
         subAdminRepository.save(subAdmin);
-        return SubAdminUpdateSdo.of(Boolean.TRUE);
+        return SubAdminUpdateResponse.of(Boolean.TRUE);
     }
 
-    public SubAdminSelfSdo self(SubAdminSelfSdi req) {
+    public SubAdminSelfResponse self(SubAdminSelfRequest req) {
         var subAdmin = getSubAdmin(req.getId());
-        return modelMapper.map(subAdmin, SubAdminSelfSdo.class);
+        return modelMapper.map(subAdmin, SubAdminSelfResponse.class);
     }
 
-    public SubAdminDeleteSdo delete(SubAdminDeleteSdi req) {
+    public SubAdminDeleteResponse delete(SubAdminDeleteRequest req) {
         var subAdmin = getSubAdmin(req.getId());
         subAdmin.setStatus(Status.INACTIVE);
         subAdminRepository.save(subAdmin);
-        return SubAdminDeleteSdo.of(Boolean.TRUE);
+        return SubAdminDeleteResponse.of(Boolean.TRUE);
     }
 
-    public Page<SubAdminSelfSdo> pageSubAdmins(int page, int pageSize) {
+    public Page<SubAdminSelfResponse> pageSubAdmins(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<SubAdmin> subAdmins = subAdminRepository.findAll(pageable);
-        return subAdmins.map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfSdo.class));
+        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable);
+        return subAdmins.map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class));
     }
 
     @Override
-    public List<SubAdminSelfSdo> listSubAdmins() {
-        List<SubAdmin> subAdmins = subAdminRepository.findAll();
+    public List<SubAdminSelfResponse> listSubAdmins() {
+        List<SubAdmin> subAdmins = subAdminRepository.findAllByStatus();
         return subAdmins.stream()
-                .map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfSdo.class))
-                .collect(Collectors.toList());
+                .map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class))
+                .toList();
     }
 
     public SubAdmin getSubAdmin(Integer id) {
         return subAdminRepository.findById(id).orElseThrow(() -> new AppException(ERROR_NOT_FOUND_SUB_ADMIN));
     }
 
-    public void validateCreate(SubAdminCreateSdi req) {
+    public void validateCreate(SubAdminCreateRequest req) {
         if (!Validation.isValidEmail(req.getEmail())) {
             throw new AppException(ERROR_VALID_EMAIL);
         }

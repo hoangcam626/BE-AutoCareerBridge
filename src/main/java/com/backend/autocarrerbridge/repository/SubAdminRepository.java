@@ -18,8 +18,8 @@ public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
     boolean existsBySubAdminCode(String code);
 
     @Query("select sa from SubAdmin sa where sa.status <> 0")
-    Page<SubAdmin> findAll(Pageable pageable);
+    Page<SubAdmin> findAllPageable(Pageable pageable);
 
     @Query("select sa from SubAdmin sa where sa.status <> 0")
-    List<SubAdmin> findAll();
+    List<SubAdmin> findAllByStatus();
 }

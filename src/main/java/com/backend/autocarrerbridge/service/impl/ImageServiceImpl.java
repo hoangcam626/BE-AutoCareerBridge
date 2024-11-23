@@ -9,8 +9,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.backend.autocarrerbridge.dto.image.sdo.ImageSdo;
+import com.backend.autocarrerbridge.dto.response.image.ImageResponse;
 import com.backend.autocarrerbridge.entity.Image;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.repository.ImageRepository;
@@ -35,7 +36,10 @@ public class ImageServiceImpl implements ImageService {
     @Value("${media.img_path}")
     private String imgFolder;
 
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+    private static final int BYTES_IN_KB = 1024;
+    private static final int KB_IN_MB = 1024;
+    private static final long MAX_FILE_SIZE_BYTES = 10L * BYTES_IN_KB * KB_IN_MB; // 10 MB
+
 
     private static final List<String> ACCEPTED_CONTENT_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
 
@@ -76,7 +80,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     public List<Integer> uploadFiles(MultipartFile[] reqs) {
-        return Arrays.stream(reqs).map(this::uploadFile).collect(Collectors.toList());
+        return Arrays.stream(reqs).map(this::uploadFile).toList();
     }
 
     public void delete(Integer id) {
@@ -91,13 +95,13 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-    public ImageSdo getResource(Integer id) throws IOException {
+    public ImageResponse getResource(Integer id) throws IOException {
         Path path = Paths.get(getPathImage(id));
         Image media = getImage(id);
         Resource resource = new UrlResource(path.toUri());
 
         if (resource.exists()) {
-            return ImageSdo.of(resource, media.getType());
+            return ImageResponse.of(resource, media.getType());
         } else {
             throw new AppException(ERROR_FIND_IMAGE);
         }
@@ -124,7 +128,7 @@ public class ImageServiceImpl implements ImageService {
         if (!ACCEPTED_CONTENT_TYPES.contains(req.getContentType())) {
             throw new AppException(ERROR_TYPE_FILE);
         }
-        if (req.getSize() > MAX_FILE_SIZE) {
+        if (req.getSize() > MAX_FILE_SIZE_BYTES) {
             throw new AppException(ERROR_LIMIT_SIZE_FILE);
         }
     }

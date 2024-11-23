@@ -1,8 +1,8 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.industry.IndustrySdi;
-import com.backend.autocarrerbridge.dto.industry.IndustrySdo;
-import com.backend.autocarrerbridge.dto.industry.IndustryUpdateSdi;
+import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
+import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
+import com.backend.autocarrerbridge.dto.request.industry.IndustryUpdateRequest;
 import com.backend.autocarrerbridge.model.api.ApiResponse;
 
 public interface IndustryService {
@@ -11,9 +11,9 @@ public interface IndustryService {
 
     ApiResponse<Object> getAllIndustry();
 
-    ApiResponse<IndustrySdo> createIndustry(IndustrySdi industrySdi);
+    ApiResponse<IndustryResponse> createIndustry(IndustryRequest industryRequest);
 
-    ApiResponse<IndustrySdo> updateIndustry(IndustryUpdateSdi industryUpdateSdi);
+    ApiResponse<IndustryResponse> updateIndustry(IndustryUpdateRequest industryUpdateRequest);
 
     ApiResponse<Object> inactiveIndustry(Integer id);
 }

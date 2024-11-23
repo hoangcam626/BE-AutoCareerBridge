@@ -3,16 +3,14 @@ package com.backend.autocarrerbridge.converter;
 import com.backend.autocarrerbridge.dto.SectionDTO;
 import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.entity.University;
-import com.backend.autocarrerbridge.repository.UniversityRepository;
 import com.backend.autocarrerbridge.util.enums.Status;
 import java.time.LocalDateTime;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
 
 @Component
+
 public class SectionConverter {
-  @Autowired
-  UniversityRepository universityRepository;
 
   public static Section convertToEntity(SectionDTO sectionDTO){
 
