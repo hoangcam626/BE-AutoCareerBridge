@@ -35,11 +35,12 @@ public class GlobalExceptionHandle {
     @ExceptionHandler(value = IllegalArgumentException.class)
     ResponseEntity<ApiException> handleIllegalArgumentException(IllegalArgumentException exception) {
         String message = exception.getMessage();
-        ErrorCode errorCode = ErrorCode.valueOf(message);
+        ErrorCode errorCode = ErrorCode.fromMessage(message);
 
         ApiException apiException = new ApiException();
         apiException.setCode(errorCode.getCode());
         apiException.setMessage(errorCode.getMessage());
         return ResponseEntity.status(errorCode.getHttpStatus()).body(apiException);
     }
+
 }

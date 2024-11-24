@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
 
 /**
@@ -47,13 +48,17 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
      * @return - Thông tin về workshop và danh sách các doanh nghiệp tham gia.
      */
     public WorkShopBusinessReponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
-
+        if(state != State.PENDING && state != State.APPROVED && state != State.REJECTED) {
+            throw new AppException(ERROR_NO_CONTENT);
+        }
         // Lấy thông tin workshop theo ID
         WorkShopResponse workShopResponse = workShopService.getWorkShopById(workshopId);
 
         // Lấy danh sách các doanh nghiệp tham gia workshop
         List<Business> businesses = workShopBussinessRepository.getAllBusiness(workshopId, pageable, state).getContent();
-
+        if(businesses.isEmpty()) {
+            throw new AppException(ERROR_NO_CONTENT);
+        }
         // Chuyển đổi danh sách doanh nghiệp thành BusinessResponse
         List<BusinessResponse> businessResponses = businesses.stream()
                 .map(business -> modelMapper.map(business, BusinessResponse.class))
