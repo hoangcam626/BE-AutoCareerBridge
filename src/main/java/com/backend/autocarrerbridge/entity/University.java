@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "university")
 public class University extends AbstractAudit {
@@ -43,6 +44,20 @@ public class University extends AbstractAudit {
     private UserAccount userAccount;
 
     @ManyToOne
-    @JoinColumn(name = "location_id", nullable = true)
+    @JoinColumn(name = "location_id")
     private Location location;
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        University that = (University) object;
+        return Objects.equals(id, that.id) && Objects.equals(logoImageId, that.logoImageId) && Objects.equals(name, that.name) && Objects.equals(website, that.website) && Objects.equals(foundedYear, that.foundedYear) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone) && Objects.equals(description, that.description) && Objects.equals(userAccount, that.userAccount) && Objects.equals(location, that.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, logoImageId, name, website, foundedYear, email, phone, description, userAccount, location);
+    }
 }

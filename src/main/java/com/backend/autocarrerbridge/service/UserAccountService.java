@@ -8,7 +8,7 @@ import com.backend.autocarrerbridge.emailconfig.EmailCode;
 import com.backend.autocarrerbridge.entity.UserAccount;
 
 public interface UserAccountService {
-    UserAccountLoginResponse authenticateUser(UserAccountRequest useraccountDTO);
+    UserAccountLoginResponse authenticateUser(UserAccountRequest userAccountRequest);
     void saveRefreshTokenForUser(Integer id, String refreshToken);
     UserAccount getUserByUsername(String username);
     UserAccount registerUser(UserAccount userAccount);

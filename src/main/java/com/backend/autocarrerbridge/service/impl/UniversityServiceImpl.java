@@ -87,6 +87,11 @@ public class UniversityServiceImpl implements UniversityService {
         return universityRegisterResponse;
     }
 
+    @Override
+    public University findById(Integer id) {
+        return universityRepository.findById(id).orElse(null);
+    }
+
 
 }
 

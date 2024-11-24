@@ -6,6 +6,8 @@ import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -30,4 +32,18 @@ public class UniversityJob extends AbstractAudit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "job_id", nullable = false)
     private Job job;
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        UniversityJob that = (UniversityJob) object;
+        return Objects.equals(id, that.id) && statusConnected == that.statusConnected && Objects.equals(university, that.university) && Objects.equals(job, that.job);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, statusConnected, university, job);
+    }
 }

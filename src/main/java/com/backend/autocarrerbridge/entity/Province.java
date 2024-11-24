@@ -7,8 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
 @Entity
 @Table(name = "provinces")
 public class Province {

@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 public enum ErrorCode {
 
@@ -57,6 +59,20 @@ public enum ErrorCode {
     NOT_FOUNDED(BAD_REQUEST,EXIST_CODE ,HttpStatus.BAD_REQUEST ),
     ERROR_SECTION_NOT_FOUND(BAD_REQUEST, EXIST_NAME_AND_CODE, HttpStatus.BAD_REQUEST),
     ERROR_TOKEN_INVALID(BAD_REQUEST, ERROR_TOKEN_INVALID_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_EMAIL_REQUIRED(BAD_REQUEST, EMAIL_REQUIRED_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_EMAIL_INVALID(BAD_REQUEST, EMAIL_INVALID_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_NAME_INVALID(BAD_REQUEST, ERROR_NAME_EMPTY, HttpStatus.BAD_REQUEST),
+    ERROR_TAX_CODE(BAD_REQUEST, TAX_CODE, HttpStatus.BAD_REQUEST),
+    /** Các lỗi liên quan đến mã khôi phục */
+    ERROR_PW_EMPTY(BAD_REQUEST, ERROR_NOT_EMPTY_PW, HttpStatus.BAD_REQUEST),
+    ERROR_FORGOT_CODE_REQUIRED(BAD_REQUEST, FORGOT_CODE_REQUIRED_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_FORGOT_CODE_INVALID(BAD_REQUEST, FORGOT_CODE_INVALID_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_FORGOT_CODE_EMPTY(BAD_REQUEST, FORGOT_CODE_EMPTY_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_TITLE_EMPTY(BAD_REQUEST, TITLE_WORK_SHOP_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_DES_NULL(BAD_REQUEST, DES_WORK_SHOP_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_DATE_EMPTY(BAD_REQUEST, DATE_WORK_SHOP_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_FAIL_WORK_SHOP(BAD_REQUEST, REQUEST_WORKSHOP_FAIL, HttpStatus.BAD_REQUEST),
+    ERROR_WORK_SHOP_DATE(BAD_REQUEST, DATE_WORKSHOP, HttpStatus.BAD_REQUEST)
     ;
 
     private final int code;
@@ -67,6 +83,13 @@ public enum ErrorCode {
         this.code = code;
         this.message = message;
         this.httpStatus = httpStatus;
+    }
+
+    public static ErrorCode fromMessage(String message) {
+        return Arrays.stream(ErrorCode.values())
+                .filter(errorCode -> errorCode.getMessage().equals(message))
+                .findFirst()
+                .orElse(ErrorCode.ERROR_CODE_NOT_FOUND);
     }
 
 

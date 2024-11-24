@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.crypto.spec.SecretKeySpec;
 
-
+@SuppressWarnings("squid:S4502")
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -67,7 +67,6 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/webjars/**"
     };
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtBlacklistFilter jwtBlacklistFilter)
             throws Exception {

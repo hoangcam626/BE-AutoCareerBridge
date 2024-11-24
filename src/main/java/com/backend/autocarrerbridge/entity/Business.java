@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.util.Objects;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Getter
-@Setter
+@Data
 @Table(name = "business")
 public class Business extends AbstractAudit {
 
@@ -50,10 +51,24 @@ public class Business extends AbstractAudit {
     private Integer licenseImageId;
 
     @ManyToOne
-    @JoinColumn(name = "location_id", nullable = true)
+    @JoinColumn(name = "location_id")
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Business business = (Business) object;
+        return Objects.equals(id, business.id) && Objects.equals(name, business.name) && Objects.equals(taxCode, business.taxCode) && Objects.equals(companySize, business.companySize) && Objects.equals(website, business.website) && Objects.equals(foundYear, business.foundYear) && Objects.equals(email, business.email) && Objects.equals(phone, business.phone) && Objects.equals(description, business.description) && Objects.equals(businessImageId, business.businessImageId) && Objects.equals(licenseImageId, business.licenseImageId) && Objects.equals(location, business.location) && Objects.equals(userAccount, business.userAccount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name, taxCode, companySize, website, foundYear, email, phone, description, businessImageId, licenseImageId, location, userAccount);
+    }
 }

@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
 @Entity
 @Table(name = "notification")
 public class Notification extends AbstractAudit {
@@ -22,4 +22,18 @@ public class Notification extends AbstractAudit {
 
     @Column(name = "status_read")
     private Integer statusRead;
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Notification that = (Notification) object;
+        return Objects.equals(id, that.id) && Objects.equals(message, that.message) && Objects.equals(statusRead, that.statusRead);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, message, statusRead);
+    }
 }

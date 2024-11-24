@@ -7,9 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
 @Entity
+@Data
 @Table(name = "industry")
 public class Industry extends AbstractAudit {
 
