@@ -50,34 +50,47 @@ public class UserAccountServiceImpl implements UserAccountService {
      String codeExist = "Exist";
      Integer codeTime = 60;
 
+    /**
+     * Xác thực người dùng dựa trên tên đăng nhập và mật khẩu.
+     *
+     * @param userAccountRequest đối tượng chứa thông tin tên đăng nhập và mật khẩu.
+     * @return phản hồi đăng nhập chứa thông tin tài khoản nếu xác thực thành công.
+     * @throws AppException nếu không tìm thấy tài khoản, mật khẩu không đúng, hoặc tài khoản đang chờ duyệt.
+     */
     @Override
-    public UserAccountLoginResponse authenticateUser(UserAccountRequest useraccountDTO) {
+    public UserAccountLoginResponse authenticateUser(UserAccountRequest userAccountRequest) {
 
-        if (useraccountDTO.getUsername() == null || useraccountDTO.getPassword() == null) {
+        if (userAccountRequest.getUsername() == null || userAccountRequest.getPassword() == null || userAccountRequest.getUsername().isEmpty() || userAccountRequest.getPassword().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
-        UserAccount user = userAccountRepository.findByUsername(useraccountDTO.getUsername());
+        UserAccount user = userAccountRepository.findByUsername(userAccountRequest.getUsername());
         if (user == null) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
-        if (passwordEncoder.matches(useraccountDTO.getPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(userAccountRequest.getPassword(), user.getPassword())) {
             if(user.getState().equals(State.PENDING)){
                 throw new AppException(ErrorCode.ERROR_USER_PENDING);
             }
-            UserAccountRequest userAccountRequest = new UserAccountRequest();
-            userAccountRequest.setStatus(user.getStatus());
-            userAccountRequest.setId(user.getId());
-            userAccountRequest.setUsername(user.getUsername());
-            userAccountRequest.setPassword(user.getPassword());
-            userAccountRequest.setRole(modelMapper.map(user.getRole(), RoleRequest.class));
+            UserAccountRequest userRequest = new UserAccountRequest();
+            userRequest.setStatus(user.getStatus());
+            userRequest.setId(user.getId());
+            userRequest.setUsername(user.getUsername());
+            userRequest.setPassword(user.getPassword());
+            userRequest.setRole(modelMapper.map(user.getRole(), RoleRequest.class));
 
-            return  modelMapper.map(userAccountRequest, UserAccountLoginResponse.class);
+            return  modelMapper.map(userRequest, UserAccountLoginResponse.class);
         } else {
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }
     }
-
+    /**
+     * Lưu refresh token cho tài khoản người dùng.
+     *
+     * @param id id của tài khoản người dùng.
+     * @param refreshToken token cần lưu.
+     * @throws RuntimeException nếu không tìm thấy tài khoản.
+     */
     @Override
     public void saveRefreshTokenForUser(Integer id, String refreshToken) {
         UserAccount userAccounts = userAccountRepository.findById(id)
@@ -90,7 +103,12 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserAccount getUserByUsername(String username) {
         return userAccountRepository.findByUsername(username);
     }
-
+    /**
+     * Đăng ký tài khoản người dùng mới.
+     *
+     * @param userAccount đối tượng tài khoản người dùng cần đăng ký.
+     * @return tài khoản đã được lưu vào cơ sở dữ liệu.
+     */
     @Override
     public UserAccount registerUser(UserAccount userAccount) {
 
@@ -111,6 +129,13 @@ public class UserAccountServiceImpl implements UserAccountService {
         return userAccountRepository.save(userAccount);
     }
  //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+    /**
+     * Cập nhật mật khẩu cho tài khoản người dùng.
+     *
+     * @param userAccountResponeDTO đối tượng chứa thông tin cập nhật mật khẩu.
+     * @return phản hồi đăng nhập với thông tin mới.
+     * @throws AppException nếu mật khẩu không hợp lệ hoặc không khớp.
+     */
     @Override
     public UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccountResponeDTO) {
         UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponeDTO.getUsername());
@@ -131,6 +156,13 @@ public class UserAccountServiceImpl implements UserAccountService {
         userAccount.setPassword(passwordEncoder.encode(userAccountResponeDTO.getNewPassword()));
         return modelMapper.map(userAccountRepository.save(userAccount), UserAccountLoginResponse.class);
     }
+    /**
+     * Tạo mã xác minh cho email.
+     *
+     * @param email email cần tạo mã.
+     * @return mã xác minh gửi đến email.
+     * @throws AppException nếu tài khoản đã được duyệt.
+     */
     @Override
     public EmailCode generateVerificationCode(String email) {
         String code = generateCode(email);

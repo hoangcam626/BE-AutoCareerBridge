@@ -24,7 +24,7 @@ public class GlobalExceptionHandle {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiException> handleArgumentNotValidException(MethodArgumentNotValidException exception) {
         String enumkey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.valueOf(enumkey);
+        ErrorCode errorCode = ErrorCode.fromMessage(enumkey);
 
         ApiException apiException = new ApiException();
         apiException.setCode(errorCode.getCode());

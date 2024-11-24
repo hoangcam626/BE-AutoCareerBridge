@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "location")
-public class Location extends AbstractAudit {
+public class Location extends AbstractAudit  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +33,18 @@ public class Location extends AbstractAudit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "wards_code", nullable = false)
     private Ward wards;
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Location location = (Location) object;
+        return Objects.equals(id, location.id) && Objects.equals(description, location.description) && Objects.equals(provinces, location.provinces) && Objects.equals(districts, location.districts) && Objects.equals(wards, location.wards);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, description, provinces, districts, wards);
+    }
 }
