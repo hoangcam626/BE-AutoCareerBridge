@@ -1,7 +1,6 @@
 package com.backend.autocarrerbridge.controller;
 
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
-import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.IndustryService;
 
