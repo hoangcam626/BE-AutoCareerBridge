@@ -1,19 +1,19 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
-
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.service.ImageService;
+import com.backend.autocarrerbridge.service.RoleService;
+import com.backend.autocarrerbridge.service.SubAdminService;
+import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.service.UserAccountService;
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
@@ -30,7 +30,6 @@ import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.repository.SubAdminRepository;
-import com.backend.autocarrerbridge.service.*;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
@@ -39,6 +38,20 @@ import com.backend.autocarrerbridge.util.password.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_EXIST;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_SUB_ADMIN;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SUB_ADMIN_CODE_EXIST;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_EMAIL;
+import static com.backend.autocarrerbridge.exception.ErrorCode.NO_CHANGE_DETECTED;
+import static com.backend.autocarrerbridge.util.Constant.ACCOUNT;
+import static com.backend.autocarrerbridge.util.Constant.SUB;
+
+/**
+ * SubAdminServiceImpl là lớp triển khai các chức năng liên quan đến việc quản lý sub-admin trong hệ thống.
+ * - Lấy danh sách sub-admin (phân trang hoặc toàn bộ).
+ * - Tạo mới, cập nhật, xóa, lấy chi tiết sub-admin.
+ * Sử dụng @Transactional đảm bảo toàn vẹn dữ liệu.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -52,16 +65,47 @@ public class SubAdminServiceImpl implements SubAdminService {
     private final ModelMapper modelMapper;
     private final SendEmail sendEmail;
 
+    /**
+     * Lấy danh sách sub-admin theo phân trang.
+     *
+     * @param page     - Số trang cần lấy.
+     * @param pageSize - Số lượng phần tử trong mỗi trang.
+     * @return Danh sách sub-admin dưới dạng đối tượng phân trang.
+     */
+    public Page<SubAdminSelfResponse> pageSubAdmins(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable);
+        return subAdmins.map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class));
+    }
+
+    /**
+     * Lấy danh sách tất cả sub-admin đang hoạt động.
+     *
+     * @return Danh sách sub-admin.
+     */
+    @Override
+    public List<SubAdminSelfResponse> listSubAdmins() {
+        List<SubAdmin> subAdmins = subAdminRepository.findAllByStatus();
+        return subAdmins.stream()
+                .map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class))
+                .toList();
+    }
+
+    /**
+     * Tạo một sub-admin mới
+     *
+     * @param req - Thông tin đầu vào để tạo sub-admin
+     * @return Thông tin đối tượng chứa kết quả
+     * @throws ParseException - Có lỗi trong quá trình lấy thông tin từ token
+     */
     public SubAdminCreateResponse create(SubAdminCreateRequest req) throws ParseException {
 
-        validateCreate(req);
-
-        // save image
-        var subAdmin = modelMapper.map(req, SubAdmin.class);
-        var imgId = imageService.uploadFile(req.getSubAdminImage());
+        validateCreate(req);// Gọi hàm kiểm tra dữ liệu đầu vào
+        var subAdmin = modelMapper.map(req, SubAdmin.class); // Map thông tin dữ liệu đầu vào
+        var imgId = imageService.uploadFile(req.getSubAdminImage()); // Gọi hàm lưu ảnh
         subAdmin.setSubAdminImageId(imgId);
 
-        // create password & create account
+        // Gọi hàm sinh password tự động và khởi tạo tài khoản người dùng
         PasswordGenerator pw = new PasswordGenerator(8, 12);
         String password = pw.generatePassword();
         UserAccount newAccount = new UserAccount();
@@ -71,60 +115,80 @@ public class SubAdminServiceImpl implements SubAdminService {
         newAccount.setRole(roleService.findById(PredefinedRole.SUB_ADMIN.getValue()));
         subAdmin.setUserAccount(userAccountService.registerUser(newAccount));
 
-        // get jwt, get username login
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        var nameAccountLogin = tokenService.getClaim(jwt.getTokenValue(), "sub");
+        // Lấy tên người dùng đang đăng nhập để lưu người tạo cho đối tượng
+        var nameAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
         subAdmin.setCreatedBy(nameAccountLogin);
 
-        // save sub-admin
-        subAdmin = subAdminRepository.save(subAdmin);
+        subAdmin = subAdminRepository.save(subAdmin); // Lưu tài khoản
 
-        // send mail with sub-admin account
-        EmailDTO emailDTO = new EmailDTO(subAdmin.getEmail(), "Tài Khoản Của Bạn", "");
+        // Gửi mail thông báo tài khoản đăng nhập
+        EmailDTO emailDTO = new EmailDTO(subAdmin.getEmail(), ACCOUNT, "");
         sendEmail.sendAccount(emailDTO, password);
 
         return SubAdminCreateResponse.of(subAdmin.getId());
     }
 
+    /**
+     * Cập nhật thông tin sub-admin.
+     *
+     * @param req - Thông tin đầu vào để cập nhật sub-admin.
+     * @return Thông tin phản hồi cập nhật thành công.
+     * @throws ParseException - Có lỗi trong quá trình lấy thông tin từ token.
+     */
     public SubAdminUpdateResponse update(SubAdminUpdateRequest req) throws ParseException {
-
+        // Tìm đối tượng cập nhật bắng id
         var subAdmin = getSubAdmin(req.getId());
 
+        // Các biến kiểm tra các trường đầu vào có thay đổi so với database hay không
         boolean isSameAddress = subAdmin.getAddress().equals(req.getAddress());
         boolean isSamePhone = subAdmin.getPhone().equals(req.getPhone());
         boolean isNullImage =
                 req.getSubAdminImage() == null || req.getSubAdminImage().isEmpty();
 
+        // Bắn thông báo không có gì thay đổi nếu tất cả các biến là true
         if (isSameAddress && isSamePhone && isNullImage) {
             throw new AppException(NO_CHANGE_DETECTED);
         }
+
+        // Lưu thông tin trường nếu thay đổi
         if (!isSameAddress) {
             subAdmin.setAddress(req.getAddress());
         }
         if (!isSamePhone) {
             subAdmin.setPhone(req.getPhone());
         }
-
         if (isNullImage) {
             var imgId = imageService.uploadFile(req.getSubAdminImage());
             subAdmin.setSubAdminImageId(imgId);
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        var nameAccountLogin = tokenService.getClaim(jwt.getTokenValue(), "sub");
+        // Lưu người thay đổi
+        var nameAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
         subAdmin.setUpdatedBy(nameAccountLogin);
 
+        // Lưu vào database
         subAdminRepository.save(subAdmin);
         return SubAdminUpdateResponse.of(Boolean.TRUE);
     }
 
+    /**
+     * Lấy thông tin chi tiết của một sub-admin.
+     *
+     * @param req - Thông tin đầu vào để tìm kiếm.
+     * @return Thông tin chi tiết của sub-admin.
+     */
     public SubAdminSelfResponse self(SubAdminSelfRequest req) {
+        // Tìm đối tượng lấy ra bằng id
         var subAdmin = getSubAdmin(req.getId());
         return modelMapper.map(subAdmin, SubAdminSelfResponse.class);
     }
 
+    /**
+     * Xóa mềm (ẩn) một sub-admin.
+     *
+     * @param req - Thông tin đầu vào để xóa.
+     * @return Phản hồi sau khi xóa.
+     */
     public SubAdminDeleteResponse delete(SubAdminDeleteRequest req) {
         var subAdmin = getSubAdmin(req.getId());
         subAdmin.setStatus(Status.INACTIVE);
@@ -132,24 +196,21 @@ public class SubAdminServiceImpl implements SubAdminService {
         return SubAdminDeleteResponse.of(Boolean.TRUE);
     }
 
-    public Page<SubAdminSelfResponse> pageSubAdmins(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
-        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable);
-        return subAdmins.map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class));
-    }
-
-    @Override
-    public List<SubAdminSelfResponse> listSubAdmins() {
-        List<SubAdmin> subAdmins = subAdminRepository.findAllByStatus();
-        return subAdmins.stream()
-                .map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class))
-                .toList();
-    }
-
+    /**
+     * Tìm kiếm sub-admin theo id.
+     *
+     * @param id - Id của sub-admin cần tìm.
+     * @return Đối tượng sub-admin.
+     */
     public SubAdmin getSubAdmin(Integer id) {
         return subAdminRepository.findById(id).orElseThrow(() -> new AppException(ERROR_NOT_FOUND_SUB_ADMIN));
     }
 
+    /**
+     * Kiểm tra thông tin đầu vào khi tạo sub-admin.
+     *
+     * @param req - Thông tin cần kiểm tra.
+     */
     public void validateCreate(SubAdminCreateRequest req) {
         if (!Validation.isValidEmail(req.getEmail())) {
             throw new AppException(ERROR_VALID_EMAIL);
