@@ -5,7 +5,7 @@ import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
 import com.backend.autocarrerbridge.emailconfig.EmailCodeRequest;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.response.account.AuthenticationResponse;
 import com.backend.autocarrerbridge.service.AuthenticationService;
 import com.backend.autocarrerbridge.service.UserAccountService;

@@ -18,16 +18,16 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployeeRequestUpdate {
-    @NotBlank(message = Constant.NAME_NOT_BLANK_MESSAGE)
+    @NotBlank(message = "NAME_NOT_BLANK")
     String name;
-    @NotBlank(message = "ERROR_GENDER_NOT_BLANK")
+    @NotBlank(message = "GENDER_NOT_BLANK")
     String gender;
     LocalDate dateOfBirth;
-    @NotBlank(message = Constant.EMAIL_NOT_BLANK_MESSAGE)
+    @NotBlank(message = "EMAIL_NOT_BLANK")
     String email;
 
     String address;
-    @NotBlank(message = Constant.COED_EMPLOYEE_NOT_BLANK_MESSAGE)
+    @NotBlank(message = "CODE_EMPLOYEE_NOT_BLANK")
     String employeeCode;
 
     Integer employeeImageId;

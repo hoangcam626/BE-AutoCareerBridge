@@ -14,19 +14,20 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployeeRequest {
-    @NotBlank(message = Constant.NAME_NOT_BLANK_MESSAGE)
+    @NotBlank(message = "NAME_NOT_BLANK")
     String name;
-    @NotBlank(message = Constant.GENDER_NOT_BLANK_MESSAGE)
+    @NotBlank(message = "GENDER_NOT_BLANK")
     String gender;
-
     LocalDate dateOfBirth;
-    @NotBlank(message = Constant.EMAIL_NOT_BLANK_MESSAGE)
+    @NotBlank(message = "EMAIL_NOT_BLANK")
     String email;
-    String address;
-    @NotBlank(message = Constant.COED_EMPLOYEE_NOT_BLANK_MESSAGE)
-    String employeeCode;
-    Integer employeeImageId;
-    @NotBlank(message = Constant.PHONE_NOT_BLANK_MESSAGE)
 
+    String address;
+    @NotBlank(message = "CODE_EMPLOYEE_NOT_BLANK")
+    String employeeCode;
+
+    Integer employeeImageId;
+
+    @NotBlank(message = "PHONE_NOT_BLANK")
     String phone;
 }

@@ -19,6 +19,7 @@ public interface IndustryRepo extends JpaRepository<Industry, Integer> {
             + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE")
     List<IndustryResponse> getAllIndustryActive();
 
+    //Phan trang danh sach nganh
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustryResponse(industry) "
             + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE")
     Page<IndustryResponse> getAllIndustryActivePag(

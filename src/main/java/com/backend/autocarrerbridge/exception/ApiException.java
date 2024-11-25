@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.model.api;
+package com.backend.autocarrerbridge.exception;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

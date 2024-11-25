@@ -1,10 +1,8 @@
 package com.backend.autocarrerbridge.controller;
 
-
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
-import com.backend.autocarrerbridge.dto.request.industry.IndustryUpdateRequest;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.IndustryService;
 
 import lombok.Getter;
@@ -28,6 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class IndustryController {
     private final IndustryService industryService;
 
+    /**
+     * API lấy danh sách tất cả ngành nghề đã phân trang.
+     * @apiNote được sử dụng để truy vấn tất cả các bản ghi ngành nghề từ cơ sở dữ liệu.
+     */
     @GetMapping("/get-all-paging")
     public ApiResponse<Object> getAllIndustryPaging(
             @RequestParam(defaultValue = "0") int first,
@@ -38,21 +40,38 @@ public class IndustryController {
         return industryService.getAllIndustryPaging(first, rows, page, name, code);
     }
 
+    /**
+     * API lấy danh sách tất cả ngành nghề.
+     * @apiNote được sử dụng để truy vấn tất cả các bản ghi ngành nghề từ cơ sở dữ liệu.
+     */
     @GetMapping("/get-all")
     public ApiResponse<Object> getAllIndustry() {
         return industryService.getAllIndustry();
     }
 
+    /**
+     * API để tạo mới một ngành nghề.
+     * @apiNote được sử dụng để thêm một ngành nghề mới vào cơ sở dữ liệu.
+     */
     @PostMapping("/create")
     public ApiResponse<IndustryResponse> createIndustry(@RequestBody IndustryRequest industryRequest) {
         return industryService.createIndustry(industryRequest);
     }
 
+
+    /**
+     * API để cập nhật thông tin của ngành nghề
+     * @apiNote được sử dụng để cập nhật một ngành nghề mới vào cơ sở dữ liệu.
+     */
     @PutMapping("/update")
-    public ApiResponse<IndustryResponse> updateIndustry(@RequestBody IndustryUpdateRequest industryUpdateRequest) {
-        return industryService.updateIndustry(industryUpdateRequest);
+    public ApiResponse<IndustryResponse> updateIndustry(@RequestBody IndustryRequest industryRequest) {
+        return industryService.updateIndustry(industryRequest);
     }
 
+    /**
+     * API để vô hiệu hóa một ngành nghề.
+     * @apiNote được sử dụng để đánh dấu một ngành nghề là không còn hoạt động.
+    */
     @PutMapping("/inactive")
     public ApiResponse<Object> inactiveIndustry(@RequestParam Integer id) {
         return industryService.inactiveIndustry(id);

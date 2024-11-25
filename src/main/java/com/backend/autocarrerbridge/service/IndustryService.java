@@ -2,8 +2,7 @@ package com.backend.autocarrerbridge.service;
 
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
-import com.backend.autocarrerbridge.dto.request.industry.IndustryUpdateRequest;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 
 public interface IndustryService {
 
@@ -13,7 +12,7 @@ public interface IndustryService {
 
     ApiResponse<IndustryResponse> createIndustry(IndustryRequest industryRequest);
 
-    ApiResponse<IndustryResponse> updateIndustry(IndustryUpdateRequest industryUpdateRequest);
+    ApiResponse<IndustryResponse> updateIndustry(IndustryRequest industryRequest);
 
     ApiResponse<Object> inactiveIndustry(Integer id);
 }

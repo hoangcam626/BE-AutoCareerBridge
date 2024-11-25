@@ -3,13 +3,10 @@ package com.backend.autocarrerbridge.exception;
 import java.util.Objects;
 
 
-import com.backend.autocarrerbridge.util.Constant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import com.backend.autocarrerbridge.model.api.ApiException;
 
 @ControllerAdvice
 public class GlobalExceptionHandle {

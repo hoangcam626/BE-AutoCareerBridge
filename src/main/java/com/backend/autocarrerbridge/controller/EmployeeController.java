@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 
 import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
 import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.EmployeeService;
 import com.backend.autocarrerbridge.util.Constant;
 
@@ -31,6 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmployeeController {
     EmployeeService employeeService;
 
+    /**
+     * API tạo mới nhân viên.
+     * @apiNote Sử dụng để thêm một nhân viên mới vào hệ thống.
+     * @param request Dữ liệu thông tin của nhân viên cần thêm.
+     * @return Thông tin chi tiết của nhân viên vừa được tạo.
+     */
     @PostMapping("/create")
     ApiResponse<EmployeeResponse> createEmployee(
             @RequestBody @Valid EmployeeRequest request) {
@@ -39,13 +45,25 @@ public class EmployeeController {
                 .build();
     }
 
-    @GetMapping("/getAll")
+    /**
+     * API lấy danh sách tất cả nhân viên.
+     * @apiNote Sử dụng để truy vấn tất cả nhân viên từ cơ sở dữ liệu.
+     * @return Danh sách thông tin của tất cả nhân viên.
+     * @throws ParseException Nếu dữ liệu không thể phân tích được.
+     */
+    @GetMapping("/get-all")
     ApiResponse<List<EmployeeResponse>> getAllEmployee() throws ParseException {
         return ApiResponse.<List<EmployeeResponse>>builder()
                 .data(employeeService.getListEmployeee())
                 .build();
     }
 
+    /**
+     * API lấy thông tin chi tiết của một nhân viên.
+     * @apiNote Sử dụng để lấy thông tin của một nhân viên theo mã nhân viên.
+     * @param employeeId Mã của nhân viên cần lấy thông tin.
+     * @return Thông tin chi tiết của nhân viên được yêu cầu.
+     */
     @GetMapping("/{employeeId}")
     ApiResponse<EmployeeResponse> getEmployee(@PathVariable("employeeId") Integer employeeId) {
         return ApiResponse.<EmployeeResponse>builder()
@@ -53,6 +71,13 @@ public class EmployeeController {
                 .build();
     }
 
+    /**
+     * API cập nhật thông tin nhân viên.
+     * @apiNote Sử dụng để thay đổi thông tin của nhân viên theo mã nhân viên.
+     * @param employeeId Mã của nhân viên cần cập nhật.
+     * @param request Dữ liệu thông tin mới của nhân viên.
+     * @return Thông tin chi tiết của nhân viên sau khi cập nhật.
+     */
     @PutMapping("/{employeeId}")
     ApiResponse<EmployeeResponse> updateEmployee(
             @PathVariable Integer employeeId, @RequestBody @Valid EmployeeRequest request) {
@@ -61,9 +86,16 @@ public class EmployeeController {
                 .build();
     }
 
+    /**
+     * API xóa nhân viên.
+     * @apiNote Sử dụng để xóa một nhân viên khỏi hệ thống theo mã nhân viên.
+     * @param employeeId Mã của nhân viên cần xóa.
+     * @return Thông báo thành công sau khi xóa nhân viên.
+     */
     @DeleteMapping("/{employeeId}")
     ApiResponse<String> deleteEmployee(@PathVariable Integer employeeId) {
         employeeService.deleteEmployee(employeeId);
         return ApiResponse.<String>builder().data(Constant.SUCCESS_MESSAGE).build();
     }
+
 }

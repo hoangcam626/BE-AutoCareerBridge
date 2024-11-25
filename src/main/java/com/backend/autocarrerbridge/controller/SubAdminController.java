@@ -14,7 +14,7 @@ import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.SubAdminService;
 
 import lombok.RequiredArgsConstructor;

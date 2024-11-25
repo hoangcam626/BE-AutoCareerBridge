@@ -36,8 +36,9 @@ import lombok.experimental.FieldDefaults;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true) // Đặt các trường thành private và final
 public class EmployeeServiceImpl implements EmployeeService {
+    // Các dependency được tiêm vào thông qua constructor
     EmployeeRepository employeeRepository;
     EmployeeMapper employeeMapper;
     UserAccountService userAccountService;
@@ -46,18 +47,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     UserAccountMapper userAccountMapper;
     RoleService roleService;
 
-
     @Override
-    public List<EmployeeResponse> getListEmployeee()throws ParseException {
-        // get jwt, get email login
+    public List<EmployeeResponse> getListEmployeee() throws ParseException {
+        // Lấy thông tin xác thực của người dùng hiện tại từ SecurityContextHolder
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        var emailAccountLogin = tokenService.getClaim(jwt.getTokenValue(), "sub");
+        Jwt jwt = (Jwt) authentication.getPrincipal(); // Trích xuất JWT từ Authentication
+        var emailAccountLogin = tokenService.getClaim(jwt.getTokenValue(), "sub"); // Lấy email đăng nhập từ token
+
+        // Lấy danh sách nhân viên theo email doanh nghiệp
         var employees = employeeRepository.findEmployeesByBusinessEmail(emailAccountLogin);
+
+        // Chuyển đổi danh sách nhân viên sang danh sách EmployeeResponse
         return employees.stream()
                 .map(employee -> {
                     EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
-                    employeeResponse.setBusinessId(employee.getBusiness().getId());
+                    employeeResponse.setBusinessId(employee.getBusiness().getId()); // Thêm thông tin BusinessId
                     return employeeResponse;
                 })
                 .toList();
@@ -65,66 +69,85 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponse getEmployeeById(Integer id) {
-        var employee =
-                employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        // Tìm nhân viên theo ID, nếu không tìm thấy thì ném ngoại lệ
+        var employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+
+        // Chuyển đổi Employee sang EmployeeResponse và thêm thông tin BusinessId
         EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
         employeeResponse.setBusinessId(employee.getBusiness().getId());
         return employeeResponse;
     }
 
-    //    @PreAuthorize("hasRole('')")
     @Transactional
     @Override
     public EmployeeResponse addEmployee(EmployeeRequest request) {
+        // Chuyển đổi từ EmployeeRequest sang Employee Entity
         Employee employee = employeeMapper.toEmployee(request);
 
         try {
-            //            set Business fo employee
+            // Lấy email doanh nghiệp từ token và gán doanh nghiệp cho nhân viên
             String emailBusiness = tokenService.getClaim(tokenService.getJWT(), "sub");
             Business business = businessService.findByEmail(emailBusiness);
             employee.setBusiness(business);
         } catch (ParseException e) {
+            // Ném ngoại lệ nếu token không hợp lệ
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
 
-        //        create UserAccount for Employee
+        // Tạo tài khoản người dùng cho nhân viên
         UserAccount userAccount = UserAccount.builder()
-                .username(employee.getEmail())
-                .password("1234546")
-                .role(roleService.findById(PredefinedRole.EMPLOYEE.getValue()))
-                .state(State.APPROVED)
+                .username(employee.getEmail()) // Sử dụng email của nhân viên làm tên đăng nhập
+                .password("1234546") // Mật khẩu mặc định (cần mã hóa trước khi lưu)
+                .role(roleService.findById(PredefinedRole.EMPLOYEE.getValue())) // Gán vai trò mặc định là EMPLOYEE
+                .state(State.APPROVED) // Trạng thái tài khoản là được phê duyệt
                 .build();
-        UserAccount accountEmployee = userAccountService.registerUser(userAccount);
-        employee.setUserAccount(accountEmployee);
 
-        //        Save Employee
+        // Đăng ký tài khoản người dùng qua UserAccountService
+        UserAccount accountEmployee = userAccountService.registerUser(userAccount);
+        employee.setUserAccount(accountEmployee); // Gán tài khoản người dùng vào nhân viên
+
         try {
+            // Lưu nhân viên vào cơ sở dữ liệu
             employee = employeeRepository.save(employee);
         } catch (DataIntegrityViolationException exception) {
+            // Ném ngoại lệ nếu nhân viên đã tồn tại
             throw new AppException(ErrorCode.ERROR_USER_EXITED);
         }
+
+        // Chuyển đổi Employee sang EmployeeResponse và thêm thông tin liên quan
         EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
         employeeResponse.setBusinessId(employee.getBusiness().getId());
-        userAccount.setRole(employee.getUserAccount().getRole());
+        userAccount.setRole(employee.getUserAccount().getRole()); // Gán vai trò vào tài khoản
         employeeResponse.setUserAccount(userAccountMapper.toUserAccountResponse(employee.getUserAccount()));
 
-        return employeeResponse;
+        return employeeResponse; // Trả về thông tin nhân viên vừa tạo
     }
+
     @Override
     public EmployeeResponse updateEmployee(Integer id, EmployeeRequest request) {
-        Employee employee =
-                employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        // Tìm nhân viên theo ID, nếu không tồn tại thì ném ngoại lệ
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+
+        // Cập nhật thông tin nhân viên từ request
         employeeMapper.udpateEmployee(employee, request);
+
+        // Lưu nhân viên đã cập nhật vào cơ sở dữ liệu và chuyển đổi thành EmployeeResponse
         return employeeMapper.toEmployeeResponse(employeeRepository.save(employee));
     }
 
     @Override
     @Transactional
     public void deleteEmployee(Integer id) {
-        Employee employee =
-                employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        // Tìm nhân viên theo ID, nếu không tồn tại thì ném ngoại lệ
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+
+        // Cập nhật trạng thái của nhân viên thành INACTIVE
         employee.setStatus(Status.INACTIVE);
-        employeeRepository.save(employee);
-        employeeRepository.flush();
+        employeeRepository.save(employee); // Lưu thay đổi vào cơ sở dữ liệu
+        employeeRepository.flush(); // Đồng bộ dữ liệu với cơ sở dữ liệu
     }
 }
+

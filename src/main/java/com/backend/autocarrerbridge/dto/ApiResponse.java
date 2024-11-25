@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.model.api;
+package com.backend.autocarrerbridge.dto;
 
 import static com.backend.autocarrerbridge.util.Constant.*;
 
