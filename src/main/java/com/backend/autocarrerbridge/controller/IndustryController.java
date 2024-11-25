@@ -56,7 +56,7 @@ public class IndustryController {
      * @apiNote được sử dụng để thêm một ngành nghề mới vào cơ sở dữ liệu.
      */
     @PostMapping("/create")
-    public ApiResponse<IndustryResponse> createIndustry(@RequestBody IndustryRequest industryRequest) throws ParseException {
+    public ApiResponse<Object> createIndustry(@RequestBody IndustryRequest industryRequest) throws ParseException {
         return industryService.createIndustry(industryRequest);
     }
 
@@ -66,7 +66,7 @@ public class IndustryController {
      * @apiNote được sử dụng để cập nhật một ngành nghề mới vào cơ sở dữ liệu.
      */
     @PutMapping("/update")
-    public ApiResponse<IndustryResponse> updateIndustry(@RequestBody IndustryRequest industryRequest) throws ParseException {
+    public ApiResponse<Object> updateIndustry(@RequestBody IndustryRequest industryRequest) throws ParseException {
         return industryService.updateIndustry(industryRequest);
     }
 

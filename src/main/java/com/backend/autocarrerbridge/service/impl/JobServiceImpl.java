@@ -19,7 +19,6 @@ import com.backend.autocarrerbridge.repository.JobRepository;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.JobService;
 import com.backend.autocarrerbridge.service.TokenService;
-import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.RequiredArgsConstructor;
@@ -85,8 +84,6 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
         return ApiResponse.builder()
-                .code(Constant.SUCCESS)
-                .message(Constant.SUCCESS_MESSAGE)
                 .data(jobs)
                 .build();
     }
@@ -119,8 +116,6 @@ public class JobServiceImpl implements JobService {
         // Trả về jobDetailResponse
         JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, industry, business, employee);
         return ApiResponse.builder()
-                .code(Constant.SUCCESS)
-                .message(Constant.SUCCESS_MESSAGE)
                 .data(jobDetailResponse)
                 .build();
     }
@@ -166,8 +161,6 @@ public class JobServiceImpl implements JobService {
         jobRepository.save(job);
         JobResponse jobResponse = new JobResponse(job);
         return ApiResponse.builder()
-                .code(Constant.SUCCESS)
-                .message(Constant.SUCCESS_MESSAGE)
                 .data(jobResponse)
                 .build();
     }
@@ -205,8 +198,6 @@ public class JobServiceImpl implements JobService {
         jobRepository.save(job);
         JobResponse jobResponse = new JobResponse(job);
         return ApiResponse.builder()
-                .code(Constant.SUCCESS)
-                .message(Constant.SUCCESS_MESSAGE)
                 .data(jobResponse)
                 .build();
     }

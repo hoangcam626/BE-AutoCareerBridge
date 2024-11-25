@@ -12,9 +12,9 @@ public interface IndustryService {
 
     ApiResponse<Object> getAllIndustry();
 
-    ApiResponse<IndustryResponse> createIndustry(IndustryRequest industryRequest) throws ParseException;
+    ApiResponse<Object> createIndustry(IndustryRequest industryRequest) throws ParseException;
 
-    ApiResponse<IndustryResponse> updateIndustry(IndustryRequest industryRequest) throws ParseException;
+    ApiResponse<Object> updateIndustry(IndustryRequest industryRequest) throws ParseException;
 
     ApiResponse<Object> inactiveIndustry(Integer id) throws ParseException;
 }

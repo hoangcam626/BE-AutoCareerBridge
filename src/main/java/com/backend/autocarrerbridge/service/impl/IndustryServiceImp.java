@@ -20,7 +20,6 @@ import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.repository.IndustryRepo;
 import com.backend.autocarrerbridge.service.IndustryService;
-import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.RequiredArgsConstructor;
@@ -67,7 +66,9 @@ public class IndustryServiceImp implements IndustryService {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
         IndustryPagingRequest industryPagingRequest = new IndustryPagingRequest(industryList.getTotalElements(), industryList.getContent());
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryPagingRequest);
+        return ApiResponse.builder()
+                .data(industryPagingRequest)
+                .build();
     }
 
     /**
@@ -79,14 +80,16 @@ public class IndustryServiceImp implements IndustryService {
         if (list.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, list);
+        return ApiResponse.builder()
+                .data(list)
+                .build();
     }
 
     /**
      * Thêm mới ngành nghề
      */
     @Override
-    public ApiResponse<IndustryResponse> createIndustry(IndustryRequest industryRequest) throws ParseException {
+    public ApiResponse<Object> createIndustry(IndustryRequest industryRequest) throws ParseException {
         Industry industry = new Industry();
         if (industryRequest.getName() == null || industryRequest.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
@@ -99,14 +102,16 @@ public class IndustryServiceImp implements IndustryService {
         industry.setCreatedBy(getUsernameViaToken());
         industryRepo.save(industry);
         IndustryResponse industryResponse = new IndustryResponse(industry);
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryResponse);
+        return ApiResponse.builder()
+                .data(industryResponse)
+                .build();
     }
 
     /**
      * Cập nhật ngành nghề
      */
     @Override
-    public ApiResponse<IndustryResponse> updateIndustry(IndustryRequest industryRequest) throws ParseException {
+    public ApiResponse<Object> updateIndustry(IndustryRequest industryRequest) throws ParseException {
         // check id xem có null hay không
         if (industryRequest.getId() == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
@@ -144,7 +149,9 @@ public class IndustryServiceImp implements IndustryService {
         industry.setUpdatedBy(getUsernameViaToken());
         industryRepo.save(industry);
         IndustryResponse industryResponse = new IndustryResponse(industry);
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryResponse);
+        return ApiResponse.builder()
+                .data(industryResponse)
+                .build();
     }
 
     /**
