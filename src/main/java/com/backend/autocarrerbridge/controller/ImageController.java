@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.autocarrerbridge.dto.response.image.ImageResponse;
 import com.backend.autocarrerbridge.dto.response.image.ImageUploadSdo;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.ImageService;
 
 import lombok.RequiredArgsConstructor;

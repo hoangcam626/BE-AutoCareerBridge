@@ -1,8 +1,8 @@
 package com.backend.autocarrerbridge.controller;
 
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
 import com.backend.autocarrerbridge.service.WorkShopBusinessService;
 import com.backend.autocarrerbridge.service.WorkShopService;
 import com.backend.autocarrerbridge.util.enums.State;

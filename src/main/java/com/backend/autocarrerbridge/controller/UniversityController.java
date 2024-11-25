@@ -1,7 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
 import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.UniversityService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;

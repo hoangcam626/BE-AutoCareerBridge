@@ -1,7 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.JobService;
 import jakarta.validation.Valid;

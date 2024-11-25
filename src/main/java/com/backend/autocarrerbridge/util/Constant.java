@@ -125,4 +125,18 @@ public class Constant {
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
 
+
+    //Employee
+    public static final String NAME_NOT_BLANK_MESSAGE = "Tên không được để trống";
+    public static final String GENDER_NOT_BLANK_MESSAGE = "Giới tính không được để trống";
+    public static final String DOB_NOT_BLANK_MESSAGE = "Ngày sinh không được để trống";
+    public static final String EMAIL_NOT_BLANK_MESSAGE = "Email Tên không được để trống";
+    public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
+    public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
 }

@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.dto.request.employee;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

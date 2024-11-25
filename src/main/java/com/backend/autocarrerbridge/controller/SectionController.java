@@ -4,7 +4,7 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
 import com.backend.autocarrerbridge.dto.SectionDTO;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.SectionService;
 
 import lombok.RequiredArgsConstructor;
