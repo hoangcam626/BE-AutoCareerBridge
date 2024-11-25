@@ -106,6 +106,7 @@ public class Constant {
     public static final String ACCEPT_NP = " Xác nhận mật khẩu mới";
     public static final String ACCEPT_US = " Xác nhận đăng ký tài khoản";
     public static final String NEW_CODE = "Mã cấp mật khẩu mới!";
+    public static final String ACCOUNT = "Tài Khoản Của Bạn";
 
     public static final String EMAIL_REQUIRED_MESSAGE = "Email không được để trống.";
     public static final String EMAIL_INVALID_MESSAGE = "Định dạng email không hợp lệ.";
