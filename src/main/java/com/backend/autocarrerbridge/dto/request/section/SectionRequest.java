@@ -37,11 +37,9 @@ public class SectionRequest {
   String name;
   @Size(max = 255, message = DESCRIPTION_MESSAGE )
   String description;
-  @NotNull(message = STATUS_SECTION_NOT_NULL_MESSAGE)
   Status status;
   LocalDateTime createdAt;
   LocalDateTime updatedAt;
-  @NotNull(message = CREATED_BY_SECTION_NOT_NULL_MESSAGE)
   String createdBy;
   String updatedBy;
   @NotNull(message = UNIVERSITY_SECTION_NOT_NULL_MESSAGE)

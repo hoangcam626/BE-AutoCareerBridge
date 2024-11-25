@@ -37,7 +37,7 @@ public class SectionServiceImpl implements SectionService {
     Section section = SectionConverter.convertToEntity(sectionRequest);
     section.setUniversity(university);
     Section saveSection = sectionRepository.save(section);
-    return SectionConverter.convertToDTO(saveSection);
+    return SectionConverter.convertToResponse(saveSection);
   }
 
   @Transactional
@@ -51,7 +51,7 @@ public class SectionServiceImpl implements SectionService {
     section.setUpdatedAt(LocalDateTime.now());
     Section updatedSection = sectionRepository.save(section);
 
-    return SectionConverter.convertToDTO(updatedSection);
+    return SectionConverter.convertToResponse(updatedSection);
   }
 
   @Override
@@ -59,14 +59,14 @@ public class SectionServiceImpl implements SectionService {
     Section section = sectionRepository.findById(id)
         .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
     sectionRepository.delete(section);
-    return SectionConverter.convertToDTO(section);
+    return SectionConverter.convertToResponse(section);
   }
 
   @Override
   public List<SectionRequest> getAllSection() {
     List<Section> sectionList = sectionRepository.findAll();
     sectionList.sort(Comparator.comparingLong(Section::getId).reversed());
-    return sectionList.stream().map(SectionConverter::convertToDTO)
+    return sectionList.stream().map(SectionConverter::convertToResponse)
         .toList();
 
   }
@@ -75,6 +75,6 @@ public class SectionServiceImpl implements SectionService {
   public List<SectionRequest> getSectionById(int id) {
     Section section = sectionRepository.findById(id)
         .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
-    return List.of(SectionConverter.convertToDTO(section));
+    return List.of(SectionConverter.convertToResponse(section));
   }
 }
