@@ -105,7 +105,7 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     public Business getBusinessById(Integer id) {
-        return null;
+        return businessRepository.findById(id).orElse(null);
     }
 
     @Override

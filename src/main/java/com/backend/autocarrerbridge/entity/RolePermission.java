@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,4 +27,18 @@ public class RolePermission extends AbstractAudit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "permission_id", nullable = false)
     private Permission permission;
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        RolePermission that = (RolePermission) object;
+        return Objects.equals(id, that.id) && Objects.equals(role, that.role) && Objects.equals(permission, that.permission);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, role, permission);
+    }
 }

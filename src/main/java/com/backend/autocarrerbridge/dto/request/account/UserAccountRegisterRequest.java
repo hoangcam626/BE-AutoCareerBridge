@@ -6,6 +6,7 @@ import lombok.Data;
 @AllArgsConstructor(staticName = "of")
 @Data
 public class UserAccountRegisterRequest {
+
     private String username;
     private String password;
     private String nameRole;

@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.emailconfig;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.backend.autocarrerbridge.exception.AppException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_REQUIRED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class SendEmail {
             if (emailDTO == null
                     || emailDTO.getEmail() == null
                     || emailDTO.getEmail().trim().isEmpty()) {
-                throw new IllegalArgumentException(ERROR_EMAIL_NOT_FOUND.getMessage());
+                throw new AppException(ERROR_EMAIL_NOT_FOUND);
             }
 
             // Tạo và gửi email
@@ -49,7 +51,7 @@ public class SendEmail {
             if (emailDTO == null
                     || emailDTO.getEmail() == null
                     || emailDTO.getEmail().trim().isEmpty()) {
-                throw new IllegalArgumentException(ERROR_EMAIL_NOT_FOUND.getMessage());
+                throw new AppException(ERROR_EMAIL_NOT_FOUND);
             }
 
             // Tạo và gửi email
@@ -67,7 +69,7 @@ public class SendEmail {
             if (emailDTO == null
                     || emailDTO.getEmail() == null
                     || emailDTO.getEmail().trim().isEmpty()) {
-                throw new IllegalArgumentException(ERROR_EMAIL_NOT_FOUND.getMessage());
+                throw new AppException(ERROR_EMAIL_NOT_FOUND);
             }
 
             // Tạo và gửi email
@@ -84,7 +86,7 @@ public class SendEmail {
             if (emailDTO == null
                     || emailDTO.getEmail() == null
                     || emailDTO.getEmail().trim().isEmpty()) {
-                throw new IllegalArgumentException("Email người nhận không được để trống");
+                throw new AppException(ERROR_EMAIL_REQUIRED);
             }
 
             // Tạo và gửi email
@@ -102,7 +104,7 @@ public class SendEmail {
             if (emailDTO == null
                     || emailDTO.getEmail() == null
                     || emailDTO.getEmail().trim().isEmpty()) {
-                throw new IllegalArgumentException(ERROR_NO_CONTENT.getMessage());
+                throw new AppException(ERROR_NO_CONTENT);
             }
             // Tạo và gửi email
             MimeMessage mimeMessage = createMimeMessage(emailDTO, getAccount(password));
@@ -124,7 +126,7 @@ public class SendEmail {
 
     private String getVerifyCode(String verificationCode) {
         if (verificationCode == null || verificationCode.isEmpty()) {
-            throw new IllegalArgumentException(ERROR_NO_CONTENT.getMessage());
+            throw new AppException(ERROR_NO_CONTENT);
         }
 
         return buildHtmlTemplate(
@@ -137,7 +139,7 @@ public class SendEmail {
 
     private String getForgotPassword(String verificationCode) {
         if (verificationCode == null || verificationCode.isEmpty()) {
-            throw new IllegalArgumentException(ERROR_NO_CONTENT.getMessage());
+            throw new AppException(ERROR_NO_CONTENT);
         }
 
         return buildHtmlTemplate(

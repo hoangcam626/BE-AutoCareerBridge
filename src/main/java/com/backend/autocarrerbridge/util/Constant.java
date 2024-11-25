@@ -49,11 +49,13 @@ public class Constant {
     public static final String ERROR_PW = "Mật khẩu không chính xác.";
     public static final String ERROR_PW_CHECK = "Mật khẩu mới không được trùng với mật khẩu cũ.";
     public static final String ERROR_PHONE = "Số điện thoại đã tồn tại.";
+    public static final String ERROR_NOT_EMPTY_PW = "Mật khẩu không dược để trống.";
     public static final String USER_PENDING = "Người dùng đang chờ phê duyệt, vui lòng đợi.";
     public static final String ERROR_NOT_MATCH_CODE = "Mã không khớp.";
     public static final String ERROR_USER_EXISTED = "Người dùng đã tồn tại.";
     public static final String ERROR_TOKEN_INVALID_MESSAGE = "Token không hợp lệ.";
     public static final String ERROR_APPROVED = "Người dùng đã được phê duyệt.";
+    public static final String ERROR_NAME_EMPTY = "Tên không được để trống";
 
     // Lỗi liên quan đến hình ảnh
     public static final String EMPTY_FILE_MESSAGE = "Tệp rỗng.";
@@ -103,11 +105,26 @@ public class Constant {
     public static final String ACCEPT_NP = " Xác nhận mật khẩu mới";
     public static final String ACCEPT_US = " Xác nhận đăng ký tài khoản";
     public static final String NEW_CODE = "Mã cấp mật khẩu mới!";
+
+    public static final String EMAIL_REQUIRED_MESSAGE = "Email không được để trống.";
+    public static final String EMAIL_INVALID_MESSAGE = "Định dạng email không hợp lệ.";
+
+    public static final String FORGOT_CODE_REQUIRED_MESSAGE = "Mã khôi phục không được để trống.";
+    public static final String FORGOT_CODE_INVALID_MESSAGE = "Mã khôi phục không hợp lệ.";
+    public static final String FORGOT_CODE_EMPTY_MESSAGE = "Mã khôi phục không để trống.";
+
     // Doanh nghiệp
     public static final String REGISTER_BUSINESS = "Đăng ký tài khoản doanh nghiệp thành công, vui lòng đợi hệ thống duyệt";
-
+    public static final String TAX_CODE = "Mã số thuế không được để trống";
+    public static final String REQUEST_TO_ATTEND_WORKSHOP = "Yêu cầu tham gia hội thảo thành công, Vui lòng đợi để chờ duyệt.";
+    public static final String REQUEST_WORKSHOP_FAIL = "Doanh nghiệp đã yêu cầu tham gia vui lòng đợi!.";
     // Trường đại học
     public static final String REGISTER_UNIVERSITY = "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
+    public static final String TITLE_WORK_SHOP_MESSAGE = "Tiêu đề không để trống.";
+    public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
+    public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
+    public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
+
 
     //Employee
     public static final String NAME_NOT_BLANK_MESSAGE = "Tên không được để trống";

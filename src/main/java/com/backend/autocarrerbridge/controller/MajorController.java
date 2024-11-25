@@ -6,7 +6,7 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 import com.backend.autocarrerbridge.dto.MajorDTO;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.MajorService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/major")
+@RequiredArgsConstructor
 public class MajorController {
 
-  @Autowired
-  private MajorService majorService;
+  private final MajorService majorService;
 
   @PostMapping("/create")
-  public ResponseEntity<ApiResponse<Object>> create(@RequestBody MajorDTO MajorDTO) {
-    MajorDTO createMajor = majorService.createMajor(MajorDTO);
+  public ResponseEntity<ApiResponse<Object>> create(@RequestBody MajorDTO majorDTO) {
+    MajorDTO createMajor = majorService.createMajor(majorDTO);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -36,8 +36,8 @@ public class MajorController {
 
   @PostMapping("/update/{id}")
   public ResponseEntity<ApiResponse<Object>> update(@PathVariable("id") int id,
-      @RequestBody MajorDTO MajorDTO) {
-    MajorDTO updateMajor = majorService.updateMajor(id, MajorDTO);
+      @RequestBody MajorDTO majorDTO) {
+    MajorDTO updateMajor = majorService.updateMajor(id, majorDTO);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)

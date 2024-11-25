@@ -11,9 +11,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 @Getter
 @Setter
-@Entity
 @Table(name = "job")
 public class Job extends AbstractAudit {
     @Id
