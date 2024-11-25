@@ -128,12 +128,22 @@ public class Constant {
 
     //section
     public static final String NAME_SECTION_NOT_BLANK_MESSAGE = "Tên khoa không được bỏ trống .";
-    public static final String NAME_SECTION_NOT_LOGGER_MESSAGE = "Tên khoa không được dài quá 30 kí tự.";
+    public static final String NAME_SECTION_NOT_LOGGER_MESSAGE = "Tên khoa không được dài quá 100 kí tự.";
     public static final String STATUS_SECTION_NOT_NULL_MESSAGE = "Trạng thái là bắt buộc .";
     public static final String CREATED_BY_SECTION_NOT_NULL_MESSAGE = "Người tạo là bắt buộc là bắt buộc.";
     public static final String UNIVERSITY_SECTION_NOT_NULL_MESSAGE = "Trường đại học là bắt buộc.";
     public static final String SECTION_NOT_FOUND_MESSAGE = "Không tìm thấy khoa.";
     public static final String SECTION_EXISTED_MESSAGE = "Tên khoa đã tồn tại .";
+
+    //major
+    public static final String NAME_MAJOR_NOT_BLANK_MESSAGE = "Tên ngành không được bỏ trống .";
+    public static final String NAME_MAJOR_NOT_LOGGER_MESSAGE = "Tên ngành không được dài quá 100 kí tự .";
+    public static final String CODE_MAJOR_NOT_BLANK_MESSAGE = "Mã ngành không được bỏ trống .";
+    public static final String CODE_MAJOR_NOT_LOGGER_MESSAGE = "Mã ngành không được dài quá 20 kí tự .";
+    public static final String NUMBER_MIN_STUDENT_MAJOR_MESSAGE = "Số sinh viên ít nhất là 50 .";
+    public static final String NUMBER_MAX_STUDENT_MAJOR_MESSAGE = "Tối đa chỉ được 1.000 sinh viên .";
+    public static final String ID_MAJOR_NOT_NULL_MESSAGE = " Không tìm thấy khoa .";
+
 
 
     //Employee

@@ -33,7 +33,7 @@ public class SectionRequest {
 
   Integer id;
   @NotBlank(message = NAME_SECTION_NOT_BLANK_MESSAGE)
-  @Size(max = 30, message = NAME_SECTION_NOT_LOGGER_MESSAGE)
+  @Size(max = 100, message = NAME_SECTION_NOT_LOGGER_MESSAGE)
   String name;
   @Size(max = 255, message = DESCRIPTION_MESSAGE )
   String description;
