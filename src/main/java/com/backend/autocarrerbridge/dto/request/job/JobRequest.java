@@ -7,20 +7,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class JobRequest {
-    Integer userId;
     String title;
-    String expireDate;
+    LocalDate expireDate;
     String level;
     Integer salary;
     String jobDescription;
     String requirement;
     String benefit;
     String workingTime;
-    Industry industry;
+    Integer industriesID;
 }

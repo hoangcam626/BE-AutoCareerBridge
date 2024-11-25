@@ -1,7 +1,6 @@
 package com.backend.autocarrerbridge.util;
 
 
-
 public class Constant {
     // Mã trạng thái HTTP
     public static final int SUCCESS = 200;
@@ -84,6 +83,7 @@ public class Constant {
     public static final String EXIST_NAME_AND_CODE = "Tên ngành hoặc mã ngành đã tồn tại.";
     public static final String NO_CHANGES_DETECTED = "Không có thay đổi nào.";
     public static final String DELETED = "Xóa thành công.";
+    public static final String NO_EXIST_INDUSTRY = "Ngành không tồn tại";
 
     // Token - JWT
     public static final String JTI = "jti";
@@ -133,10 +133,17 @@ public class Constant {
     public static final String EMAIL_NOT_BLANK_MESSAGE = "Email Tên không được để trống";
     public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
     public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
+    //    public static final String NAME_NOT_BLANK = "Name cannot be blank";
 //    public static final String NAME_NOT_BLANK = "Name cannot be blank";
 //    public static final String NAME_NOT_BLANK = "Name cannot be blank";
 //    public static final String NAME_NOT_BLANK = "Name cannot be blank";
 //    public static final String NAME_NOT_BLANK = "Name cannot be blank";
 //    public static final String NAME_NOT_BLANK = "Name cannot be blank";
-//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+    //Công việc đã đăng
+    public static final String NO_EDIT_JOB = "Bạn không có quyền chỉnh sửa job này";
+    public static final String NO_EXIST_JOB = "Công việc không tồn tại";
+    public static final String INACTIVE_JOB = "Vô hiệu hóa công việc thành công";
+    public static final String ALREADY_INACTIVE = "Đã bị vô hiệu hóa trước đó";
+
+
 }
