@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.backend.autocarrerbridge.dto.response.LocationResponse;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
+import com.backend.autocarrerbridge.entity.Business;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -28,4 +29,18 @@ public class BusinessResponse {
     LocalDate updatedAt;
     LocationResponse locationResponse;
     UserAccountResponse userAccountResponse;
+
+    public BusinessResponse(Business business) {
+        this.id = business.getId();
+        this.name = business.getName();
+        this.taxCode = business.getTaxCode();
+        this.companySize = business.getCompanySize();
+        this.website = business.getWebsite();
+        this.foundYear = business.getFoundYear();
+        this.email = business.getEmail();
+        this.phone = business.getPhone();
+        this.description = business.getDescription();
+        this.businessImageId = business.getBusinessImageId();
+        this.licenseImageId = business.getLicenseImageId();
+    }
 }
