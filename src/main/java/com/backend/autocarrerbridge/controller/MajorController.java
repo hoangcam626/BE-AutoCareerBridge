@@ -3,9 +3,10 @@ package com.backend.autocarrerbridge.controller;
 
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
-import com.backend.autocarrerbridge.dto.MajorDTO;
+import com.backend.autocarrerbridge.dto.request.major.MajorRequest;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.MajorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,8 +26,8 @@ public class MajorController {
   private final MajorService majorService;
 
   @PostMapping("/create")
-  public ResponseEntity<ApiResponse<Object>> create(@RequestBody MajorDTO majorDTO) {
-    MajorDTO createMajor = majorService.createMajor(majorDTO);
+  public ResponseEntity<ApiResponse<Object>> create(@Valid @RequestBody MajorRequest majorRequest) {
+    MajorRequest createMajor = majorService.createMajor(majorRequest);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -35,9 +36,9 @@ public class MajorController {
   }
 
   @PostMapping("/update/{id}")
-  public ResponseEntity<ApiResponse<Object>> update(@PathVariable("id") int id,
-      @RequestBody MajorDTO majorDTO) {
-    MajorDTO updateMajor = majorService.updateMajor(id, majorDTO);
+  public ResponseEntity<ApiResponse<Object>> update(@Valid @PathVariable("id") int id,
+      @RequestBody MajorRequest majorRequest) {
+    MajorRequest updateMajor = majorService.updateMajor(id, majorRequest);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -47,7 +48,7 @@ public class MajorController {
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<ApiResponse<Object>> delete(@PathVariable("id") int id) {
-    MajorDTO deleteMajor = majorService.deleteMajor(id);
+    MajorRequest deleteMajor = majorService.deleteMajor(id);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -65,7 +66,7 @@ public class MajorController {
   }
 
 
-  @GetMapping("/getAll")
+  @GetMapping("/get-all")
   public ResponseEntity<ApiResponse<Object>> getAll() {
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)

@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.converter;
 
-import com.backend.autocarrerbridge.dto.SectionDTO;
+import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
 import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -12,30 +12,30 @@ import org.springframework.stereotype.Component;
 
 public class SectionConverter {
 
-  public static Section convertToEntity(SectionDTO sectionDTO){
+  public static Section convertToEntity(SectionRequest sectionRequest){
 
     Section section = Section.builder()
-        .id(sectionDTO.getId())
-        .name(sectionDTO.getName())
-        .description(sectionDTO.getDescription())
+        .id(sectionRequest.getId())
+        .name(sectionRequest.getName())
+        .description(sectionRequest.getDescription())
         .build();
 
-    section.setStatus(sectionDTO.getStatus() != null ? sectionDTO.getStatus() : Status.ACTIVE);
-    section.setCreatedAt(sectionDTO.getCreatedAt() != null ? sectionDTO.getCreatedAt() : LocalDateTime.now());
+    section.setStatus(sectionRequest.getStatus() != null ? sectionRequest.getStatus() : Status.ACTIVE);
+    section.setCreatedAt(sectionRequest.getCreatedAt() != null ? sectionRequest.getCreatedAt() : LocalDateTime.now());
     section.setUpdatedAt(LocalDateTime.now());
 
 
-    if (sectionDTO.getUniversityId() != null) {
+    if (sectionRequest.getUniversityId() != null) {
       University university = new University();
-      university.setId(sectionDTO.getUniversityId());
+      university.setId(sectionRequest.getUniversityId());
       section.setUniversity(university);
     }// tedAt
 
     return section;
   }
-  public static SectionDTO convertToDTO(Section section){
+  public static SectionRequest convertToDTO(Section section){
 
-    return SectionDTO.builder()
+    return SectionRequest.builder()
         .id(section.getId())
         .name(section.getName())
         .description(section.getDescription())
