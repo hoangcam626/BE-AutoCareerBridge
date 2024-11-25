@@ -66,7 +66,7 @@ public class MajorController {
   }
 
 
-  @GetMapping("/getAll")
+  @GetMapping("/get-all")
   public ResponseEntity<ApiResponse<Object>> getAll() {
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
