@@ -1,17 +1,17 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.response.section.SectionResponse;
+import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
 import java.util.List;
 
 public interface SectionService {
 
-  SectionResponse createSection(SectionResponse sectionResponse);
+  SectionRequest createSection(SectionRequest sectionRequest);
 
-  SectionResponse updateSection(int id, SectionResponse sectionResponse);
+  SectionRequest updateSection(int id, SectionRequest sectionRequest);
 
-  SectionResponse deleteSection(int id);
+  SectionRequest deleteSection(int id);
 
-  List<SectionResponse> getAllSection();
+  List<SectionRequest> getAllSection();
 
-  List<SectionResponse> getSectionById(int id);
+  List<SectionRequest> getSectionById(int id);
 }

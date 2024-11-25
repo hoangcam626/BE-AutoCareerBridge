@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.converter;
 
-import com.backend.autocarrerbridge.dto.response.section.SectionResponse;
+import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
 import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -12,30 +12,30 @@ import org.springframework.stereotype.Component;
 
 public class SectionConverter {
 
-  public static Section convertToEntity(SectionResponse sectionResponse){
+  public static Section convertToEntity(SectionRequest sectionRequest){
 
     Section section = Section.builder()
-        .id(sectionResponse.getId())
-        .name(sectionResponse.getName())
-        .description(sectionResponse.getDescription())
+        .id(sectionRequest.getId())
+        .name(sectionRequest.getName())
+        .description(sectionRequest.getDescription())
         .build();
 
-    section.setStatus(sectionResponse.getStatus() != null ? sectionResponse.getStatus() : Status.ACTIVE);
-    section.setCreatedAt(sectionResponse.getCreatedAt() != null ? sectionResponse.getCreatedAt() : LocalDateTime.now());
+    section.setStatus(sectionRequest.getStatus() != null ? sectionRequest.getStatus() : Status.ACTIVE);
+    section.setCreatedAt(sectionRequest.getCreatedAt() != null ? sectionRequest.getCreatedAt() : LocalDateTime.now());
     section.setUpdatedAt(LocalDateTime.now());
 
 
-    if (sectionResponse.getUniversityId() != null) {
+    if (sectionRequest.getUniversityId() != null) {
       University university = new University();
-      university.setId(sectionResponse.getUniversityId());
+      university.setId(sectionRequest.getUniversityId());
       section.setUniversity(university);
     }// tedAt
 
     return section;
   }
-  public static SectionResponse convertToDTO(Section section){
+  public static SectionRequest convertToDTO(Section section){
 
-    return SectionResponse.builder()
+    return SectionRequest.builder()
         .id(section.getId())
         .name(section.getName())
         .description(section.getDescription())

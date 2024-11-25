@@ -3,10 +3,11 @@ package com.backend.autocarrerbridge.controller;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
-import com.backend.autocarrerbridge.dto.response.section.SectionResponse;
+import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.SectionService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,8 @@ public class SectionController {
   private final SectionService sectionService;
 
   @PostMapping("/create")
-  public ResponseEntity<ApiResponse<Object>> create(@RequestBody SectionResponse sectionResponse) {
-    SectionResponse createSection = sectionService.createSection(sectionResponse);
+  public ResponseEntity<ApiResponse<Object>> create(@Valid @RequestBody SectionRequest sectionRequest) {
+    SectionRequest createSection = sectionService.createSection(sectionRequest);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -39,9 +40,9 @@ public class SectionController {
   }
 
   @PostMapping("/update/{id}")
-  public ResponseEntity<ApiResponse<Object>> update(@PathVariable("id") int id,
-      @RequestBody SectionResponse sectionResponse) {
-    SectionResponse updateSection = sectionService.updateSection(id, sectionResponse);
+  public ResponseEntity<ApiResponse<Object>> update(@Valid @PathVariable("id") int id,
+      @RequestBody SectionRequest sectionRequest) {
+    SectionRequest updateSection = sectionService.updateSection(id, sectionRequest);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -51,7 +52,7 @@ public class SectionController {
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<ApiResponse<Object>> delete(@PathVariable("id") int id) {
-    SectionResponse deleteSection = sectionService.deleteSection(id);
+    SectionRequest deleteSection = sectionService.deleteSection(id);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
