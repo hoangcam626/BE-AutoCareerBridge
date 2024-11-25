@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.converter;
 
-import com.backend.autocarrerbridge.dto.SectionDTO;
+import com.backend.autocarrerbridge.dto.response.section.SectionResponse;
 import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -12,30 +12,30 @@ import org.springframework.stereotype.Component;
 
 public class SectionConverter {
 
-  public static Section convertToEntity(SectionDTO sectionDTO){
+  public static Section convertToEntity(SectionResponse sectionResponse){
 
     Section section = Section.builder()
-        .id(sectionDTO.getId())
-        .name(sectionDTO.getName())
-        .description(sectionDTO.getDescription())
+        .id(sectionResponse.getId())
+        .name(sectionResponse.getName())
+        .description(sectionResponse.getDescription())
         .build();
 
-    section.setStatus(sectionDTO.getStatus() != null ? sectionDTO.getStatus() : Status.ACTIVE);
-    section.setCreatedAt(sectionDTO.getCreatedAt() != null ? sectionDTO.getCreatedAt() : LocalDateTime.now());
+    section.setStatus(sectionResponse.getStatus() != null ? sectionResponse.getStatus() : Status.ACTIVE);
+    section.setCreatedAt(sectionResponse.getCreatedAt() != null ? sectionResponse.getCreatedAt() : LocalDateTime.now());
     section.setUpdatedAt(LocalDateTime.now());
 
 
-    if (sectionDTO.getUniversityId() != null) {
+    if (sectionResponse.getUniversityId() != null) {
       University university = new University();
-      university.setId(sectionDTO.getUniversityId());
+      university.setId(sectionResponse.getUniversityId());
       section.setUniversity(university);
     }// tedAt
 
     return section;
   }
-  public static SectionDTO convertToDTO(Section section){
+  public static SectionResponse convertToDTO(Section section){
 
-    return SectionDTO.builder()
+    return SectionResponse.builder()
         .id(section.getId())
         .name(section.getName())
         .description(section.getDescription())

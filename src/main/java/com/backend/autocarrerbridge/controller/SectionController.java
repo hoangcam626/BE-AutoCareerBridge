@@ -3,7 +3,7 @@ package com.backend.autocarrerbridge.controller;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
-import com.backend.autocarrerbridge.dto.SectionDTO;
+import com.backend.autocarrerbridge.dto.response.section.SectionResponse;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.service.SectionService;
 
@@ -29,8 +29,8 @@ public class SectionController {
   private final SectionService sectionService;
 
   @PostMapping("/create")
-  public ResponseEntity<ApiResponse<Object>> create(@RequestBody SectionDTO sectionDTO) {
-    SectionDTO createSection = sectionService.createSection(sectionDTO);
+  public ResponseEntity<ApiResponse<Object>> create(@RequestBody SectionResponse sectionResponse) {
+    SectionResponse createSection = sectionService.createSection(sectionResponse);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -40,8 +40,8 @@ public class SectionController {
 
   @PostMapping("/update/{id}")
   public ResponseEntity<ApiResponse<Object>> update(@PathVariable("id") int id,
-      @RequestBody SectionDTO sectionDTO) {
-    SectionDTO updateSection = sectionService.updateSection(id, sectionDTO);
+      @RequestBody SectionResponse sectionResponse) {
+    SectionResponse updateSection = sectionService.updateSection(id, sectionResponse);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -51,7 +51,7 @@ public class SectionController {
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<ApiResponse<Object>> delete(@PathVariable("id") int id) {
-    SectionDTO deleteSection = sectionService.deleteSection(id);
+    SectionResponse deleteSection = sectionService.deleteSection(id);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)

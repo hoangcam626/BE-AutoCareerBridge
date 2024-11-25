@@ -1,7 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
-
 import com.backend.autocarrerbridge.converter.SectionConverter;
-import com.backend.autocarrerbridge.dto.SectionDTO;
+import com.backend.autocarrerbridge.dto.response.section.SectionResponse;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.entity.Section;
@@ -28,14 +27,14 @@ public class SectionServiceImpl implements SectionService {
 
   @Transactional
   @Override
-  public SectionDTO createSection(SectionDTO sectionDTO) {
-    University university = universityRepository.findById(sectionDTO.getUniversityId())
+  public SectionResponse createSection(SectionResponse sectionResponse) {
+    University university = universityRepository.findById(sectionResponse.getUniversityId())
         .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
-    if (sectionRepository.findByName(sectionDTO.getName()) != null) {
-      throw new AppException(ErrorCode.ERROR_NAME);
+    if (sectionRepository.findByName(sectionResponse.getName()) != null) {
+      throw new AppException(ErrorCode.SECTION_EXISTED);
     }
 
-    Section section = SectionConverter.convertToEntity(sectionDTO);
+    Section section = SectionConverter.convertToEntity(sectionResponse);
     section.setUniversity(university);
     Section saveSection = sectionRepository.save(section);
     return SectionConverter.convertToDTO(saveSection);
@@ -43,12 +42,12 @@ public class SectionServiceImpl implements SectionService {
 
   @Transactional
   @Override
-  public SectionDTO updateSection(int id, SectionDTO sectionDTO) {
+  public SectionResponse updateSection(int id, SectionResponse sectionResponse) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
-    section.setName(sectionDTO.getName());
-    section.setDescription(sectionDTO.getDescription());
-    section.setStatus(sectionDTO.getStatus());
+        .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
+    section.setName(sectionResponse.getName());
+    section.setDescription(sectionResponse.getDescription());
+    section.setStatus(sectionResponse.getStatus());
     section.setUpdatedAt(LocalDateTime.now());
     Section updatedSection = sectionRepository.save(section);
 
@@ -56,15 +55,15 @@ public class SectionServiceImpl implements SectionService {
   }
 
   @Override
-  public SectionDTO deleteSection(int id) {
+  public SectionResponse deleteSection(int id) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
+        .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
     sectionRepository.delete(section);
     return SectionConverter.convertToDTO(section);
   }
 
   @Override
-  public List<SectionDTO> getAllSection() {
+  public List<SectionResponse> getAllSection() {
     List<Section> sectionList = sectionRepository.findAll();
     sectionList.sort(Comparator.comparingLong(Section::getId).reversed());
     return sectionList.stream().map(SectionConverter::convertToDTO)
@@ -73,9 +72,9 @@ public class SectionServiceImpl implements SectionService {
   }
 
   @Override
-  public List<SectionDTO> getSectionById(int id) {
+  public List<SectionResponse> getSectionById(int id) {
     Section section = sectionRepository.findById(id)
-        .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
+        .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
     return List.of(SectionConverter.convertToDTO(section));
   }
 }
