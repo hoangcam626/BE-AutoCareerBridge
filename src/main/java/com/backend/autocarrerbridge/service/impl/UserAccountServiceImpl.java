@@ -127,11 +127,6 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount approvedAccount(UserAccount userAccount) {
-        if (userAccount.getState() == State.PENDING) {
-            userAccount.setState(State.APPROVED);
-        }
-        return userAccountRepository.save(userAccount);
     public void approvedAccount(UserAccount req) {
         validateAccountForStateChange(req, State.APPROVED);
         req.setState(State.APPROVED);
@@ -156,24 +151,24 @@ public class UserAccountServiceImpl implements UserAccountService {
      * @throws AppException nếu mật khẩu không hợp lệ hoặc không khớp.
      */
     @Override
-    public UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccountResponeDTO) {
-        UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponeDTO.getUsername());
-        if (userAccountResponeDTO.getPassword() == null
-                || userAccountResponeDTO.getPassword().isEmpty()) {
+    public UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccountResponseDTO) {
+        UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponseDTO.getUsername());
+        if (userAccountResponseDTO.getPassword() == null
+                || userAccountResponseDTO.getPassword().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
-        if (passwordEncoder.matches(userAccountResponeDTO.getNewPassword(), userAccount.getPassword())) {
+        if (passwordEncoder.matches(userAccountResponseDTO.getNewPassword(), userAccount.getPassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_SAME);
         }
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        if (!userAccountResponeDTO.getNewPassword().equals(userAccountResponeDTO.getReNewPassword())) {
+        if (!userAccountResponseDTO.getNewPassword().equals(userAccountResponseDTO.getReNewPassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
-        if (!passwordEncoder.matches(userAccountResponeDTO.getPassword(), userAccount.getPassword())) {
+        if (!passwordEncoder.matches(userAccountResponseDTO.getPassword(), userAccount.getPassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }
 
-        userAccount.setPassword(passwordEncoder.encode(userAccountResponeDTO.getNewPassword()));
+        userAccount.setPassword(passwordEncoder.encode(userAccountResponseDTO.getNewPassword()));
         return modelMapper.map(userAccountRepository.save(userAccount), UserAccountLoginResponse.class);
     }
     /**

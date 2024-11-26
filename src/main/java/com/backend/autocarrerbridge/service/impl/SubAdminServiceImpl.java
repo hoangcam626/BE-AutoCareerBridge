@@ -157,7 +157,7 @@ public class SubAdminServiceImpl implements SubAdminService {
         if (!isSamePhone) {
             subAdmin.setPhone(req.getPhone());
         }
-        if (isNullImage) {
+        if (!isNullImage) {
             var imgId = imageService.uploadFile(req.getSubAdminImage());
             subAdmin.setSubAdminImageId(imgId);
         }

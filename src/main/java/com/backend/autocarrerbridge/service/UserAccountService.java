@@ -24,8 +24,6 @@ public interface UserAccountService {
 
     String handleForgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 
-    UserAccount approvedAccount(UserAccount userAccount);
-
     void approvedAccount(UserAccount userAccount);
 
     void rejectedAccount(UserAccount userAccount);

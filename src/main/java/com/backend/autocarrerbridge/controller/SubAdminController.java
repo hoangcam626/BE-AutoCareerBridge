@@ -3,6 +3,17 @@ package com.backend.autocarrerbridge.controller;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminDeleteRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminSelfRequest;
+import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminUpdateRequest;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+@SecurityRequirement(name = "Authorization")
 @RequestMapping("/api/sub-admin")
 public class SubAdminController {
     private final SubAdminService subAdminService;
@@ -44,6 +56,9 @@ public class SubAdminController {
      * @return ApiResponse chứa thông tin sub-admin vừa được tạo.
      * @throws ParseException - Nếu xảy ra lỗi trong quá trình xử lý.
      */
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            mediaType = "multipart/form-data",
+            schema = @Schema(implementation = SubAdminCreateRequest.class)))
     @PostMapping("/create")
     public ApiResponse<SubAdminCreateResponse> create(@ModelAttribute SubAdminCreateRequest req) throws ParseException {
 
@@ -58,6 +73,9 @@ public class SubAdminController {
      * @return ApiResponse xác nhận quá trình cập nhật thành công.
      * @throws ParseException - Nếu xảy ra lỗi trong quá trình xử lý.
      */
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            mediaType = "multipart/form-data",
+            schema = @Schema(implementation = SubAdminUpdateRequest.class)))
     @PutMapping("/update")
     public ApiResponse<SubAdminUpdateResponse> update(SubAdminUpdateRequest req) throws ParseException {
         var res = subAdminService.update(req);
@@ -106,7 +124,7 @@ public class SubAdminController {
      * @param pageSize - Số lượng bản ghi trên mỗi trang.
      * @return ApiResponse chứa danh sách sub-admin trong trang yêu cầu.
      */
-    @GetMapping("/page")
+    @GetMapping("/get-paging")
     public ApiResponse<Page<SubAdminSelfResponse>> getSubAdmins(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {

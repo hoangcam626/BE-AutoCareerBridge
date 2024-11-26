@@ -115,7 +115,7 @@ public class Constant {
     public static final String FORGOT_CODE_EMPTY_MESSAGE = "Mã khôi phục không để trống.";
     public static final String ACCOUNT_ALREADY_APPROVED_MESSAGE = "Tài khoản đã được chấp nhận.";
     public static final String ACCOUNT_ALREADY_REJECTED_MESSAGE = "Tài khoản đã bị từ chối.";
-    public static final String INVALID_ACCOUNT_STATE_MESSAGE = "Tài khoản đang chờ được chấp nhận.";
+    public static final String INVALID_ACCOUNT_STATE_MESSAGE = "Trạng thái tài khoản không hợp lệ.";
     public static final String ACCOUNT_IS_NULL = "Tài khoản người dùng đang trống.";
 
     // Doanh nghiệp
@@ -151,7 +151,7 @@ public class Constant {
     public static final String NUMBER_MAX_STUDENT_MAJOR_MESSAGE = "Tối đa chỉ được 1.000 sinh viên .";
     public static final String ID_MAJOR_NOT_NULL_MESSAGE = " Không tìm thấy khoa .";
 
-    // Employee
+    //Employee
     public static final String NAME_NOT_BLANK_MESSAGE = "Tên không được để trống";
     public static final String GENDER_NOT_BLANK_MESSAGE = "Giới tính không được để trống";
     public static final String DOB_NOT_BLANK_MESSAGE = "Ngày sinh không được để trống";
@@ -159,10 +159,16 @@ public class Constant {
     public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
     public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
 
-    // Location
-    public static final String PROVINCE_NOT_FOUND_MESSAGE = "Không tìm thấy tỉnh";
-    public static final String DISTRICT_NOT_FOUND_MESSAGE = "Không tìm thấy huyện";
-    public static final String WARD_NOT_FOUND_MESSAGE = "Không tìm thấy xã";
+    //Administrative
+    public static final String DISTRICT_NOT_FOUND_MESSAGE = "Không tìm thấy Quận/Huyện";
+    public static final String PROVINCE_NOT_FOUND_MESSAGE = "Không tìm thấy Tỉnh/Thành phố";
+    public static final String WARD_NOT_FOUND_MESSAGE = "Không tìm thấy Xã/Phường";
+    public static final String PROVINCE_NOT_BLANK_MESSAGE = "Tỉnh/Thành phố không được để trống";
+    public static final String DISTRICT_NOT_BLANK_MESSAGE = "Quận/Huyện không được để trống";
+    public static final String WARD_NOT_BLANK_MESSAGE = "Xã/Phường không được để trống";
+
+
+    //Location
 
     // Exception database
     public static final String FILED_DB_NOT_UNIQUE_MESSAGE = "Trường trong database không duy nhất, hãy kiểm tra db";
