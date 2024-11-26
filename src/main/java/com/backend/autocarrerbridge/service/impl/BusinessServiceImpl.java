@@ -51,18 +51,15 @@ public class BusinessServiceImpl implements BusinessService {
             throw new IllegalArgumentException("User business data cannot be null");
         }
 
-        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
         Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
         if (existingBusiness != null) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
 
-        // Xác thực mật khẩu
         if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
 
-        // Kiểm tra và xử lý hình ảnh giấy phép
         if (userBusinessRequest.getLicenseImage() == null
                 || userBusinessRequest.getLicenseImage().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LICENSE);
@@ -78,29 +75,27 @@ public class BusinessServiceImpl implements BusinessService {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
 
-        // Tạo tài khoản người dùng cho doanh nghiệp
-        UserAccount userAccount = UserAccount.builder()
-                .username(userBusinessRequest.getEmail()) // Sử dụng email doanh nghiệp làm username
-                .password("default_password") // Mật khẩu mặc định
-                .role(roleService.findById(PredefinedRole.BUSINESS.getValue())) // Gán role BUSINESS
-                .state(State.PENDING) // Trạng thái chờ phê duyệt
-                .build();
+        // Tạo và lưu UserAccount
+        UserAccount userAccount = new UserAccount();
+        modelMapper.map(userBusinessRequest, userAccount);
+        userAccount.setRole(roleService.findById(PredefinedRole.BUSINESS.getValue()));
+        userAccount.setUsername(userBusinessRequest.getEmail());
+        userAccount.setState(State.PENDING);
+        UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
-        UserAccount savedUserAccount = userAccountService.registerUser(userAccount); // Đăng ký tài khoản
-
-        // Tạo đối tượng Business và lưu vào DB
-        Business business = Business.builder()
-                .name(userBusinessRequest.getName())
-                .email(userBusinessRequest.getEmail())
-                .licenseImageId(licenseImageId)
-                .userAccount(savedUserAccount)
-                .build();
+        // Tạo và lưu Business
+        Business business = modelMapper.map(userBusinessRequest, Business.class);
+        business.setLicenseImageId(licenseImageId);
+        business.setUserAccount(savedUserAccount);
 
         try {
             Business savedBusiness = businessRepository.save(business);
-            return modelMapper.map(savedBusiness, BusinessRegisterResponse.class); // Chuyển đổi sang DTO
+            BusinessRegisterResponse businessRegisterResponse = new BusinessRegisterResponse();
+            modelMapper.map(savedUserAccount, businessRegisterResponse);
+            modelMapper.map(savedBusiness, businessRegisterResponse);
+            return businessRegisterResponse;
         } catch (Exception e) {
-            throw new AppException(ErrorCode.ERROR_USER); // Xử lý ngoại lệ nếu lưu thất bại
+            throw new AppException(ErrorCode.ERROR_USER);
         }
     }
 
