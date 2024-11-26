@@ -2,30 +2,29 @@ package com.backend.autocarrerbridge.service.impl;
 
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.mapper.BusinessMapper;
+import com.backend.autocarrerbridge.service.LocationService;
+import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
-import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
-import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.ImageService;
-import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
-import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ public class BusinessServiceImpl implements BusinessService {
     RoleService roleService;
     LocationService locationService;
 
-    // Đăng ký doanh nghiệp mới.
+    //Đăng ký doanh nghiệp mới.
     @Transactional
     @Override
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
@@ -62,7 +61,6 @@ public class BusinessServiceImpl implements BusinessService {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
 
-        // Kiểm tra và xử lý hình ảnh giấy phép
         if (userBusinessRequest.getLicenseImage() == null
                 || userBusinessRequest.getLicenseImage().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LICENSE);
@@ -78,29 +76,27 @@ public class BusinessServiceImpl implements BusinessService {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
 
-        // Tạo tài khoản người dùng cho doanh nghiệp
-        UserAccount userAccount = UserAccount.builder()
-                .username(userBusinessRequest.getEmail()) // Sử dụng email doanh nghiệp làm username
-                .password("default_password") // Mật khẩu mặc định
-                .role(roleService.findById(PredefinedRole.BUSINESS.getValue())) // Gán role BUSINESS
-                .state(State.PENDING) // Trạng thái chờ phê duyệt
-                .build();
+        // Tạo và lưu UserAccount
+        UserAccount userAccount = new UserAccount();
+        modelMapper.map(userBusinessRequest, userAccount);
+        userAccount.setRole(roleService.findById(PredefinedRole.BUSINESS.getValue()));
+        userAccount.setUsername(userBusinessRequest.getEmail());
+        userAccount.setState(State.PENDING);
+        UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
-        UserAccount savedUserAccount = userAccountService.registerUser(userAccount); // Đăng ký tài khoản
-
-        // Tạo đối tượng Business và lưu vào DB
-        Business business = Business.builder()
-                .name(userBusinessRequest.getName())
-                .email(userBusinessRequest.getEmail())
-                .licenseImageId(licenseImageId)
-                .userAccount(savedUserAccount)
-                .build();
+        // Tạo và lưu Business
+        Business business = modelMapper.map(userBusinessRequest, Business.class);
+        business.setLicenseImageId(licenseImageId);
+        business.setUserAccount(savedUserAccount);
 
         try {
             Business savedBusiness = businessRepository.save(business);
-            return modelMapper.map(savedBusiness, BusinessRegisterResponse.class); // Chuyển đổi sang DTO
+            BusinessRegisterResponse businessRegisterResponse = new BusinessRegisterResponse();
+            modelMapper.map(savedUserAccount, businessRegisterResponse);
+            modelMapper.map(savedBusiness, businessRegisterResponse);
+            return businessRegisterResponse;
         } catch (Exception e) {
-            throw new AppException(ErrorCode.ERROR_USER); // Xử lý ngoại lệ nếu lưu thất bại
+            throw new AppException(ErrorCode.ERROR_USER);
         }
     }
 
@@ -172,3 +168,4 @@ public class BusinessServiceImpl implements BusinessService {
         businessRepository.save(business); // Lưu thay đổi
     }
 }
+
