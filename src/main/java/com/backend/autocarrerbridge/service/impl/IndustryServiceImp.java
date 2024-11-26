@@ -44,14 +44,14 @@ public class IndustryServiceImp implements IndustryService {
      * Phương thức kiếm tra tên ngành và mã ngành đã tồn tại chưa
      */
     private void checkNameAndCodeExists(IndustryRequest industryRequest) {
-        if (industryRepo.existsByName(industryRequest.getName())) {
+        // Kiểm tra nếu tên ngành đã tồn tại
+        if (industryRepo.existsByNameAndIdNot(industryRequest.getName(), industryRequest.getId())) {
             throw new AppException(ErrorCode.ERROR_EXIST_NAME);
         }
-        if (industryRepo.existsByCode(industryRequest.getCode())) {
+
+        // Kiểm tra nếu mã đã tồn tại
+        if (industryRepo.existsByCodeAndIdNot(industryRequest.getCode(), industryRequest.getId())) {
             throw new AppException(ErrorCode.ERROR_EXIST_CODE);
-        }
-        if (industryRepo.existsByName(industryRequest.getName()) && industryRepo.existsByCode(industryRequest.getCode())) {
-            throw new AppException(ErrorCode.ERROR_EXIST_NAME_AND_CODE);
         }
     }
 

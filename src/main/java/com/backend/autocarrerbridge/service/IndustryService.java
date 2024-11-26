@@ -1,7 +1,6 @@
 package com.backend.autocarrerbridge.service;
 
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
-import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 
 import java.text.ParseException;

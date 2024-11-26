@@ -30,12 +30,12 @@ public interface IndustryRepo extends JpaRepository<Industry, Integer> {
     /**
      * Kiểm tra tên ngành đã tồn tại?
      */
-    boolean existsByName(String name);
+    boolean existsByNameAndIdNot(String name, Integer id);
 
     /**
      * Kiểm tra mã ngành đã tồn tại?
      */
-    boolean existsByCode(String code);
+    boolean existsByCodeAndIdNot(String code, Integer id);
 
     @Query("SELECT industry FROM Industry industry where industry.id= :id")
     Industry getIndustriesById(Integer id);
