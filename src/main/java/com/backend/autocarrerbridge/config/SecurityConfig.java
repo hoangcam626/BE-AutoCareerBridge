@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.config;
 
 
 import com.backend.autocarrerbridge.service.TokenService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @SuppressWarnings("squid:S4502")
 @Configuration
@@ -27,69 +33,94 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Value("${jwt.signerKey}")
-    private String signerKey;
 
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final TokenService tokenService;
+  @Value("${jwt.signerKey}")
+  private String signerKey;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    // default co accept all quyen ko can jwt
-    //    @Bean
-    //    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-    //        return httpSecurity
-    //                .csrf(csrf -> csrf.disable())
-    //                .authorizeRequests(auth -> auth
-    //                        .anyRequest().permitAll() // Cho phép truy cập vào tất cả các yêu cầu mà không cần xác
-    // thực
-    //                ).build();
-    //    }
-    @Bean
-    public JwtBlacklistFilter jwtBlacklistFilter() {
-        return new JwtBlacklistFilter(redisTemplate, tokenService);
-    }
+  private final RedisTemplate<String, Object> redisTemplate;
+  private final TokenService tokenService;
 
-    private static final String[] AUTH_WHITELIST = {
-            "/api/business/register",
-            "/api/university/register",
-            "/api/accounts/refresh",
-            "/api/accounts/login",
-            "/api/accounts/verify",
-            "/api/accounts/forgot-code",
-            "/api/accounts/forgot-pass",
-            "/api/accounts/jwt-introspect",
-            "/api/v1/image/**",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/webjars/**"
-    };
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtBlacklistFilter jwtBlacklistFilter)
-            throws Exception {
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-        return httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .authorizeRequests(auth -> auth.requestMatchers(HttpMethod.POST, AUTH_WHITELIST)
-                        .permitAll()
-                        .requestMatchers(AUTH_WHITELIST)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .addFilterBefore(
-                        jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class) // Thêm Filter trước xử lý JWT
-                .build();
-    }
+  // default co accept all quyen ko can jwt
+//  @Bean
+//  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+//    return httpSecurity
+//        .csrf(csrf -> csrf.disable())
+//        .authorizeRequests(auth -> auth
+//                .anyRequest().permitAll()
+//            // Cho phép truy cập vào tất cả các yêu cầu mà không cần xác thực
+//        )
+//        .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
+//        .build();
+//  }
 
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
-    }
+  @Bean
+  public JwtBlacklistFilter jwtBlacklistFilter() {
+    return new JwtBlacklistFilter(redisTemplate, tokenService);
+  }
+
+  private static final String[] AUTH_WHITELIST = {
+      "/api/business/register",
+      "/api/university/register",
+      "/api/accounts/refresh",
+      "/api/accounts/login",
+      "/api/accounts/verify",
+      "/api/accounts/forgot-code",
+      "/api/accounts/forgot-pass",
+      "/api/accounts/jwt-introspect",
+      "/api/v1/image/**",
+      "/v3/api-docs/**",
+      "/swagger-ui/**",
+      "/swagger-resources/**",
+      "/webjars/**"
+  };
+
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity httpSecurity,
+      JwtBlacklistFilter jwtBlacklistFilter)
+      throws Exception {
+    httpSecurity.oauth2ResourceServer(
+        oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
+
+    return httpSecurity
+        .csrf(csrf -> csrf.disable())
+        .authorizeRequests(auth -> auth.requestMatchers(HttpMethod.POST, AUTH_WHITELIST)
+            .permitAll()
+            .requestMatchers(AUTH_WHITELIST)
+            .permitAll()
+            .anyRequest()
+            .authenticated())
+        .addFilterBefore(
+            jwtBlacklistFilter,
+            UsernamePasswordAuthenticationFilter.class) // Thêm Filter trước xử lý JWT
+        .build();
+  }
+
+  @Bean
+  public JwtDecoder jwtDecoder() {
+    SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
+    return NimbusJwtDecoder.withSecretKey(secretKeySpec)
+        .macAlgorithm(MacAlgorithm.HS512)
+        .build();
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTION"));
+    corsConfiguration.setAllowCredentials(true);
+    corsConfiguration.setAllowedHeaders(List.of("*"));
+    UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+    urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+    return urlBasedCorsConfigurationSource;
+  }
+  @Bean
+  public CorsFilter corsFilter() {
+    return new CorsFilter(corsConfigurationSource());
+  }
 }
