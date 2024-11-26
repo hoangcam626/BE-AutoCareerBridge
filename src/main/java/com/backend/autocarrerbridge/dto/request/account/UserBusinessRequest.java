@@ -8,6 +8,7 @@ import static com.backend.autocarrerbridge.util.Constant.FORGOT_CODE_EMPTY_MESSA
 import static com.backend.autocarrerbridge.util.Constant.TAX_CODE;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +38,7 @@ public class UserBusinessRequest {
     @NotBlank(message = ERROR_NOT_EMPTY_PW)
     String rePassword;
 
-    @NotBlank(message = EMPTY_FILE_MESSAGE)
+    @NotNull(message = EMPTY_FILE_MESSAGE)
     MultipartFile licenseImage;
 
     @NotBlank(message = FORGOT_CODE_EMPTY_MESSAGE)
