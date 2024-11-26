@@ -4,5 +4,4 @@ import com.backend.autocarrerbridge.entity.Province;
 
 public interface ProvinceService {
     Province findProvinceById(Integer id);
-
 }

@@ -1,4 +1,5 @@
 package com.backend.autocarrerbridge.dto.response.district;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

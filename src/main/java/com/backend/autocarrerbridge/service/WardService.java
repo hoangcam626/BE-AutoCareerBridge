@@ -4,5 +4,4 @@ import com.backend.autocarrerbridge.entity.Ward;
 
 public interface WardService {
     Ward findWardById(Integer id);
-
 }

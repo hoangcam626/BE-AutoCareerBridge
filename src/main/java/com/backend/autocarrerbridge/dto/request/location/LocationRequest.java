@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,5 +20,4 @@ public class LocationRequest extends AbstractAudit {
     private Integer districtId;
 
     private Integer wardId;
-
 }

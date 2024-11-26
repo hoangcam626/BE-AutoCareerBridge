@@ -1,12 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.service.IndustryService;
+import java.text.ParseException;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
+import com.backend.autocarrerbridge.service.IndustryService;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RestController
 @RequestMapping("api/industry")
@@ -59,7 +60,6 @@ public class IndustryController {
         return industryService.createIndustry(industryRequest);
     }
 
-
     /**
      * API để cập nhật thông tin của ngành nghề
      * @apiNote được sử dụng để cập nhật một ngành nghề mới vào cơ sở dữ liệu.
@@ -72,7 +72,7 @@ public class IndustryController {
     /**
      * API để vô hiệu hóa một ngành nghề.
      * @apiNote được sử dụng để đánh dấu một ngành nghề là không còn hoạt động.
-    */
+     */
     @PutMapping("/inactive")
     public ApiResponse<Object> inactiveIndustry(@RequestParam Integer id) throws ParseException {
         return industryService.inactiveIndustry(id);

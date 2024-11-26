@@ -1,5 +1,8 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.time.LocalDate;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,13 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,7 +40,7 @@ public class Employee extends AbstractAudit {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(name = "email",unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "address")

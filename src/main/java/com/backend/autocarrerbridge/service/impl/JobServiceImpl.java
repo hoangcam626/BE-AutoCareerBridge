@@ -1,6 +1,18 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EDIT_JOB;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EXIST_JOB;
+import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
+
+import java.text.ParseException;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.converter.ConvertJob;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.job.JobRequest;
 import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobResponse;
@@ -10,7 +22,6 @@ import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.entity.Job;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
@@ -21,17 +32,8 @@ import com.backend.autocarrerbridge.service.JobService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.util.List;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EDIT_JOB;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EXIST_JOB;
-import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +76,8 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> getAllJob() throws ParseException {
         // Lấy thông tin của business qua employee
-        Business business = businessRepository.getBusinessByEmployeeId(getEmployeeViaToken().getId());
+        Business business =
+                businessRepository.getBusinessByEmployeeId(getEmployeeViaToken().getId());
         if (business == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
@@ -83,9 +86,7 @@ public class JobServiceImpl implements JobService {
         if (jobs.isEmpty()) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
-        return ApiResponse.builder()
-                .data(jobs)
-                .build();
+        return ApiResponse.builder().data(jobs).build();
     }
 
     /**
@@ -98,13 +99,14 @@ public class JobServiceImpl implements JobService {
         if (job == null) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
-        //Lấy thông tin industry qua job
+        // Lấy thông tin industry qua job
         Industry industry = industryRepo.getIndustriesById(job.getIndustry().getId());
         if (industry == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         // Lấy thông tin business qua job
-        Business business = businessRepository.getBusinessByEmployeeId(job.getBusiness().getId());
+        Business business =
+                businessRepository.getBusinessByEmployeeId(job.getBusiness().getId());
         if (business == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
@@ -115,9 +117,7 @@ public class JobServiceImpl implements JobService {
         }
         // Trả về jobDetailResponse
         JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, industry, business, employee);
-        return ApiResponse.builder()
-                .data(jobDetailResponse)
-                .build();
+        return ApiResponse.builder().data(jobDetailResponse).build();
     }
 
     /**
@@ -138,7 +138,8 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_EXIST_INDUSTRY);
         }
 
-        Business business = businessRepository.getBusinessByEmployeeId(getEmployeeViaToken().getId());
+        Business business =
+                businessRepository.getBusinessByEmployeeId(getEmployeeViaToken().getId());
         if (business == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
@@ -160,9 +161,7 @@ public class JobServiceImpl implements JobService {
         job.setCreatedBy(usernameToken);
         jobRepository.save(job);
         JobResponse jobResponse = new JobResponse(job);
-        return ApiResponse.builder()
-                .data(jobResponse)
-                .build();
+        return ApiResponse.builder().data(jobResponse).build();
     }
 
     /**
@@ -171,8 +170,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> updateJob(Integer jobId, JobRequest jobRequest) throws ParseException {
         // Tìm job theo ID
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new AppException(ERROR_NO_EXIST_JOB));
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(ERROR_NO_EXIST_JOB));
         // Kiểm tra tên người tạo và tên đăng nhập của người đăng nhập
         // Nếu khác thì trả ra thông báo không được chỉnh sửa công việc
         if (job.getCreatedBy() == null || job.getCreatedBy().isEmpty()) {
@@ -197,9 +195,7 @@ public class JobServiceImpl implements JobService {
         job.setUpdatedBy(getUsernameViaToken());
         jobRepository.save(job);
         JobResponse jobResponse = new JobResponse(job);
-        return ApiResponse.builder()
-                .data(jobResponse)
-                .build();
+        return ApiResponse.builder().data(jobResponse).build();
     }
 
     /**
@@ -208,8 +204,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> inactiveJob(Integer jobId) throws ParseException {
         // Tìm job theo ID
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new AppException(ERROR_NO_EXIST_JOB));
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(ERROR_NO_EXIST_JOB));
         if (job == null) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
@@ -221,6 +216,4 @@ public class JobServiceImpl implements JobService {
         jobRepository.save(job);
         return new ApiResponse<>(INACTIVE_JOB);
     }
-
-
 }
