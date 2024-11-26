@@ -1,11 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.job.JobRequest;
-import com.backend.autocarrerbridge.service.JobService;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import java.text.ParseException;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,7 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.job.JobRequest;
+import com.backend.autocarrerbridge.service.JobService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,7 +58,8 @@ public class JobController {
      * @apiNote để để cập nhật thông tin công việc vào cơ sở dữ liệu
      */
     @PutMapping("/update-job")
-    private ApiResponse<Object> updateJob(@RequestParam Integer jobId, @RequestBody JobRequest jobRequest) throws ParseException {
+    private ApiResponse<Object> updateJob(@RequestParam Integer jobId, @RequestBody JobRequest jobRequest)
+            throws ParseException {
         return jobService.updateJob(jobId, jobRequest);
     }
 
@@ -68,5 +71,4 @@ public class JobController {
     private ApiResponse<Object> inactiveJob(@RequestParam Integer jobId) throws ParseException {
         return jobService.inactiveJob(jobId);
     }
-
 }
