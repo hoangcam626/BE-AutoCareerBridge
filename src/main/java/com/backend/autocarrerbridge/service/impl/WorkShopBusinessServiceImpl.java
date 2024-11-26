@@ -1,5 +1,15 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
+
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessReponse;
@@ -14,16 +24,8 @@ import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.WorkShopBusinessService;
 import com.backend.autocarrerbridge.service.WorkShopService;
 import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
-import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
 
 /**
  * Service thực hiện các chức năng liên quan đến kết nối giữa Workshop và Business.
@@ -48,15 +50,17 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
      * @return - Thông tin về workshop và danh sách các doanh nghiệp tham gia.
      */
     public WorkShopBusinessReponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
-        if(state != State.PENDING && state != State.APPROVED && state != State.REJECTED) {
+        if (state != State.PENDING && state != State.APPROVED && state != State.REJECTED) {
             throw new AppException(ERROR_NO_CONTENT);
         }
         // Lấy thông tin workshop theo ID
         WorkShopResponse workShopResponse = workShopService.getWorkShopById(workshopId);
 
         // Lấy danh sách các doanh nghiệp tham gia workshop
-        List<Business> businesses = workShopBussinessRepository.getAllBusiness(workshopId, pageable, state).getContent();
-        if(businesses.isEmpty()) {
+        List<Business> businesses = workShopBussinessRepository
+                .getAllBusiness(workshopId, pageable, state)
+                .getContent();
+        if (businesses.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
         }
         // Chuyển đổi danh sách doanh nghiệp thành BusinessResponse
@@ -80,12 +84,14 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
     @Override
     public String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest) {
         // Kiểm tra xem doanh nghiệp đã tham gia workshop chưa
-        if (workShopBussinessRepository.existsByWorkshopIdAndBusinessId(workShopBusinessRequest.getBusinessID(), workShopBusinessRequest.getWorkshopID())) {
+        if (workShopBussinessRepository.existsByWorkshopIdAndBusinessId(
+                workShopBusinessRequest.getBusinessID(), workShopBusinessRequest.getWorkshopID())) {
             throw new AppException(ERROR_FAIL_WORK_SHOP);
         }
 
         // Lấy thông tin workshop và doanh nghiệp
-        Workshop workshop = modelMapper.map(workShopService.getWorkShopById(workShopBusinessRequest.getWorkshopID()), Workshop.class);
+        Workshop workshop = modelMapper.map(
+                workShopService.getWorkShopById(workShopBusinessRequest.getWorkshopID()), Workshop.class);
         Business business = businessService.getBusinessById(workShopBusinessRequest.getBusinessID());
 
         // Kiểm tra nếu workshop hoặc doanh nghiệp không tồn tại

@@ -1,8 +1,8 @@
 package com.backend.autocarrerbridge.emailconfig;
 
-import lombok.Data;
-
 import java.security.SecureRandom;
+
+import lombok.Data;
 
 @Data
 public class RandomCodeGenerator {

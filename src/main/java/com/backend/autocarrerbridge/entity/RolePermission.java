@@ -19,9 +19,9 @@ import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@Builder
 @Entity
 @Table(name = "role_permission")
 public class RolePermission extends AbstractAudit {
@@ -45,7 +45,9 @@ public class RolePermission extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         RolePermission that = (RolePermission) object;
-        return Objects.equals(id, that.id) && Objects.equals(role, that.role) && Objects.equals(permission, that.permission);
+        return Objects.equals(id, that.id)
+                && Objects.equals(role, that.role)
+                && Objects.equals(permission, that.permission);
     }
 
     @Override

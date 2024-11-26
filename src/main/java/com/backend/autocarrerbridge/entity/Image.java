@@ -30,13 +30,16 @@ public class Image extends AbstractAudit {
 
     @Column(name = "file_type")
     private String type;
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Image image = (Image) object;
-        return Objects.equals(id, image.id) && Objects.equals(filename, image.filename) && Objects.equals(type, image.type);
+        return Objects.equals(id, image.id)
+                && Objects.equals(filename, image.filename)
+                && Objects.equals(type, image.type);
     }
 
     @Override

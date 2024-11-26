@@ -46,7 +46,7 @@ public class Business extends AbstractAudit {
     @Column(name = "found_year")
     private Integer foundYear;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "phone")
@@ -75,11 +75,37 @@ public class Business extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Business business = (Business) object;
-        return Objects.equals(id, business.id) && Objects.equals(name, business.name) && Objects.equals(taxCode, business.taxCode) && Objects.equals(companySize, business.companySize) && Objects.equals(website, business.website) && Objects.equals(foundYear, business.foundYear) && Objects.equals(email, business.email) && Objects.equals(phone, business.phone) && Objects.equals(description, business.description) && Objects.equals(businessImageId, business.businessImageId) && Objects.equals(licenseImageId, business.licenseImageId) && Objects.equals(location, business.location) && Objects.equals(userAccount, business.userAccount);
+        return Objects.equals(id, business.id)
+                && Objects.equals(name, business.name)
+                && Objects.equals(taxCode, business.taxCode)
+                && Objects.equals(companySize, business.companySize)
+                && Objects.equals(website, business.website)
+                && Objects.equals(foundYear, business.foundYear)
+                && Objects.equals(email, business.email)
+                && Objects.equals(phone, business.phone)
+                && Objects.equals(description, business.description)
+                && Objects.equals(businessImageId, business.businessImageId)
+                && Objects.equals(licenseImageId, business.licenseImageId)
+                && Objects.equals(location, business.location)
+                && Objects.equals(userAccount, business.userAccount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name, taxCode, companySize, website, foundYear, email, phone, description, businessImageId, licenseImageId, location, userAccount);
+        return Objects.hash(
+                super.hashCode(),
+                id,
+                name,
+                taxCode,
+                companySize,
+                website,
+                foundYear,
+                email,
+                phone,
+                description,
+                businessImageId,
+                licenseImageId,
+                location,
+                userAccount);
     }
 }

@@ -52,7 +52,11 @@ public class Location extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Location location = (Location) object;
-        return Objects.equals(id, location.id) && Objects.equals(description, location.description) && Objects.equals(provinces, location.provinces) && Objects.equals(districts, location.districts) && Objects.equals(wards, location.wards);
+        return Objects.equals(id, location.id)
+                && Objects.equals(description, location.description)
+                && Objects.equals(provinces, location.provinces)
+                && Objects.equals(districts, location.districts)
+                && Objects.equals(wards, location.wards);
     }
 
     @Override

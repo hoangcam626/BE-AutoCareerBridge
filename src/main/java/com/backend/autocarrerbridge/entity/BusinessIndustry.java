@@ -44,7 +44,9 @@ public class BusinessIndustry extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         BusinessIndustry that = (BusinessIndustry) object;
-        return Objects.equals(id, that.id) && Objects.equals(business, that.business) && Objects.equals(industry, that.industry);
+        return Objects.equals(id, that.id)
+                && Objects.equals(business, that.business)
+                && Objects.equals(industry, that.industry);
     }
 
     @Override

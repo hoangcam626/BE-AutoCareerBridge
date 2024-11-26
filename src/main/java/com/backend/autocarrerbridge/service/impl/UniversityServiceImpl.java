@@ -1,7 +1,13 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
+import java.util.Objects;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
+import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -13,44 +19,46 @@ import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class UniversityServiceImpl implements UniversityService {
-     RoleService roleService;
-     ModelMapper modelMapper;
-     UserAccountService userAccountService;
-     UniversityRepository universityRepository;
-     RedisTemplate<String, String> redisTemplate;
+    RoleService roleService;
+    ModelMapper modelMapper;
+    UserAccountService userAccountService;
+    UniversityRepository universityRepository;
+    RedisTemplate<String, String> redisTemplate;
+
     @Override
     public UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest) {
 
         // Kiểm tra password và rePassword có khớp không
-        if (userUniversityRequest.getPassword() == null || userUniversityRequest.getRePassword() == null
+        if (userUniversityRequest.getPassword() == null
+                || userUniversityRequest.getRePassword() == null
                 || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
 
-        if(universityRepository.findByPhone(userUniversityRequest.getPhone()) != null){
+        if (universityRepository.findByPhone(userUniversityRequest.getPhone()) != null) {
             throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
         }
 
-        if (userUniversityRequest.getEmail() == null || userUniversityRequest.getEmail().isEmpty()) {
+        if (userUniversityRequest.getEmail() == null
+                || userUniversityRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-        if(!Objects.equals(redisTemplate.opsForValue().get(userUniversityRequest.getEmail()), userUniversityRequest.getVerificationCode())){
+        if (!Objects.equals(
+                redisTemplate.opsForValue().get(userUniversityRequest.getEmail()),
+                userUniversityRequest.getVerificationCode())) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
-        if (userUniversityRequest.getName() == null || userUniversityRequest.getName().isEmpty()) {
+        if (userUniversityRequest.getName() == null
+                || userUniversityRequest.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
@@ -59,9 +67,8 @@ public class UniversityServiceImpl implements UniversityService {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
 
-
         // Set Role
-         Role role =  roleService.findById(PredefinedRole.UNIVERSITY.getValue());
+        Role role = roleService.findById(PredefinedRole.UNIVERSITY.getValue());
         // Tạo UserAccount từ DTO
         UserAccount userAccount = new UserAccount();
         modelMapper.map(userUniversityRequest, userAccount);
@@ -91,7 +98,4 @@ public class UniversityServiceImpl implements UniversityService {
     public University findById(Integer id) {
         return universityRepository.findById(id).orElse(null);
     }
-
-
 }
-

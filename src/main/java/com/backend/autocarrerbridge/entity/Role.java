@@ -39,7 +39,9 @@ public class Role extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Role role = (Role) object;
-        return Objects.equals(id, role.id) && Objects.equals(name, role.name) && Objects.equals(description, role.description);
+        return Objects.equals(id, role.id)
+                && Objects.equals(name, role.name)
+                && Objects.equals(description, role.description);
     }
 
     @Override

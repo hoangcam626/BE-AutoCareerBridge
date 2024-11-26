@@ -2,11 +2,11 @@ package com.backend.autocarrerbridge.exception;
 
 import static com.backend.autocarrerbridge.util.Constant.*;
 
+import java.util.Arrays;
+
 import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
-
-import java.util.Arrays;
 
 @Getter
 public enum ErrorCode {
@@ -14,7 +14,7 @@ public enum ErrorCode {
     /** Không có nội dung hiển thị */
     ERROR_CODE_NOT_FOUND(NOT_FOUND, NO_CONTENT_MESSAGE, HttpStatus.NOT_FOUND),
 
-    //Ngành nghề
+    // Ngành nghề
     /** Tên hoặc mã của ngành đã tồn tại */
     ERROR_EXIST_NAME(BAD_REQUEST, EXIST_NAME, HttpStatus.BAD_REQUEST),
     ERROR_EXIST_CODE(BAD_REQUEST, EXIST_CODE, HttpStatus.BAD_REQUEST),
@@ -55,9 +55,9 @@ public enum ErrorCode {
     ERROR_NOT_FOUND_BUSINESS(BAD_REQUEST, NOT_FOUND_BUSINESS_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_UNIVERSITY(BAD_REQUEST, NOT_FOUND_UNIVERSITY_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_SUB_ADMIN_CODE_EXIST(BAD_REQUEST, "", HttpStatus.BAD_REQUEST),
-    ERROR_UNIVERSITY_NOT_FOUND(BAD_REQUEST,NOT_FOUND_UNIVERSITY_MESSAGE ,HttpStatus.BAD_REQUEST ),
-    ERROR_NAME(BAD_REQUEST,EXIST_NAME ,HttpStatus.BAD_REQUEST ),
-    NOT_FOUNDED(BAD_REQUEST,EXIST_CODE ,HttpStatus.BAD_REQUEST ),
+    ERROR_UNIVERSITY_NOT_FOUND(BAD_REQUEST, NOT_FOUND_UNIVERSITY_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_NAME(BAD_REQUEST, EXIST_NAME, HttpStatus.BAD_REQUEST),
+    NOT_FOUNDED(BAD_REQUEST, EXIST_CODE, HttpStatus.BAD_REQUEST),
     ERROR_SECTION_NOT_FOUND(BAD_REQUEST, EXIST_NAME_AND_CODE, HttpStatus.BAD_REQUEST),
     ERROR_TOKEN_INVALID(BAD_REQUEST, ERROR_TOKEN_INVALID_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_EMAIL_REQUIRED(BAD_REQUEST, EMAIL_REQUIRED_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -75,7 +75,7 @@ public enum ErrorCode {
     ERROR_FAIL_WORK_SHOP(BAD_REQUEST, REQUEST_WORKSHOP_FAIL, HttpStatus.BAD_REQUEST),
     ERROR_WORK_SHOP_DATE(BAD_REQUEST, DATE_WORKSHOP, HttpStatus.BAD_REQUEST),
 
-//    validate @NotBlank Employee
+    //    validate @NotBlank Employee
     GENDER_NOT_BLANK(BAD_REQUEST, GENDER_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     NAME_NOT_BLANK(BAD_REQUEST, NAME_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     DOB_NOT_BLANK(BAD_REQUEST, DOB_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -105,6 +105,14 @@ public enum ErrorCode {
     ERROR_NO_EXIST_JOB(BAD_REQUEST, NO_EXIST_JOB, HttpStatus.BAD_REQUEST),
     ERROR_ALREADY_INACTIVE(BAD_REQUEST, ALREADY_INACTIVE, HttpStatus.BAD_REQUEST),
 
+    //Location
+    ERROR_PROVINCE_NOT_FOUND(BAD_REQUEST,PROVINCE_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_DISTRICT_NOT_FOUND(BAD_REQUEST,DISTRICT_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_WARD_NOT_FOUND(BAD_REQUEST,WARD_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    //Database
+    FILED_DB_NOT_UNIQUE(BAD_REQUEST,FILED_DB_NOT_UNIQUE_MESSAGE, HttpStatus.BAD_REQUEST),
+
     ;
 
     private final int code;
@@ -123,6 +131,4 @@ public enum ErrorCode {
                 .findFirst()
                 .orElse(ErrorCode.ERROR_CODE_NOT_FOUND);
     }
-
-
 }

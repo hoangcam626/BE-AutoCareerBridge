@@ -2,9 +2,10 @@ package com.backend.autocarrerbridge.dto.response.business;
 
 import java.time.LocalDate;
 
-import com.backend.autocarrerbridge.dto.response.LocationResponse;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
 import com.backend.autocarrerbridge.entity.Business;
+
+import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -27,8 +28,8 @@ public class BusinessResponse {
     Integer licenseImageId;
     LocalDate createdAt;
     LocalDate updatedAt;
-    LocationResponse locationResponse;
-    UserAccountResponse userAccountResponse;
+    LocationResponse location;
+    UserAccountResponse userAccount;
 
     public BusinessResponse(Business business) {
         this.id = business.getId();

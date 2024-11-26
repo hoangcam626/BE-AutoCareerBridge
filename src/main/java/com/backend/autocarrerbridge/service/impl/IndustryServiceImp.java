@@ -6,6 +6,7 @@ import static com.backend.autocarrerbridge.util.Constant.DELETED;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.service.TokenService;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,6 @@ import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.repository.IndustryRepo;
 import com.backend.autocarrerbridge.service.IndustryService;
 import com.backend.autocarrerbridge.util.enums.Status;
