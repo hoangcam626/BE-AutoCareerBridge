@@ -2,8 +2,6 @@ package com.backend.autocarrerbridge.dto.response.province;
 
 import com.backend.autocarrerbridge.dto.response.adminstrative.AdminStrativeUnitResponse;
 import com.backend.autocarrerbridge.dto.response.adminstrative.AdminstrativeRegionResponse;
-import com.backend.autocarrerbridge.entity.AdministrativeRegion;
-import com.backend.autocarrerbridge.entity.AdministrativeUnit;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

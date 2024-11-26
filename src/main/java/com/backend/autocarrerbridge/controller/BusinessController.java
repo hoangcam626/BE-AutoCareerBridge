@@ -1,17 +1,13 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
-import com.backend.autocarrerbridge.dto.request.job.JobRequest;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
-import com.backend.autocarrerbridge.service.BusinessService;
-import com.backend.autocarrerbridge.service.JobService;
-import com.backend.autocarrerbridge.util.Constant;
+import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+
+import java.text.ParseException;
+import java.util.List;
+
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,20 +19,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
-
-import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
-import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.JobService;
+import com.backend.autocarrerbridge.util.Constant;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 /**
  * Controller xử lý các API liên quan đến quản lý doanh nghiệp.
@@ -97,7 +91,8 @@ public class BusinessController {
      * @apiNote để để cập nhật thông tin công việc vào cơ sở dữ liệu
      */
     @PutMapping("/update-job")
-    private ApiResponse<Object> updateJob(@RequestParam Integer jobId, @RequestBody JobRequest jobRequest) throws ParseException {
+    private ApiResponse<Object> updateJob(@RequestParam Integer jobId, @RequestBody JobRequest jobRequest)
+            throws ParseException {
         return jobService.updateJob(jobId, jobRequest);
     }
 
@@ -118,7 +113,8 @@ public class BusinessController {
      * @return Thông tin doanh nghiệp sau khi được cập nhật.
      */
     @PostMapping("/{businessId}")
-    ApiResponse<BusinessResponse> updateBusiness(@PathVariable Integer businessId,  @Valid BusinessUpdateRequest request) {
+    ApiResponse<BusinessResponse> updateBusiness(
+            @PathVariable Integer businessId, @Valid BusinessUpdateRequest request) {
         return ApiResponse.<BusinessResponse>builder()
                 .data(businessService.updateBusiness(businessId, request))
                 .build();
@@ -158,8 +154,6 @@ public class BusinessController {
     @DeleteMapping("/{businessId}")
     ApiResponse<String> deleteBusiness(@PathVariable Integer businessId) {
         businessService.deleteBusiness(businessId);
-        return ApiResponse.<String>builder()
-                .data(Constant.SUCCESS_MESSAGE)
-                .build();
+        return ApiResponse.<String>builder().data(Constant.SUCCESS_MESSAGE).build();
     }
 }

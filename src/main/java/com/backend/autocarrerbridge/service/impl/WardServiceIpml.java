@@ -1,15 +1,16 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.entity.Ward;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.LocationRepository;
 import com.backend.autocarrerbridge.repository.WardRepository;
 import com.backend.autocarrerbridge.service.WardService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,6 @@ public class WardServiceIpml implements WardService {
 
     @Override
     public Ward findWardById(Integer id) {
-        return wardRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.ERROR_WARD_NOT_FOUND));
+        return wardRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_WARD_NOT_FOUND));
     }
 }

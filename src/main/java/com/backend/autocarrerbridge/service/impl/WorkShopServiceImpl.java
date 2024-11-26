@@ -44,8 +44,9 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Danh sách các Workshop phản hồi
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShop(Pageable pageable,String keyword) {
-        List<Workshop> list = workShopRepository.getAllWorkShop(keyword,pageable).getContent();
+    public List<WorkShopResponse> getAllWorkShop(Pageable pageable, String keyword) {
+        List<Workshop> list =
+                workShopRepository.getAllWorkShop(keyword, pageable).getContent();
         return list.stream()
                 .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
                 .toList();
@@ -59,9 +60,9 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu không có nội dung
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShopByUniversity(Pageable pageable, Integer universityId,String keyword) {
+    public List<WorkShopResponse> getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
         List<Workshop> list = workShopRepository
-                .getAllWorkShopByUniversity(pageable, universityId,keyword)
+                .getAllWorkShopByUniversity(pageable, universityId, keyword)
                 .getContent();
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
@@ -111,9 +112,10 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu không có nội dung
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state,String keyword) {
-        List<Workshop> list =
-                workShopRepository.getAllApprovedWorkshop(pageable, state,keyword).getContent();
+    public List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword) {
+        List<Workshop> list = workShopRepository
+                .getAllApprovedWorkshop(pageable, state, keyword)
+                .getContent();
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
         }
