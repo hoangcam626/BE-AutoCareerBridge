@@ -42,8 +42,7 @@ public class SectionConverter {
         .description(sectionRequest.getDescription())
         .build();
     // Nếu không có status trong request, mặc định là ACTIVE
-    section.setStatus(
-        sectionRequest.getStatus() != null ? sectionRequest.getStatus() : Status.ACTIVE);
+    section.setStatus(sectionRequest.getStatus() != null ? sectionRequest.getStatus() : Status.ACTIVE);
     // Nếu không có thời gian tạo, lấy thời gian hiện tại
     section.setCreatedAt(sectionRequest.getCreatedAt() != null ? sectionRequest.getCreatedAt()
         : LocalDateTime.now());
@@ -70,6 +69,7 @@ public class SectionConverter {
 
   // Phương thức chuyển đổi Section entity thành SectionRequest (dùng để trả về response)
   public static SectionRequest convertToResponse(Section section) {
+    //Lấy danh sách major
     List<MajorRequest> majorRequestList = section.getMajors().stream()
         .map(major -> MajorRequest.builder()
             .id(major.getId())
