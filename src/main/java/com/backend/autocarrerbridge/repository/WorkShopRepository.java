@@ -13,24 +13,25 @@ import com.backend.autocarrerbridge.util.enums.State;
 @Repository
 public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
 
-    @Query("SELECT ws FROM Workshop ws WHERE ws.status != 0 AND " +
-            "(ws.title LIKE %:keyword% OR ws.university.name LIKE %:keyword%)")
+    // Chỉ tìm kiếm trong tiêu đề workshop
+    @Query("SELECT ws FROM Workshop ws WHERE ws.status != 0 AND ws.title LIKE %:keyword%")
     Page<Workshop> getAllWorkShop(@Param("keyword") String keyword, Pageable pageable);
 
-    @Query("SELECT ws FROM Workshop ws WHERE ws.university.id = :universityId AND " +
-            "(ws.title LIKE %:keyword% OR ws.university.name LIKE %:keyword%)")
+    // Chỉ tìm kiếm trong tiêu đề workshop của các trường đại học cụ thể
+    @Query("SELECT ws FROM Workshop ws WHERE ws.university.id = :universityId AND ws.title LIKE %:keyword%")
     Page<Workshop> getAllWorkShopByUniversity(Pageable pageable,
                                               @Param("universityId") Integer universityId,
                                               @Param("keyword") String keyword);
 
-    @Query("SELECT ws FROM Workshop ws JOIN University us ON ws.university.id = us.id WHERE " +
-            "(ws.title LIKE %:keyword% OR ws.university.name LIKE %:keyword%)")
+    // Chỉ tìm kiếm trong tiêu đề workshop (bỏ JOIN với University)
+    @Query("SELECT ws FROM Workshop ws WHERE ws.title LIKE %:keyword%")
     Page<Workshop> getAllWorkShopByLocation(Pageable pageable,
                                             @Param("keyword") String keyword);
 
-    @Query("SELECT ws FROM Workshop ws WHERE ws.statusBrowse = :approved AND " +
-            "(ws.title LIKE %:keyword% OR ws.university.name LIKE %:keyword%)")
+    // Chỉ tìm kiếm trong tiêu đề workshop với trạng thái duyệt
+    @Query("SELECT ws FROM Workshop ws WHERE ws.statusBrowse = :approved AND ws.title LIKE %:keyword%")
     Page<Workshop> getAllApprovedWorkshop(Pageable pageable,
                                           @Param("approved") State approved,
                                           @Param("keyword") String keyword);
 }
+
