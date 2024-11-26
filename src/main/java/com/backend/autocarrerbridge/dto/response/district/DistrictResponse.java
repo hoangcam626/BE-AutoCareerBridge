@@ -13,11 +13,11 @@ public class DistrictResponse {
 
     private String fullName;
 
-    private String fullNameEn;
+//    private String fullNameEn;
 
     private String name;
-
-    private String nameEn;
-
-    private String codeName;
+//
+//    private String nameEn;
+//
+//    private String codeName;
 }

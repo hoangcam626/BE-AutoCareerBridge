@@ -117,7 +117,7 @@ public class BusinessController {
      * @param request Thông tin cần chỉnh sửa của doanh nghiệp.
      * @return Thông tin doanh nghiệp sau khi được cập nhật.
      */
-    @PostMapping("/{businessId}")
+    @PutMapping("/{businessId}")
     ApiResponse<BusinessResponse> updateBusiness(@PathVariable Integer businessId,  @Valid BusinessUpdateRequest request) {
         return ApiResponse.<BusinessResponse>builder()
                 .data(businessService.updateBusiness(businessId, request))

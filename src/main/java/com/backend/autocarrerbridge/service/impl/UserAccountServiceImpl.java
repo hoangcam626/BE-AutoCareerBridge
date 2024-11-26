@@ -169,9 +169,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public EmailCode generateVerificationCode(String email) {
         String code = generateCode(email);
-        if (userAccountRepository.findByUsername(email).getState().equals(State.APPROVED)) {
-            throw new AppException(ErrorCode.ERROR_USER_APPROVED);
-        }
+//        if (userAccountRepository.findByUsername(email).getState().equals(State.APPROVED)) {
+//            throw new AppException(ErrorCode.ERROR_USER_APPROVED);
+//        }
         if (code.equals(codeExist)) {
             return EmailCode.builder().email(email).code(NOTIFICATION_WAIT).build();
         }
