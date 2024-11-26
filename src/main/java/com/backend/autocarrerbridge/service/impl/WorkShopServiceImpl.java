@@ -1,5 +1,16 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
+import static com.backend.autocarrerbridge.util.enums.State.PENDING;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.entity.University;
@@ -11,23 +22,10 @@ import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.WorkShopService;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
-import lombok.AccessLevel;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-
-import java.time.LocalDate;
-
-import java.util.List;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
-import static com.backend.autocarrerbridge.util.enums.State.PENDING;
-
 
 @Service
 @RequiredArgsConstructor
@@ -46,9 +44,11 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Danh sách các Workshop phản hồi
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShop(Pageable pageable) {
-        List<Workshop> list = workShopRepository.getAllWorkShop(pageable).getContent();
-        return list.stream().map(workshop -> modelMapper.map(workshop, WorkShopResponse.class)).toList();
+    public List<WorkShopResponse> getAllWorkShop(Pageable pageable,String keyword) {
+        List<Workshop> list = workShopRepository.getAllWorkShop(keyword,pageable).getContent();
+        return list.stream()
+                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+                .toList();
     }
 
     /**
@@ -59,12 +59,16 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu không có nội dung
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShopByUniversity(Pageable pageable, Integer universityId) {
-        List<Workshop> list = workShopRepository.getAllWorkShopByUniversity(pageable, universityId).getContent();
+    public List<WorkShopResponse> getAllWorkShopByUniversity(Pageable pageable, Integer universityId,String keyword) {
+        List<Workshop> list = workShopRepository
+                .getAllWorkShopByUniversity(pageable, universityId,keyword)
+                .getContent();
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
         }
-        return list.stream().map(workshop -> modelMapper.map(workshop, WorkShopResponse.class)).toList();
+        return list.stream()
+                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+                .toList();
     }
 
     /**
@@ -107,12 +111,15 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu không có nội dung
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state) {
-        List<Workshop> list = workShopRepository.getAllApprovedWorkshop(pageable, state).getContent();
+    public List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state,String keyword) {
+        List<Workshop> list =
+                workShopRepository.getAllApprovedWorkshop(pageable, state,keyword).getContent();
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
         }
-        return list.stream().map(workshop -> modelMapper.map(workshop, WorkShopResponse.class)).toList();
+        return list.stream()
+                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+                .toList();
     }
 
     /**
@@ -134,20 +141,22 @@ public class WorkShopServiceImpl implements WorkShopService {
         }
 
         // Kiểm tra xem ngày bắt đầu và kết thúc của Workshop có hợp lệ với yêu cầu không
-        if (workshop.getStartDate().isAfter(workShopRequest.getEndDate()) ||
-                workshop.getEndDate().isBefore(workShopRequest.getStartDate())) {
+        if (workshop.getStartDate().isAfter(workShopRequest.getEndDate())
+                || workshop.getEndDate().isBefore(workShopRequest.getStartDate())) {
             throw new AppException(ERROR_WORK_SHOP_DATE); // Ném lỗi nếu ngày không hợp lệ
         }
 
         // Kiểm tra xem ngày hết hạn có nằm trong khoảng ngày của Workshop không
-        if (workshop.getExpireDate().isBefore(workShopRequest.getStartDate().toLocalDate()) ||
-                workshop.getExpireDate().isAfter(workShopRequest.getEndDate().toLocalDate())) {
+        if (workshop.getExpireDate().isBefore(workShopRequest.getStartDate().toLocalDate())
+                || workshop.getExpireDate().isAfter(workShopRequest.getEndDate().toLocalDate())) {
             throw new AppException(ERROR_WORK_SHOP_DATE); // Ném lỗi nếu ngày hết hạn không hợp lệ
         }
 
         // Kiểm tra nếu ngày hết hạn yêu cầu nằm ngoài khoảng thời gian của Workshop
-        if (workShopRequest.getExpireDate().isAfter(workshop.getEndDate().toLocalDate()) ||
-                workShopRequest.getExpireDate().isBefore(workshop.getStartDate().toLocalDate())) {
+        if (workShopRequest.getExpireDate().isAfter(workshop.getEndDate().toLocalDate())
+                || workShopRequest
+                        .getExpireDate()
+                        .isBefore(workshop.getStartDate().toLocalDate())) {
             throw new AppException(ERROR_WORK_SHOP_DATE); // Ném lỗi nếu ngày hết hạn yêu cầu không hợp lệ
         }
 
@@ -182,13 +191,14 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu ngày tháng không hợp lệ
      */
     public void validateWorkShop(WorkShopRequest workShopRequest) {
-        if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate()) ||
-                workShopRequest.getEndDate().isBefore(workShopRequest.getStartDate())) {
+        if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())
+                || workShopRequest.getEndDate().isBefore(workShopRequest.getStartDate())) {
             throw new AppException(ERROR_WORK_SHOP_DATE); // Kiểm tra ngày bắt đầu và kết thúc
         }
         LocalDate endDate = workShopRequest.getEndDate().toLocalDate();
         LocalDate startDate = workShopRequest.getStartDate().toLocalDate();
-        if (workShopRequest.getExpireDate().isAfter(endDate) || workShopRequest.getExpireDate().isBefore(startDate)) {
+        if (workShopRequest.getExpireDate().isAfter(endDate)
+                || workShopRequest.getExpireDate().isBefore(startDate)) {
             throw new AppException(ERROR_WORK_SHOP_DATE); // Kiểm tra ngày hết hạn
         }
     }
@@ -206,7 +216,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         }
         workshop.setStatus(Status.INACTIVE);
         workShopRepository.save(workshop);
-        return modelMapper.map(workshop,WorkShopResponse.class);
+        return modelMapper.map(workshop, WorkShopResponse.class);
     }
     /**
      * : Lấy  thông tin một Workshop theo ID.
@@ -217,10 +227,9 @@ public class WorkShopServiceImpl implements WorkShopService {
     @Override
     public WorkShopResponse getWorkShopById(Integer id) {
         Workshop workshopById = workShopRepository.findById(id).orElse(null);
-        if(workshopById == null) {
+        if (workshopById == null) {
             throw new AppException(ERROR_NO_CONTENT);
         }
-        return modelMapper.map(workshopById,WorkShopResponse.class);
+        return modelMapper.map(workshopById, WorkShopResponse.class);
     }
-
 }

@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.State;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,13 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,7 +50,10 @@ public class WorkshopBusiness extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         WorkshopBusiness that = (WorkshopBusiness) object;
-        return Objects.equals(id, that.id) && statusConnected == that.statusConnected && Objects.equals(workshop, that.workshop) && Objects.equals(business, that.business);
+        return Objects.equals(id, that.id)
+                && statusConnected == that.statusConnected
+                && Objects.equals(workshop, that.workshop)
+                && Objects.equals(business, that.business);
     }
 
     @Override

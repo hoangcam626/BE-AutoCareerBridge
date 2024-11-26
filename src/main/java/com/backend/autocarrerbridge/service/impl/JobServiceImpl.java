@@ -1,17 +1,19 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.repository.JobRepository;
-import com.backend.autocarrerbridge.service.JobService;
-import com.backend.autocarrerbridge.util.Constant;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 
 import java.util.List;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
+import org.springframework.stereotype.Service;
+
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.repository.JobRepository;
+import com.backend.autocarrerbridge.service.JobService;
+import com.backend.autocarrerbridge.util.Constant;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

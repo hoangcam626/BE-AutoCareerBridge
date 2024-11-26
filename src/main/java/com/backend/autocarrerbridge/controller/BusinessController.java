@@ -1,21 +1,24 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.service.BusinessService;
-import com.backend.autocarrerbridge.service.JobService;
+import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
-import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.service.BusinessService;
+import com.backend.autocarrerbridge.service.JobService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,13 +27,13 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 public class BusinessController {
     BusinessService businessService;
     JobService jobService;
+
     @PostMapping("/register")
-    public ApiResponse<Object> registerBusiness(@ModelAttribute @Valid UserBusinessRequest userBusinessRequest){
+    public ApiResponse<Object> registerBusiness(@ModelAttribute @Valid UserBusinessRequest userBusinessRequest) {
         return ApiResponse.builder()
                 .code(SUCCESS)
                 .message(REGISTER_BUSINESS)
-                .data(businessService
-                        .registerBusiness(userBusinessRequest))
+                .data(businessService.registerBusiness(userBusinessRequest))
                 .build();
     }
 

@@ -2,7 +2,6 @@ package com.backend.autocarrerbridge.exception;
 
 import java.util.Objects;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -41,5 +40,4 @@ public class GlobalExceptionHandle {
         apiException.setMessage(errorCode.getMessage());
         return ResponseEntity.status(errorCode.getHttpStatus()).body(apiException);
     }
-
 }

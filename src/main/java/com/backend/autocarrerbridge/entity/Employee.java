@@ -1,5 +1,8 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.time.LocalDate;
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,13 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -68,11 +69,33 @@ public class Employee extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Employee employee = (Employee) object;
-        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) && Objects.equals(gender, employee.gender) && Objects.equals(dateOfBirth, employee.dateOfBirth) && Objects.equals(email, employee.email) && Objects.equals(address, employee.address) && Objects.equals(employeeCode, employee.employeeCode) && Objects.equals(employeeImageId, employee.employeeImageId) && Objects.equals(phone, employee.phone) && Objects.equals(business, employee.business) && Objects.equals(userAccount, employee.userAccount);
+        return Objects.equals(id, employee.id)
+                && Objects.equals(name, employee.name)
+                && Objects.equals(gender, employee.gender)
+                && Objects.equals(dateOfBirth, employee.dateOfBirth)
+                && Objects.equals(email, employee.email)
+                && Objects.equals(address, employee.address)
+                && Objects.equals(employeeCode, employee.employeeCode)
+                && Objects.equals(employeeImageId, employee.employeeImageId)
+                && Objects.equals(phone, employee.phone)
+                && Objects.equals(business, employee.business)
+                && Objects.equals(userAccount, employee.userAccount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name, gender, dateOfBirth, email, address, employeeCode, employeeImageId, phone, business, userAccount);
+        return Objects.hash(
+                super.hashCode(),
+                id,
+                name,
+                gender,
+                dateOfBirth,
+                email,
+                address,
+                employeeCode,
+                employeeImageId,
+                phone,
+                business,
+                userAccount);
     }
 }

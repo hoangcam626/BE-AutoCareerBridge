@@ -1,13 +1,16 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_EXIST;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_SUB_ADMIN;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SUB_ADMIN_CODE_EXIST;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_EMAIL;
+import static com.backend.autocarrerbridge.exception.ErrorCode.NO_CHANGE_DETECTED;
+import static com.backend.autocarrerbridge.util.Constant.ACCOUNT;
+import static com.backend.autocarrerbridge.util.Constant.SUB;
+
 import java.text.ParseException;
 import java.util.List;
 
-import com.backend.autocarrerbridge.service.ImageService;
-import com.backend.autocarrerbridge.service.RoleService;
-import com.backend.autocarrerbridge.service.SubAdminService;
-import com.backend.autocarrerbridge.service.TokenService;
-import com.backend.autocarrerbridge.service.UserAccountService;
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -30,6 +33,11 @@ import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.repository.SubAdminRepository;
+import com.backend.autocarrerbridge.service.ImageService;
+import com.backend.autocarrerbridge.service.RoleService;
+import com.backend.autocarrerbridge.service.SubAdminService;
+import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
@@ -37,14 +45,6 @@ import com.backend.autocarrerbridge.util.enums.Status;
 import com.backend.autocarrerbridge.util.password.PasswordGenerator;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_EXIST;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_SUB_ADMIN;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SUB_ADMIN_CODE_EXIST;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_EMAIL;
-import static com.backend.autocarrerbridge.exception.ErrorCode.NO_CHANGE_DETECTED;
-import static com.backend.autocarrerbridge.util.Constant.ACCOUNT;
-import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 /**
  * SubAdminServiceImpl là lớp triển khai các chức năng liên quan đến việc quản lý sub-admin trong hệ thống.
@@ -100,7 +100,7 @@ public class SubAdminServiceImpl implements SubAdminService {
      */
     public SubAdminCreateResponse create(SubAdminCreateRequest req) throws ParseException {
 
-        validateCreate(req);// Gọi hàm kiểm tra dữ liệu đầu vào
+        validateCreate(req); // Gọi hàm kiểm tra dữ liệu đầu vào
         var subAdmin = modelMapper.map(req, SubAdmin.class); // Map thông tin dữ liệu đầu vào
         var imgId = imageService.uploadFile(req.getSubAdminImage()); // Gọi hàm lưu ảnh
         subAdmin.setSubAdminImageId(imgId);

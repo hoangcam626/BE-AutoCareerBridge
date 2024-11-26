@@ -1,16 +1,17 @@
 package com.backend.autocarrerbridge.dto.response.job;
 
+import java.time.LocalDate;
+
 import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.entity.Job;
 import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -44,5 +45,4 @@ public class JobResponse {
         this.industry = job.getIndustry();
         this.employee = job.getEmployee();
     }
-
 }

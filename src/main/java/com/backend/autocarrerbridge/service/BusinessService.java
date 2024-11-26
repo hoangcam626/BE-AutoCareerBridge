@@ -2,9 +2,8 @@ package com.backend.autocarrerbridge.service;
 
 import java.util.List;
 
-
-import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
 import com.backend.autocarrerbridge.entity.Business;
 
 public interface BusinessService {

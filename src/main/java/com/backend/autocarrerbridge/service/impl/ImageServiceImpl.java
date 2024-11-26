@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.transaction.Transactional;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -45,7 +46,6 @@ public class ImageServiceImpl implements ImageService {
     private static final int BYTES_IN_KB = 1024;
     private static final int KB_IN_MB = 1024;
     private static final long MAX_FILE_SIZE_BYTES = 10L * BYTES_IN_KB * KB_IN_MB; // 10 MB
-
 
     private static final List<String> ACCEPTED_CONTENT_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
 
@@ -82,14 +82,14 @@ public class ImageServiceImpl implements ImageService {
      * @throws AppException nếu xảy ra lỗi khi lưu tệp.
      */
     public Integer uploadFile(MultipartFile req) {
-        validateFile(req); //Kiểm tra file đầu vào
+        validateFile(req); // Kiểm tra file đầu vào
 
         try {
             createDirectoryIfNotExists(imgFolder); // Tạo thư mục lưu trữ nếu chưa tồn tại
 
-            String fileName = String.format("%s%s",
-                    UUID.randomUUID(),
-                    getFileExtension(req.getOriginalFilename())); // Tạo tên file không trùng lặp
+            String fileName = String.format(
+                    "%s%s",
+                    UUID.randomUUID(), getFileExtension(req.getOriginalFilename())); // Tạo tên file không trùng lặp
 
             // Lưu file ảnh vào bộ nhớ
             Path filePath = Paths.get(imgFolder, fileName);
