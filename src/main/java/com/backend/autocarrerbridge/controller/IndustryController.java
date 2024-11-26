@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 
 @RestController
-@RequestMapping("/industry")
+@RequestMapping("api/industry")
 @Setter
 @Getter
 @RequiredArgsConstructor
