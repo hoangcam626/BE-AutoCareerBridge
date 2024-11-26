@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.dto.request.business;
 
-import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
