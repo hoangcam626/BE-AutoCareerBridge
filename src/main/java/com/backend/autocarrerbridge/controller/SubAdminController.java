@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('SCOPE_Admin')")
+@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
 @RequestMapping("/api/sub-admin")
 public class SubAdminController {
     private final SubAdminService subAdminService;

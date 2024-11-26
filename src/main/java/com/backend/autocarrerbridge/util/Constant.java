@@ -104,6 +104,8 @@ public class Constant {
     public static final String ACCEPT_US = " Xác nhận đăng ký tài khoản";
     public static final String NEW_CODE = "Mã cấp mật khẩu mới!";
     public static final String ACCOUNT = "Tài Khoản Của Bạn";
+    public static final String APPROVED = "Tài khoản của bạn đã được chấp nhận.";
+    public static final String REJECTED = "Tài khoản của bạn đã bị từ chối.";
 
     public static final String EMAIL_REQUIRED_MESSAGE = "Email không được để trống.";
     public static final String EMAIL_INVALID_MESSAGE = "Định dạng email không hợp lệ.";
@@ -111,6 +113,10 @@ public class Constant {
     public static final String FORGOT_CODE_REQUIRED_MESSAGE = "Mã khôi phục không được để trống.";
     public static final String FORGOT_CODE_INVALID_MESSAGE = "Mã khôi phục không hợp lệ.";
     public static final String FORGOT_CODE_EMPTY_MESSAGE = "Mã khôi phục không để trống.";
+    public static final String ACCOUNT_ALREADY_APPROVED_MESSAGE = "Tài khoản đã được chấp nhận.";
+    public static final String ACCOUNT_ALREADY_REJECTED_MESSAGE = "Tài khoản đã bị từ chối.";
+    public static final String INVALID_ACCOUNT_STATE_MESSAGE = "Tài khoản đang chờ được chấp nhận.";
+    public static final String ACCOUNT_IS_NULL = "Tài khoản người dùng đang trống.";
 
     // Doanh nghiệp
     public static final String REGISTER_BUSINESS =

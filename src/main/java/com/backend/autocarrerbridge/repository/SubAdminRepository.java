@@ -13,8 +13,12 @@ import com.backend.autocarrerbridge.entity.SubAdmin;
 @Repository
 public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
 
+    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM SubAdmin sa WHERE sa.email = :email AND sa.status <> 0")
     boolean existsByEmail(String email);
 
+    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM SubAdmin sa WHERE sa.subAdminCode = :code AND sa.status <> 0")
     boolean existsBySubAdminCode(String code);
 
     @Query("select sa from SubAdmin sa where sa.status <> 0")

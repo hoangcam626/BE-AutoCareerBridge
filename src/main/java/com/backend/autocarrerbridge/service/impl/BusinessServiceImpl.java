@@ -12,8 +12,13 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
@@ -25,10 +30,14 @@ import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import static com.backend.autocarrerbridge.util.Constant.APPROVED;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -40,6 +49,7 @@ public class BusinessServiceImpl implements BusinessService {
     BusinessMapper businessMapper;
     UserAccountService userAccountService;
     RoleService roleService;
+    SendEmail sendEmail;
     LocationService locationService;
 
     //Đăng ký doanh nghiệp mới.
@@ -167,5 +177,45 @@ public class BusinessServiceImpl implements BusinessService {
         business.getUserAccount().setStatus(Status.INACTIVE); // Đổi trạng thái
         businessRepository.save(business); // Lưu thay đổi
     }
-}
 
+    /**
+     * Phương thức chấp nhận tài khoản doanh nghiệp
+     *
+     * @param req - đầu vào chứa ID của doanh nghiệp cần được phê duyệt.
+     */
+    @Override
+    public void approvedAccount(BusinessApprovedRequest req){
+        Business business = getBusinessById(req.getId());
+        UserAccount userAccount = business.getUserAccount();
+
+        // Phê duyệt tài khoản người dùng thay đổi trạng thái thành "APPROVED".
+        userAccountService.approvedAccount(userAccount);
+
+        // Email để thông báo tài khoản đã được phê duyệt.
+        EmailDTO emailDTO = new EmailDTO(business.getEmail(), APPROVED, "");
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+    }
+
+    /**
+     * Phương thức từ chối tài khoản doanh nghiệp.
+     *
+     * @param req Yêu cầu chứa ID của doanh nghiệp cần bị từ chối.
+     */
+    @Override
+    public void rejectedAccount(BusinessRejectedRequest req){
+        Business business = getBusinessById(req.getId());
+        UserAccount userAccount = business.getUserAccount();
+
+        // Từ chối tài khoản người thay đổi trạng thái thành "REJECTED".
+        userAccountService.rejectedAccount(userAccount);
+
+        //Đổi trạng thái sang INACTIVE (xóa mềm thông tin doanh nghiệp)
+        business.setStatus(Status.INACTIVE);
+        businessRepository.save(business);
+
+        // Gửi email để thông báo tài khoản đã bị từ chối.
+        EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED, "");
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+    }
+
+}

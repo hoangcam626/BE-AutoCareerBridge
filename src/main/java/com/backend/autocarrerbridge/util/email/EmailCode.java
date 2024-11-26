@@ -1,15 +1,15 @@
-package com.backend.autocarrerbridge.emailconfig;
+package com.backend.autocarrerbridge.util.email;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Builder
-public class EmailPasswordCode {
+public class EmailCode {
     private String email;
-    private String password;
+    private String code;
 }

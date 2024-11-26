@@ -27,8 +27,8 @@ import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
-import com.backend.autocarrerbridge.emailconfig.EmailDTO;
-import com.backend.autocarrerbridge.emailconfig.SendEmail;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;

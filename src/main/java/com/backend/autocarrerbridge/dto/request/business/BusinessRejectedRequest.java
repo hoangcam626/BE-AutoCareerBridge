@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class BusinessApprovedRequest {
+public class BusinessRejectedRequest {
     private Integer id;
 }

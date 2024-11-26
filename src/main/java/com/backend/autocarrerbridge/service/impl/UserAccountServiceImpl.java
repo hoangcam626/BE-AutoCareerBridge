@@ -20,10 +20,11 @@ import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
-import com.backend.autocarrerbridge.emailconfig.EmailCode;
-import com.backend.autocarrerbridge.emailconfig.EmailDTO;
-import com.backend.autocarrerbridge.emailconfig.RandomCodeGenerator;
-import com.backend.autocarrerbridge.emailconfig.SendEmail;
+
+import com.backend.autocarrerbridge.util.email.EmailCode;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.RandomCodeGenerator;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
@@ -85,6 +86,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }
     }
+
     /**
      * Lưu refresh token cho tài khoản người dùng.
      *
@@ -105,6 +107,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserAccount getUserByUsername(String username) {
         return userAccountRepository.findByUsername(username);
     }
+
     /**
      * Đăng ký tài khoản người dùng mới.
      *
@@ -129,12 +132,26 @@ public class UserAccountServiceImpl implements UserAccountService {
             userAccount.setState(State.APPROVED);
         }
         return userAccountRepository.save(userAccount);
+    public void approvedAccount(UserAccount req) {
+        validateAccountForStateChange(req, State.APPROVED);
+        req.setState(State.APPROVED);
+        userAccountRepository.save(req);
+    }
+
+    @Override
+    public void rejectedAccount(UserAccount req) {
+        validateAccountForStateChange(req, State.REJECTED);
+        req.setState(State.REJECTED);
+        userAccountRepository.save(req);
+
     }
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+    //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+
     /**
      * Cập nhật mật khẩu cho tài khoản người dùng.
      *
-     * @param userAccountResponeDTO đối tượng chứa thông tin cập nhật mật khẩu.
+     * @param userAccountResponseDTO đối tượng chứa thông tin cập nhật mật khẩu.
      * @return phản hồi đăng nhập với thông tin mới.
      * @throws AppException nếu mật khẩu không hợp lệ hoặc không khớp.
      */
@@ -246,4 +263,25 @@ public class UserAccountServiceImpl implements UserAccountService {
         redisTemplate.opsForValue().set(PREFIX_FG + emailSend, generatedCode, codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }
+
+    private void validateAccountForStateChange(UserAccount req, State targetState) {
+
+        if (req == null) {
+            throw new AppException(ERROR_ACCOUNT_IS_NULL);
+        }
+
+        // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
+        if (req.getState() == targetState) {
+            throw new AppException(targetState == State.APPROVED
+                    ? ERROR_ACCOUNT_ALREADY_APPROVED
+                    : ERROR_ACCOUNT_ALREADY_REJECTED);
+        }
+
+        // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)
+        if (req.getState() != State.PENDING) {
+            throw new AppException(ERROR_INVALID_ACCOUNT_STATE);
+        }
+    }
+
+
 }
