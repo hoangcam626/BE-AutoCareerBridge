@@ -1,9 +1,9 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.industry.IndustrySdi;
-import com.backend.autocarrerbridge.dto.industry.IndustrySdo;
-import com.backend.autocarrerbridge.dto.industry.IndustryUpdateSdi;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+
+import java.text.ParseException;
 
 public interface IndustryService {
 
@@ -11,9 +11,9 @@ public interface IndustryService {
 
     ApiResponse<Object> getAllIndustry();
 
-    ApiResponse<IndustrySdo> createIndustry(IndustrySdi industrySdi);
+    ApiResponse<Object> createIndustry(IndustryRequest industryRequest) throws ParseException;
 
-    ApiResponse<IndustrySdo> updateIndustry(IndustryUpdateSdi industryUpdateSdi);
+    ApiResponse<Object> updateIndustry(IndustryRequest industryRequest) throws ParseException;
 
-    ApiResponse<Object> inactiveIndustry(Integer id);
+    ApiResponse<Object> inactiveIndustry(Integer id) throws ParseException;
 }

@@ -1,11 +1,17 @@
 package com.backend.autocarrerbridge.controller;
 
+import static com.backend.autocarrerbridge.util.Constant.REGISTER_UNIVERSITY;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.autocarrerbridge.dto.AccountRespone.UserUniversityDTO;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
 import com.backend.autocarrerbridge.service.UniversityService;
 
 import lombok.AccessLevel;
@@ -20,12 +26,12 @@ public class UniversityController {
     UniversityService universityService;
 
     @PostMapping("/register")
-    private ApiResponse<?> registerUniversity(@RequestBody @Valid UserUniversityDTO userUniversityDTO) {
+    public ApiResponse<Object> registerUniversity(@RequestBody @Valid UserUniversityRequest userUniversityRequest) {
 
         return ApiResponse.builder()
-                .code(200)
-                .message("University registered successfully")
-                .data(universityService.registerUniversity(userUniversityDTO))
+                .code(SUCCESS)
+                .message(REGISTER_UNIVERSITY)
+                .data(universityService.registerUniversity(userUniversityRequest))
                 .build();
     }
 }

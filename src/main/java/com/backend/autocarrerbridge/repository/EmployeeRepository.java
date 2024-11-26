@@ -14,4 +14,12 @@ import io.lettuce.core.dynamic.annotation.Param;
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query("SELECT e FROM Employee e JOIN e.business b WHERE b.email = :email")
     List<Employee> findEmployeesByBusinessEmail(@Param("email") String email);
+
+    /**
+     * Tìm employee qua username/email
+     */
+    @Query("SELECT e FROM Employee e JOIN e.userAccount u WHERE u.username = :username")
+    Employee findByUsername(String username);
+
+    Employee getEmployeeById(Integer id);
 }

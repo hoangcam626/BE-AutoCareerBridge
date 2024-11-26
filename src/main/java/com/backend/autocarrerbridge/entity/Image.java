@@ -1,15 +1,22 @@
 package com.backend.autocarrerbridge.entity;
 
-import jakarta.persistence.*;
-
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
 @Entity
+@Data
 @Table(name = "image")
 public class Image extends AbstractAudit {
 
@@ -23,4 +30,20 @@ public class Image extends AbstractAudit {
 
     @Column(name = "file_type")
     private String type;
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Image image = (Image) object;
+        return Objects.equals(id, image.id)
+                && Objects.equals(filename, image.filename)
+                && Objects.equals(type, image.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, filename, type);
+    }
 }

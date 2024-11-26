@@ -1,18 +1,17 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.MajorDTO;
-import com.backend.autocarrerbridge.dto.SectionDTO;
+import com.backend.autocarrerbridge.dto.request.major.MajorRequest;
 import java.util.List;
 
 
 public interface MajorService {
-  MajorDTO createMajor(MajorDTO majorDTO);
+  MajorRequest createMajor(MajorRequest majorRequest);
 
-  MajorDTO updateMajor(int id, MajorDTO majorDTO);
+  MajorRequest updateMajor(int id, MajorRequest majorRequest);
 
-  MajorDTO deleteMajor(int id);
+  MajorRequest deleteMajor(int id);
 
-  List<MajorDTO> getAllMajor();
+  List<MajorRequest> getAllMajor();
 
-  List<MajorDTO> getMajorById(int id);
+  List<MajorRequest> getMajorById(int id);
 }

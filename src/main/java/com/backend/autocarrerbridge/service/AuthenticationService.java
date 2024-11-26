@@ -2,17 +2,13 @@ package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
 
+import com.backend.autocarrerbridge.dto.response.account.AuthenticationResponse;
 import com.backend.autocarrerbridge.entity.UserAccount;
-import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
-import com.backend.autocarrerbridge.model.api.IntrospectRequest;
-import com.backend.autocarrerbridge.model.api.IntrospectResponse;
 
 public interface AuthenticationService {
     AuthenticationResponse authenticate(UserAccount userAccounts) throws ParseException;
 
-    void logout(String token) throws ParseException;
+    void logout() throws ParseException;
 
-    String getNewToken(String token) throws ParseException;
-
-    IntrospectResponse introspect(IntrospectRequest introspectRequest) throws Exception;
+    String getNewToken() throws ParseException;
 }

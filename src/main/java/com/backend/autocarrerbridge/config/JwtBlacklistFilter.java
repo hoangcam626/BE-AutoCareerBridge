@@ -1,5 +1,8 @@
 package com.backend.autocarrerbridge.config;
 
+import static com.backend.autocarrerbridge.util.Constant.JTI;
+import static com.backend.autocarrerbridge.util.Constant.TOKEN_BLACKLIST;
+
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -32,12 +35,12 @@ public class JwtBlacklistFilter extends OncePerRequestFilter {
         if (token != null) {
             String idJwt;
             try {
-                idJwt = tokenService.getClaim(token, "jti");
+                idJwt = tokenService.getClaim(token, JTI);
             } catch (ParseException e) {
-                throw new RuntimeException(e);
+                throw new ServletException(e);
             }
             if (idJwt != null && Boolean.TRUE.equals(redisTemplate.hasKey(idJwt))) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, TOKEN_BLACKLIST);
                 return;
             }
         }

@@ -3,25 +3,34 @@ package com.backend.autocarrerbridge.controller;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
-import com.backend.autocarrerbridge.dto.SectionDTO;
-import com.backend.autocarrerbridge.model.api.ApiResponse;
-import com.backend.autocarrerbridge.service.impl.SectionServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.service.SectionService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/api/section")
+@RequiredArgsConstructor
 public class SectionController {
 
-  @Autowired
-  private SectionServiceImpl sectionService;
+  private final SectionService sectionService;
 
   @PostMapping("/create")
-  public ResponseEntity<ApiResponse<Object>> create(@RequestBody SectionDTO sectionDTO) {
-    SectionDTO createSection = sectionService.createSection(sectionDTO);
+  public ResponseEntity<ApiResponse<Object>> create(@Valid @RequestBody SectionRequest sectionRequest) {
+    SectionRequest createSection = sectionService.createSection(sectionRequest);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -30,9 +39,9 @@ public class SectionController {
   }
 
   @PostMapping("/update/{id}")
-  public ResponseEntity<ApiResponse<Object>> update(@PathVariable("id") int id,
-      @RequestBody SectionDTO sectionDTO) {
-    SectionDTO updateSection = sectionService.updateSection(id, sectionDTO);
+  public ResponseEntity<ApiResponse<Object>> update(@Valid @PathVariable("id") int id,
+      @RequestBody SectionRequest sectionRequest) {
+    SectionRequest updateSection = sectionService.updateSection(id, sectionRequest);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -42,7 +51,7 @@ public class SectionController {
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<ApiResponse<Object>> delete(@PathVariable("id") int id) {
-    SectionDTO deleteSection = sectionService.deleteSection(id);
+    SectionRequest deleteSection = sectionService.deleteSection(id);
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
@@ -60,7 +69,7 @@ public class SectionController {
   }
 
 
-  @GetMapping("/getAll")
+  @GetMapping("/get-all")
   public ResponseEntity<ApiResponse<Object>> getAll() {
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)

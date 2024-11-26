@@ -4,7 +4,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,13 +19,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 @MappedSuperclass
-@Getter
-@Setter
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractAudit implements Serializable {
 
@@ -46,16 +46,6 @@ public abstract class AbstractAudit implements Serializable {
     @LastModifiedBy
     @Column(name = "updated_by", insertable = false)
     private String updatedBy;
-
-    //    @PrePersist
-    //    public void prePersist() {
-    //        this.status = Status.ACTIVE;
-    //    }
-    //
-    //    @PreUpdate
-    //    public void preUpdate() {
-    //        this.status = Status.ACTIVE;
-    //    }
 
     @PrePersist
     public void prePersist() {

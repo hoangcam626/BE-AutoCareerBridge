@@ -4,8 +4,10 @@ import java.text.ParseException;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.dto.response.account.AuthenticationResponse;
 import com.backend.autocarrerbridge.entity.UserAccount;
-import com.backend.autocarrerbridge.model.api.AuthenticationResponse;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.service.AuthenticationService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.service.UserAuthentication;
@@ -25,7 +27,7 @@ public class UserAuthenticationImpl implements UserAuthentication {
         try {
             authenticationResponse = authenticationService.authenticate(findUserAccount);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
         if (authenticationResponse.getRefreshToken() != null) {
             userAccountService.saveRefreshTokenForUser(
