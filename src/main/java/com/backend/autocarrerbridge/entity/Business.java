@@ -47,7 +47,7 @@ public class Business extends AbstractAudit {
     @Column(name = "found_year")
     private Integer foundYear;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "phone")

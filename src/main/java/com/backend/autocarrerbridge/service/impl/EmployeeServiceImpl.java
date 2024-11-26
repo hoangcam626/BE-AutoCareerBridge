@@ -121,6 +121,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeResponse; // Trả về thông tin nhân viên vừa tạo
     }
 
+    @Transactional
     @Override
     public EmployeeResponse updateEmployee(Integer id, EmployeeRequest request) {
         // Tìm nhân viên theo ID, nếu không tồn tại thì ném ngoại lệ

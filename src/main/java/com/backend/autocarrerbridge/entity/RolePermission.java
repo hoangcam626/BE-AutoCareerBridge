@@ -20,9 +20,9 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@Builder
 @Entity
 @Table(name = "role_permission")
 public class RolePermission extends AbstractAudit {

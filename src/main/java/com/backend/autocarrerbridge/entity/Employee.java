@@ -40,7 +40,7 @@ public class Employee extends AbstractAudit {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(name = "email")
+    @Column(name = "email",unique = true)
     private String email;
 
     @Column(name = "address")
