@@ -127,7 +127,7 @@ public class BusinessServiceImpl implements BusinessService {
         }
 
         // Cập nhật thông tin doanh nghiệp từ request
-        businessMapper.udpateBusiness(businessUpdate, request);
+        businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())

@@ -23,10 +23,10 @@ import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminDeleteRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminSelfRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminUpdateRequest;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
+import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminCreateResponse;
+import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminDeleteResponse;
+import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminSelfResponse;
+import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminUpdateResponse;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.entity.SubAdmin;
@@ -72,6 +72,7 @@ public class SubAdminServiceImpl implements SubAdminService {
      * @param pageSize - Số lượng phần tử trong mỗi trang.
      * @return Danh sách sub-admin dưới dạng đối tượng phân trang.
      */
+    @Override
     public Page<SubAdminSelfResponse> pageSubAdmins(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable);
@@ -98,6 +99,7 @@ public class SubAdminServiceImpl implements SubAdminService {
      * @return Thông tin đối tượng chứa kết quả
      * @throws ParseException - Có lỗi trong quá trình lấy thông tin từ token
      */
+    @Override
     public SubAdminCreateResponse create(SubAdminCreateRequest req) throws ParseException {
 
         validateCreate(req); // Gọi hàm kiểm tra dữ liệu đầu vào
@@ -135,6 +137,7 @@ public class SubAdminServiceImpl implements SubAdminService {
      * @return Thông tin phản hồi cập nhật thành công.
      * @throws ParseException - Có lỗi trong quá trình lấy thông tin từ token.
      */
+    @Override
     public SubAdminUpdateResponse update(SubAdminUpdateRequest req) throws ParseException {
         // Tìm đối tượng cập nhật bắng id
         var subAdmin = getSubAdmin(req.getId());
@@ -177,6 +180,7 @@ public class SubAdminServiceImpl implements SubAdminService {
      * @param req - Thông tin đầu vào để tìm kiếm.
      * @return Thông tin chi tiết của sub-admin.
      */
+    @Override
     public SubAdminSelfResponse self(SubAdminSelfRequest req) {
         // Tìm đối tượng lấy ra bằng id
         var subAdmin = getSubAdmin(req.getId());
@@ -189,6 +193,7 @@ public class SubAdminServiceImpl implements SubAdminService {
      * @param req - Thông tin đầu vào để xóa.
      * @return Phản hồi sau khi xóa.
      */
+    @Override
     public SubAdminDeleteResponse delete(SubAdminDeleteRequest req) {
         var subAdmin = getSubAdmin(req.getId());
         subAdmin.setStatus(Status.INACTIVE);

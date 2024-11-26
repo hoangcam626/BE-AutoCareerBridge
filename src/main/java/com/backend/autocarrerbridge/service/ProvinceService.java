@@ -8,6 +8,5 @@ import java.util.List;
 public interface ProvinceService {
     List<ProvinceResponse> getAll();
     ProvinceResponse getById(Integer id);
-
     Province findProvinceById(Integer id);
 }
