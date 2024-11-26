@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @NoArgsConstructor
@@ -30,10 +31,16 @@ public class BusinessUpdateRequest {
 
     private String description;
 
-    private Integer businessImageId;
+    private MultipartFile businessImage;
 
-    private Integer licenseImageId;
+    private MultipartFile licenseImage;
 
-    private LocationRequest locationRequest;
+    private String descriptionLocation;
+
+    private Integer provinceId;
+
+    private Integer districtId;
+
+    private Integer wardId;
 
 }
