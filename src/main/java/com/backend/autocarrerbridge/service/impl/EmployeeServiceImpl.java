@@ -6,9 +6,6 @@ import java.util.List;
 import jakarta.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
@@ -34,9 +31,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import static com.backend.autocarrerbridge.util.Constant.SUB;
+
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true) // Đặt các trường thành private và final
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EmployeeServiceImpl implements EmployeeService {
     // Các dependency được tiêm vào thông qua constructor
     EmployeeRepository employeeRepository;
@@ -50,9 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeResponse> getListEmployeee() throws ParseException {
         // Lấy thông tin xác thực của người dùng hiện tại từ SecurityContextHolder
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal(); // Trích xuất JWT từ Authentication
-        var emailAccountLogin = tokenService.getClaim(jwt.getTokenValue(), "sub"); // Lấy email đăng nhập từ token
+        var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
 
         // Lấy danh sách nhân viên theo email doanh nghiệp
         var employees = employeeRepository.findEmployeesByBusinessEmail(emailAccountLogin);
@@ -87,7 +84,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         try {
             // Lấy email doanh nghiệp từ token và gán doanh nghiệp cho nhân viên
-            String emailBusiness = tokenService.getClaim(tokenService.getJWT(), "sub");
+            String emailBusiness = tokenService.getClaim(tokenService.getJWT(), SUB);
             Business business = businessService.findByEmail(emailBusiness);
             employee.setBusiness(business);
         } catch (ParseException e) {

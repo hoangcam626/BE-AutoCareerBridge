@@ -19,15 +19,23 @@ public interface IndustryRepo extends JpaRepository<Industry, Integer> {
             + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE")
     List<IndustryResponse> getAllIndustryActive();
 
-    // Phan trang danh sach nganh
+    /**
+     * Phân trang danh sách các ngành
+     */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustryResponse(industry) "
             + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE")
     Page<IndustryResponse> getAllIndustryActivePag(
             @Param("name") String name, @Param("code") String code, Pageable pageable);
 
-    boolean existsByName(String name);
+    /**
+     * Kiểm tra tên ngành đã tồn tại?
+     */
+    boolean existsByNameAndIdNot(String name, Integer id);
 
-    boolean existsByCode(String code);
+    /**
+     * Kiểm tra mã ngành đã tồn tại?
+     */
+    boolean existsByCodeAndIdNot(String code, Integer id);
 
     @Query("SELECT industry FROM Industry industry where industry.id= :id")
     Industry getIndustriesById(Integer id);

@@ -1,13 +1,23 @@
 package com.backend.autocarrerbridge.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Objects;
-
-import jakarta.persistence.*;
-
-import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "notification")
@@ -29,9 +39,7 @@ public class Notification extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Notification that = (Notification) object;
-        return Objects.equals(id, that.id)
-                && Objects.equals(message, that.message)
-                && Objects.equals(statusRead, that.statusRead);
+        return Objects.equals(id, that.id) && Objects.equals(message, that.message) && Objects.equals(statusRead, that.statusRead);
     }
 
     @Override

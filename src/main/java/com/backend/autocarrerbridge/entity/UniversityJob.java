@@ -1,18 +1,28 @@
 package com.backend.autocarrerbridge.entity;
 
-import java.util.Objects;
-
-import jakarta.persistence.*;
-
 import com.backend.autocarrerbridge.util.enums.State;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import lombok.*;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "university_job")
 public class UniversityJob extends AbstractAudit {
@@ -39,10 +49,7 @@ public class UniversityJob extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         UniversityJob that = (UniversityJob) object;
-        return Objects.equals(id, that.id)
-                && statusConnected == that.statusConnected
-                && Objects.equals(university, that.university)
-                && Objects.equals(job, that.job);
+        return Objects.equals(id, that.id) && statusConnected == that.statusConnected && Objects.equals(university, that.university) && Objects.equals(job, that.job);
     }
 
     @Override

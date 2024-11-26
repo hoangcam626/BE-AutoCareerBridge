@@ -1,24 +1,25 @@
 package com.backend.autocarrerbridge.service.impl;
 
+
 import static com.backend.autocarrerbridge.util.Constant.DELETED;
 
+import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.service.TokenService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryPagingRequest;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.IndustryRepo;
 import com.backend.autocarrerbridge.service.IndustryService;
-import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.RequiredArgsConstructor;
@@ -28,21 +29,35 @@ import lombok.RequiredArgsConstructor;
 public class IndustryServiceImp implements IndustryService {
 
     private final IndustryRepo industryRepo;
+    private final TokenService tokenService;
 
-    /** Phương thức kiếm tra tên ngành và mã ngành đã tồn tại chưa*/
+    /**
+     * Lấy username của employee qua token
+     */
+    public String getUsernameViaToken() throws ParseException {
+        String token = tokenService.getJWT();
+        // Lấy username từ token
+        return tokenService.getClaim(token, "sub");
+    }
+
+    /**
+     * Phương thức kiếm tra tên ngành và mã ngành đã tồn tại chưa
+     */
     private void checkNameAndCodeExists(IndustryRequest industryRequest) {
-        if (industryRepo.existsByName(industryRequest.getName())) {
+        // Kiểm tra nếu tên ngành đã tồn tại
+        if (industryRepo.existsByNameAndIdNot(industryRequest.getName(), industryRequest.getId())) {
             throw new AppException(ErrorCode.ERROR_EXIST_NAME);
         }
-        if (industryRepo.existsByCode(industryRequest.getCode())) {
+
+        // Kiểm tra nếu mã đã tồn tại
+        if (industryRepo.existsByCodeAndIdNot(industryRequest.getCode(), industryRequest.getId())) {
             throw new AppException(ErrorCode.ERROR_EXIST_CODE);
-        }
-        if (industryRepo.existsByName(industryRequest.getName())
-                && industryRepo.existsByCode(industryRequest.getCode())) {
-            throw new AppException(ErrorCode.ERROR_EXIST_NAME_AND_CODE);
         }
     }
 
+    /**
+     * Lấy danh sách ngành nghề phân trang
+     */
     @Override
     public ApiResponse<Object> getAllIndustryPaging(int first, int rows, int page, String name, String code) {
         Pageable pageable = PageRequest.of(page, rows);
@@ -50,38 +65,53 @@ public class IndustryServiceImp implements IndustryService {
         if (industryList.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        IndustryPagingRequest industryPagingRequest =
-                new IndustryPagingRequest(industryList.getTotalElements(), industryList.getContent());
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryPagingRequest);
+        IndustryPagingRequest industryPagingRequest = new IndustryPagingRequest(industryList.getTotalElements(), industryList.getContent());
+        return ApiResponse.builder()
+                .data(industryPagingRequest)
+                .build();
     }
 
+    /**
+     * Lấy danh sách ngành nghề
+     */
     @Override
     public ApiResponse<Object> getAllIndustry() {
         List<IndustryResponse> list = industryRepo.getAllIndustryActive();
         if (list.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, list);
+        return ApiResponse.builder()
+                .data(list)
+                .build();
     }
 
+    /**
+     * Thêm mới ngành nghề
+     */
     @Override
-    public ApiResponse<IndustryResponse> createIndustry(IndustryRequest industryRequest) {
+    public ApiResponse<Object> createIndustry(IndustryRequest industryRequest) throws ParseException {
         Industry industry = new Industry();
         if (industryRequest.getName() == null || industryRequest.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        // Check tên và mã của ngành nghề đã tồn tại hay chưa
+        //Check tên và mã của ngành nghề đã tồn tại hay chưa
         checkNameAndCodeExists(industryRequest);
         industry.setName(industryRequest.getName());
         industry.setCode(industryRequest.getCode());
         industry.setStatus(Status.ACTIVE);
+        industry.setCreatedBy(getUsernameViaToken());
         industryRepo.save(industry);
         IndustryResponse industryResponse = new IndustryResponse(industry);
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryResponse);
+        return ApiResponse.builder()
+                .data(industryResponse)
+                .build();
     }
 
+    /**
+     * Cập nhật ngành nghề
+     */
     @Override
-    public ApiResponse<IndustryResponse> updateIndustry(IndustryRequest industryRequest) {
+    public ApiResponse<Object> updateIndustry(IndustryRequest industryRequest) throws ParseException {
         // check id xem có null hay không
         if (industryRequest.getId() == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
@@ -116,15 +146,20 @@ public class IndustryServiceImp implements IndustryService {
         if (isStatusChanged) {
             industry.setStatus(industryRequest.getStatus());
         }
-
+        industry.setUpdatedBy(getUsernameViaToken());
         industryRepo.save(industry);
         IndustryResponse industryResponse = new IndustryResponse(industry);
-        return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryResponse);
+        return ApiResponse.builder()
+                .data(industryResponse)
+                .build();
     }
 
+    /**
+     * Vô hiệu hóa ngành nghề
+     */
     @Override
-    public ApiResponse<Object> inactiveIndustry(Integer id) {
-        // Kiểm tra id có bị trống không
+    public ApiResponse<Object> inactiveIndustry(Integer id) throws ParseException {
+        //Kiểm tra id có bị trống không
         if (id == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
@@ -136,6 +171,7 @@ public class IndustryServiceImp implements IndustryService {
         if (industry.getStatus() == Status.INACTIVE) {
             throw new AppException(ErrorCode.ERROR_INACTIVE);
         }
+        industry.setUpdatedBy(getUsernameViaToken());
         industry.setStatus(Status.INACTIVE);
         industryRepo.save(industry);
         return new ApiResponse<>(DELETED);
