@@ -1,6 +1,8 @@
 package com.backend.autocarrerbridge.service.impl;
+
 import com.backend.autocarrerbridge.converter.SectionConverter;
 import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
+import com.backend.autocarrerbridge.entity.Major;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.entity.Section;
@@ -13,8 +15,10 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 @RequiredArgsConstructor
 @Service
 public class SectionServiceImpl implements SectionService {
@@ -66,8 +70,7 @@ public class SectionServiceImpl implements SectionService {
   public List<SectionRequest> getAllSection() {
     List<Section> sectionList = sectionRepository.findAll();
     sectionList.sort(Comparator.comparingLong(Section::getId).reversed());
-    return sectionList.stream().map(SectionConverter::convertToResponse)
-        .toList();
+    return sectionList.stream().map(SectionConverter::convertToResponse).toList();
 
   }
 
@@ -77,4 +80,5 @@ public class SectionServiceImpl implements SectionService {
         .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
     return List.of(SectionConverter.convertToResponse(section));
   }
+
 }
