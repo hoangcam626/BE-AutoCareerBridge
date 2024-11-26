@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RestController
-@RequestMapping("/industry")
+@RequestMapping("api/industry")
 @Setter
 @Getter
 @RequiredArgsConstructor
