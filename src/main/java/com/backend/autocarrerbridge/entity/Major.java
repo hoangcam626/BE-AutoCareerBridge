@@ -1,10 +1,10 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 import lombok.*;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,7 +41,12 @@ public class Major extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Major major = (Major) object;
-        return Objects.equals(id, major.id) && Objects.equals(code, major.code) && Objects.equals(name, major.name) && Objects.equals(numberStudent, major.numberStudent) && Objects.equals(description, major.description) && Objects.equals(section, major.section);
+        return Objects.equals(id, major.id)
+                && Objects.equals(code, major.code)
+                && Objects.equals(name, major.name)
+                && Objects.equals(numberStudent, major.numberStudent)
+                && Objects.equals(description, major.description)
+                && Objects.equals(section, major.section);
     }
 
     @Override

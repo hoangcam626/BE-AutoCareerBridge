@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.util;
 
-
-
 public class Constant {
     // Mã trạng thái HTTP
     public static final int SUCCESS = 200;
@@ -74,8 +72,7 @@ public class Constant {
     public static final String NOT_FOUND_BUSINESS_MESSAGE = "Không tìm thấy doanh nghiệp.";
     public static final String NOT_FOUND_UNIVERSITY_MESSAGE = "Không tìm thấy trường đại học.";
     public static final String INVALID_LENGTH_PW_MESSAGE = "Độ dài mật khẩu không hợp lệ.";
-    public static final String MIN_LENGTH_PW_MESSAGE =
-            "Tổng độ dài các ký tự bắt buộc lớn hơn độ dài tối thiểu.";
+    public static final String MIN_LENGTH_PW_MESSAGE = "Tổng độ dài các ký tự bắt buộc lớn hơn độ dài tối thiểu.";
 
     // Ngành
     public static final String EXIST_NAME = "Tên ngành đã tồn tại.";
@@ -96,7 +93,6 @@ public class Constant {
     public static final String APPLICATION_NAME = "AutoCareer";
     public static final String SCOPE = "scope";
 
-
     // Tài khoản
     public static final String LOGIN_SUCCESS = "Đăng nhập thành công";
     public static final String LOGOUT_SUCCESS = "Đăng xuất thành công";
@@ -114,29 +110,34 @@ public class Constant {
     public static final String FORGOT_CODE_EMPTY_MESSAGE = "Mã khôi phục không để trống.";
 
     // Doanh nghiệp
-    public static final String REGISTER_BUSINESS = "Đăng ký tài khoản doanh nghiệp thành công, vui lòng đợi hệ thống duyệt";
+    public static final String REGISTER_BUSINESS =
+            "Đăng ký tài khoản doanh nghiệp thành công, vui lòng đợi hệ thống duyệt";
     public static final String TAX_CODE = "Mã số thuế không được để trống";
-    public static final String REQUEST_TO_ATTEND_WORKSHOP = "Yêu cầu tham gia hội thảo thành công, Vui lòng đợi để chờ duyệt.";
+    public static final String REQUEST_TO_ATTEND_WORKSHOP =
+            "Yêu cầu tham gia hội thảo thành công, Vui lòng đợi để chờ duyệt.";
     public static final String REQUEST_WORKSHOP_FAIL = "Doanh nghiệp đã yêu cầu tham gia vui lòng đợi!.";
     // Trường đại học
-    public static final String REGISTER_UNIVERSITY = "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
+    public static final String REGISTER_UNIVERSITY =
+            "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
     public static final String TITLE_WORK_SHOP_MESSAGE = "Tiêu đề không để trống.";
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
 
-
-    //Employee
+    // Employee
     public static final String NAME_NOT_BLANK_MESSAGE = "Tên không được để trống";
     public static final String GENDER_NOT_BLANK_MESSAGE = "Giới tính không được để trống";
     public static final String DOB_NOT_BLANK_MESSAGE = "Ngày sinh không được để trống";
     public static final String EMAIL_NOT_BLANK_MESSAGE = "Email Tên không được để trống";
     public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
     public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
-//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
-//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
-//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
-//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
-//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
-//    public static final String NAME_NOT_BLANK = "Name cannot be blank";
+
+    //Location
+    public static final String PROVINCE_NOT_FOUND_MESSAGE = "Không tìm thấy tỉnh";
+    public static final String DISTRICT_NOT_FOUND_MESSAGE = "Không tìm thấy huyện";
+    public static final String WARD_NOT_FOUND_MESSAGE = "Không tìm thấy xã";
+
+    //Exception database
+    public static final String FILED_DB_NOT_UNIQUE_MESSAGE = "Trường trong database không duy nhất, hãy kiểm tra db";
+
 }

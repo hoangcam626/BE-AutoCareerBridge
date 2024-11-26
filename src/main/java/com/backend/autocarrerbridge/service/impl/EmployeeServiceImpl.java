@@ -3,11 +3,6 @@ package com.backend.autocarrerbridge.service.impl;
 import java.text.ParseException;
 import java.util.List;
 
-import com.backend.autocarrerbridge.service.BusinessService;
-import com.backend.autocarrerbridge.service.EmployeeService;
-import com.backend.autocarrerbridge.service.RoleService;
-import com.backend.autocarrerbridge.service.TokenService;
-import com.backend.autocarrerbridge.service.UserAccountService;
 import jakarta.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,6 +21,11 @@ import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.mapper.EmployeeMapper;
 import com.backend.autocarrerbridge.mapper.UserAccountMapper;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
+import com.backend.autocarrerbridge.service.BusinessService;
+import com.backend.autocarrerbridge.service.EmployeeService;
+import com.backend.autocarrerbridge.service.RoleService;
+import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -70,8 +70,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponse getEmployeeById(Integer id) {
         // Tìm nhân viên theo ID, nếu không tìm thấy thì ném ngoại lệ
-        var employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        var employee =
+                employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
 
         // Chuyển đổi Employee sang EmployeeResponse và thêm thông tin BusinessId
         EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
@@ -124,11 +124,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeResponse; // Trả về thông tin nhân viên vừa tạo
     }
 
+    @Transactional
     @Override
     public EmployeeResponse updateEmployee(Integer id, EmployeeRequest request) {
         // Tìm nhân viên theo ID, nếu không tồn tại thì ném ngoại lệ
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        Employee employee =
+                employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
 
         // Cập nhật thông tin nhân viên từ request
         employeeMapper.udpateEmployee(employee, request);
@@ -141,8 +142,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public void deleteEmployee(Integer id) {
         // Tìm nhân viên theo ID, nếu không tồn tại thì ném ngoại lệ
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        Employee employee =
+                employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
 
         // Cập nhật trạng thái của nhân viên thành INACTIVE
         employee.setStatus(Status.INACTIVE);
@@ -150,4 +151,3 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.flush(); // Đồng bộ dữ liệu với cơ sở dữ liệu
     }
 }
-

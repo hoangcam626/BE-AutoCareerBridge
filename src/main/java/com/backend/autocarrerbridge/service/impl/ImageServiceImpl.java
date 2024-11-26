@@ -40,7 +40,6 @@ public class ImageServiceImpl implements ImageService {
     private static final int KB_IN_MB = 1024;
     private static final long MAX_FILE_SIZE_BYTES = 10L * BYTES_IN_KB * KB_IN_MB; // 10 MB
 
-
     private static final List<String> ACCEPTED_CONTENT_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
 
     public Image getImage(Integer id) {

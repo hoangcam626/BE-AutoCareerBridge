@@ -1,10 +1,10 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 import lombok.*;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +12,7 @@ import java.util.Objects;
 @Data
 @Entity
 @Table(name = "location")
-public class Location extends AbstractAudit  {
+public class Location extends AbstractAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,11 @@ public class Location extends AbstractAudit  {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Location location = (Location) object;
-        return Objects.equals(id, location.id) && Objects.equals(description, location.description) && Objects.equals(provinces, location.provinces) && Objects.equals(districts, location.districts) && Objects.equals(wards, location.wards);
+        return Objects.equals(id, location.id)
+                && Objects.equals(description, location.description)
+                && Objects.equals(provinces, location.provinces)
+                && Objects.equals(districts, location.districts)
+                && Objects.equals(wards, location.wards);
     }
 
     @Override

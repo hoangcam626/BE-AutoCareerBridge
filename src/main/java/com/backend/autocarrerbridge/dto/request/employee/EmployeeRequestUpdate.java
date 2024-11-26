@@ -1,15 +1,16 @@
 package com.backend.autocarrerbridge.dto.request.employee;
 
+import static com.backend.autocarrerbridge.util.Constant.GENDER_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.NAME_NOT_BLANK_MESSAGE;
+
 import java.time.LocalDate;
 
- import com.backend.autocarrerbridge.util.Constant;
+import jakarta.validation.constraints.NotBlank;
+
 import com.backend.autocarrerbridge.util.enums.Status;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,15 +19,19 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployeeRequestUpdate {
-    @NotBlank(message = "NAME_NOT_BLANK")
+    @NotBlank(message = NAME_NOT_BLANK_MESSAGE)
     String name;
-    @NotBlank(message = "GENDER_NOT_BLANK")
+
+    @NotBlank(message = GENDER_NOT_BLANK_MESSAGE)
     String gender;
+
     LocalDate dateOfBirth;
+
     @NotBlank(message = "EMAIL_NOT_BLANK")
     String email;
 
     String address;
+
     @NotBlank(message = "CODE_EMPLOYEE_NOT_BLANK")
     String employeeCode;
 
@@ -37,4 +42,3 @@ public class EmployeeRequestUpdate {
 
     Status status;
 }
-

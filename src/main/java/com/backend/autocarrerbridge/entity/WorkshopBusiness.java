@@ -1,12 +1,12 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.*;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,7 +37,10 @@ public class WorkshopBusiness extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         WorkshopBusiness that = (WorkshopBusiness) object;
-        return Objects.equals(id, that.id) && statusConnected == that.statusConnected && Objects.equals(workshop, that.workshop) && Objects.equals(business, that.business);
+        return Objects.equals(id, that.id)
+                && statusConnected == that.statusConnected
+                && Objects.equals(workshop, that.workshop)
+                && Objects.equals(business, that.business);
     }
 
     @Override

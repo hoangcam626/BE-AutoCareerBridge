@@ -1,8 +1,7 @@
 package com.backend.autocarrerbridge.config;
 
+import javax.crypto.spec.SecretKeySpec;
 
-import com.backend.autocarrerbridge.service.TokenService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.crypto.spec.SecretKeySpec;
+import com.backend.autocarrerbridge.service.TokenService;
+
+import lombok.RequiredArgsConstructor;
 
 @SuppressWarnings("squid:S4502")
 @Configuration
@@ -53,20 +54,21 @@ public class SecurityConfig {
     }
 
     private static final String[] AUTH_WHITELIST = {
-            "/api/business/register",
-            "/api/university/register",
-            "/api/accounts/refresh",
-            "/api/accounts/login",
-            "/api/accounts/verify",
-            "/api/accounts/forgot-code",
-            "/api/accounts/forgot-pass",
-            "/api/accounts/jwt-introspect",
-            "/api/v1/image/**",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/webjars/**"
+        "/api/business/register",
+        "/api/university/register",
+        "/api/accounts/refresh",
+        "/api/accounts/login",
+        "/api/accounts/verify",
+        "/api/accounts/forgot-code",
+        "/api/accounts/forgot-pass",
+        "/api/accounts/jwt-introspect",
+        "/api/v1/image/**",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/swagger-resources/**",
+        "/webjars/**"
     };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtBlacklistFilter jwtBlacklistFilter)
             throws Exception {

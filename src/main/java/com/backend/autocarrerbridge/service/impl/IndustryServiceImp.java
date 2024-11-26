@@ -4,18 +4,18 @@ import static com.backend.autocarrerbridge.util.Constant.DELETED;
 
 import java.util.List;
 
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryPagingRequest;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.IndustryRepo;
 import com.backend.autocarrerbridge.service.IndustryService;
 import com.backend.autocarrerbridge.util.Constant;
@@ -37,7 +37,8 @@ public class IndustryServiceImp implements IndustryService {
         if (industryRepo.existsByCode(industryRequest.getCode())) {
             throw new AppException(ErrorCode.ERROR_EXIST_CODE);
         }
-        if (industryRepo.existsByName(industryRequest.getName()) && industryRepo.existsByCode(industryRequest.getCode())) {
+        if (industryRepo.existsByName(industryRequest.getName())
+                && industryRepo.existsByCode(industryRequest.getCode())) {
             throw new AppException(ErrorCode.ERROR_EXIST_NAME_AND_CODE);
         }
     }
@@ -49,7 +50,8 @@ public class IndustryServiceImp implements IndustryService {
         if (industryList.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        IndustryPagingRequest industryPagingRequest = new IndustryPagingRequest(industryList.getTotalElements(), industryList.getContent());
+        IndustryPagingRequest industryPagingRequest =
+                new IndustryPagingRequest(industryList.getTotalElements(), industryList.getContent());
         return new ApiResponse<>(Constant.SUCCESS, Constant.SUCCESS_MESSAGE, industryPagingRequest);
     }
 
@@ -68,7 +70,7 @@ public class IndustryServiceImp implements IndustryService {
         if (industryRequest.getName() == null || industryRequest.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        //Check tên và mã của ngành nghề đã tồn tại hay chưa
+        // Check tên và mã của ngành nghề đã tồn tại hay chưa
         checkNameAndCodeExists(industryRequest);
         industry.setName(industryRequest.getName());
         industry.setCode(industryRequest.getCode());
@@ -122,7 +124,7 @@ public class IndustryServiceImp implements IndustryService {
 
     @Override
     public ApiResponse<Object> inactiveIndustry(Integer id) {
-        //Kiểm tra id có bị trống không
+        // Kiểm tra id có bị trống không
         if (id == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
@@ -131,7 +133,7 @@ public class IndustryServiceImp implements IndustryService {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
         // Nếu ngành đã bị vô hiệu hoá thì trả ra thông báo
-        if(industry.getStatus() == Status.INACTIVE) {
+        if (industry.getStatus() == Status.INACTIVE) {
             throw new AppException(ErrorCode.ERROR_INACTIVE);
         }
         industry.setStatus(Status.INACTIVE);

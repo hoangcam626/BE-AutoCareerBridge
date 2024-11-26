@@ -1,12 +1,12 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.*;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,7 +39,10 @@ public class UniversityJob extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         UniversityJob that = (UniversityJob) object;
-        return Objects.equals(id, that.id) && statusConnected == that.statusConnected && Objects.equals(university, that.university) && Objects.equals(job, that.job);
+        return Objects.equals(id, that.id)
+                && statusConnected == that.statusConnected
+                && Objects.equals(university, that.university)
+                && Objects.equals(job, that.job);
     }
 
     @Override

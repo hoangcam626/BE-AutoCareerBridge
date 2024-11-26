@@ -1,24 +1,24 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.util.Constant.JTI;
+import static com.backend.autocarrerbridge.util.Constant.SUB;
+import static com.backend.autocarrerbridge.util.Constant.TIME_TO_LIVE;
+
 import java.text.ParseException;
 import java.util.concurrent.TimeUnit;
 
-import com.backend.autocarrerbridge.dto.response.account.AuthenticationResponse;
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.dto.response.account.AuthenticationResponse;
 import com.backend.autocarrerbridge.entity.UserAccount;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.service.AuthenticationService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.backend.autocarrerbridge.util.Constant.JTI;
-import static com.backend.autocarrerbridge.util.Constant.SUB;
-import static com.backend.autocarrerbridge.util.Constant.TIME_TO_LIVE;
 
 /**
  * Lớp triển khai AuthenticationService.

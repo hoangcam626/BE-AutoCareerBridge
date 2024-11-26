@@ -1,10 +1,10 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 import lombok.*;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,7 +29,9 @@ public class Notification extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Notification that = (Notification) object;
-        return Objects.equals(id, that.id) && Objects.equals(message, that.message) && Objects.equals(statusRead, that.statusRead);
+        return Objects.equals(id, that.id)
+                && Objects.equals(message, that.message)
+                && Objects.equals(statusRead, that.statusRead);
     }
 
     @Override

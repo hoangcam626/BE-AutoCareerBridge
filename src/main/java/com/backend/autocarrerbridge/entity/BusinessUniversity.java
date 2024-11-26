@@ -1,12 +1,12 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.*;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,13 +31,17 @@ public class BusinessUniversity extends AbstractAudit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         BusinessUniversity that = (BusinessUniversity) object;
-        return Objects.equals(id, that.id) && statusConnected == that.statusConnected && Objects.equals(business, that.business) && Objects.equals(university, that.university);
+        return Objects.equals(id, that.id)
+                && statusConnected == that.statusConnected
+                && Objects.equals(business, that.business)
+                && Objects.equals(university, that.university);
     }
 
     @Override

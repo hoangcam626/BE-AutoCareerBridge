@@ -1,9 +1,12 @@
 package com.backend.autocarrerbridge.emailconfig;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_REQUIRED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.backend.autocarrerbridge.exception.AppException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -13,11 +16,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import com.backend.autocarrerbridge.exception.AppException;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_NOT_FOUND;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_REQUIRED;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -133,8 +134,7 @@ public class SendEmail {
                 "Cảm ơn bạn đã sử dụng AutoCareerBridge. Dưới đây là mã xác nhận của bạn:",
                 verificationCode,
                 "Vui lòng sử dụng mã này để hoàn tất quá trình xác thực tài khoản của bạn.",
-                "Mã này sẽ hết hạn sau 15 phút."
-        );
+                "Mã này sẽ hết hạn sau 15 phút.");
     }
 
     private String getForgotPassword(String verificationCode) {
@@ -146,107 +146,101 @@ public class SendEmail {
                 "Cảm ơn bạn đã sử dụng AutoCareerBridge. Dưới đây là mã xác nhận đổi mật khẩu của bạn:",
                 verificationCode,
                 "Vui lòng sử dụng mã này để hoàn tất quá trình đổi mật khẩu của bạn.",
-                "Mã này sẽ hết hạn sau 5 phút."
-        );
+                "Mã này sẽ hết hạn sau 5 phút.");
     }
 
     private String buildHtmlTemplate(
-            String message,
-            String verificationCode,
-            String footerMessage,
-            String expiryMessage
-    ) {
-        return "<!DOCTYPE html>" +
-                "<html lang=\"vi\">" +
-                "<head>" +
-                "    <meta charset=\"UTF-8\">" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
-                "    <title>AutoCareerBridge - " + "Mã Xác Nhận" + "</title>" +
-                "    <style>" +
-                "        body {" +
-                "            font-family: Arial, sans-serif;" +
-                "            margin: 0;" +
-                "            padding: 0;" +
-                "            background-color: #f4f4f4;" +
-                "        }" +
-                "        table {" +
-                "            width: 100%;" +
-                "            max-width: 600px;" +
-                "            margin: 0 auto;" +
-                "            background-color: #ffffff;" +
-                "            border-radius: 8px;" +
-                "            overflow: hidden;" +
-                "        }" +
-                "        .header {" +
-                "            background-color: #0056b3;" +
-                "            padding: 30px 20px;" +
-                "            text-align: center;" +
-                "        }" +
-                "        .header h1 {" +
-                "            font-family: 'Georgia', serif;" +
-                "            font-size: 36px;" +
-                "            font-style: italic;" +
-                "            color: white;" +
-                "            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);" +
-                "            font-weight: bold;" +
-                "            letter-spacing: 2px;" +
-                "        }" +
-                "        .content {" +
-                "            padding: 30px 20px;" +
-                "        }" +
-                "        .code-box {" +
-                "            background-color: #f0f8ff;" +
-                "            border: 2px solid #0056b3;" +
-                "            border-radius: 5px;" +
-                "            padding: 15px;" +
-                "            text-align: center;" +
-                "            margin: 20px 0;" +
-                "            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" +
-                "        }" +
-                "        .code-box h3 {" +
-                "            color: #0056b3;" +
-                "            font-size: 28px;" +
-                "            font-weight: bold;" +
-                "            margin: 0;" +
-                "        }" +
-                "        .footer {" +
-                "            background-color: #0056b3;" +
-                "            color: #ffffff;" +
-                "            padding: 15px 20px;" +
-                "            text-align: center;" +
-                "        }" +
-                "        .footer p {" +
-                "            margin: 0;" +
-                "            font-size: 14px;" +
-                "        }" +
-                "    </style>" +
-                "</head>" +
-                "<body>" +
-                "    <table>" +
-                "        <tr>" +
-                "            <td class=\"header\">" +
-                "                <h1>AutoCareerBridge</h1>" +
-                "            </td>" +
-                "        </tr>" +
-                "        <tr>" +
-                "            <td class=\"content\">" +
-                "                <h2>" + "Xin chào!" + "</h2>" +
-                "                <p>" + message + "</p>" +
-                "                <div class=\"code-box\">" +
-                "                    <h3>" + verificationCode + "</h3>" +
-                "                </div>" +
-                "                <p>" + footerMessage + "</p>" +
-                "                <p><strong>Chú ý:</strong> " + expiryMessage + "</p>" +
-                "            </td>" +
-                "        </tr>" +
-                "        <tr>" +
-                "            <td class=\"footer\">" +
-                "                <p>&copy; 2024 AutoCareerBridge. Tất cả các quyền được bảo lưu.</p>" +
-                "            </td>" +
-                "        </tr>" +
-                "    </table>" +
-                "</body>" +
-                "</html>";
+            String message, String verificationCode, String footerMessage, String expiryMessage) {
+        return "<!DOCTYPE html>" + "<html lang=\"vi\">"
+                + "<head>"
+                + "    <meta charset=\"UTF-8\">"
+                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+                + "    <title>AutoCareerBridge - "
+                + "Mã Xác Nhận" + "</title>" + "    <style>"
+                + "        body {"
+                + "            font-family: Arial, sans-serif;"
+                + "            margin: 0;"
+                + "            padding: 0;"
+                + "            background-color: #f4f4f4;"
+                + "        }"
+                + "        table {"
+                + "            width: 100%;"
+                + "            max-width: 600px;"
+                + "            margin: 0 auto;"
+                + "            background-color: #ffffff;"
+                + "            border-radius: 8px;"
+                + "            overflow: hidden;"
+                + "        }"
+                + "        .header {"
+                + "            background-color: #0056b3;"
+                + "            padding: 30px 20px;"
+                + "            text-align: center;"
+                + "        }"
+                + "        .header h1 {"
+                + "            font-family: 'Georgia', serif;"
+                + "            font-size: 36px;"
+                + "            font-style: italic;"
+                + "            color: white;"
+                + "            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);"
+                + "            font-weight: bold;"
+                + "            letter-spacing: 2px;"
+                + "        }"
+                + "        .content {"
+                + "            padding: 30px 20px;"
+                + "        }"
+                + "        .code-box {"
+                + "            background-color: #f0f8ff;"
+                + "            border: 2px solid #0056b3;"
+                + "            border-radius: 5px;"
+                + "            padding: 15px;"
+                + "            text-align: center;"
+                + "            margin: 20px 0;"
+                + "            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"
+                + "        }"
+                + "        .code-box h3 {"
+                + "            color: #0056b3;"
+                + "            font-size: 28px;"
+                + "            font-weight: bold;"
+                + "            margin: 0;"
+                + "        }"
+                + "        .footer {"
+                + "            background-color: #0056b3;"
+                + "            color: #ffffff;"
+                + "            padding: 15px 20px;"
+                + "            text-align: center;"
+                + "        }"
+                + "        .footer p {"
+                + "            margin: 0;"
+                + "            font-size: 14px;"
+                + "        }"
+                + "    </style>"
+                + "</head>"
+                + "<body>"
+                + "    <table>"
+                + "        <tr>"
+                + "            <td class=\"header\">"
+                + "                <h1>AutoCareerBridge</h1>"
+                + "            </td>"
+                + "        </tr>"
+                + "        <tr>"
+                + "            <td class=\"content\">"
+                + "                <h2>"
+                + "Xin chào!" + "</h2>" + "                <p>"
+                + message + "</p>" + "                <div class=\"code-box\">"
+                + "                    <h3>"
+                + verificationCode + "</h3>" + "                </div>"
+                + "                <p>"
+                + footerMessage + "</p>" + "                <p><strong>Chú ý:</strong> "
+                + expiryMessage + "</p>" + "            </td>"
+                + "        </tr>"
+                + "        <tr>"
+                + "            <td class=\"footer\">"
+                + "                <p>&copy; 2024 AutoCareerBridge. Tất cả các quyền được bảo lưu.</p>"
+                + "            </td>"
+                + "        </tr>"
+                + "    </table>"
+                + "</body>"
+                + "</html>";
     }
 
     private String getAccount(String passwordAccount) {

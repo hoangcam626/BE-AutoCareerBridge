@@ -5,16 +5,6 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
-
-import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
-import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.service.EmployeeService;
-import com.backend.autocarrerbridge.util.Constant;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +13,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
+import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
+import com.backend.autocarrerbridge.service.EmployeeService;
+import com.backend.autocarrerbridge.util.Constant;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,8 +38,7 @@ public class EmployeeController {
      * @return Thông tin chi tiết của nhân viên vừa được tạo.
      */
     @PostMapping("/create")
-    ApiResponse<EmployeeResponse> createEmployee(
-            @RequestBody @Valid EmployeeRequest request) {
+    ApiResponse<EmployeeResponse> createEmployee(@RequestBody @Valid EmployeeRequest request) {
         return ApiResponse.<EmployeeResponse>builder()
                 .data(employeeService.addEmployee(request))
                 .build();
@@ -97,5 +96,4 @@ public class EmployeeController {
         employeeService.deleteEmployee(employeeId);
         return ApiResponse.<String>builder().data(Constant.SUCCESS_MESSAGE).build();
     }
-
 }

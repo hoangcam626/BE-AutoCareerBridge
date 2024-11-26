@@ -1,10 +1,10 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.*;
 
 import lombok.*;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,7 +34,9 @@ public class RolePermission extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         RolePermission that = (RolePermission) object;
-        return Objects.equals(id, that.id) && Objects.equals(role, that.role) && Objects.equals(permission, that.permission);
+        return Objects.equals(id, that.id)
+                && Objects.equals(role, that.role)
+                && Objects.equals(permission, that.permission);
     }
 
     @Override

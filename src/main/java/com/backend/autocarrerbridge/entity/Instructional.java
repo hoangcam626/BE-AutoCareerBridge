@@ -57,11 +57,33 @@ public class Instructional extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Instructional that = (Instructional) object;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(gender, that.gender) && Objects.equals(dateOfBirth, that.dateOfBirth) && Objects.equals(email, that.email) && Objects.equals(address, that.address) && Objects.equals(instructionalCode, that.instructionalCode) && Objects.equals(instructionalImageId, that.instructionalImageId) && Objects.equals(phone, that.phone) && Objects.equals(university, that.university) && Objects.equals(userAccount, that.userAccount);
+        return Objects.equals(id, that.id)
+                && Objects.equals(name, that.name)
+                && Objects.equals(gender, that.gender)
+                && Objects.equals(dateOfBirth, that.dateOfBirth)
+                && Objects.equals(email, that.email)
+                && Objects.equals(address, that.address)
+                && Objects.equals(instructionalCode, that.instructionalCode)
+                && Objects.equals(instructionalImageId, that.instructionalImageId)
+                && Objects.equals(phone, that.phone)
+                && Objects.equals(university, that.university)
+                && Objects.equals(userAccount, that.userAccount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name, gender, dateOfBirth, email, address, instructionalCode, instructionalImageId, phone, university, userAccount);
+        return Objects.hash(
+                super.hashCode(),
+                id,
+                name,
+                gender,
+                dateOfBirth,
+                email,
+                address,
+                instructionalCode,
+                instructionalImageId,
+                phone,
+                university,
+                userAccount);
     }
 }

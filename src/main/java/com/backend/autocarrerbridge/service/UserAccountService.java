@@ -9,12 +9,20 @@ import com.backend.autocarrerbridge.entity.UserAccount;
 
 public interface UserAccountService {
     UserAccountLoginResponse authenticateUser(UserAccountRequest userAccountRequest);
+
     void saveRefreshTokenForUser(Integer id, String refreshToken);
+
     UserAccount getUserByUsername(String username);
+
     UserAccount registerUser(UserAccount userAccount);
+
     UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccount);
+
     EmailCode generateVerificationCode(String email);
+
     EmailCode generatePasswordResetCode(String email);
+
     String handleForgotPassword(ForgotPasswordRequest forgotPasswordRequest);
+
     UserAccount approvedAccount(UserAccount userAccount);
 }

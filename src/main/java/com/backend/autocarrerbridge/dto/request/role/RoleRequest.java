@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.request.employee;
+package com.backend.autocarrerbridge.dto.request.role;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

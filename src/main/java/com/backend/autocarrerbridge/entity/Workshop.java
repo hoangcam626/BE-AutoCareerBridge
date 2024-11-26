@@ -58,11 +58,31 @@ public class Workshop extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Workshop workshop = (Workshop) object;
-        return Objects.equals(id, workshop.id) && Objects.equals(workshopImageId, workshop.workshopImageId) && Objects.equals(title, workshop.title) && Objects.equals(description, workshop.description) && Objects.equals(expireDate, workshop.expireDate) && statusBrowse == workshop.statusBrowse && Objects.equals(startDate, workshop.startDate) && Objects.equals(endDate, workshop.endDate) && Objects.equals(university, workshop.university) && Objects.equals(location, workshop.location);
+        return Objects.equals(id, workshop.id)
+                && Objects.equals(workshopImageId, workshop.workshopImageId)
+                && Objects.equals(title, workshop.title)
+                && Objects.equals(description, workshop.description)
+                && Objects.equals(expireDate, workshop.expireDate)
+                && statusBrowse == workshop.statusBrowse
+                && Objects.equals(startDate, workshop.startDate)
+                && Objects.equals(endDate, workshop.endDate)
+                && Objects.equals(university, workshop.university)
+                && Objects.equals(location, workshop.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, workshopImageId, title, description, expireDate, statusBrowse, startDate, endDate, university, location);
+        return Objects.hash(
+                super.hashCode(),
+                id,
+                workshopImageId,
+                title,
+                description,
+                expireDate,
+                statusBrowse,
+                startDate,
+                endDate,
+                university,
+                location);
     }
 }

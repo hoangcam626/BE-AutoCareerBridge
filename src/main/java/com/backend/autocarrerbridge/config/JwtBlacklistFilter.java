@@ -1,23 +1,24 @@
 package com.backend.autocarrerbridge.config;
 
-import com.backend.autocarrerbridge.service.TokenService;
+import static com.backend.autocarrerbridge.util.Constant.JTI;
+import static com.backend.autocarrerbridge.util.Constant.TOKEN_BLACKLIST;
+
+import java.io.IOException;
+import java.text.ParseException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import lombok.AccessLevel;
-
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.text.ParseException;
+import com.backend.autocarrerbridge.service.TokenService;
 
-import static com.backend.autocarrerbridge.util.Constant.JTI;
-import static com.backend.autocarrerbridge.util.Constant.TOKEN_BLACKLIST;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -27,9 +28,9 @@ public class JwtBlacklistFilter extends OncePerRequestFilter {
     TokenService tokenService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest  request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         String token = extractTokenFromRequest(request);
-
 
         if (token != null) {
             String idJwt;
