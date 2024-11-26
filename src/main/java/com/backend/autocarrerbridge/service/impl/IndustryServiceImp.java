@@ -1,25 +1,25 @@
 package com.backend.autocarrerbridge.service.impl;
 
-
 import static com.backend.autocarrerbridge.util.Constant.DELETED;
 
 import java.text.ParseException;
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.service.TokenService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryPagingRequest;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.IndustryRepo;
 import com.backend.autocarrerbridge.service.IndustryService;
+import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.RequiredArgsConstructor;
@@ -65,10 +65,9 @@ public class IndustryServiceImp implements IndustryService {
         if (industryList.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        IndustryPagingRequest industryPagingRequest = new IndustryPagingRequest(industryList.getTotalElements(), industryList.getContent());
-        return ApiResponse.builder()
-                .data(industryPagingRequest)
-                .build();
+        IndustryPagingRequest industryPagingRequest =
+                new IndustryPagingRequest(industryList.getTotalElements(), industryList.getContent());
+        return ApiResponse.builder().data(industryPagingRequest).build();
     }
 
     /**
@@ -80,9 +79,7 @@ public class IndustryServiceImp implements IndustryService {
         if (list.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        return ApiResponse.builder()
-                .data(list)
-                .build();
+        return ApiResponse.builder().data(list).build();
     }
 
     /**
@@ -94,7 +91,7 @@ public class IndustryServiceImp implements IndustryService {
         if (industryRequest.getName() == null || industryRequest.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        //Check tên và mã của ngành nghề đã tồn tại hay chưa
+        // Check tên và mã của ngành nghề đã tồn tại hay chưa
         checkNameAndCodeExists(industryRequest);
         industry.setName(industryRequest.getName());
         industry.setCode(industryRequest.getCode());
@@ -102,9 +99,7 @@ public class IndustryServiceImp implements IndustryService {
         industry.setCreatedBy(getUsernameViaToken());
         industryRepo.save(industry);
         IndustryResponse industryResponse = new IndustryResponse(industry);
-        return ApiResponse.builder()
-                .data(industryResponse)
-                .build();
+        return ApiResponse.builder().data(industryResponse).build();
     }
 
     /**
@@ -149,9 +144,7 @@ public class IndustryServiceImp implements IndustryService {
         industry.setUpdatedBy(getUsernameViaToken());
         industryRepo.save(industry);
         IndustryResponse industryResponse = new IndustryResponse(industry);
-        return ApiResponse.builder()
-                .data(industryResponse)
-                .build();
+        return ApiResponse.builder().data(industryResponse).build();
     }
 
     /**
@@ -159,7 +152,7 @@ public class IndustryServiceImp implements IndustryService {
      */
     @Override
     public ApiResponse<Object> inactiveIndustry(Integer id) throws ParseException {
-        //Kiểm tra id có bị trống không
+        // Kiểm tra id có bị trống không
         if (id == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }

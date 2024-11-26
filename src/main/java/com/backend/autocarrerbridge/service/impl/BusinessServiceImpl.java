@@ -2,29 +2,30 @@ package com.backend.autocarrerbridge.service.impl;
 
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
-import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
-import com.backend.autocarrerbridge.mapper.BusinessMapper;
-import com.backend.autocarrerbridge.service.LocationService;
-import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
+import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.ImageService;
+import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class BusinessServiceImpl implements BusinessService {
     RoleService roleService;
     LocationService locationService;
 
-    //Đăng ký doanh nghiệp mới.
+    // Đăng ký doanh nghiệp mới.
     @Transactional
     @Override
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
@@ -50,19 +51,17 @@ public class BusinessServiceImpl implements BusinessService {
             throw new IllegalArgumentException("User business data cannot be null");
         }
 
-        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
         Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
         if (existingBusiness != null) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
 
-        // Xác thực mật khẩu
         if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
 
-        // Kiểm tra và xử lý hình ảnh giấy phép
-        if (userBusinessRequest.getLicenseImage() == null || userBusinessRequest.getLicenseImage().isEmpty()) {
+        if (userBusinessRequest.getLicenseImage() == null
+                || userBusinessRequest.getLicenseImage().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
 
@@ -76,45 +75,42 @@ public class BusinessServiceImpl implements BusinessService {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
 
-        // Tạo tài khoản người dùng cho doanh nghiệp
-        UserAccount userAccount = UserAccount.builder()
-                .username(userBusinessRequest.getEmail()) // Sử dụng email doanh nghiệp làm username
-                .password("default_password") // Mật khẩu mặc định
-                .role(roleService.findById(PredefinedRole.BUSINESS.getValue())) // Gán role BUSINESS
-                .state(State.PENDING) // Trạng thái chờ phê duyệt
-                .build();
+        // Tạo và lưu UserAccount
+        UserAccount userAccount = new UserAccount();
+        modelMapper.map(userBusinessRequest, userAccount);
+        userAccount.setRole(roleService.findById(PredefinedRole.BUSINESS.getValue()));
+        userAccount.setUsername(userBusinessRequest.getEmail());
+        userAccount.setState(State.PENDING);
+        UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
-        UserAccount savedUserAccount = userAccountService.registerUser(userAccount); // Đăng ký tài khoản
-
-        // Tạo đối tượng Business và lưu vào DB
-        Business business = Business.builder()
-                .name(userBusinessRequest.getName())
-                .email(userBusinessRequest.getEmail())
-                .licenseImageId(licenseImageId)
-                .userAccount(savedUserAccount)
-                .build();
+        // Tạo và lưu Business
+        Business business = modelMapper.map(userBusinessRequest, Business.class);
+        business.setLicenseImageId(licenseImageId);
+        business.setUserAccount(savedUserAccount);
 
         try {
             Business savedBusiness = businessRepository.save(business);
-            return modelMapper.map(savedBusiness, BusinessRegisterResponse.class); // Chuyển đổi sang DTO
+            BusinessRegisterResponse businessRegisterResponse = new BusinessRegisterResponse();
+            modelMapper.map(savedUserAccount, businessRegisterResponse);
+            modelMapper.map(savedBusiness, businessRegisterResponse);
+            return businessRegisterResponse;
         } catch (Exception e) {
-            throw new AppException(ErrorCode.ERROR_USER); // Xử lý ngoại lệ nếu lưu thất bại
+            throw new AppException(ErrorCode.ERROR_USER);
         }
     }
 
-
-    //Lấy doanh nghiệp theo email.
+    // Lấy doanh nghiệp theo email.
     @Override
     public Business findByEmail(String email) {
         return businessRepository.findByEmail(email);
     }
 
-    //Cập nhật thông tin doanh nghiệp.
+    // Cập nhật thông tin doanh nghiệp.
     @Transactional
     @Override
     public BusinessResponse updateBusiness(Integer id, BusinessUpdateRequest request) {
-        Business businessUpdate = businessRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
+        Business businessUpdate =
+                businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
 
         // Kiểm tra email mới có trùng với doanh nghiệp khác không
         if (!businessUpdate.getEmail().equals(request.getEmail())) {
@@ -123,7 +119,7 @@ public class BusinessServiceImpl implements BusinessService {
 
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.udpateBusiness(businessUpdate, request);
-        LocationRequest locationRequest= LocationRequest.builder()
+        LocationRequest locationRequest = LocationRequest.builder()
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
                 .districtId(request.getDistrictId())
@@ -132,46 +128,42 @@ public class BusinessServiceImpl implements BusinessService {
 
         businessUpdate.setLocation(locationService.saveLocation(locationRequest));
 
-        //set ảnh cho business
+        // set ảnh cho business
         businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
         businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
         return businessMapper.toBusinessResponse(businessRepository.save(businessUpdate)); // Lưu và trả về DTO
     }
 
-    //Lấy danh sách tất cả doanh nghiệp.
+    // Lấy danh sách tất cả doanh nghiệp.
     @Override
     public List<BusinessResponse> getListBusiness() {
         var businessList = businessRepository.findAll();
-        return businessList.stream()
-                .map(businessMapper::toBusinessResponse)
-                .toList(); // Chuyển đổi danh sách sang DTO
+        return businessList.stream().map(businessMapper::toBusinessResponse).toList(); // Chuyển đổi danh sách sang DTO
     }
 
-    //Lấy doanh nghiệp theo ID.
+    // Lấy doanh nghiệp theo ID.
     @Override
     public Business getBusinessById(Integer id) {
-        return businessRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
+        return businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
     }
 
-    //Lấy doanh nghiệp theo ID dưới dạng DTO.
+    // Lấy doanh nghiệp theo ID dưới dạng DTO.
     @Override
     public BusinessResponse getBusinessResponseById(Integer id) {
-        var business = businessRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
+        var business =
+                businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
         return businessMapper.toBusinessResponse(business);
     }
 
-    //Xóa (deactivate) doanh nghiệp.
+    // Xóa (deactivate) doanh nghiệp.
     @Override
     @Transactional
     public void deleteBusiness(Integer id) {
-        Business business = businessRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
+        Business business =
+                businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
 
         business.getUserAccount().setStatus(Status.INACTIVE); // Đổi trạng thái
         businessRepository.save(business); // Lưu thay đổi
     }
 }
-

@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.util;
 
-
-
 public class Constant {
     // Mã trạng thái HTTP
     public static final int SUCCESS = 200;
@@ -129,7 +127,7 @@ public class Constant {
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
 
-    //section
+    // section
     public static final String NAME_SECTION_NOT_BLANK_MESSAGE = "Tên khoa không được bỏ trống .";
     public static final String NAME_SECTION_NOT_LOGGER_MESSAGE = "Tên khoa không được dài quá 100 kí tự.";
     public static final String STATUS_SECTION_NOT_NULL_MESSAGE = "Trạng thái là bắt buộc .";
@@ -138,7 +136,7 @@ public class Constant {
     public static final String SECTION_NOT_FOUND_MESSAGE = "Không tìm thấy khoa.";
     public static final String SECTION_EXISTED_MESSAGE = "Tên khoa đã tồn tại .";
 
-    //major
+    // major
     public static final String NAME_MAJOR_NOT_BLANK_MESSAGE = "Tên ngành không được bỏ trống .";
     public static final String NAME_MAJOR_NOT_LOGGER_MESSAGE = "Tên ngành không được dài quá 100 kí tự .";
     public static final String CODE_MAJOR_NOT_BLANK_MESSAGE = "Mã ngành không được bỏ trống .";
@@ -155,19 +153,17 @@ public class Constant {
     public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
     public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
 
-    //Location
+    // Location
     public static final String PROVINCE_NOT_FOUND_MESSAGE = "Không tìm thấy tỉnh";
     public static final String DISTRICT_NOT_FOUND_MESSAGE = "Không tìm thấy huyện";
     public static final String WARD_NOT_FOUND_MESSAGE = "Không tìm thấy xã";
 
-    //Exception database
+    // Exception database
     public static final String FILED_DB_NOT_UNIQUE_MESSAGE = "Trường trong database không duy nhất, hãy kiểm tra db";
 
-    //Công việc đã đăng
+    // Công việc đã đăng
     public static final String NO_EDIT_JOB = "Bạn không có quyền chỉnh sửa job này";
     public static final String NO_EXIST_JOB = "Công việc không tồn tại";
     public static final String INACTIVE_JOB = "Vô hiệu hóa công việc thành công";
     public static final String ALREADY_INACTIVE = "Đã bị vô hiệu hóa trước đó";
-
-
 }

@@ -1,9 +1,9 @@
 package com.backend.autocarrerbridge.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.backend.autocarrerbridge.entity.Business;
-import org.springframework.data.jpa.repository.Query;
 
 public interface BusinessRepository extends JpaRepository<Business, Integer> {
     Business findByEmail(String email);

@@ -1,5 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.util.Constant.SUB;
+
 import java.text.ParseException;
 import java.util.List;
 
@@ -30,8 +32,6 @@ import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 @Service
 @RequiredArgsConstructor

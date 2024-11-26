@@ -36,9 +36,11 @@ public class WorkShopController {
      */
     @GetMapping
     public ApiResponse<Object> getAllWorkShop(
-            @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "5") Integer size,
+            @RequestParam(required = false) String keyword) {
         return ApiResponse.builder()
-                .data(workShopService.getAllWorkShop(PageRequest.of(page, size)))
+                .data(workShopService.getAllWorkShop(PageRequest.of(page, size), keyword))
                 .build();
     }
 
@@ -67,9 +69,10 @@ public class WorkShopController {
     public ApiResponse<Object> getAllWorkShopByState(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "5") Integer size,
+            @RequestParam(required = false) String keyword,
             @PathVariable("state") State state) {
         return ApiResponse.builder()
-                .data(workShopService.getAllWorkShopByState(PageRequest.of(page, size), state))
+                .data(workShopService.getAllWorkShopByState(PageRequest.of(page, size), state, keyword))
                 .build();
     }
 
@@ -85,9 +88,10 @@ public class WorkShopController {
     public ApiResponse<Object> getAllWorkShopByUniversity(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "5") Integer size,
+            @RequestParam(required = false) String keyword,
             @PathVariable("universityId") Integer universityId) {
         return ApiResponse.builder()
-                .data(workShopService.getAllWorkShopByUniversity(PageRequest.of(page, size), universityId))
+                .data(workShopService.getAllWorkShopByUniversity(PageRequest.of(page, size), universityId, keyword))
                 .build();
     }
 
