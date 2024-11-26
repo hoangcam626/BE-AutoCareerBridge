@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.service;
 
 import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
+import com.backend.autocarrerbridge.entity.Major;
 import java.util.List;
 
 public interface SectionService {
@@ -14,4 +15,5 @@ public interface SectionService {
   List<SectionRequest> getAllSection();
 
   List<SectionRequest> getSectionById(int id);
+
 }
