@@ -8,12 +8,15 @@ import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_LOGGER
 import static com.backend.autocarrerbridge.util.Constant.STATUS_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.UNIVERSITY_SECTION_NOT_NULL_MESSAGE;
 
+import com.backend.autocarrerbridge.dto.request.major.MajorRequest;
+import com.backend.autocarrerbridge.entity.Major;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,5 +47,5 @@ public class SectionRequest {
   String updatedBy;
   @NotNull(message = UNIVERSITY_SECTION_NOT_NULL_MESSAGE)
   Integer universityId;
-
+  List<MajorRequest> majorList;
 }

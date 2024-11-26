@@ -38,7 +38,6 @@ public class MajorRequest {
   @NotBlank(message = NAME_SECTION_NOT_BLANK_MESSAGE)
   @Size(max = 100, message = NAME_MAJOR_NOT_LOGGER_MESSAGE)
   String name;
-  @NotNull(message = STATUS_SECTION_NOT_NULL_MESSAGE)
   Status status;
   @Min(value = 50, message = NUMBER_MIN_STUDENT_MAJOR_MESSAGE)
   @Max(value = 1000, message = NUMBER_MAX_STUDENT_MAJOR_MESSAGE)
