@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.service.LocationService;
@@ -122,7 +123,18 @@ public class BusinessServiceImpl implements BusinessService {
 
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.udpateBusiness(businessUpdate, request);
-        businessUpdate.setLocation(locationService.saveLocation(request.getLocationRequest()));
+        LocationRequest locationRequest= LocationRequest.builder()
+                .description(request.getDescriptionLocation())
+                .provinceId(request.getProvinceId())
+                .districtId(request.getDistrictId())
+                .wardId(request.getWardId())
+                .build();
+
+        businessUpdate.setLocation(locationService.saveLocation(locationRequest));
+
+        //set ảnh cho business
+        businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
+        businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
         return businessMapper.toBusinessResponse(businessRepository.save(businessUpdate)); // Lưu và trả về DTO
     }
