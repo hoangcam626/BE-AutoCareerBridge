@@ -24,22 +24,24 @@ public class LocationServiceIpml implements LocationService {
 
     @Override
     public Location getLocationByProvinceDistrictWard(LocationRequest request) {
-        Location location=null;
-        location.setProvinces(provinceService.findProvinceById(request.getProvinceId()));
-        location.setDistricts(districtService.findDistrictById(request.getDistrictId()));
-        location.setWards(wardService.findWardById(request.getWardId()));
+        Location location = null;
+        location.setProvince(provinceService.findProvinceById(request.getProvinceId()));
+        location.setDistrict(districtService.findDistrictById(request.getDistrictId()));
+        location.setWard(wardService.findWardById(request.getWardId()));
         return location;
     }
 
     @Override
     public Location saveLocation(LocationRequest request) {
-        Location location= new Location();
+        Location location = new Location();
 
         location.setDescription(request.getDescription());
-        location.setProvinces(provinceService.findProvinceById(request.getProvinceId()));
-        location.setDistricts(districtService.findDistrictById(request.getDistrictId()));
-        location.setWards(wardService.findWardById(request.getWardId()));
+        location.setProvince(provinceService.findProvinceById(request.getProvinceId()));
+        location.setDistrict(districtService.findDistrictById(request.getDistrictId()));
+        location.setWard(wardService.findWardById(request.getWardId()));
 
         return locationRepository.save(location);
     }
+
+
 }

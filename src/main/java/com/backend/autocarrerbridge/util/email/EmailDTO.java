@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.emailconfig;
+package com.backend.autocarrerbridge.util.email;
 
 import static com.backend.autocarrerbridge.util.Constant.EMAIL_REQUIRED_MESSAGE;
 

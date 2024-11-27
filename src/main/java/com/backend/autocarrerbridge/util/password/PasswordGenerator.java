@@ -1,5 +1,8 @@
 package com.backend.autocarrerbridge.util.password;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_LENGTH_PASSWORD;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_MIN_LENGTH_PASSWORD;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,9 +11,6 @@ import java.util.List;
 import java.util.Random;
 
 import com.backend.autocarrerbridge.exception.AppException;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_LENGTH_PASSWORD;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_MIN_LENGTH_PASSWORD;
 
 public class PasswordGenerator {
 
@@ -36,10 +36,10 @@ public class PasswordGenerator {
 
         // Khởi tạo danh sách các tập ký tự sử dụng để tạo mật khẩu
         List<PasswordCharacterSet> origPwSets = Arrays.asList(
-                SummerCharacterSets.ALPHA_UPPER,  // Ký tự chữ hoa
-                SummerCharacterSets.ALPHA_LOWER,  // Ký tự chữ thường
-                SummerCharacterSets.NUMERIC,      // Ký tự số
-                SummerCharacterSets.SPECIAL);     // Ký tự đặc biệt
+                SummerCharacterSets.ALPHA_UPPER, // Ký tự chữ hoa
+                SummerCharacterSets.ALPHA_LOWER, // Ký tự chữ thường
+                SummerCharacterSets.NUMERIC, // Ký tự số
+                SummerCharacterSets.SPECIAL); // Ký tự đặc biệt
 
         // Danh sách chứa các tập ký tự sau khi thêm các tập ký tự gốc
         List<PasswordCharacterSet> pwSets = new ArrayList<>();
@@ -48,13 +48,13 @@ public class PasswordGenerator {
 
         // Lặp qua các tập ký tự gốc và tính toán tổng số ký tự và ký tự phân bổ
         for (PasswordCharacterSet origPwSet : origPwSets) {
-            pwSets.add(origPwSet);  // Thêm tập ký tự vào danh sách
-            pwCharacters += origPwSet.getCharacters().length;  // Cộng số lượng ký tự từ tập ký tự
+            pwSets.add(origPwSet); // Thêm tập ký tự vào danh sách
+            pwCharacters += origPwSet.getCharacters().length; // Cộng số lượng ký tự từ tập ký tự
             preallocatedCharacters += origPwSet.getMinCharacters(); // Cộng số lượng ký tự tối thiểu từ tập ký tự
         }
 
-        this.presetCharacterCount = preallocatedCharacters;  // Lưu số ký tự đã phân bổ
-        this.pwSets = Collections.unmodifiableList(pwSets);  // Đảm bảo danh sách không thay đổi sau khi khởi tạo
+        this.presetCharacterCount = preallocatedCharacters; // Lưu số ký tự đã phân bổ
+        this.pwSets = Collections.unmodifiableList(pwSets); // Đảm bảo danh sách không thay đổi sau khi khởi tạo
 
         // Kiểm tra xem chiều dài mật khẩu tối thiểu có đủ lớn so với số ký tự đã phân bổ không
         if (minLength < presetCharacterCount) {
@@ -67,10 +67,10 @@ public class PasswordGenerator {
         // Thêm các ký tự từ các tập ký tự vào mảng allChars
         for (PasswordCharacterSet pwSet : pwSets) {
             char[] chars = pwSet.getCharacters();
-            System.arraycopy(chars, 0, allChars, currentIndex, chars.length);  // Sao chép ký tự vào mảng allChars
+            System.arraycopy(chars, 0, allChars, currentIndex, chars.length); // Sao chép ký tự vào mảng allChars
             currentIndex += chars.length;
         }
-        this.allCharacters = allChars;  // Lưu mảng chứa tất cả các ký tự
+        this.allCharacters = allChars; // Lưu mảng chứa tất cả các ký tự
     }
 
     /**
@@ -88,10 +88,10 @@ public class PasswordGenerator {
         // Danh sách các chỉ số còn lại để điền ký tự vào mật khẩu
         List<Integer> remainingIndexes = new ArrayList<>(pwLength);
         for (int i = 0; i < pwLength; ++i) {
-            remainingIndexes.add(i);  // Thêm các chỉ số từ 0 đến pwLength-1 vào danh sách
+            remainingIndexes.add(i); // Thêm các chỉ số từ 0 đến pwLength-1 vào danh sách
         }
 
-        char[] pw = new char[pwLength];  // Mảng chứa các ký tự của mật khẩu
+        char[] pw = new char[pwLength]; // Mảng chứa các ký tự của mật khẩu
         // Lặp qua các tập ký tự và thêm các ký tự vào mật khẩu với số lượng tối thiểu
         for (PasswordCharacterSet pwSet : pwSets) {
             addRandomCharacters(pw, pwSet.getCharacters(), pwSet.getMinCharacters(), remainingIndexes, rand);
@@ -104,8 +104,8 @@ public class PasswordGenerator {
 
     /**
      * Phương thức phụ để thêm ký tự ngẫu nhiên vào mật khẩu
-     @param pw Mảng chứa mật khẩu đang được tạo, các ký tự sẽ được chèn vào mảng này.
-      * @param characterSet Tập hợp các ký tự có thể được sử dụng để chèn vào mật khẩu.
+     * @param pw Mảng chứa mật khẩu đang được tạo, các ký tự sẽ được chèn vào mảng này.
+     * @param characterSet Tập hợp các ký tự có thể được sử dụng để chèn vào mật khẩu.
      * @param numCharacters Số lượng ký tự cần được thêm vào mật khẩu từ tập ký tự cho trước.
      * @param remainingIndexes Danh sách các chỉ số còn lại trong mật khẩu mà ký tự có thể được chèn vào.
      * @param rand Đối tượng Random được sử dụng để tạo số ngẫu nhiên cho việc chọn chỉ số và ký tự.
@@ -118,7 +118,7 @@ public class PasswordGenerator {
             int pwIndex = remainingIndexes.remove(rand.nextInt(remainingIndexes.size()));
             // Chọn ngẫu nhiên một ký tự từ characterSet
             int randCharIndex = rand.nextInt(characterSet.length);
-            pw[pwIndex] = characterSet[randCharIndex];  // Gán ký tự vào mật khẩu tại vị trí pwIndex
+            pw[pwIndex] = characterSet[randCharIndex]; // Gán ký tự vào mật khẩu tại vị trí pwIndex
         }
     }
 }

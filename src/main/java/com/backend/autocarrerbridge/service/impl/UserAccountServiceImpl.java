@@ -1,5 +1,9 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_APPROVED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_REJECTED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_ACCOUNT_STATE;
 import static com.backend.autocarrerbridge.util.Constant.ACCEPT_NP;
 import static com.backend.autocarrerbridge.util.Constant.ACCEPT_US;
 import static com.backend.autocarrerbridge.util.Constant.NEW_CODE;
@@ -20,10 +24,11 @@ import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
-import com.backend.autocarrerbridge.emailconfig.EmailCode;
-import com.backend.autocarrerbridge.emailconfig.EmailDTO;
-import com.backend.autocarrerbridge.emailconfig.RandomCodeGenerator;
-import com.backend.autocarrerbridge.emailconfig.SendEmail;
+
+import com.backend.autocarrerbridge.util.email.EmailCode;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.RandomCodeGenerator;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
@@ -85,6 +90,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }
     }
+
     /**
      * Lưu refresh token cho tài khoản người dùng.
      *
@@ -105,6 +111,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserAccount getUserByUsername(String username) {
         return userAccountRepository.findByUsername(username);
     }
+
     /**
      * Đăng ký tài khoản người dùng mới.
      *
@@ -124,39 +131,48 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount approvedAccount(UserAccount userAccount) {
-        if (userAccount.getState() == State.PENDING) {
-            userAccount.setState(State.APPROVED);
-        }
-        return userAccountRepository.save(userAccount);
+    public void approvedAccount(UserAccount req) {
+        validateAccountForStateChange(req, State.APPROVED);
+        req.setState(State.APPROVED);
+        userAccountRepository.save(req);
+    }
+
+    @Override
+    public void rejectedAccount(UserAccount req) {
+        validateAccountForStateChange(req, State.REJECTED);
+        req.setState(State.REJECTED);
+        userAccountRepository.save(req);
+
     }
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+    //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+
     /**
      * Cập nhật mật khẩu cho tài khoản người dùng.
      *
-     * @param userAccountResponeDTO đối tượng chứa thông tin cập nhật mật khẩu.
+     * @param userAccountResponseDTO đối tượng chứa thông tin cập nhật mật khẩu.
      * @return phản hồi đăng nhập với thông tin mới.
      * @throws AppException nếu mật khẩu không hợp lệ hoặc không khớp.
      */
     @Override
-    public UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccountResponeDTO) {
-        UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponeDTO.getUsername());
-        if (userAccountResponeDTO.getPassword() == null
-                || userAccountResponeDTO.getPassword().isEmpty()) {
+    public UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccountResponseDTO) {
+        UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponseDTO.getUsername());
+        if (userAccountResponseDTO.getPassword() == null
+                || userAccountResponseDTO.getPassword().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
-        if (passwordEncoder.matches(userAccountResponeDTO.getNewPassword(), userAccount.getPassword())) {
+        if (passwordEncoder.matches(userAccountResponseDTO.getNewPassword(), userAccount.getPassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_SAME);
         }
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        if (!userAccountResponeDTO.getNewPassword().equals(userAccountResponeDTO.getReNewPassword())) {
+        if (!userAccountResponseDTO.getNewPassword().equals(userAccountResponseDTO.getReNewPassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
-        if (!passwordEncoder.matches(userAccountResponeDTO.getPassword(), userAccount.getPassword())) {
+        if (!passwordEncoder.matches(userAccountResponseDTO.getPassword(), userAccount.getPassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }
 
-        userAccount.setPassword(passwordEncoder.encode(userAccountResponeDTO.getNewPassword()));
+        userAccount.setPassword(passwordEncoder.encode(userAccountResponseDTO.getNewPassword()));
         return modelMapper.map(userAccountRepository.save(userAccount), UserAccountLoginResponse.class);
     }
     /**
@@ -169,9 +185,11 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public EmailCode generateVerificationCode(String email) {
         String code = generateCode(email);
-        if (userAccountRepository.findByUsername(email).getState().equals(State.APPROVED)) {
+        UserAccount userAccount = userAccountRepository.findByUsername(email);
+        if (userAccount != null && userAccount.getState().equals(State.APPROVED)) {
             throw new AppException(ErrorCode.ERROR_USER_APPROVED);
         }
+
         if (code.equals(codeExist)) {
             return EmailCode.builder().email(email).code(NOTIFICATION_WAIT).build();
         }
@@ -244,4 +262,25 @@ public class UserAccountServiceImpl implements UserAccountService {
         redisTemplate.opsForValue().set(PREFIX_FG + emailSend, generatedCode, codeTime, TimeUnit.SECONDS);
         return generatedCode;
     }
+
+    private void validateAccountForStateChange(UserAccount req, State targetState) {
+
+        if (req == null) {
+            throw new AppException(ERROR_ACCOUNT_IS_NULL);
+        }
+
+        // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
+        if (req.getState() == targetState) {
+            throw new AppException(targetState == State.APPROVED
+                    ? ERROR_ACCOUNT_ALREADY_APPROVED
+                    : ERROR_ACCOUNT_ALREADY_REJECTED);
+        }
+
+        // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)
+        if (req.getState() != State.PENDING) {
+            throw new AppException(ERROR_INVALID_ACCOUNT_STATE);
+        }
+    }
+
+
 }

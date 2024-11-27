@@ -1,11 +1,19 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.converter.SectionConverter;
 import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.entity.University;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.SectionRepository;
 import com.backend.autocarrerbridge.repository.UniversityRepository;
 import com.backend.autocarrerbridge.service.SectionService;
@@ -14,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
