@@ -1,10 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
-import com.backend.autocarrerbridge.entity.District;
 import com.backend.autocarrerbridge.entity.Location;
-import com.backend.autocarrerbridge.entity.Province;
-import com.backend.autocarrerbridge.entity.Ward;
 import com.backend.autocarrerbridge.repository.LocationRepository;
 import com.backend.autocarrerbridge.service.DistrictService;
 import com.backend.autocarrerbridge.service.LocationService;

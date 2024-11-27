@@ -2,7 +2,6 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.converter.SectionConverter;
 import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
-import com.backend.autocarrerbridge.entity.Major;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.entity.Section;
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

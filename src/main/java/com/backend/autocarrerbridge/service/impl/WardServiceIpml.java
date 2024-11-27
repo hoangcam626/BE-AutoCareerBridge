@@ -3,7 +3,6 @@ package com.backend.autocarrerbridge.service.impl;
 import com.backend.autocarrerbridge.entity.Ward;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.LocationRepository;
 import com.backend.autocarrerbridge.repository.WardRepository;
 import com.backend.autocarrerbridge.service.WardService;
 import lombok.AccessLevel;

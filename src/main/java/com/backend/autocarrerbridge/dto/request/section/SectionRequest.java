@@ -1,16 +1,12 @@
 package com.backend.autocarrerbridge.dto.request.section;
 
 
-import static com.backend.autocarrerbridge.util.Constant.CREATED_BY_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_LOGGER_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.STATUS_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.UNIVERSITY_SECTION_NOT_NULL_MESSAGE;
 
 import com.backend.autocarrerbridge.dto.request.major.MajorRequest;
-import com.backend.autocarrerbridge.entity.Major;
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +16,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

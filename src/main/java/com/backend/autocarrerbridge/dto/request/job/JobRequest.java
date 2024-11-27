@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.dto.request.job;
 
-import com.backend.autocarrerbridge.entity.Industry;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
