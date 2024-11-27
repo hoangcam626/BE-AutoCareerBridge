@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.job.JobRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.job.JobRequest;
 import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.entity.Business;

@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.dto.response.province;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

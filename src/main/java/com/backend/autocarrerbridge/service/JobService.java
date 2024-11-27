@@ -3,7 +3,7 @@ package com.backend.autocarrerbridge.service;
 import java.text.ParseException;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.job.JobRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.job.JobRequest;
 
 public interface JobService {
     ApiResponse<Object> getAllJob() throws ParseException;
