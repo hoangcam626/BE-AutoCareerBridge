@@ -1,10 +1,12 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
@@ -42,6 +44,7 @@ public class BusinessServiceImpl implements BusinessService {
     UserAccountService userAccountService;
     RoleService roleService;
     LocationService locationService;
+    RedisTemplate<String, String> redisTemplate;
 
     // Đăng ký doanh nghiệp mới.
     @Transactional
@@ -64,7 +67,11 @@ public class BusinessServiceImpl implements BusinessService {
                 || userBusinessRequest.getLicenseImage().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
-
+        if (!Objects.equals(
+                redisTemplate.opsForValue().get(userBusinessRequest.getEmail()),
+                userBusinessRequest.getVerificationCode())) {
+            throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
+        }
         Integer licenseImageId;
         try {
             licenseImageId = imageService.uploadFile(userBusinessRequest.getLicenseImage());

@@ -1,7 +1,9 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -97,5 +99,11 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public University findById(Integer id) {
         return universityRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName) {
+        List<University> list = universityRepository.findUniversity(address, universityName);
+        return list.stream().map(university -> modelMapper.map(university,UniversityResponse.class)).toList();
     }
 }

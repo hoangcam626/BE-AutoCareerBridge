@@ -28,6 +28,7 @@ public class Constant {
     public static final String INTERNAL_SERVER_ERROR_MESSAGE = "Lỗi máy chủ nội bộ";
     public static final String VALIDATION_ERROR_MESSAGE = "Lỗi xác thực";
     public static final String NOTIFICATION_WAIT = "Vui lòng chờ";
+    public static final String SUCCESS_ACCEPT_MESSAGE = "Chấp nhận yêu cầu thành công!";
 
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
@@ -119,6 +120,7 @@ public class Constant {
     public static final String REQUEST_TO_ATTEND_WORKSHOP =
             "Yêu cầu tham gia hội thảo thành công, Vui lòng đợi để chờ duyệt.";
     public static final String REQUEST_WORKSHOP_FAIL = "Doanh nghiệp đã yêu cầu tham gia vui lòng đợi!.";
+    public static final String REQUEST_ALREADY_ACCEPT = "Doanh nghiệp đã được duyệt!.";
     // Trường đại học
     public static final String REGISTER_UNIVERSITY =
             "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";

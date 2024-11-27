@@ -3,15 +3,17 @@ package com.backend.autocarrerbridge.service.impl;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
 
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessReponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.entity.Business;
@@ -64,8 +66,8 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
             throw new AppException(ERROR_NO_CONTENT);
         }
         // Chuyển đổi danh sách doanh nghiệp thành BusinessResponse
-        List<BusinessResponse> businessResponses = businesses.stream()
-                .map(business -> modelMapper.map(business, BusinessResponse.class))
+        List<BusinessColabResponse> businessResponses = businesses.stream()
+                .map(business -> modelMapper.map(business, BusinessColabResponse.class))
                 .toList();
 
         // Tạo và trả về response chứa thông tin workshop và danh sách doanh nghiệp
@@ -84,8 +86,8 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
     @Override
     public String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest) {
         // Kiểm tra xem doanh nghiệp đã tham gia workshop chưa
-        if (workShopBussinessRepository.existsByWorkshopIdAndBusinessId(
-                workShopBusinessRequest.getBusinessID(), workShopBusinessRequest.getWorkshopID())) {
+        if (workShopBussinessRepository.checkExistWorkShop(
+                workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID()) != null) {
             throw new AppException(ERROR_FAIL_WORK_SHOP);
         }
 
@@ -108,5 +110,19 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
         workShopBussinessRepository.save(workshopBusiness);
 
         return REQUEST_TO_ATTEND_WORKSHOP;
+    }
+
+    @Override
+    public String acceptBusiness(WorkShopBusinessRequest workShopBusinessRequest) {
+       WorkshopBusiness workshopBusiness =  workShopBussinessRepository.checkExistWorkShop(workShopBusinessRequest.getWorkshopID(),workShopBusinessRequest.getBusinessID());
+       if(workshopBusiness == null ){
+           throw new AppException(ErrorCode.NOT_FOUNDED);
+       }
+       if(workshopBusiness.getStatusConnected().equals(State.APPROVED)){
+           throw new AppException(ErrorCode.ERROR_ALREADY_ACCEPT);
+       }
+       workshopBusiness.setStatusConnected(State.APPROVED);
+       workShopBussinessRepository.save(workshopBusiness);
+       return SUCCESS_ACCEPT_MESSAGE;
     }
 }
