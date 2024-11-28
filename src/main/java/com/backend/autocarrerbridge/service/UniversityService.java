@@ -15,12 +15,13 @@ public interface UniversityService {
     void approvedAccount(UniversityApprovedRequest req);
     void rejectedAccount(UniversityRejectedRequest req);
 
-  UniversityResponse update(int id, UniversityRequest universityRequest);
+    UniversityResponse update(int id, UniversityRequest universityRequest);
 
-  List<UniversityResponse> getById(int id);
+    List<UniversityResponse> getById(int id);
 
-  List<UniversityResponse> getAll();
+     List<UniversityResponse> getAll();
 
     University findById(Integer id);
     List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName);
+
 }

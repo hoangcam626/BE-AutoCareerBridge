@@ -197,4 +197,5 @@ public class UniversityServiceImpl implements UniversityService {
         List<University> list = universityRepository.findUniversity(address, universityName);
         return list.stream().map(university -> modelMapper.map(university,UniversityResponse.class)).toList();
     }
+
 }

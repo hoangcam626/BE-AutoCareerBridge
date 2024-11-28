@@ -31,7 +31,7 @@ public class JobController {
      * @return Danh sách các công việc đã đăng tuyển.
      */
     @GetMapping("/get-all-job")
-    private ApiResponse<Object> getAllJob() throws ParseException {
+    public ApiResponse<Object> getAllJob() throws ParseException {
         return jobService.getAllJob();
     }
 
@@ -40,7 +40,7 @@ public class JobController {
      * @apiNote để truy vấn chi tiết công việc trong cơ sở dữ liệu
      */
     @GetMapping("/get-detail")
-    private ApiResponse<Object> getDetail(@RequestParam Integer id) throws ParseException {
+    public ApiResponse<Object> getDetail(@RequestParam Integer id) throws ParseException {
         return jobService.getJobDetail(id);
     }
 
@@ -49,7 +49,7 @@ public class JobController {
      * @apiNote để để thêm công việc vào cơ sở dữ liệu
      */
     @PostMapping("/create-job")
-    private ApiResponse<Object> createJob(@RequestBody JobRequest jobRequest) throws ParseException {
+    public ApiResponse<Object> createJob(@RequestBody JobRequest jobRequest) throws ParseException {
         return jobService.createJob(jobRequest);
     }
 
@@ -58,7 +58,7 @@ public class JobController {
      * @apiNote để để cập nhật thông tin công việc vào cơ sở dữ liệu
      */
     @PutMapping("/update-job")
-    private ApiResponse<Object> updateJob(@RequestParam Integer jobId, @RequestBody JobRequest jobRequest)
+    public ApiResponse<Object> updateJob(@RequestParam Integer jobId, @RequestBody JobRequest jobRequest)
             throws ParseException {
         return jobService.updateJob(jobId, jobRequest);
     }
@@ -68,7 +68,7 @@ public class JobController {
      * @apiNote để để vô hiệu hóa công việc đã đăng
      */
     @PutMapping("/inactive-job")
-    private ApiResponse<Object> inactiveJob(@RequestParam Integer jobId) throws ParseException {
+    public ApiResponse<Object> inactiveJob(@RequestParam Integer jobId) throws ParseException {
         return jobService.inactiveJob(jobId);
     }
 }
