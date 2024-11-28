@@ -151,7 +151,7 @@ public class Constant {
     public static final String NUMBER_MAX_STUDENT_MAJOR_MESSAGE = "Tối đa chỉ được 1.000 sinh viên .";
     public static final String ID_MAJOR_NOT_NULL_MESSAGE = " Không tìm thấy khoa .";
 
-    //Employee
+    // Employee
     public static final String NAME_NOT_BLANK_MESSAGE = "Tên không được để trống";
     public static final String GENDER_NOT_BLANK_MESSAGE = "Giới tính không được để trống";
     public static final String DOB_NOT_BLANK_MESSAGE = "Ngày sinh không được để trống";
@@ -159,7 +159,7 @@ public class Constant {
     public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
     public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
 
-    //Administrative
+    // Administrative
     public static final String DISTRICT_NOT_FOUND_MESSAGE = "Không tìm thấy Quận/Huyện";
     public static final String PROVINCE_NOT_FOUND_MESSAGE = "Không tìm thấy Tỉnh/Thành phố";
     public static final String WARD_NOT_FOUND_MESSAGE = "Không tìm thấy Xã/Phường";
@@ -167,8 +167,7 @@ public class Constant {
     public static final String DISTRICT_NOT_BLANK_MESSAGE = "Quận/Huyện không được để trống";
     public static final String WARD_NOT_BLANK_MESSAGE = "Xã/Phường không được để trống";
 
-
-    //Location
+    // Location
     public static final String LOCATION_NOT_FOUND_MESSAGE = "Không tìm thấy location tron Database";
 
     // Exception database

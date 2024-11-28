@@ -4,8 +4,8 @@ import com.backend.autocarrerbridge.dto.request.account.ForgotPasswordRequest;
 import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
-import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.entity.UserAccount;
+import com.backend.autocarrerbridge.util.email.EmailCode;
 
 public interface UserAccountService {
     UserAccountLoginResponse authenticateUser(UserAccountRequest userAccountRequest);
