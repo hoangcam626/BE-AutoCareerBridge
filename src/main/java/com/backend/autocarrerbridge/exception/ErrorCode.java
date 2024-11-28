@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
-
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
@@ -198,8 +197,8 @@ public enum ErrorCode {
     ERROR_NO_EXIST_JOB(BAD_REQUEST, NO_EXIST_JOB, HttpStatus.BAD_REQUEST),
     ERROR_ALREADY_INACTIVE(BAD_REQUEST, ALREADY_INACTIVE, HttpStatus.BAD_REQUEST),
 
-    //Database
-    FILED_DB_NOT_UNIQUE(BAD_REQUEST,FILED_DB_NOT_UNIQUE_MESSAGE, HttpStatus.BAD_REQUEST),
+    // Database
+    FILED_DB_NOT_UNIQUE(BAD_REQUEST, FILED_DB_NOT_UNIQUE_MESSAGE, HttpStatus.BAD_REQUEST),
 
     ERROR_ACCOUNT_ALREADY_APPROVED(BAD_REQUEST, ACCOUNT_ALREADY_APPROVED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_ACCOUNT_ALREADY_REJECTED(BAD_REQUEST, ACCOUNT_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
