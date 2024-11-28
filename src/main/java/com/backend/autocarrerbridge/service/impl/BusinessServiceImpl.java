@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
@@ -13,6 +14,7 @@ import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
@@ -52,8 +54,8 @@ public class BusinessServiceImpl implements BusinessService {
     RoleService roleService;
     SendEmail sendEmail;
     LocationService locationService;
+    RedisTemplate<String, String> redisTemplate;
     LocationMapper locationMapper;
-
     //Đăng ký doanh nghiệp mới.
     @Transactional
     @Override
@@ -61,11 +63,13 @@ public class BusinessServiceImpl implements BusinessService {
         if (userBusinessRequest == null) {
             throw new IllegalArgumentException("User business data cannot be null");
         }
+
         // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
         Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
         if (existingBusiness != null) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
+
         // Xác thực mật khẩu
         if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
@@ -75,7 +79,11 @@ public class BusinessServiceImpl implements BusinessService {
                 || userBusinessRequest.getLicenseImage().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
-
+        if (!Objects.equals(
+                redisTemplate.opsForValue().get(userBusinessRequest.getEmail()),
+                userBusinessRequest.getVerificationCode())) {
+            throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
+        }
         Integer licenseImageId;
         try {
             licenseImageId = imageService.uploadFile(userBusinessRequest.getLicenseImage());

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
+
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
@@ -80,6 +81,7 @@ import static com.backend.autocarrerbridge.util.Constant.PHONE_NOT_BLANK_MESSAGE
 import static com.backend.autocarrerbridge.util.Constant.PROVINCE_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PROVINCE_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PW_NOT_MATCH;
+import static com.backend.autocarrerbridge.util.Constant.REQUEST_ALREADY_ACCEPT;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_WORKSHOP_FAIL;
 import static com.backend.autocarrerbridge.util.Constant.SAVE_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_EXISTED_MESSAGE;
@@ -154,6 +156,7 @@ public enum ErrorCode {
     ERROR_EMAIL_INVALID(BAD_REQUEST, EMAIL_INVALID_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NAME_INVALID(BAD_REQUEST, ERROR_NAME_EMPTY, HttpStatus.BAD_REQUEST),
     ERROR_TAX_CODE(BAD_REQUEST, TAX_CODE, HttpStatus.BAD_REQUEST),
+    ERROR_ALREADY_ACCEPT(BAD_REQUEST, REQUEST_ALREADY_ACCEPT, HttpStatus.BAD_REQUEST),
     /** Các lỗi liên quan đến mã khôi phục */
     ERROR_PW_EMPTY(BAD_REQUEST, ERROR_NOT_EMPTY_PW, HttpStatus.BAD_REQUEST),
     ERROR_FORGOT_CODE_REQUIRED(BAD_REQUEST, FORGOT_CODE_REQUIRED_MESSAGE, HttpStatus.BAD_REQUEST),

@@ -1,21 +1,19 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.util.Constant.APPROVED;
-import static com.backend.autocarrerbridge.util.Constant.REJECTED;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 import com.backend.autocarrerbridge.converter.UniversityConverter;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -38,6 +36,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import static com.backend.autocarrerbridge.util.Constant.APPROVED;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED;
+
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -47,8 +48,8 @@ public class UniversityServiceImpl implements UniversityService {
     UserAccountService userAccountService;
     UniversityRepository universityRepository;
     RedisTemplate<String, String> redisTemplate;
-    private final SendEmail sendEmail;
-    private final ImageServiceImpl imageServiceImpl;
+    SendEmail sendEmail;
+    ImageService imageService;
 
     @Override
     public UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest) {
@@ -165,7 +166,7 @@ public class UniversityServiceImpl implements UniversityService {
 
         if (universityRequest.getLogoImageId() != null && !universityRequest.getLogoImageId().isEmpty()) {
             // Tải lên ảnh mới và lưu ID của ảnh
-            university.setLogoImageId(imageServiceImpl.uploadFile(universityRequest.getLogoImageId()));
+            university.setLogoImageId(imageService.uploadFile(universityRequest.getLogoImageId()));
         }
         universityRepository.save(university);
         return UniversityConverter.convertToResponse(university);
@@ -189,5 +190,11 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public University findById(Integer id) {
         return universityRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName) {
+        List<University> list = universityRepository.findUniversity(address, universityName);
+        return list.stream().map(university -> modelMapper.map(university,UniversityResponse.class)).toList();
     }
 }
