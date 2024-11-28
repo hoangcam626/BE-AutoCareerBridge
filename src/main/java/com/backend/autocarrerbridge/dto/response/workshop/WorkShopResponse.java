@@ -3,10 +3,12 @@ package com.backend.autocarrerbridge.dto.response.workshop;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class WorkShopResponse {
     private Integer id;
     private String title;
@@ -26,6 +29,6 @@ public class WorkShopResponse {
     private LocalDate expireDate;
 
     private Integer workshopImageId;
-    private Integer locationId;
+    private LocationResponse location;
     private UniversityResponse university;
 }
