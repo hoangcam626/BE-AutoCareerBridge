@@ -14,6 +14,14 @@ import static com.backend.autocarrerbridge.util.Constant.PREFIX_NP;
 
 import java.util.concurrent.TimeUnit;
 
+import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
+
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+
+
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.University;
+import com.backend.autocarrerbridge.service.IntermediaryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +60,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     RedisTemplate<String, String> redisTemplate;
     String codeExist = "Exist";
     Integer codeTime = 60;
+    IntermediaryService intermediaryService;
 
     /**
      * Xác thực người dùng dựa trên tên đăng nhập và mật khẩu.
@@ -78,14 +87,27 @@ public class UserAccountServiceImpl implements UserAccountService {
             if (user.getState().equals(State.PENDING)) {
                 throw new AppException(ErrorCode.ERROR_USER_PENDING);
             }
+            // Chuyển thông tin từ user -> response
             UserAccountRequest userRequest = new UserAccountRequest();
             userRequest.setStatus(user.getStatus());
             userRequest.setId(user.getId());
             userRequest.setUsername(user.getUsername());
             userRequest.setPassword(user.getPassword());
             userRequest.setRole(modelMapper.map(user.getRole(), RoleRequest.class));
+            UserAccountLoginResponse userAccountLoginResponse = new UserAccountLoginResponse();
+            modelMapper.map(userRequest, userAccountLoginResponse);
+            // Check xem co phai la business khong
+            Business business = intermediaryService.findBusinessByEmail(userAccountRequest.getUsername());
+            if (business != null) {
+                userAccountLoginResponse.setBusiness(modelMapper.map(business, BusinessLoginResponse.class));
+            }
+            // check xem co phai la univeristy ko
+            University university = intermediaryService.findUniversityByEmail(userAccountRequest.getUsername());
+            if(university != null){
+                userAccountLoginResponse.setUniversity(modelMapper.map(university,UniversityResponse.class));
+            }
 
-            return modelMapper.map(userRequest, UserAccountLoginResponse.class);
+            return userAccountLoginResponse;
         } else {
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }

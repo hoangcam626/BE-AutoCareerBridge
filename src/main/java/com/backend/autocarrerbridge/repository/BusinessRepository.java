@@ -13,4 +13,6 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
      */
     @Query("SELECT e.business FROM Employee e WHERE e.id = :employeeId")
     Business getBusinessByEmployeeId(Integer employeeId);
+
+
 }

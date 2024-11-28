@@ -230,4 +230,5 @@ public class BusinessServiceImpl implements BusinessService {
         sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
     }
 
+
 }
