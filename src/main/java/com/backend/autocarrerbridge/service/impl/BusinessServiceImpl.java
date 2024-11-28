@@ -6,7 +6,10 @@ import java.util.Objects;
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
+import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.mapper.BusinessMapper;
+import com.backend.autocarrerbridge.mapper.LocationMapper;
 import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
@@ -136,19 +139,23 @@ public class BusinessServiceImpl implements BusinessService {
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
+                .id(businessUpdate.getLocation().getId())
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
+        Location location= locationService.saveLocation(locationRequest);
 
-        businessUpdate.setLocation(locationService.saveLocation(locationRequest));
+        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
 
         // set ảnh cho business
         businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
         businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
-        return businessMapper.toBusinessResponse(businessRepository.save(businessUpdate)); // Lưu và trả về DTO
+        BusinessResponse businessResponse=businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+        businessResponse.setLocation(locationResponse);
+        return businessResponse; // Lưu và trả về DTO
     }
 
     // Lấy danh sách tất cả doanh nghiệp.

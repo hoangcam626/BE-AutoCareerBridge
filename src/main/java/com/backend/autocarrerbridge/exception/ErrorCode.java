@@ -96,6 +96,9 @@ import static com.backend.autocarrerbridge.util.Constant.USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.USER_PENDING;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.LOCATION_NOT_FOUND_MESSAGE;
+
+
 
 @Getter
 public enum ErrorCode {
@@ -209,6 +212,9 @@ public enum ErrorCode {
     ERROR_PROVINCE_NOT_BLANK(BAD_REQUEST, PROVINCE_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_DISTRICT_NOT_BLANK(BAD_REQUEST, DISTRICT_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WARD_NOT_BLANK(BAD_REQUEST, WARD_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    ERROR_LOCATION_NOT_FOUND(BAD_REQUEST, LOCATION_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
+
     ;
 
     private final int code;
