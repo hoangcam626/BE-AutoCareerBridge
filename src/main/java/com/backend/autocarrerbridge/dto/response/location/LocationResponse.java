@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -28,5 +27,4 @@ public class LocationResponse extends AbstractAuditResponse {
     private DistrictResponse district;
 
     private WardResponse ward;
-
 }

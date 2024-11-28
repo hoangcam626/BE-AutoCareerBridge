@@ -14,7 +14,9 @@ import com.backend.autocarrerbridge.entity.Job;
 @Component
 public class ConvertJob {
 
-    /** Chuyển đối các đối tượng (Job, Industry, Business, Employee) thành JobDetailResponse*/
+    /**
+     * Chuyển đối các đối tượng (Job, Industry, Business, Employee) thành JobDetailResponse
+     */
     public JobDetailResponse toJobDetailResponse(Job job, Industry industry, Business business, Employee employee) {
         return new JobDetailResponse(
                 job, new IndustryResponse(industry), new BusinessResponse(business), new EmployeeResponse(employee));

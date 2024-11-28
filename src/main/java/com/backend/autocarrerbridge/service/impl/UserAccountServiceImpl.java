@@ -32,16 +32,15 @@ import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
-
-import com.backend.autocarrerbridge.util.email.EmailCode;
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.RandomCodeGenerator;
-import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.UserAccountService;
+import com.backend.autocarrerbridge.util.email.EmailCode;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.RandomCodeGenerator;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.password.PasswordGenerator;
 
@@ -164,7 +163,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         validateAccountForStateChange(req, State.REJECTED);
         req.setState(State.REJECTED);
         userAccountRepository.save(req);
-
     }
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
@@ -330,9 +328,8 @@ public class UserAccountServiceImpl implements UserAccountService {
 
         // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
         if (req.getState() == targetState) {
-            throw new AppException(targetState == State.APPROVED
-                    ? ERROR_ACCOUNT_ALREADY_APPROVED
-                    : ERROR_ACCOUNT_ALREADY_REJECTED);
+            throw new AppException(
+                    targetState == State.APPROVED ? ERROR_ACCOUNT_ALREADY_APPROVED : ERROR_ACCOUNT_ALREADY_REJECTED);
         }
 
         // Chỉ cho phép thay đổi trạng thái từ PENDING
@@ -340,6 +337,4 @@ public class UserAccountServiceImpl implements UserAccountService {
             throw new AppException(ERROR_INVALID_ACCOUNT_STATE);
         }
     }
-
-
 }
