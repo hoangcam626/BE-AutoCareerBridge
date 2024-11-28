@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.request.job;
+package com.backend.autocarrerbridge.dto.request.workshop.job;
 
 import java.time.LocalDate;
 

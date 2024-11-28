@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.dto.request.section;
 
+
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_LOGGER_MESSAGE;
@@ -8,12 +9,12 @@ import static com.backend.autocarrerbridge.util.Constant.UNIVERSITY_SECTION_NOT_
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.major.MajorRequest;
+import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import com.backend.autocarrerbridge.dto.request.major.MajorRequest;
-import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

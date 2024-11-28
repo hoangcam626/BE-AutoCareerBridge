@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.emailconfig;
+package com.backend.autocarrerbridge.util.email;
 
 import java.security.SecureRandom;
 

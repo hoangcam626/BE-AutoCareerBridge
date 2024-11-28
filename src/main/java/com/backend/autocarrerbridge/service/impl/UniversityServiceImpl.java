@@ -1,9 +1,19 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.converter.UniversityConverter;
+import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.service.ImageService;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
+import com.backend.autocarrerbridge.util.enums.Status;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -26,6 +36,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import static com.backend.autocarrerbridge.util.Constant.APPROVED;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED;
+
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -35,6 +48,8 @@ public class UniversityServiceImpl implements UniversityService {
     UserAccountService userAccountService;
     UniversityRepository universityRepository;
     RedisTemplate<String, String> redisTemplate;
+    SendEmail sendEmail;
+    ImageService imageService;
 
     @Override
     public UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest) {
@@ -94,6 +109,82 @@ public class UniversityServiceImpl implements UniversityService {
         modelMapper.map(university, universityRegisterResponse);
 
         return universityRegisterResponse;
+    }
+
+    /**
+     * Phương thức chấp nhận tài khoản doanh nghiệp
+     *
+     * @param req - đầu vào chứa ID của doanh nghiệp cần được phê duyệt.
+     */
+
+    @Override
+    public void approvedAccount(UniversityApprovedRequest req) {
+        University university = findById(req.getId());
+        UserAccount userAccount = university.getUserAccount();
+
+        // Phê duyệt tài khoản người dùng thay đổi trạng thái thành "APPROVED".
+        userAccountService.approvedAccount(userAccount);
+
+        // Email để thông báo tài khoản đã được phê duyệt.
+        EmailDTO emailDTO = new EmailDTO(university.getEmail(), APPROVED, "");
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+
+    }
+
+    /**
+     * Phương thức từ chối tài khoản doanh nghiệp.
+     *
+     * @param req Yêu cầu chứa ID của doanh nghiệp cần bị từ chối.
+     */
+    @Override
+    public void rejectedAccount(UniversityRejectedRequest req) {
+        University university = findById(req.getId());
+        UserAccount userAccount = university.getUserAccount();
+
+        // Từ chối tài khoản người thay đổi trạng thái thành "REJECTED".
+        userAccountService.rejectedAccount(userAccount);
+
+        //Đổi trạng thái sang INACTIVE (xóa mềm thông tin doanh nghiệp)
+        university.setStatus(Status.INACTIVE);
+        universityRepository.save(university);
+
+        // Gửi email để thông báo tài khoản đã bị từ chối.
+        EmailDTO emailDTO = new EmailDTO(university.getEmail(), REJECTED, "");
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+    }
+
+    @Transactional
+    @Override
+    public UniversityResponse update(int id, UniversityRequest universityRequest) {
+        University university = universityRepository.findById(id)
+            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+        university.setName(universityRequest.getName());
+        university.setWebsite(universityRequest.getWebsite());
+        university.setFoundedYear(universityRequest.getFoundedYear());
+        university.setPhone(universityRequest.getPhone());
+        university.setDescription(universityRequest.getDescription());
+
+        if (universityRequest.getLogoImageId() != null && !universityRequest.getLogoImageId().isEmpty()) {
+            // Tải lên ảnh mới và lưu ID của ảnh
+            university.setLogoImageId(imageService.uploadFile(universityRequest.getLogoImageId()));
+        }
+        universityRepository.save(university);
+        return UniversityConverter.convertToResponse(university);
+
+    }
+
+    @Override
+    public List<UniversityResponse> getById(int id) {
+        University university = universityRepository.findById(id)
+            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+        return List.of(UniversityConverter.convertToResponse(university));
+    }
+
+    @Override
+    public List<UniversityResponse> getAll() {
+        List<University> universities = universityRepository.findAll();
+        universities.sort(Comparator.comparingLong(University::getId).reversed());
+        return universities.stream().map(UniversityConverter::convertToResponse).toList();
     }
 
     @Override

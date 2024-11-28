@@ -3,35 +3,41 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.mapper.BusinessMapper;
+import com.backend.autocarrerbridge.service.LocationService;
+import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
-import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
-import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.ImageService;
-import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
-import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import static com.backend.autocarrerbridge.util.Constant.APPROVED;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -43,10 +49,11 @@ public class BusinessServiceImpl implements BusinessService {
     BusinessMapper businessMapper;
     UserAccountService userAccountService;
     RoleService roleService;
+    SendEmail sendEmail;
     LocationService locationService;
     RedisTemplate<String, String> redisTemplate;
 
-    // Đăng ký doanh nghiệp mới.
+    //Đăng ký doanh nghiệp mới.
     @Transactional
     @Override
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
@@ -54,11 +61,13 @@ public class BusinessServiceImpl implements BusinessService {
             throw new IllegalArgumentException("User business data cannot be null");
         }
 
+        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
         Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
         if (existingBusiness != null) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
 
+        // Xác thực mật khẩu
         if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
@@ -125,7 +134,7 @@ public class BusinessServiceImpl implements BusinessService {
         }
 
         // Cập nhật thông tin doanh nghiệp từ request
-        businessMapper.udpateBusiness(businessUpdate, request);
+        businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
@@ -173,4 +182,45 @@ public class BusinessServiceImpl implements BusinessService {
         business.getUserAccount().setStatus(Status.INACTIVE); // Đổi trạng thái
         businessRepository.save(business); // Lưu thay đổi
     }
+
+    /**
+     * Phương thức chấp nhận tài khoản doanh nghiệp
+     *
+     * @param req - đầu vào chứa ID của doanh nghiệp cần được phê duyệt.
+     */
+    @Override
+    public void approvedAccount(BusinessApprovedRequest req){
+        Business business = getBusinessById(req.getId());
+        UserAccount userAccount = business.getUserAccount();
+
+        // Phê duyệt tài khoản người dùng thay đổi trạng thái thành "APPROVED".
+        userAccountService.approvedAccount(userAccount);
+
+        // Email để thông báo tài khoản đã được phê duyệt.
+        EmailDTO emailDTO = new EmailDTO(business.getEmail(), APPROVED, "");
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+    }
+
+    /**
+     * Phương thức từ chối tài khoản doanh nghiệp.
+     *
+     * @param req Yêu cầu chứa ID của doanh nghiệp cần bị từ chối.
+     */
+    @Override
+    public void rejectedAccount(BusinessRejectedRequest req){
+        Business business = getBusinessById(req.getId());
+        UserAccount userAccount = business.getUserAccount();
+
+        // Từ chối tài khoản người thay đổi trạng thái thành "REJECTED".
+        userAccountService.rejectedAccount(userAccount);
+
+        //Đổi trạng thái sang INACTIVE (xóa mềm thông tin doanh nghiệp)
+        business.setStatus(Status.INACTIVE);
+        businessRepository.save(business);
+
+        // Gửi email để thông báo tài khoản đã bị từ chối.
+        EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED, "");
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+    }
+
 }

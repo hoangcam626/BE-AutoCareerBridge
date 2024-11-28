@@ -1,15 +1,12 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
-import com.backend.autocarrerbridge.service.BusinessService;
-import com.backend.autocarrerbridge.util.Constant;
+import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+
+import java.util.List;
+
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,11 +15,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
-import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.service.BusinessService;
+import com.backend.autocarrerbridge.util.Constant;
 
-
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 /**
  * Controller xử lý các API liên quan đến quản lý doanh nghiệp.
@@ -57,7 +59,8 @@ public class BusinessController {
      * @return Thông tin doanh nghiệp sau khi được cập nhật.
      */
     @PostMapping("/{businessId}")
-    ApiResponse<BusinessResponse> updateBusiness(@PathVariable Integer businessId,  @Valid BusinessUpdateRequest request) {
+    ApiResponse<BusinessResponse> updateBusiness(
+            @PathVariable Integer businessId, @Valid BusinessUpdateRequest request) {
         return ApiResponse.<BusinessResponse>builder()
                 .data(businessService.updateBusiness(businessId, request))
                 .build();
@@ -97,8 +100,6 @@ public class BusinessController {
     @DeleteMapping("/{businessId}")
     ApiResponse<String> deleteBusiness(@PathVariable Integer businessId) {
         businessService.deleteBusiness(businessId);
-        return ApiResponse.<String>builder()
-                .data(Constant.SUCCESS_MESSAGE)
-                .build();
+        return ApiResponse.<String>builder().data(Constant.SUCCESS_MESSAGE).build();
     }
 }

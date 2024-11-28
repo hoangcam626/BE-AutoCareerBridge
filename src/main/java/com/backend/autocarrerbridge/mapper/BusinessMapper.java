@@ -11,5 +11,5 @@ import com.backend.autocarrerbridge.entity.Business;
 public interface BusinessMapper {
     BusinessResponse toBusinessResponse(Business business);
 
-    void udpateBusiness(@MappingTarget Business business, BusinessUpdateRequest request);
+    void updateBusiness(@MappingTarget Business business, BusinessUpdateRequest request);
 }

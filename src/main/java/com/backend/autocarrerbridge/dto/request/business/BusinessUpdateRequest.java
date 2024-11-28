@@ -1,11 +1,11 @@
 package com.backend.autocarrerbridge.dto.request.business;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,5 +40,4 @@ public class BusinessUpdateRequest {
     private Integer districtId;
 
     private Integer wardId;
-
 }

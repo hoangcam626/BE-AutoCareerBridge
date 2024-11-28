@@ -4,10 +4,13 @@ import static com.backend.autocarrerbridge.util.Constant.REGISTER_UNIVERSITY;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
+import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import jakarta.validation.Valid;
 
-
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,16 +32,37 @@ import lombok.experimental.FieldDefaults;
 public class UniversityController {
     UniversityService universityService;
 
-    @PostMapping("/register")
-    public ApiResponse<Object> registerUniversity(@RequestBody @Valid UserUniversityRequest userUniversityRequest) {
+  @PostMapping("/register")
+  public ApiResponse<Object> registerUniversity(
+      @RequestBody @Valid UserUniversityRequest userUniversityRequest) {
 
-        return ApiResponse.builder()
-                .code(SUCCESS)
-                .message(SUCCESS_MESSAGE)
-                .data(universityService.registerUniversity(userUniversityRequest))
-                .build();
-    }
-    @GetMapping
+    return ApiResponse.builder()
+        .code(SUCCESS)
+        .message(REGISTER_UNIVERSITY)
+        .data(universityService.registerUniversity(userUniversityRequest))
+        .build();
+  }
+
+  @PostMapping("/update/{id}")
+  public ApiResponse<Object> updateUniversity(@PathVariable("id") int id,
+      @ModelAttribute UniversityRequest universityRequest) {
+    UniversityResponse updateUniversity = universityService.update(id, universityRequest);
+    return  new ApiResponse<>()
+            .setData(updateUniversity);
+
+  }
+
+  @GetMapping("/getById/{id}")
+  public ApiResponse<Object> getById(@PathVariable("id") int id) {
+    return new ApiResponse<>()
+            .setData(universityService.getById(id));
+  }
+  @GetMapping("get-all")
+  public ApiResponse<Object> getAll() {
+    return new ApiResponse<>()
+            .setData(universityService.getAll());
+  }
+    @GetMapping("/search")
     public ApiResponse<Object> findUniversityByLocationOrName(@RequestParam(required = false) String address,@RequestParam(required = false) String universityName) {
         return ApiResponse.builder().code(SUCCESS).message(SUCCESS_MESSAGE).data(universityService.findUniversityByNameOrLocation(address,universityName)).build();
     }

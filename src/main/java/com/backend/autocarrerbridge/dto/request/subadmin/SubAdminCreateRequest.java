@@ -21,9 +21,5 @@ public class SubAdminCreateRequest {
 
     private String address;
 
-    private String password;
-
-    private String rePassword;
-
     private MultipartFile subAdminImage;
 }

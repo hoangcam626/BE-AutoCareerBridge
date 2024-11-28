@@ -37,15 +37,15 @@ public class Location extends AbstractAudit {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "provinces_code", nullable = false)
-    private Province provinces;
+    private Province province;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "districts_code", nullable = false)
-    private District districts;
+    private District district;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "wards_code", nullable = false)
-    private Ward wards;
+    private Ward ward;
 
     @Override
     public boolean equals(Object object) {
@@ -55,13 +55,13 @@ public class Location extends AbstractAudit {
         Location location = (Location) object;
         return Objects.equals(id, location.id)
                 && Objects.equals(description, location.description)
-                && Objects.equals(provinces, location.provinces)
-                && Objects.equals(districts, location.districts)
-                && Objects.equals(wards, location.wards);
+                && Objects.equals(province, location.province)
+                && Objects.equals(district, location.district)
+                && Objects.equals(ward, location.ward);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, description, provinces, districts, wards);
+        return Objects.hash(super.hashCode(), id, description, province, district, ward);
     }
 }

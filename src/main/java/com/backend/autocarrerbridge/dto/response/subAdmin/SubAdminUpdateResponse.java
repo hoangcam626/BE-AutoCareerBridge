@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.response.subadmin;
+package com.backend.autocarrerbridge.dto.response.subAdmin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
