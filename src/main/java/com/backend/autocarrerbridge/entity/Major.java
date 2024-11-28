@@ -1,5 +1,7 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,13 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,7 +54,12 @@ public class Major extends AbstractAudit {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         Major major = (Major) object;
-        return Objects.equals(id, major.id) && Objects.equals(code, major.code) && Objects.equals(name, major.name) && Objects.equals(numberStudent, major.numberStudent) && Objects.equals(description, major.description) && Objects.equals(section, major.section);
+        return Objects.equals(id, major.id)
+                && Objects.equals(code, major.code)
+                && Objects.equals(name, major.name)
+                && Objects.equals(numberStudent, major.numberStudent)
+                && Objects.equals(description, major.description)
+                && Objects.equals(section, major.section);
     }
 
     @Override

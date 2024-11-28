@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.response.subadmin;
+package com.backend.autocarrerbridge.dto.request.business;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class SubAdminCreateResponse {
+public class BusinessRejectedRequest {
     private Integer id;
 }

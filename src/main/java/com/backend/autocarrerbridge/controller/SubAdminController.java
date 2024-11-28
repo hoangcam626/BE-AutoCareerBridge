@@ -7,17 +7,15 @@ import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminDeleteRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminSelfRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminUpdateRequest;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
+import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminCreateResponse;
+import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminDeleteResponse;
+import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminSelfResponse;
+import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminUpdateResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.service.SubAdminService;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,12 +25,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.service.SubAdminService;
+
+import lombok.RequiredArgsConstructor;
+
 /**
  * SubAdminController xử lý các yêu cầu API liên quan đến quản lý sub-admin.
  */
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('SCOPE_Admin')")
+@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+@SecurityRequirement(name = "Authorization")
 @RequestMapping("/api/sub-admin")
 public class SubAdminController {
     private final SubAdminService subAdminService;
@@ -44,6 +48,9 @@ public class SubAdminController {
      * @return ApiResponse chứa thông tin sub-admin vừa được tạo.
      * @throws ParseException - Nếu xảy ra lỗi trong quá trình xử lý.
      */
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            mediaType = "multipart/form-data",
+            schema = @Schema(implementation = SubAdminCreateRequest.class)))
     @PostMapping("/create")
     public ApiResponse<SubAdminCreateResponse> create(@ModelAttribute SubAdminCreateRequest req) throws ParseException {
 
@@ -58,6 +65,9 @@ public class SubAdminController {
      * @return ApiResponse xác nhận quá trình cập nhật thành công.
      * @throws ParseException - Nếu xảy ra lỗi trong quá trình xử lý.
      */
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            mediaType = "multipart/form-data",
+            schema = @Schema(implementation = SubAdminUpdateRequest.class)))
     @PutMapping("/update")
     public ApiResponse<SubAdminUpdateResponse> update(SubAdminUpdateRequest req) throws ParseException {
         var res = subAdminService.update(req);
@@ -106,7 +116,7 @@ public class SubAdminController {
      * @param pageSize - Số lượng bản ghi trên mỗi trang.
      * @return ApiResponse chứa danh sách sub-admin trong trang yêu cầu.
      */
-    @GetMapping("/page")
+    @GetMapping("/get-paging")
     public ApiResponse<Page<SubAdminSelfResponse>> getSubAdmins(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {

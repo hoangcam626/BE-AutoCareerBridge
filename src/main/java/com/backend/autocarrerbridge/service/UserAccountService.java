@@ -4,7 +4,7 @@ import com.backend.autocarrerbridge.dto.request.account.ForgotPasswordRequest;
 import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
-import com.backend.autocarrerbridge.emailconfig.EmailCode;
+import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.entity.UserAccount;
 
 public interface UserAccountService {
@@ -24,5 +24,7 @@ public interface UserAccountService {
 
     String handleForgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 
-    UserAccount approvedAccount(UserAccount userAccount);
+    void approvedAccount(UserAccount userAccount);
+
+    void rejectedAccount(UserAccount userAccount);
 }

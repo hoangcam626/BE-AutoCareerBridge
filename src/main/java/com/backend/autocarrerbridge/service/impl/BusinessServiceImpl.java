@@ -2,19 +2,25 @@ package com.backend.autocarrerbridge.service.impl;
 
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
+import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.mapper.BusinessMapper;
+import com.backend.autocarrerbridge.mapper.LocationMapper;
 import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
+import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
@@ -31,6 +37,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import static com.backend.autocarrerbridge.util.Constant.APPROVED;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED;
+
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -41,7 +50,9 @@ public class BusinessServiceImpl implements BusinessService {
     BusinessMapper businessMapper;
     UserAccountService userAccountService;
     RoleService roleService;
+    SendEmail sendEmail;
     LocationService locationService;
+    LocationMapper locationMapper;
 
     //Đăng ký doanh nghiệp mới.
     @Transactional
@@ -99,19 +110,18 @@ public class BusinessServiceImpl implements BusinessService {
         }
     }
 
-
-    //Lấy doanh nghiệp theo email.
+    // Lấy doanh nghiệp theo email.
     @Override
     public Business findByEmail(String email) {
         return businessRepository.findByEmail(email);
     }
 
-    //Cập nhật thông tin doanh nghiệp.
+    // Cập nhật thông tin doanh nghiệp.
     @Transactional
     @Override
     public BusinessResponse updateBusiness(Integer id, BusinessUpdateRequest request) {
-        Business businessUpdate = businessRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
+        Business businessUpdate =
+                businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
 
         // Kiểm tra email mới có trùng với doanh nghiệp khác không
         if (!businessUpdate.getEmail().equals(request.getEmail())) {
@@ -119,56 +129,97 @@ public class BusinessServiceImpl implements BusinessService {
         }
 
         // Cập nhật thông tin doanh nghiệp từ request
-        businessMapper.udpateBusiness(businessUpdate, request);
-        LocationRequest locationRequest= LocationRequest.builder()
+        businessMapper.updateBusiness(businessUpdate, request);
+        LocationRequest locationRequest = LocationRequest.builder()
+                .id(businessUpdate.getLocation().getId())
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
+        Location location= locationService.saveLocation(locationRequest);
 
-        businessUpdate.setLocation(locationService.saveLocation(locationRequest));
+        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
 
-        //set ảnh cho business
+        // set ảnh cho business
         businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
         businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
-        return businessMapper.toBusinessResponse(businessRepository.save(businessUpdate)); // Lưu và trả về DTO
+        BusinessResponse businessResponse=businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+        businessResponse.setLocation(locationResponse);
+        return businessResponse; // Lưu và trả về DTO
     }
 
-    //Lấy danh sách tất cả doanh nghiệp.
+    // Lấy danh sách tất cả doanh nghiệp.
     @Override
     public List<BusinessResponse> getListBusiness() {
         var businessList = businessRepository.findAll();
-        return businessList.stream()
-                .map(businessMapper::toBusinessResponse)
-                .toList(); // Chuyển đổi danh sách sang DTO
+        return businessList.stream().map(businessMapper::toBusinessResponse).toList(); // Chuyển đổi danh sách sang DTO
     }
 
-    //Lấy doanh nghiệp theo ID.
+    // Lấy doanh nghiệp theo ID.
     @Override
     public Business getBusinessById(Integer id) {
-        return businessRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
+        return businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
     }
 
-    //Lấy doanh nghiệp theo ID dưới dạng DTO.
+    // Lấy doanh nghiệp theo ID dưới dạng DTO.
     @Override
     public BusinessResponse getBusinessResponseById(Integer id) {
-        var business = businessRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
+        var business =
+                businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
         return businessMapper.toBusinessResponse(business);
     }
 
-    //Xóa (deactivate) doanh nghiệp.
+    // Xóa (deactivate) doanh nghiệp.
     @Override
     @Transactional
     public void deleteBusiness(Integer id) {
-        Business business = businessRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
+        Business business =
+                businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
 
         business.getUserAccount().setStatus(Status.INACTIVE); // Đổi trạng thái
         businessRepository.save(business); // Lưu thay đổi
     }
-}
 
+    /**
+     * Phương thức chấp nhận tài khoản doanh nghiệp
+     *
+     * @param req - đầu vào chứa ID của doanh nghiệp cần được phê duyệt.
+     */
+    @Override
+    public void approvedAccount(BusinessApprovedRequest req){
+        Business business = getBusinessById(req.getId());
+        UserAccount userAccount = business.getUserAccount();
+
+        // Phê duyệt tài khoản người dùng thay đổi trạng thái thành "APPROVED".
+        userAccountService.approvedAccount(userAccount);
+
+        // Email để thông báo tài khoản đã được phê duyệt.
+        EmailDTO emailDTO = new EmailDTO(business.getEmail(), APPROVED, "");
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+    }
+
+    /**
+     * Phương thức từ chối tài khoản doanh nghiệp.
+     *
+     * @param req Yêu cầu chứa ID của doanh nghiệp cần bị từ chối.
+     */
+    @Override
+    public void rejectedAccount(BusinessRejectedRequest req){
+        Business business = getBusinessById(req.getId());
+        UserAccount userAccount = business.getUserAccount();
+
+        // Từ chối tài khoản người thay đổi trạng thái thành "REJECTED".
+        userAccountService.rejectedAccount(userAccount);
+
+        //Đổi trạng thái sang INACTIVE (xóa mềm thông tin doanh nghiệp)
+        business.setStatus(Status.INACTIVE);
+        businessRepository.save(business);
+
+        // Gửi email để thông báo tài khoản đã bị từ chối.
+        EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED, "");
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+    }
+
+}

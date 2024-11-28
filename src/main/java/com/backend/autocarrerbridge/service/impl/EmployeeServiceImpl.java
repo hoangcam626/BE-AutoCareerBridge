@@ -1,5 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.util.Constant.SUB;
+
 import java.text.ParseException;
 import java.util.List;
 
@@ -30,8 +32,6 @@ import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 @Service
 @RequiredArgsConstructor
@@ -87,6 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             String emailBusiness = tokenService.getClaim(tokenService.getJWT(), SUB);
             Business business = businessService.findByEmail(emailBusiness);
             employee.setBusiness(business);
+            employee.setCreatedBy(emailBusiness);
         } catch (ParseException e) {
             // Ném ngoại lệ nếu token không hợp lệ
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
@@ -130,7 +131,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         // Cập nhật thông tin nhân viên từ request
         employeeMapper.udpateEmployee(employee, request);
-
+        try {
+            var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
+            employee.setUpdatedBy(emailAccountLogin);
+        } catch (ParseException e) {
+            throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
+        }
         // Lưu nhân viên đã cập nhật vào cơ sở dữ liệu và chuyển đổi thành EmployeeResponse
         return employeeMapper.toEmployeeResponse(employeeRepository.save(employee));
     }

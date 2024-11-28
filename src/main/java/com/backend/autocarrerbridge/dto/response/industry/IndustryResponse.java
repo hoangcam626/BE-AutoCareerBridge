@@ -1,13 +1,13 @@
 package com.backend.autocarrerbridge.dto.response.industry;
 
+import java.time.LocalDateTime;
+
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -31,6 +31,5 @@ public class IndustryResponse {
         this.createBy = industry.getCreatedBy();
         this.updateAt = industry.getUpdatedAt();
         this.updateBy = industry.getUpdatedBy();
-
     }
 }
