@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
-import java.util.Arrays;
 
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;

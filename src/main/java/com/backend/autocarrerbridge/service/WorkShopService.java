@@ -14,8 +14,6 @@ public interface WorkShopService {
 
     WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword);
 
-    List<WorkShopResponse> getAllWorkShopByLocation();
-
     WorkShopResponse createWorkShop(WorkShopRequest workShopRequest);
 
     List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword);

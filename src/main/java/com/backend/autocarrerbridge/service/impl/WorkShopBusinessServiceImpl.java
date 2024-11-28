@@ -112,17 +112,42 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
         return REQUEST_TO_ATTEND_WORKSHOP;
     }
 
+    /**
+     * Chấp nhận kết nối giữa workshop và business.
+     * Kiểm tra xem workshop và business có tồn tại và trạng thái hiện tại có phù hợp để chấp nhận không.
+     * Nếu đã tồn tại và được phê duyệt trước đó, ném ngoại lệ. Nếu không, cập nhật trạng thái kết nối thành "APPROVED".
+     *
+     * @param workShopBusinessRequest Đối tượng chứa thông tin workshopID và businessID.
+     * @return Thông báo thành công nếu chấp nhận kết nối thành công.
+     * @throws AppException Nếu không tìm thấy kết nối hoặc kết nối đã được chấp nhận trước đó.
+     */
     @Override
     public String acceptBusiness(WorkShopBusinessRequest workShopBusinessRequest) {
-       WorkshopBusiness workshopBusiness =  workShopBussinessRepository.checkExistWorkShop(workShopBusinessRequest.getWorkshopID(),workShopBusinessRequest.getBusinessID());
-       if(workshopBusiness == null ){
-           throw new AppException(ErrorCode.NOT_FOUNDED);
-       }
-       if(workshopBusiness.getStatusConnected().equals(State.APPROVED)){
-           throw new AppException(ErrorCode.ERROR_ALREADY_ACCEPT);
-       }
-       workshopBusiness.setStatusConnected(State.APPROVED);
-       workShopBussinessRepository.save(workshopBusiness);
-       return SUCCESS_ACCEPT_MESSAGE;
+
+        // Kiểm tra sự tồn tại của kết nối giữa workshop và business dựa vào workshopID và businessID.
+        WorkshopBusiness workshopBusiness = workShopBussinessRepository.checkExistWorkShop(
+                workShopBusinessRequest.getWorkshopID(),
+                workShopBusinessRequest.getBusinessID()
+        );
+
+        // Nếu không tìm thấy kết nối, ném ngoại lệ với mã lỗi NOT_FOUNDED.
+        if (workshopBusiness == null) {
+            throw new AppException(ErrorCode.NOT_FOUNDED);
+        }
+
+        // Nếu kết nối đã ở trạng thái "APPROVED", ném ngoại lệ với mã lỗi ERROR_ALREADY_ACCEPT.
+        if (workshopBusiness.getStatusConnected().equals(State.APPROVED)) {
+            throw new AppException(ErrorCode.ERROR_ALREADY_ACCEPT);
+        }
+
+        // Cập nhật trạng thái kết nối thành "APPROVED".
+        workshopBusiness.setStatusConnected(State.APPROVED);
+
+        // Lưu trạng thái kết nối đã cập nhật vào cơ sở dữ liệu.
+        workShopBussinessRepository.save(workshopBusiness);
+
+        // Trả về thông báo thành công sau khi cập nhật trạng thái.
+        return SUCCESS_ACCEPT_MESSAGE;
     }
+
 }

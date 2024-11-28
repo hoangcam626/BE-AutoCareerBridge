@@ -78,14 +78,6 @@ public class WorkShopServiceImpl implements WorkShopService {
         return workShopUniversityResponse;
     }
 
-    /**
-     * Lấy danh sách Workshop theo vị trí (hiện tại trả về danh sách rỗng).
-     * @return Danh sách Workshop theo vị trí
-     */
-    @Override
-    public List<WorkShopResponse> getAllWorkShopByLocation() {
-        return List.of();
-    }
 
     /**
      * Tạo một Workshop mới.
