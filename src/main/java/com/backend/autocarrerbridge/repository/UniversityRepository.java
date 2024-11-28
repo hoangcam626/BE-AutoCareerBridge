@@ -13,6 +13,12 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
 
     University findByEmail(String email);
 
+    /**
+     * Tìm University qua id
+     */
+    @Query("SELECT u FROM University u WHERE u.id = :id")
+    University getUniversityById(Integer id);
+
     @Query("SELECT u FROM University u WHERE (:address IS NULL OR u.location.province.name = :address) AND (:name IS NULL OR u.name = :name)")
     List<University> findUniversity(@Param("address") String address, @Param("name") String name);
 
