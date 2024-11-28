@@ -8,7 +8,6 @@ import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import jakarta.validation.Valid;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +30,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("api/university")
 public class UniversityController {
-
-  UniversityService universityService;
+    UniversityService universityService;
 
   @PostMapping("/register")
   public ApiResponse<Object> registerUniversity(
@@ -46,31 +44,26 @@ public class UniversityController {
   }
 
   @PostMapping("/update/{id}")
-  public ResponseEntity<ApiResponse<Object>> updateUniversity(@PathVariable("id") int id,
+  public ApiResponse<Object> updateUniversity(@PathVariable("id") int id,
       @ModelAttribute UniversityRequest universityRequest) {
     UniversityResponse updateUniversity = universityService.update(id, universityRequest);
-    ApiResponse<Object> response = new ApiResponse<>()
-        .setCode(SUCCESS)
-        .setMessage(SUCCESS_MESSAGE)
-        .setData(updateUniversity);
-    return ResponseEntity.ok(response);
+    return  new ApiResponse<>()
+            .setData(updateUniversity);
 
   }
 
   @GetMapping("/getById/{id}")
-  public ResponseEntity<ApiResponse<Object>> getById(@PathVariable("id") int id) {
-    ApiResponse<Object> response = new ApiResponse<>()
-        .setCode(SUCCESS)
-        .setMessage(SUCCESS_MESSAGE)
-        .setData(universityService.getById(id));
-    return ResponseEntity.ok(response);
+  public ApiResponse<Object> getById(@PathVariable("id") int id) {
+    return new ApiResponse<>()
+            .setData(universityService.getById(id));
   }
   @GetMapping("get-all")
-  public ResponseEntity<ApiResponse<Object>> getAll() {
-    ApiResponse<Object> response = new ApiResponse<>()
-        .setCode(SUCCESS)
-        .setMessage(SUCCESS_MESSAGE)
-        .setData(universityService.getAll());
-    return ResponseEntity.ok(response);
+  public ApiResponse<Object> getAll() {
+    return new ApiResponse<>()
+            .setData(universityService.getAll());
   }
+    @GetMapping("/search")
+    public ApiResponse<Object> findUniversityByLocationOrName(@RequestParam(required = false) String address,@RequestParam(required = false) String universityName) {
+        return ApiResponse.builder().code(SUCCESS).message(SUCCESS_MESSAGE).data(universityService.findUniversityByNameOrLocation(address,universityName)).build();
+    }
 }

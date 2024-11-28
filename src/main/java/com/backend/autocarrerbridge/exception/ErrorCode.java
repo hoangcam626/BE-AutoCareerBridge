@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
-import java.util.Arrays;
 
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
@@ -86,6 +85,7 @@ import static com.backend.autocarrerbridge.util.Constant.PROVINCE_NOT_BLANK_MESS
 import static com.backend.autocarrerbridge.util.Constant.PROVINCE_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PW_NOT_MATCH;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_RELATION;
+import static com.backend.autocarrerbridge.util.Constant.REQUEST_ALREADY_ACCEPT;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_WORKSHOP_FAIL;
 import static com.backend.autocarrerbridge.util.Constant.SAVE_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_EXISTED_MESSAGE;
@@ -100,6 +100,9 @@ import static com.backend.autocarrerbridge.util.Constant.USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.USER_PENDING;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.LOCATION_NOT_FOUND_MESSAGE;
+
+
 
 @Getter
 public enum ErrorCode {
@@ -157,7 +160,8 @@ public enum ErrorCode {
     ERROR_EMAIL_INVALID(BAD_REQUEST, EMAIL_INVALID_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NAME_INVALID(BAD_REQUEST, ERROR_NAME_EMPTY, HttpStatus.BAD_REQUEST),
     ERROR_TAX_CODE(BAD_REQUEST, TAX_CODE, HttpStatus.BAD_REQUEST),
-    // Các lỗi liên quan đến mã khôi phục
+    ERROR_ALREADY_ACCEPT(BAD_REQUEST, REQUEST_ALREADY_ACCEPT, HttpStatus.BAD_REQUEST),
+    /** Các lỗi liên quan đến mã khôi phục */
     ERROR_PW_EMPTY(BAD_REQUEST, ERROR_NOT_EMPTY_PW, HttpStatus.BAD_REQUEST),
     ERROR_FORGOT_CODE_REQUIRED(BAD_REQUEST, FORGOT_CODE_REQUIRED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_FORGOT_CODE_INVALID(BAD_REQUEST, FORGOT_CODE_INVALID_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -212,6 +216,8 @@ public enum ErrorCode {
     ERROR_PROVINCE_NOT_BLANK(BAD_REQUEST, PROVINCE_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_DISTRICT_NOT_BLANK(BAD_REQUEST, DISTRICT_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WARD_NOT_BLANK(BAD_REQUEST, WARD_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    ERROR_LOCATION_NOT_FOUND(BAD_REQUEST, LOCATION_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
 
     //BusinessUniversity
     ERROR_EXIST_RELATION(BAD_REQUEST, HAVE_RELATION, HttpStatus.BAD_REQUEST),

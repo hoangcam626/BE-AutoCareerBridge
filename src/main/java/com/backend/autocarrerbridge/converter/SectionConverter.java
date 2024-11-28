@@ -17,12 +17,6 @@ import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.service.impl.TokenServiceImpl;
 import com.backend.autocarrerbridge.util.enums.Status;
-import java.text.ParseException;
-import java.time.LocalDateTime;
-
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class SectionConverter {

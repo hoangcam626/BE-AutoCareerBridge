@@ -1,15 +1,20 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
+import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.mapper.BusinessMapper;
+import com.backend.autocarrerbridge.mapper.LocationMapper;
 import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
@@ -49,7 +54,8 @@ public class BusinessServiceImpl implements BusinessService {
     RoleService roleService;
     SendEmail sendEmail;
     LocationService locationService;
-
+    RedisTemplate<String, String> redisTemplate;
+    LocationMapper locationMapper;
     //Đăng ký doanh nghiệp mới.
     @Transactional
     @Override
@@ -73,7 +79,11 @@ public class BusinessServiceImpl implements BusinessService {
                 || userBusinessRequest.getLicenseImage().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
-
+        if (!Objects.equals(
+                redisTemplate.opsForValue().get(userBusinessRequest.getEmail()),
+                userBusinessRequest.getVerificationCode())) {
+            throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
+        }
         Integer licenseImageId;
         try {
             licenseImageId = imageService.uploadFile(userBusinessRequest.getLicenseImage());
@@ -129,19 +139,23 @@ public class BusinessServiceImpl implements BusinessService {
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
+                .id(businessUpdate.getLocation().getId())
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
+        Location location= locationService.saveLocation(locationRequest);
 
-        businessUpdate.setLocation(locationService.saveLocation(locationRequest));
+        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
 
         // set ảnh cho business
         businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
         businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
-        return businessMapper.toBusinessResponse(businessRepository.save(businessUpdate)); // Lưu và trả về DTO
+        BusinessResponse businessResponse=businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+        businessResponse.setLocation(locationResponse);
+        return businessResponse; // Lưu và trả về DTO
     }
 
     // Lấy danh sách tất cả doanh nghiệp.

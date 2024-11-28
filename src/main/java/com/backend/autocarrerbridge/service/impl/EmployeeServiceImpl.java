@@ -87,6 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             String emailBusiness = tokenService.getClaim(tokenService.getJWT(), SUB);
             Business business = businessService.findByEmail(emailBusiness);
             employee.setBusiness(business);
+            employee.setCreatedBy(emailBusiness);
         } catch (ParseException e) {
             // Ném ngoại lệ nếu token không hợp lệ
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
@@ -130,7 +131,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         // Cập nhật thông tin nhân viên từ request
         employeeMapper.udpateEmployee(employee, request);
-
+        try {
+            var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
+            employee.setUpdatedBy(emailAccountLogin);
+        } catch (ParseException e) {
+            throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
+        }
         // Lưu nhân viên đã cập nhật vào cơ sở dữ liệu và chuyển đổi thành EmployeeResponse
         return employeeMapper.toEmployeeResponse(employeeRepository.save(employee));
     }

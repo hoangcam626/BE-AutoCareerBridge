@@ -10,6 +10,7 @@ import static com.backend.autocarrerbridge.util.Constant.TAX_CODE;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AccessLevel;
