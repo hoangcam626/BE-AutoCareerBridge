@@ -61,12 +61,12 @@ public class BusinessServiceImpl implements BusinessService {
         if (userBusinessRequest == null) {
             throw new IllegalArgumentException("User business data cannot be null");
         }
-
+        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
         Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
         if (existingBusiness != null) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-
+        // Xác thực mật khẩu
         if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
