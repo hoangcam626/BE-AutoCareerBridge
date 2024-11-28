@@ -55,7 +55,7 @@ public class BusinessServiceImpl implements BusinessService {
     SendEmail sendEmail;
     LocationService locationService;
     RedisTemplate<String, String> redisTemplate;
-
+    LocationMapper locationMapper;
     //Đăng ký doanh nghiệp mới.
     @Transactional
     @Override
