@@ -169,6 +169,7 @@ public class Constant {
 
 
     //Location
+    public static final String LOCATION_NOT_FOUND_MESSAGE = "Không tìm thấy location tron Database";
 
     // Exception database
     public static final String FILED_DB_NOT_UNIQUE_MESSAGE = "Trường trong database không duy nhất, hãy kiểm tra db";
