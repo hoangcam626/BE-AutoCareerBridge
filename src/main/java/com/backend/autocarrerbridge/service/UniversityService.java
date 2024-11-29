@@ -22,4 +22,6 @@ public interface UniversityService {
 
   University findById(Integer id);
 
+
+
 }

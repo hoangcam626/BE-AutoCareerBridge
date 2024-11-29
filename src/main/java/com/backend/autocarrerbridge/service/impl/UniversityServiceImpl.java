@@ -12,6 +12,8 @@ import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -154,7 +156,7 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Transactional
     @Override
-    public UniversityResponse update(int id, UniversityRequest universityRequest) {
+    public UniversityResponse update(@Valid  int id, UniversityRequest universityRequest) {
         University university = universityRepository.findById(id)
             .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
         university.setName(universityRequest.getName());
@@ -162,7 +164,7 @@ public class UniversityServiceImpl implements UniversityService {
         university.setFoundedYear(universityRequest.getFoundedYear());
         university.setPhone(universityRequest.getPhone());
         university.setDescription(universityRequest.getDescription());
-
+        university.setUpdatedAt(LocalDateTime.now());
         if (universityRequest.getLogoImageId() != null && !universityRequest.getLogoImageId().isEmpty()) {
             // Tải lên ảnh mới và lưu ID của ảnh
             university.setLogoImageId(imageServiceImpl.uploadFile(universityRequest.getLogoImageId()));

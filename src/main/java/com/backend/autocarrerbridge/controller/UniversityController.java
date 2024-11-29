@@ -46,7 +46,7 @@ public class UniversityController {
   }
 
   @PostMapping("/update/{id}")
-  public ResponseEntity<ApiResponse<Object>> updateUniversity(@PathVariable("id") int id,
+  public ResponseEntity<ApiResponse<Object>> updateUniversity(@Valid @PathVariable("id") int id,
       @ModelAttribute UniversityRequest universityRequest) {
     UniversityResponse updateUniversity = universityService.update(id, universityRequest);
     ApiResponse<Object> response = new ApiResponse<>()

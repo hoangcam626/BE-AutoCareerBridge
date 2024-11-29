@@ -15,6 +15,7 @@ import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_ME
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ID_MAJOR_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_ACCOUNT_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_REJECTED_MESSAGE;
@@ -63,6 +64,8 @@ import static com.backend.autocarrerbridge.util.Constant.NAME_MAJOR_NOT_LOGGER_M
 import static com.backend.autocarrerbridge.util.Constant.NAME_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_LOGGER_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.NAME_UNIVERSITY_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.NAME_UNIVERSITY_SIZE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND_BUSINESS_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND_FILE_IMAGE_MESSAGE;
@@ -79,6 +82,7 @@ import static com.backend.autocarrerbridge.util.Constant.NUMBER_MAX_STUDENT_MAJO
 import static com.backend.autocarrerbridge.util.Constant.NUMBER_MIN_STUDENT_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.OPEN_IMAGE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PHONE_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.PHONE_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PROVINCE_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PROVINCE_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PW_NOT_MATCH;
@@ -96,6 +100,7 @@ import static com.backend.autocarrerbridge.util.Constant.USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.USER_PENDING;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE;
 
 @Getter
 public enum ErrorCode {
@@ -208,6 +213,13 @@ public enum ErrorCode {
     ERROR_PROVINCE_NOT_BLANK(BAD_REQUEST, PROVINCE_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_DISTRICT_NOT_BLANK(BAD_REQUEST, DISTRICT_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WARD_NOT_BLANK(BAD_REQUEST, WARD_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    //Validation university
+    NAME_UNIVERSITY_NOT_BLANK(BAD_REQUEST,NAME_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    NAME_UNIVERSITY_SIZE(BAD_REQUEST,NAME_UNIVERSITY_SIZE_MESSAGE,HttpStatus.BAD_REQUEST),
+    WEBSITE_UNIVERSITY_NOT_BLANK(BAD_REQUEST,WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    FOUNDED_YEAR_UNIVERSITY_NOT_BLANK(BAD_REQUEST,FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    PHONE_UNIVERSITY_NOT_BLANK(BAD_REQUEST,PHONE_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;
