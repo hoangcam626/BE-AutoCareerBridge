@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.request.ward;
+package com.backend.autocarrerbridge.dto.request.province;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class WardRequest {
-    @NotBlank(message = "ERROR_WARD_NOT_BLANK")
+@AllArgsConstructor(staticName = "of")
+public class ProvinceRequest {
+    @NotBlank(message = "ERROR_PROVINCE_NOT_BLANK")
     private Integer id;
 }

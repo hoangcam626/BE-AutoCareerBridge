@@ -1,19 +1,35 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_APPROVED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_REJECTED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_ACCOUNT_STATE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_JOB_STATE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_APPROVED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_REJECTED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EXIST_JOB;
+import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
+import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.workshop.job.JobRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRequest;
 import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.entity.Business;
@@ -45,6 +61,7 @@ public class JobServiceImpl implements JobService {
     private final BusinessRepository businessRepository;
     private final EmployeeRepository employeeRepository;
     private final ConvertJob convertJob;
+    private final SendEmail sendEmail;
 
     /**
      * Lấy Employee từ token
@@ -170,7 +187,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> updateJob(Integer jobId, JobRequest jobRequest) throws ParseException {
         // Tìm job theo ID
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(ERROR_NO_EXIST_JOB));
+        Job job = findById(jobId);
         // Kiểm tra tên người tạo và tên đăng nhập của người đăng nhập
         // Nếu khác thì trả ra thông báo không được chỉnh sửa công việc
         if (job.getCreatedBy() == null || job.getCreatedBy().isEmpty()) {
@@ -204,7 +221,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> inactiveJob(Integer jobId) throws ParseException {
         // Tìm job theo ID
-        Job job = jobRepository.findById(jobId).orElseThrow(() -> new AppException(ERROR_NO_EXIST_JOB));
+        Job job = findById(jobId);
         if (job == null) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
@@ -215,5 +232,49 @@ public class JobServiceImpl implements JobService {
         job.setUpdatedBy(getUsernameViaToken());
         jobRepository.save(job);
         return new ApiResponse<>(INACTIVE_JOB);
+    }
+
+    @Override
+    public JobApprovedResponse approved(JobApprovedRequest req) {
+
+        Job job = findById(req.getId());
+        validateJobForStateChange(job, State.APPROVED);
+        job.setStatusBrowse(State.APPROVED);
+        String emailBusiness = job.getBusiness().getEmail();
+        EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_JOB, "");
+        sendEmail.sendApprovedJobNotification(emailDTO,
+                job.getTitle());
+        return JobApprovedResponse.of(Boolean.TRUE);
+    }
+
+    @Override
+    public JobRejectedResponse rejected(JobRejectedRequest req) {
+
+        Job job = findById(req.getId());
+        validateJobForStateChange(job, State.REJECTED);
+        job.setStatusBrowse(State.REJECTED);
+        String emailBusiness = job.getBusiness().getEmail();
+        EmailDTO emailDTO = new EmailDTO(emailBusiness, REJECTED_JOB, "");
+        sendEmail.sendRRejectedJobNotification(emailDTO, job.getTitle(), req.getMessage());
+        return JobRejectedResponse.of(req.getMessage());
+    }
+
+    public Job findById(Integer id) {
+        return jobRepository.findById(id).orElseThrow(() -> new AppException(ERROR_NO_EXIST_JOB));
+    }
+
+    private void validateJobForStateChange(Job req, State targetState) {
+
+        // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
+        if (req.getStatusBrowse() == targetState) {
+            throw new AppException(targetState == State.APPROVED
+                    ? ERROR_JOB_ALREADY_APPROVED
+                    : ERROR_JOB_ALREADY_REJECTED);
+        }
+
+        // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)
+        if (req.getStatusBrowse() != State.PENDING) {
+            throw new AppException(ERROR_INVALID_JOB_STATE);
+        }
     }
 }

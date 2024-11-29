@@ -3,10 +3,24 @@ package com.backend.autocarrerbridge.controller;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.service.BusinessService;
+import com.backend.autocarrerbridge.service.JobService;
 import com.backend.autocarrerbridge.service.UniversityService;
+import com.backend.autocarrerbridge.service.WorkShopService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
     private final BusinessService businessService;
     private final UniversityService universityService;
+    private final JobService jobService;
+    private final WorkShopService workShopService;
 
     /**
      * API phê duyệt tài khoản doanh nghiệp.
@@ -34,9 +50,9 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/approved-business")
-    public ApiResponse<?> approvedBusiness(BusinessApprovedRequest req){
-        businessService.approvedAccount(req);
-        return new ApiResponse<>();
+    public ApiResponse<BusinessApprovedResponse> approvedBusiness(BusinessApprovedRequest req){
+        var res = businessService.approvedAccount(req);
+        return new ApiResponse<>(res);
     }
 
     /**
@@ -46,9 +62,9 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/rejected-business")
-    public ApiResponse<?> rejectedBusiness(BusinessRejectedRequest req){
-        businessService.rejectedAccount(req);
-        return new ApiResponse<>();
+    public ApiResponse<BusinessRejectedResponse> rejectedBusiness(BusinessRejectedRequest req){
+        var res = businessService.rejectedAccount(req);
+        return new ApiResponse<>(res);
     }
 
 
@@ -59,10 +75,11 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/approved-university")
-    public ApiResponse<?> approvedUniversity(UniversityApprovedRequest req){
-        universityService.approvedAccount(req);
-        return new ApiResponse<>();
+    public ApiResponse<UniversityApprovedResponse> approvedUniversity(UniversityApprovedRequest req){
+        var res = universityService.approvedAccount(req);
+        return new ApiResponse<>(res);
     }
+
 
     /**
      * API từ chối tài khoản trường đại học.
@@ -71,8 +88,56 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/rejected-university")
-    public ApiResponse<?> rejectedUniversity(UniversityRejectedRequest req){
-        universityService.rejectedAccount(req);
-        return new ApiResponse<>();
+    public ApiResponse<UniversityRejectedResponse> rejectedUniversity(UniversityRejectedRequest req){
+        var res = universityService.rejectedAccount(req);
+        return new ApiResponse<>(res);
+    }
+
+    /**
+     * API phê duyệt tin tuyển dụng.
+     *
+     * @param req Yêu cầu chứa thông tin cần thiết để phê duyệt tin tuyển dụng.
+     * @return ApiResponse phản hồi sau khi thực hiện thành công.
+     */
+    @PostMapping("/approved-job")
+    public ApiResponse<JobApprovedResponse> approvedJob(JobApprovedRequest req){
+        var res = jobService.approved(req);
+        return new ApiResponse<>(res);
+    }
+
+    /**
+     * API từ chối tin tuyển dụng.
+     *
+     * @param req Yêu cầu chứa lý do và thông tin để từ chối tin tuyển dụng.
+     * @return ApiResponse phản hồi sau khi thực hiện thành công.
+     */
+    @PostMapping("/rejected-job")
+    public ApiResponse<JobRejectedResponse> rejectedJob(JobRejectedRequest req){
+        var res = jobService.rejected(req);
+        return new ApiResponse<>(res);
+    }
+
+    /**
+     * API phê duyệt hội thảo.
+     *
+     * @param req Yêu cầu chứa thông tin cần thiết để phê duyệt hội thảo.
+     * @return ApiResponse phản hồi sau khi thực hiện thành công.
+     */
+    @PostMapping("/approved-workshop")
+    public ApiResponse<WorkshopApprovedResponse> approvedWorkshop(WorkshopApprovedRequest req){
+        var res = workShopService.approved(req);
+        return new ApiResponse<>(res);
+    }
+
+    /**
+     * API từ chối hội thảo.
+     *
+     * @param req Yêu cầu chứa lý do và thông tin để từ chối hội thảo.
+     * @return ApiResponse phản hồi sau khi thực hiện thành công.
+     */
+    @PostMapping("/rejected-workshop")
+    public ApiResponse<WorkshopRejectedResponse> rejectedWorkshop(WorkshopRejectedRequest req){
+        var res = workShopService.rejected(req);
+        return new ApiResponse<>(res);
     }
 }

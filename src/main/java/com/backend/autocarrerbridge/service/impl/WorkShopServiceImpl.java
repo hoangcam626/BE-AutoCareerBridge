@@ -1,12 +1,24 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_WORKSHOP_STATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EXIST_WORKSHOP;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_ALREADY_APPROVED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_ALREADY_REJECTED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
+import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,9 +49,11 @@ public class WorkShopServiceImpl implements WorkShopService {
     ModelMapper modelMapper;
     ImageService imageService;
     UniversityService universityService;
+    SendEmail sendEmail;
 
     /**
      * Lấy danh sách tất cả các Workshop với phân trang.
+     *
      * @param pageable Thông tin phân trang
      * @return Danh sách các Workshop phản hồi
      */
@@ -54,7 +68,8 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Lấy danh sách Workshop của một trường đại học cụ thể với phân trang.
-     * @param pageable Thông tin phân trang
+     *
+     * @param pageable     Thông tin phân trang
      * @param universityId ID của trường đại học
      * @return Danh sách các Workshop của trường đại học
      * @throws AppException Nếu không có nội dung
@@ -74,6 +89,7 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Lấy danh sách Workshop theo vị trí (hiện tại trả về danh sách rỗng).
+     *
      * @return Danh sách Workshop theo vị trí
      */
     @Override
@@ -83,6 +99,7 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Tạo một Workshop mới.
+     *
      * @param workShopRequest Thông tin Workshop cần tạo
      * @return Thông tin phản hồi của Workshop vừa tạo
      * @throws AppException Nếu có lỗi về trạng thái hoặc trường đại học không tồn tại
@@ -106,8 +123,9 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Lấy danh sách Workshop đã được phê duyệt theo trạng thái cụ thể với phân trang.
+     *
      * @param pageable Thông tin phân trang
-     * @param state Trạng thái cần lọc
+     * @param state    Trạng thái cần lọc
      * @return Danh sách Workshop đã được phê duyệt
      * @throws AppException Nếu không có nội dung
      */
@@ -126,7 +144,8 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Cập nhật thông tin một Workshop theo ID.
-     * @param id ID của Workshop cần cập nhật
+     *
+     * @param id              ID của Workshop cần cập nhật
      * @param workShopRequest Thông tin Workshop mới
      * @return Thông tin phản hồi của Workshop đã cập nhật
      * @throws AppException Nếu Workshop không tồn tại hoặc các ngày không hợp lệ
@@ -157,8 +176,8 @@ public class WorkShopServiceImpl implements WorkShopService {
         // Kiểm tra nếu ngày hết hạn yêu cầu nằm ngoài khoảng thời gian của Workshop
         if (workShopRequest.getExpireDate().isAfter(workshop.getEndDate().toLocalDate())
                 || workShopRequest
-                        .getExpireDate()
-                        .isBefore(workshop.getStartDate().toLocalDate())) {
+                .getExpireDate()
+                .isBefore(workshop.getStartDate().toLocalDate())) {
             throw new AppException(ERROR_WORK_SHOP_DATE); // Ném lỗi nếu ngày hết hạn yêu cầu không hợp lệ
         }
 
@@ -189,6 +208,7 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Kiểm tra tính hợp lệ của Workshop.
+     *
      * @param workShopRequest Thông tin Workshop cần kiểm tra
      * @throws AppException Nếu ngày tháng không hợp lệ
      */
@@ -204,8 +224,10 @@ public class WorkShopServiceImpl implements WorkShopService {
             throw new AppException(ERROR_WORK_SHOP_DATE); // Kiểm tra ngày hết hạn
         }
     }
+
     /**
      * Cập nhật thông tin một Workshop theo ID.
+     *
      * @param id ID của Workshop cần xoá mềm
      * @return Thông tin phản hồi của Workshop đã xoá mềm
      * @throws AppException Nếu Workshop không tồn tại
@@ -220,8 +242,10 @@ public class WorkShopServiceImpl implements WorkShopService {
         workShopRepository.save(workshop);
         return modelMapper.map(workshop, WorkShopResponse.class);
     }
+
     /**
      * : Lấy  thông tin một Workshop theo ID.
+     *
      * @param id ID của Workshop
      * @return Thông tin phản hồi của Workshop
      * @throws AppException Nếu Workshop không tồn tại
@@ -233,5 +257,48 @@ public class WorkShopServiceImpl implements WorkShopService {
             throw new AppException(ERROR_NO_CONTENT);
         }
         return modelMapper.map(workshopById, WorkShopResponse.class);
+    }
+
+    @Override
+    public WorkshopApprovedResponse approved(WorkshopApprovedRequest req) {
+
+        Workshop job = findById(req.getId());
+        validateWorkshopForStateChange(job, State.APPROVED);
+        job.setStatusBrowse(State.APPROVED);
+        String emailBusiness = job.getUniversity().getEmail();
+        EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_WORKSHOP, "");
+        sendEmail.sendApprovedWorkshopNotification(emailDTO,
+                job.getTitle());
+        return WorkshopApprovedResponse.of(Boolean.TRUE);
+    }
+
+    @Override
+    public WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) {
+
+        Workshop job = findById(req.getId());
+        validateWorkshopForStateChange(job, State.REJECTED);
+        job.setStatusBrowse(State.REJECTED);
+        String emailBusiness = job.getUniversity().getEmail();
+        EmailDTO emailDTO = new EmailDTO(emailBusiness, REJECTED_WORKSHOP, "");
+        sendEmail.sendRRejectedWorkshopNotification(emailDTO, job.getTitle(), req.getMessage());
+        return WorkshopRejectedResponse.of(req.getMessage());
+    }
+
+    public Workshop findById(Integer id) {
+        return workShopRepository.findById(id).orElseThrow(() -> new AppException(ERROR_NO_EXIST_WORKSHOP));
+    }
+
+    private void validateWorkshopForStateChange(Workshop req, State targetState) {
+        // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
+        if (req.getStatusBrowse() == targetState) {
+            throw new AppException(targetState == State.APPROVED
+                    ? ERROR_WORKSHOP_ALREADY_APPROVED
+                    : ERROR_WORKSHOP_ALREADY_REJECTED);
+        }
+
+        // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)
+        if (req.getStatusBrowse() != State.PENDING) {
+            throw new AppException(ERROR_INVALID_WORKSHOP_STATE);
+        }
     }
 }

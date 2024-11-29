@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.service.LocationService;
@@ -34,8 +36,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import static com.backend.autocarrerbridge.util.Constant.APPROVED;
-import static com.backend.autocarrerbridge.util.Constant.REJECTED;
+import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -182,7 +184,7 @@ public class BusinessServiceImpl implements BusinessService {
      * @param req - đầu vào chứa ID của doanh nghiệp cần được phê duyệt.
      */
     @Override
-    public void approvedAccount(BusinessApprovedRequest req){
+    public BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req){
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -190,8 +192,10 @@ public class BusinessServiceImpl implements BusinessService {
         userAccountService.approvedAccount(userAccount);
 
         // Email để thông báo tài khoản đã được phê duyệt.
-        EmailDTO emailDTO = new EmailDTO(business.getEmail(), APPROVED, "");
+        EmailDTO emailDTO = new EmailDTO(business.getEmail(), APPROVED_ACCOUNT, "");
         sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+
+        return BusinessApprovedResponse.of(Boolean.TRUE);
     }
 
     /**
@@ -200,7 +204,7 @@ public class BusinessServiceImpl implements BusinessService {
      * @param req Yêu cầu chứa ID của doanh nghiệp cần bị từ chối.
      */
     @Override
-    public void rejectedAccount(BusinessRejectedRequest req){
+    public BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req){
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -212,8 +216,10 @@ public class BusinessServiceImpl implements BusinessService {
         businessRepository.save(business);
 
         // Gửi email để thông báo tài khoản đã bị từ chối.
-        EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED, "");
+        EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED_ACCOUNT, "");
         sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+
+        return BusinessRejectedResponse.of(Boolean.TRUE);
     }
 
 }

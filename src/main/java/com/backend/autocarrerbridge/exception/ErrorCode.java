@@ -1,16 +1,14 @@
 package com.backend.autocarrerbridge.exception;
 
-
 import java.util.Arrays;
 
 import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
-import java.util.Arrays;
-
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
+import static com.backend.autocarrerbridge.util.Constant.CODE_EXIT_SUB_ADMIN_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
@@ -54,7 +52,11 @@ import static com.backend.autocarrerbridge.util.Constant.FORGOT_CODE_INVALID_MES
 import static com.backend.autocarrerbridge.util.Constant.FORGOT_CODE_REQUIRED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.GENDER_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_JOB_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_LENGTH_PW_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_WORKSHOP_STATE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.JOB_ALREADY_APPROVED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.JOB_ALREADY_REJECTED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.LICENSE_INVALID;
 import static com.backend.autocarrerbridge.util.Constant.LIMIT_SIZE_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.MIN_LENGTH_PW_MESSAGE;
@@ -96,6 +98,8 @@ import static com.backend.autocarrerbridge.util.Constant.USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.USER_PENDING;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.WORKSHOP_ALREADY_APPROVED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.WORKSHOP_ALREADY_REJECTED_MESSAGE;
 
 @Getter
 public enum ErrorCode {
@@ -111,7 +115,7 @@ public enum ErrorCode {
     ERROR_INACTIVE(BAD_REQUEST, INACTIVE, HttpStatus.BAD_REQUEST),
     ERROR_EXIST_NAME_AND_CODE(BAD_REQUEST, EXIST_NAME_AND_CODE, HttpStatus.BAD_REQUEST),
     ERROR_EXIST_INDUSTRY(BAD_REQUEST, NO_EXIST_INDUSTRY, HttpStatus.BAD_REQUEST),
-
+    // Các lỗi liên quan đến image
     ERROR_EMPTY_FILE(BAD_REQUEST, EMPTY_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_TYPE_FILE(BAD_REQUEST, TYPE_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_LIMIT_SIZE_FILE(BAD_REQUEST, LIMIT_SIZE_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -120,8 +124,9 @@ public enum ErrorCode {
     ERROR_DELETE_IMAGE(BAD_REQUEST, DELETE_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_IMAGE(BAD_REQUEST, NOT_FOUND_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_FIND_IMAGE(BAD_REQUEST, NOT_FOUND_FILE_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
-    NO_CHANGE_DETECTED(SUCCESS, NO_CHANGES_DETECTED, HttpStatus.OK),
     ERROR_OPEN_IMAGE(BAD_REQUEST, OPEN_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    NO_CHANGE_DETECTED(SUCCESS, NO_CHANGES_DETECTED, HttpStatus.OK),
     ERROR_NOT_FOUND_SUB_ADMIN(BAD_REQUEST, NOT_FOUND_SUB_ADMIN, HttpStatus.BAD_REQUEST),
     ERROR_VALID_EMAIL(BAD_REQUEST, ERROR_INVALID_EMAIL, HttpStatus.BAD_REQUEST),
     ERROR_EMAIL_EXIST(BAD_REQUEST, ERROR_EXIST, HttpStatus.BAD_REQUEST),
@@ -143,7 +148,7 @@ public enum ErrorCode {
     ERROR_INVALID_LENGTH_PASSWORD(BAD_REQUEST, INVALID_LENGTH_PW_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_BUSINESS(BAD_REQUEST, NOT_FOUND_BUSINESS_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_UNIVERSITY(BAD_REQUEST, NOT_FOUND_UNIVERSITY_MESSAGE, HttpStatus.BAD_REQUEST),
-    ERROR_SUB_ADMIN_CODE_EXIST(BAD_REQUEST, "", HttpStatus.BAD_REQUEST),
+    ERROR_SUB_ADMIN_CODE_EXIST(BAD_REQUEST, CODE_EXIT_SUB_ADMIN_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_UNIVERSITY_NOT_FOUND(BAD_REQUEST, NOT_FOUND_UNIVERSITY_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NAME(BAD_REQUEST, EXIST_NAME, HttpStatus.BAD_REQUEST),
     NOT_FOUNDED(BAD_REQUEST, EXIST_CODE, HttpStatus.BAD_REQUEST),
@@ -202,12 +207,22 @@ public enum ErrorCode {
     ERROR_INVALID_ACCOUNT_STATE(BAD_REQUEST, INVALID_ACCOUNT_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_ACCOUNT_IS_NULL(BAD_REQUEST, ACCOUNT_IS_NULL, HttpStatus.BAD_REQUEST),
 
+    // Các lỗi liên quan đến đơn vị hành chính
     ERROR_PROVINCE_NOT_FOUND(BAD_REQUEST, PROVINCE_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_DISTRICT_NOT_FOUND(BAD_REQUEST, DISTRICT_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WARD_NOT_FOUND(BAD_REQUEST, WARD_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_PROVINCE_NOT_BLANK(BAD_REQUEST, PROVINCE_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_DISTRICT_NOT_BLANK(BAD_REQUEST, DISTRICT_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WARD_NOT_BLANK(BAD_REQUEST, WARD_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    // Các lỗi duyệt thông tin
+    ERROR_JOB_ALREADY_REJECTED(BAD_REQUEST, JOB_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_INVALID_JOB_STATE(BAD_REQUEST, INVALID_JOB_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_NO_EXIST_WORKSHOP(BAD_REQUEST,"", HttpStatus.BAD_REQUEST),
+    ERROR_WORKSHOP_ALREADY_APPROVED(BAD_REQUEST, WORKSHOP_ALREADY_APPROVED_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_WORKSHOP_ALREADY_REJECTED(BAD_REQUEST, WORKSHOP_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_INVALID_WORKSHOP_STATE(BAD_REQUEST, INVALID_WORKSHOP_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
+
     ;
 
     private final int code;

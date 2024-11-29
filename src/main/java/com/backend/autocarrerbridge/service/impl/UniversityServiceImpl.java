@@ -1,12 +1,14 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.util.Constant.APPROVED;
-import static com.backend.autocarrerbridge.util.Constant.REJECTED;
+import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 import com.backend.autocarrerbridge.converter.UniversityConverter;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
+import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
@@ -115,9 +117,8 @@ public class UniversityServiceImpl implements UniversityService {
      *
      * @param req - đầu vào chứa ID của doanh nghiệp cần được phê duyệt.
      */
-
     @Override
-    public void approvedAccount(UniversityApprovedRequest req) {
+    public UniversityApprovedResponse approvedAccount(UniversityApprovedRequest req) {
         University university = findById(req.getId());
         UserAccount userAccount = university.getUserAccount();
 
@@ -125,9 +126,10 @@ public class UniversityServiceImpl implements UniversityService {
         userAccountService.approvedAccount(userAccount);
 
         // Email để thông báo tài khoản đã được phê duyệt.
-        EmailDTO emailDTO = new EmailDTO(university.getEmail(), APPROVED, "");
+        EmailDTO emailDTO = new EmailDTO(university.getEmail(), APPROVED_ACCOUNT, "");
         sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
 
+        return UniversityApprovedResponse.of(Boolean.TRUE);
     }
 
     /**
@@ -136,7 +138,7 @@ public class UniversityServiceImpl implements UniversityService {
      * @param req Yêu cầu chứa ID của doanh nghiệp cần bị từ chối.
      */
     @Override
-    public void rejectedAccount(UniversityRejectedRequest req) {
+    public UniversityRejectedResponse rejectedAccount(UniversityRejectedRequest req) {
         University university = findById(req.getId());
         UserAccount userAccount = university.getUserAccount();
 
@@ -148,8 +150,10 @@ public class UniversityServiceImpl implements UniversityService {
         universityRepository.save(university);
 
         // Gửi email để thông báo tài khoản đã bị từ chối.
-        EmailDTO emailDTO = new EmailDTO(university.getEmail(), REJECTED, "");
+        EmailDTO emailDTO = new EmailDTO(university.getEmail(), REJECTED_ACCOUNT, "");
         sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+
+        return UniversityRejectedResponse.of(Boolean.TRUE);
     }
 
     @Transactional

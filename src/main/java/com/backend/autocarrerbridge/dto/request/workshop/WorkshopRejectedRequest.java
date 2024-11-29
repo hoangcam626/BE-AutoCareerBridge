@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.request.ward;
+package com.backend.autocarrerbridge.dto.request.workshop;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class WardRequest {
-    @NotBlank(message = "ERROR_WARD_NOT_BLANK")
+public class WorkshopRejectedRequest {
+    @NotBlank(message = "NO_CONTENT_MESSAGE")
     private Integer id;
+    private String message;
 }

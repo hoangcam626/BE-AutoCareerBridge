@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.util.email;
 
 import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -92,6 +93,62 @@ public class SendEmail {
         }
     }
 
+    public void sendApprovedJobNotification(EmailDTO emailDTO, String titleJob) {
+        try {
+            // Kiểm tra email hợp lệ
+            validatedEmail(emailDTO);
+
+            // Tạo và gửi email
+            String emailContent = getJobApprovalNotification(titleJob);
+            MimeMessage mimeMessage = createMimeMessage(emailDTO, emailContent);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            logger.error(ERROR_EMAIL_NOT_FOUND.getMessage(), e.getMessage(), e);
+        }
+    }
+
+    public void sendRRejectedJobNotification(EmailDTO emailDTO, String titleJob, String message) {
+        try {
+            // Kiểm tra email hợp lệ
+            validatedEmail(emailDTO);
+
+            // Tạo và gửi email
+            String emailContent = getJobRejectedNotification(titleJob, message);
+            MimeMessage mimeMessage = createMimeMessage(emailDTO, emailContent);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            logger.error(ERROR_EMAIL_NOT_FOUND.getMessage(), e.getMessage(), e);
+        }
+    }
+
+    public void sendApprovedWorkshopNotification(EmailDTO emailDTO, String titleWorkshop) {
+        try {
+            // Kiểm tra email hợp lệ
+            validatedEmail(emailDTO);
+
+            // Tạo và gửi email
+            String emailContent = getWorkshopApprovalNotification(titleWorkshop);
+            MimeMessage mimeMessage = createMimeMessage(emailDTO, emailContent);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            logger.error(ERROR_EMAIL_NOT_FOUND.getMessage(), e.getMessage(), e);
+        }
+    }
+
+    public void sendRRejectedWorkshopNotification(EmailDTO emailDTO, String titleWorkshop, String message) {
+        try {
+            // Kiểm tra email hợp lệ
+            validatedEmail(emailDTO);
+
+            // Tạo và gửi email
+            String emailContent = getWorkshopRejectedNotification(titleWorkshop, message);
+            MimeMessage mimeMessage = createMimeMessage(emailDTO, emailContent);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            logger.error(ERROR_EMAIL_NOT_FOUND.getMessage(), e.getMessage(), e);
+        }
+    }
+
     private MimeMessage createMimeMessage(EmailDTO emailDTO, String emailBody) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
@@ -134,40 +191,38 @@ public class SendEmail {
             String footerMessage,
             String expiryMessage
     ) {
-        String title = "";
         String content =
-                "            <td class=\"content\">" +
-                "                <h2>" + "Xin chào!" + "</h2>" +
-                "                <p>" + message + "</p>" +
-                "                <div class=\"code-box\">" +
-                "                    <h3>" + verificationCode + "</h3>" +
-                "                </div>" +
-                "                <p>" + footerMessage + "</p>" +
-                "                <p><strong>Chú ý:</strong> " + expiryMessage + "</p>" +
-                "            </td>";
-        return getEmailBody(title, content);
+                        "            <td class=\"content\">" +
+                        "                <h2>" + "Xin chào!" + "</h2>" +
+                        "                <p>" + message + "</p>" +
+                        "                <div class=\"code-box\">" +
+                        "                    <h3>" + verificationCode + "</h3>" +
+                        "                </div>" +
+                        "                <p>" + footerMessage + "</p>" +
+                        "                <p><strong>Chú ý:</strong> " + expiryMessage + "</p>" +
+                        "            </td>";
+        return getEmailBody(content);
     }
 
     private String getAccount(String passwordAccount) {
         if (passwordAccount == null || passwordAccount.isEmpty()) {
             throw new IllegalArgumentException(ERROR_NO_CONTENT.getMessage());
         }
-        String title = "";
         String content =
-                "            <td class=\"content\">" +
-                "                <h2>Chào bạn,</h2>" +
-                "                <p>Chúng tôi rất vui thông báo rằng tài khoản của bạn trên hệ thống <strong>AutoCareerBridge</strong> đã được tạo thành công.</p>" +
-                "                <p>Dưới đây là thông tin đăng nhập của bạn:</p>" +
-                "                <p><strong>Tên đăng nhập:</strong> [Tài khoản email này của bạn]</p>" +
-                "                <p><strong>Mật khẩu:</strong></p>" +
-                "                <div class=\"code-box\">" +
-                "                    " + passwordAccount +
-                "                </div>" +
-                "                <p><strong>Chú ý:</strong> Hãy đăng nhập và thay đổi mật khẩu của bạn ngay để đảm bảo tính bảo mật.</p>" +
-                "                <p>Nếu bạn không yêu cầu tài khoản này, vui lòng liên hệ với bộ phận hỗ trợ của chúng tôi ngay lập tức.</p>" +
-                "            </td>";
+                        "            <td class=\"content\">" +
+                        "                <h2>Chào bạn,</h2>" +
+                        "                <p>Chúng tôi rất vui thông báo rằng tài khoản của bạn trên hệ thống <strong>AutoCareerBridge</strong> đã được tạo thành công.</p>" +
+                        "                <p>Dưới đây là thông tin đăng nhập của bạn:</p>" +
+                        "                <p><strong>Tên đăng nhập:</strong> [Tài khoản email này của bạn]</p>" +
+                        "                <p><strong>Mật khẩu:</strong></p>" +
+                        "                <div class=\"code-box\">" +
+                        "                    " + passwordAccount +
+                        "                </div>" +
+                        "                <p><strong>Chú ý:</strong> Hãy đăng nhập và thay đổi mật khẩu của bạn ngay để đảm bảo tính bảo mật.</p>" +
+                        "                <p>Nếu bạn không yêu cầu tài khoản này, vui lòng liên hệ với bộ phận hỗ trợ của chúng tôi ngay lập tức.</p>" +
+                        "            </td>";
 
-        return getEmailBody(title, content);
+        return getEmailBody(content);
     }
 
     private String getNewPassword(String newPassword) {
@@ -175,7 +230,8 @@ public class SendEmail {
             throw new IllegalArgumentException(ERROR_NO_CONTENT.getMessage());
         }
 
-        return "            <td class=\"content\">" +
+        String content =
+                "            <td class=\"content\">" +
                 "                <h2>Xin chào!</h2>" +
                 "                <p>Cảm ơn bạn đã sử dụng AutoCareerBridge. Dưới đây là mật khẩu mới của bạn:</p>" +
                 "                <div class=\"code-box\">" +
@@ -183,6 +239,7 @@ public class SendEmail {
                 "                </div>" +
                 "                <p>Nếu bạn không yêu cầu mã này, vui lòng bỏ qua email này.</p>" +
                 "            </td>";
+    return getEmailBody(content);
     }
 
     private String getAccountApprovalNotification(State state) {
@@ -201,23 +258,76 @@ public class SendEmail {
                     "Hoặc liên hệ với chúng tôi để được hướng dẫn.";
         }
         String content =
-                "            <td class=\"content\">" +
-                "                <h2>" + title + "</h2>" +
-                "                <p>" + message + "</p>" +
-                "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>" +
-                "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>" +
-                "            </td>";
+                        "            <td class=\"content\">" +
+                        "                <h2>" + title + "</h2>" +
+                        "                <p>" + message + "</p>" +
+                        "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>" +
+                        "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>" +
+                        "            </td>";
 
-        return getEmailBody(title, content);
+        return getEmailBody(content);
     }
 
-    private String getEmailBody(String title, String content) {
+    private String getJobApprovalNotification(String titleJob) {
+        String content =
+                        "            <td class=\"content\">" +
+                        "                <h2>Tin tuyển dụng " + titleJob + " của bạn đã được chấp nhận</h2>" +
+                        "                <p>Chúng tôi vui mừng thông báo tin tuyển dụng của bạn đã được chấp nhận. " +
+                        "                Bạn đã có thể theo dõi tuyển dụng của bạn trong hệ thống của chúng tôi.</p>" +
+                        "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>" +
+                        "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>" +
+                        "            </td>";
+
+        return getEmailBody(content);
+    }
+    private String getJobRejectedNotification(String titleJob, String message) {
+        String content =
+                        "            <td class=\"content\">" +
+                        "                <h2>Tin tuyển dụng " + titleJob + " của bạn đã được chấp nhận</h2>" +
+                        "                <p>Rất tiếc, tài khoản của bạn đã bị từ chối. Chúng tôi nghi ngờ thông tin đăng ký của bạn." +
+                        "                <p>Lý do từ chối của chúng tôi: "+message+"</p>" +
+                        "                <p>Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tin tuyển dụng khác." +
+                        "                Hoặc liên hệ với chúng tôi để được hướng dẫn.<p>" +
+                        "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>" +
+                        "            </td>";
+
+        return getEmailBody(content);
+    }
+
+    private String getWorkshopApprovalNotification(String titleWorkshop) {
+        String content =
+                "            <td class=\"content\">" +
+                        "                <h2>Workshop " + titleWorkshop + " của bạn đã được chấp nhận</h2>" +
+                        "                <p>Chúng tôi vui mừng thông báo workshop của bạn đã được chấp nhận. " +
+                        "                Bạn đã có thể theo dõi workshop của bạn trong hệ thống của chúng tôi.</p>" +
+                        "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>" +
+                        "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>" +
+                        "            </td>";
+
+        return getEmailBody(content);
+    }
+    private String getWorkshopRejectedNotification(String titleWorkshop, String message) {
+        String content =
+                "            <td class=\"content\">" +
+                        "                <h2>Workshop " + titleWorkshop + " của bạn đã được chấp nhận</h2>" +
+                        "                <p>Rất tiếc, tài khoản của bạn đã bị từ chối. Chúng tôi nghi ngờ thông tin đăng ký của bạn." +
+                        "                <p>Lý do từ chối của chúng tôi: "+message+"</p>" +
+                        "                <p>Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tin workshop khác." +
+                        "                Hoặc liên hệ với chúng tôi để được hướng dẫn.<p>" +
+                        "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>" +
+                        "            </td>";
+
+        return getEmailBody(content);
+    }
+
+
+    private String getEmailBody(String content) {
         return "<!DOCTYPE html>" +
                 "<html lang=\"vi\">" +
                 "<head>" +
                 "    <meta charset=\"UTF-8\">" +
                 "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
-                "    <title>" + title + "</title>" +
+                "    <title></title>" +
                 "    <style>" +
                 "        body {" +
                 "            font-family: Arial, sans-serif;" +
@@ -293,7 +403,7 @@ public class SendEmail {
                 "    <table>" +
                 "        <tr>" +
                 "            <td class=\"header\">" +
-                "                <h1>Thông báo từ AutoCareerBridge</h1>" +
+                "                <h1>Thông báo từ Auto-Career Bridge</h1>" +
                 "            </td>" +
                 "        </tr>" +
                 content +
@@ -307,7 +417,7 @@ public class SendEmail {
                 "</html>";
     }
 
-    public void validatedEmail(EmailDTO emailDTO){
+    public void validatedEmail(EmailDTO emailDTO) {
         if (emailDTO == null
                 || emailDTO.getEmail() == null
                 || emailDTO.getEmail().trim().isEmpty()) {
