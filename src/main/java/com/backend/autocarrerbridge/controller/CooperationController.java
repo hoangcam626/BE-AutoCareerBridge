@@ -19,19 +19,20 @@ import java.util.List;
 
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
-@RestController
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("api/cooperation")
+@RestController // Đánh dấu lớp này là một RESTful controller
+@RequiredArgsConstructor // Tự động sinh constructor với các trường được đánh dấu là final
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true) // Thiết lập phạm vi truy cập mặc định và đánh dấu các trường là final
+@RequestMapping("api/cooperation") // Định nghĩa đường dẫn cơ sở cho các API
 public class CooperationController {
 
+    // Dịch vụ xử lý logic liên quan đến yêu cầu hợp tác
     BusinessUniversityService businessUniversityService;
 
-
     /**
-     * API để doanh nghiệp gửi yêu cầu hợp tác tới trường đại học
+     * API để lấy danh sách yêu cầu đã gửi từ doanh nghiệp
      *
-     * @apiNote để để thêm yêu cầu vào cơ sở dữ liệu
+     * @return danh sách yêu cầu đã gửi
+     * @throws ParseException nếu có lỗi khi xử lý dữ liệu ngày tháng
      */
     @GetMapping("/get-request")
     ApiResponse<Object> getSentRequest() throws ParseException {
@@ -39,9 +40,11 @@ public class CooperationController {
     }
 
     /**
-     * API để doanh nghiệp gửi yêu cầu hợp tác tới trường đại học
+     * API để gửi yêu cầu hợp tác từ doanh nghiệp tới trường đại học
      *
-     * @apiNote để để thêm yêu cầu vào cơ sở dữ liệu
+     * @param universityId ID của trường đại học
+     * @return kết quả gửi yêu cầu
+     * @throws ParseException nếu có lỗi khi xử lý dữ liệu ngày tháng
      */
     @PostMapping("/send-request")
     ApiResponse<Object> sendRequest(@RequestParam Integer universityId) throws ParseException {
@@ -49,15 +52,23 @@ public class CooperationController {
     }
 
     /**
-     * API để doanh nghiệp gửi yêu cầu hợp tác tới trường đại học
+     * API để hủy yêu cầu hợp tác đã gửi tới trường đại học
      *
-     * @apiNote để để thêm yêu cầu vào cơ sở dữ liệu
+     * @param universityId ID của trường đại học
+     * @return kết quả hủy yêu cầu
+     * @throws ParseException nếu có lỗi khi xử lý dữ liệu ngày tháng
      */
     @PutMapping("/cancel-request")
     ApiResponse<Object> cancelRequest(@RequestParam Integer universityId) throws ParseException {
         return businessUniversityService.cancelRequest(universityId);
     }
 
+    /**
+     * API để lấy tất cả các yêu cầu hợp tác
+     *
+     * @return danh sách tất cả các yêu cầu hợp tác
+     * @throws ParseException nếu có lỗi khi xử lý dữ liệu ngày tháng
+     */
     @GetMapping("/get-all-request")
     ApiResponse<List<CooperationUniversityResponse>> getAllRequestForUniversity() throws ParseException {
         return ApiResponse.<List<CooperationUniversityResponse>>builder()
@@ -65,6 +76,12 @@ public class CooperationController {
                 .build();
     }
 
+    /**
+     * API để lấy danh sách yêu cầu hợp tác đang chờ xử lý
+     *
+     * @return danh sách các yêu cầu đang chờ xử lý
+     * @throws ParseException nếu có lỗi khi xử lý dữ liệu ngày tháng
+     */
     @GetMapping("/get-all-request-pending")
     ApiResponse<List<CooperationUniversityResponse>> getAllRequestForUniversityPending() throws ParseException {
         return ApiResponse.<List<CooperationUniversityResponse>>builder()
@@ -72,6 +89,12 @@ public class CooperationController {
                 .build();
     }
 
+    /**
+     * API để lấy danh sách yêu cầu hợp tác đã được phê duyệt
+     *
+     * @return danh sách các yêu cầu đã được phê duyệt
+     * @throws ParseException nếu có lỗi khi xử lý dữ liệu ngày tháng
+     */
     @GetMapping("/get-all-request-approve")
     ApiResponse<List<CooperationUniversityResponse>> getAllRequestForUniversityApprove() throws ParseException {
         return ApiResponse.<List<CooperationUniversityResponse>>builder()
@@ -79,6 +102,12 @@ public class CooperationController {
                 .build();
     }
 
+    /**
+     * API để lấy danh sách yêu cầu hợp tác bị từ chối
+     *
+     * @return danh sách các yêu cầu bị từ chối
+     * @throws ParseException nếu có lỗi khi xử lý dữ liệu ngày tháng
+     */
     @GetMapping("/get-all-request-reject")
     ApiResponse<List<CooperationUniversityResponse>> getAllRequestForUniversityReject() throws ParseException {
         return ApiResponse.<List<CooperationUniversityResponse>>builder()
@@ -86,6 +115,12 @@ public class CooperationController {
                 .build();
     }
 
+    /**
+     * API để phê duyệt yêu cầu hợp tác của doanh nghiệp
+     *
+     * @param buId ID của yêu cầu hợp tác
+     * @return thông báo thành công
+     */
     @GetMapping("/approve-request/{buId}")
     ApiResponse<String> approveRequestCooperation(@PathVariable Integer buId){
         businessUniversityService.approveRequetCooperation(buId);
