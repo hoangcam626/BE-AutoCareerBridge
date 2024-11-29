@@ -7,13 +7,12 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
 
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
-
+import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessReponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.entity.Business;
@@ -87,7 +86,8 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
     public String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest) {
         // Kiểm tra xem doanh nghiệp đã tham gia workshop chưa
         if (workShopBussinessRepository.checkExistWorkShop(
-                workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID()) != null) {
+                        workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID())
+                != null) {
             throw new AppException(ERROR_FAIL_WORK_SHOP);
         }
 
@@ -126,9 +126,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
 
         // Kiểm tra sự tồn tại của kết nối giữa workshop và business dựa vào workshopID và businessID.
         WorkshopBusiness workshopBusiness = workShopBussinessRepository.checkExistWorkShop(
-                workShopBusinessRequest.getWorkshopID(),
-                workShopBusinessRequest.getBusinessID()
-        );
+                workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID());
 
         // Nếu không tìm thấy kết nối, ném ngoại lệ với mã lỗi NOT_FOUNDED.
         if (workshopBusiness == null) {
@@ -149,5 +147,4 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
         // Trả về thông báo thành công sau khi cập nhật trạng thái.
         return SUCCESS_ACCEPT_MESSAGE;
     }
-
 }

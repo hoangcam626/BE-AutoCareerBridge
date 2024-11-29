@@ -1,10 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.service.BusinessUniversityService;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import java.text.ParseException;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,7 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.service.BusinessUniversityService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +23,6 @@ import java.text.ParseException;
 public class CooperationController {
 
     BusinessUniversityService businessUniversityService;
-
 
     /**
      * API để doanh nghiệp gửi yêu cầu hợp tác tới trường đại học

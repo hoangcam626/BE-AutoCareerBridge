@@ -1,5 +1,15 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_APPROVED_RELATION;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CANCEL_RELATION;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_RELATION;
+
+import java.text.ParseException;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.converter.SentRequestConverter;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.SentRequestResponse;
@@ -15,17 +25,8 @@ import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.util.List;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_APPROVED_RELATION;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CANCEL_RELATION;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_RELATION;
-
 
 @Service
 @RequiredArgsConstructor
@@ -57,15 +58,13 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      */
     @Override
     public ApiResponse<Object> getSentRequest() throws ParseException {
-        List<BusinessUniversity> universities =
-                businessUniversityRepository.getSentRequestOfBusiness(getBusinessViaToken().getId());
+        List<BusinessUniversity> universities = businessUniversityRepository.getSentRequestOfBusiness(
+                getBusinessViaToken().getId());
         if (universities.isEmpty()) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         List<SentRequestResponse> sentRequestResponse = sentRequestConverter.toSentRequestResponse(universities);
-        return ApiResponse.builder()
-                .data(sentRequestResponse)
-                .build();
+        return ApiResponse.builder().data(sentRequestResponse).build();
     }
 
     /**
@@ -73,7 +72,8 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      */
     @Override
     public ApiResponse<Object> sendRequest(Integer universityId) throws ParseException {
-        Business business = businessRepository.getBusinessById(getBusinessViaToken().getId());
+        Business business =
+                businessRepository.getBusinessById(getBusinessViaToken().getId());
         if (business == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
@@ -90,11 +90,11 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
 
         // Nếu doanh nghiệp và trường học đã hợp tác
         if (existingRelation != null) {
-            //Nếu trạng thái hợp tác của doanh nghiệp và trường học là Approved thì hiển thị thông báo đã hợp tác
+            // Nếu trạng thái hợp tác của doanh nghiệp và trường học là Approved thì hiển thị thông báo đã hợp tác
             if (existingRelation.getStatusConnected().equals(State.APPROVED)) {
                 throw new AppException(ERROR_APPROVED_RELATION);
             }
-            //Nếu trạng thái hợp tác của doanh nghiệp và trường học là Rejected thì gửi lại yêu cầu
+            // Nếu trạng thái hợp tác của doanh nghiệp và trường học là Rejected thì gửi lại yêu cầu
             if (existingRelation.getStatusConnected().equals(State.REJECTED)) {
                 existingRelation.setStatusConnected(State.PENDING);
                 existingRelation.setUpdatedBy(business.getUserAccount().getUsername());
@@ -112,9 +112,7 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
             newRelation.setCreatedBy(business.getUserAccount().getUsername());
             businessUniversityRepository.save(newRelation);
         }
-        return ApiResponse.builder()
-                .data(Constant.SEND_REQUEST_SUCCESS)
-                .build();
+        return ApiResponse.builder().data(Constant.SEND_REQUEST_SUCCESS).build();
     }
 
     /**
@@ -122,24 +120,23 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      */
     @Override
     public ApiResponse<Object> cancelRequest(Integer universityId) throws ParseException {
-        BusinessUniversity businessUniversity =
-                businessUniversityRepository.findByBusinessIdAndUniversityId(getBusinessViaToken().getId(), universityId);
+        BusinessUniversity businessUniversity = businessUniversityRepository.findByBusinessIdAndUniversityId(
+                getBusinessViaToken().getId(), universityId);
         if (businessUniversity == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
-        if(universityId == null){
+        if (universityId == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         // Nếu trạng thái của yêu cầu là active thì đổi thành inactive
         if (businessUniversity.getStatus().equals(Status.ACTIVE)) {
             businessUniversity.setStatus(Status.INACTIVE);
-            businessUniversity.setUpdatedBy(getBusinessViaToken().getUserAccount().getUsername());
+            businessUniversity.setUpdatedBy(
+                    getBusinessViaToken().getUserAccount().getUsername());
             businessUniversityRepository.save(businessUniversity);
         } else {
             throw new AppException(ERROR_CANCEL_RELATION);
         }
-        return ApiResponse.builder()
-                .data(Constant.CANCELED_SUCCESSFUL)
-                .build();
+        return ApiResponse.builder().data(Constant.CANCELED_SUCCESSFUL).build();
     }
 }

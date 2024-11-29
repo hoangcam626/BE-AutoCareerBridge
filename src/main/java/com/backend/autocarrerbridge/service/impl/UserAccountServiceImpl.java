@@ -14,14 +14,6 @@ import static com.backend.autocarrerbridge.util.Constant.PREFIX_NP;
 
 import java.util.concurrent.TimeUnit;
 
-import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
-
-import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
-
-
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.University;
-import com.backend.autocarrerbridge.service.IntermediaryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,10 +24,15 @@ import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
+import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
+import com.backend.autocarrerbridge.service.IntermediaryService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -102,8 +99,8 @@ public class UserAccountServiceImpl implements UserAccountService {
             }
             // check xem co phai la univeristy ko
             University university = intermediaryService.findUniversityByEmail(userAccountRequest.getUsername());
-            if(university != null){
-                userAccountLoginResponse.setUniversity(modelMapper.map(university,UniversityResponse.class));
+            if (university != null) {
+                userAccountLoginResponse.setUniversity(modelMapper.map(university, UniversityResponse.class));
             }
 
             return userAccountLoginResponse;
@@ -234,7 +231,8 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public String handleForgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         // Kiểm tra email có hợp lệ không
-        if (forgotPasswordRequest.getEmail() == null || forgotPasswordRequest.getEmail().isEmpty()) {
+        if (forgotPasswordRequest.getEmail() == null
+                || forgotPasswordRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
@@ -244,8 +242,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
 
         // Kiểm tra mã xác nhận có khớp với mã lưu trong Redis không
-        if (!forgotPasswordRequest.getForgotCode().equals(
-                redisTemplate.opsForValue().get(PREFIX_FG + forgotPasswordRequest.getEmail()))) {
+        if (!forgotPasswordRequest
+                .getForgotCode()
+                .equals(redisTemplate.opsForValue().get(PREFIX_FG + forgotPasswordRequest.getEmail()))) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
 

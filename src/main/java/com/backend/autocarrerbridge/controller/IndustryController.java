@@ -2,7 +2,6 @@ package com.backend.autocarrerbridge.controller;
 
 import java.text.ParseException;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,7 +23,6 @@ import lombok.Setter;
 @Setter
 @Getter
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class IndustryController {
     private final IndustryService industryService;
 
