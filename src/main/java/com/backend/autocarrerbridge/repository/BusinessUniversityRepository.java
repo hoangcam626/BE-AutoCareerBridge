@@ -13,4 +13,18 @@ public interface BusinessUniversityRepository extends JpaRepository<BusinessUniv
 
     @Query("SELECT bu FROM BusinessUniversity bu where bu.business.id = :id")
     List<BusinessUniversity> getSentRequestOfBusiness(Integer id);
+
+    @Query("SELECT bu FROM BusinessUniversity bu where bu.university.id = :id")
+    List<BusinessUniversity> getAllRequestOfUniversity(Integer id);
+
+    @Query("SELECT bu FROM BusinessUniversity bu where bu.university.id = :id and bu.statusConnected = 0 and bu.status = 1 ")
+    List<BusinessUniversity> getBusinessUniversityPending(Integer id);
+
+    @Query("SELECT bu FROM BusinessUniversity bu where bu.university.id = :id and bu.statusConnected = 1 and bu.status = 1 ")
+    List<BusinessUniversity> getBusinessUniversityApprove(Integer id);
+
+    @Query("SELECT bu FROM BusinessUniversity bu where bu.university.id = :id and bu.statusConnected = 2 and bu.status = 1 ")
+    List<BusinessUniversity> getBusinessUniversityReject(Integer id);
+
+    BusinessUniversity findBusinessUniversityById(Integer id);
 }

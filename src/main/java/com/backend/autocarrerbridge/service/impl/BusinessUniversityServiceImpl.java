@@ -2,11 +2,14 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.converter.SentRequestConverter;
 import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.SentRequestResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.BusinessUniversity;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.mapper.BusinessUniversityMapper;
 import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.repository.BusinessUniversityRepository;
 import com.backend.autocarrerbridge.repository.UniversityRepository;
@@ -15,27 +18,35 @@ import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_APPROVED_RELATION;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CANCEL_RELATION;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_RELATION;
+import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class BusinessUniversityServiceImpl implements BusinessUniversityService {
 
-    private final TokenService tokenService;
-    private final BusinessRepository businessRepository;
-    private final UniversityRepository universityRepository;
-    private final BusinessUniversityRepository businessUniversityRepository;
-    private final SentRequestConverter sentRequestConverter;
+    TokenService tokenService;
+    BusinessRepository businessRepository;
+    UniversityRepository universityRepository;
+    BusinessUniversityRepository businessUniversityRepository;
+    SentRequestConverter sentRequestConverter;
+    BusinessUniversityMapper businessUniversityMapper;
+
 
     /**
      * Lấy Business từ token
@@ -50,6 +61,14 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         return businessToken;
+    }
+
+    public University getUniversityFromToken() throws ParseException {
+        var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(),SUB);
+        University university=universityRepository.findByEmail(emailAccountLogin);
+        if(Objects.isNull(university))
+            throw new AppException(ErrorCode.ERROR_NOT_FOUND_UNIVERSITY);
+        return university;
     }
 
     /**
@@ -141,5 +160,58 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
         return ApiResponse.builder()
                 .data(Constant.CANCELED_SUCCESSFUL)
                 .build();
+    }
+
+    // lấy ra tất cả hợp tác cả active và inactive
+    @Override
+    public List<CooperationUniversityResponse> getAllCooperationOfUniversity() throws ParseException {
+        List<BusinessUniversity> list=businessUniversityRepository.getAllRequestOfUniversity(getUniversityFromToken().getId());
+        List<CooperationUniversityResponse> listResponse=list.stream().map(businessUniversityMapper::toCooperationUniversityResponse).toList();
+        if(listResponse.isEmpty()){
+            throw new AppException(ErrorCode.ERROR_LIST_EMPTY);
+        }
+        return listResponse;
+    }
+
+    // lấy ra tất cả hợp tác đang chờ
+    @Override
+    public List<CooperationUniversityResponse> getAllCooperationOfUniversityPending() throws ParseException {
+        List<BusinessUniversity> list=businessUniversityRepository.getBusinessUniversityPending(getUniversityFromToken().getId());
+        List<CooperationUniversityResponse> listResponse=list.stream().map(businessUniversityMapper::toCooperationUniversityResponse).toList();
+        if(listResponse.isEmpty()){
+            throw new AppException(ErrorCode.ERROR_LIST_EMPTY);
+        }
+        return listResponse;
+    }
+
+    // lấy ra tất cả hợp tác đã chấp thuận
+    @Override
+    public List<CooperationUniversityResponse> getAllCooperationOfUniversityApprove() throws ParseException {
+        List<BusinessUniversity> list=businessUniversityRepository.getBusinessUniversityApprove(getUniversityFromToken().getId());
+        List<CooperationUniversityResponse> listResponse=list.stream().map(businessUniversityMapper::toCooperationUniversityResponse).toList();
+        if(listResponse.isEmpty()){
+            throw new AppException(ErrorCode.ERROR_LIST_EMPTY);
+        }
+        return listResponse;
+    }
+
+    // lấy ra tất cả hợp tác đã hủy
+    @Override
+    public List<CooperationUniversityResponse> getAllCooperationOfUniversityReject() throws ParseException {
+        List<BusinessUniversity> list=businessUniversityRepository.getBusinessUniversityReject(getUniversityFromToken().getId());
+        List<CooperationUniversityResponse> listResponse=list.stream().map(businessUniversityMapper::toCooperationUniversityResponse).toList();
+        if(listResponse.isEmpty()){
+            throw new AppException(ErrorCode.ERROR_LIST_EMPTY);
+        }
+        return listResponse;
+    }
+
+    @Override
+    public void approveRequetCooperation(Integer idBusinessUniversity) {
+        BusinessUniversity businessUniversity = businessUniversityRepository.findBusinessUniversityById(idBusinessUniversity);
+        if(Objects.isNull(businessUniversity))
+            throw new AppException(ErrorCode.NOT_FOUNDED);
+        businessUniversity.setStatusConnected(State.APPROVED);
+        businessUniversityRepository.save(businessUniversity);
     }
 }
