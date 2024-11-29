@@ -1,7 +1,6 @@
 package com.backend.autocarrerbridge.util.email;
 
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

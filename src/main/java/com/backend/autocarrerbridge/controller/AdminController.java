@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+
 /**
  * Controller xử lý các API dành riêng cho quản trị viên (admin v sub-admin)
  * để quản lý việc phê duyệt hoặc từ chối tài khoản của doanh nghiệp và trường học.
@@ -100,7 +102,7 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/approved-job")
-    public ApiResponse<JobApprovedResponse> approvedJob(JobApprovedRequest req){
+    public ApiResponse<JobApprovedResponse> approvedJob(JobApprovedRequest req) throws ParseException {
         var res = jobService.approved(req);
         return new ApiResponse<>(res);
     }
@@ -112,7 +114,7 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/rejected-job")
-    public ApiResponse<JobRejectedResponse> rejectedJob(JobRejectedRequest req){
+    public ApiResponse<JobRejectedResponse> rejectedJob(JobRejectedRequest req) throws ParseException {
         var res = jobService.rejected(req);
         return new ApiResponse<>(res);
     }
@@ -124,7 +126,7 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/approved-workshop")
-    public ApiResponse<WorkshopApprovedResponse> approvedWorkshop(WorkshopApprovedRequest req){
+    public ApiResponse<WorkshopApprovedResponse> approvedWorkshop(WorkshopApprovedRequest req) throws ParseException {
         var res = workShopService.approved(req);
         return new ApiResponse<>(res);
     }
@@ -136,7 +138,7 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/rejected-workshop")
-    public ApiResponse<WorkshopRejectedResponse> rejectedWorkshop(WorkshopRejectedRequest req){
+    public ApiResponse<WorkshopRejectedResponse> rejectedWorkshop(WorkshopRejectedRequest req) throws ParseException {
         var res = workShopService.rejected(req);
         return new ApiResponse<>(res);
     }

@@ -10,13 +10,16 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
+import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.modelmapper.ModelMapper;
@@ -50,6 +53,7 @@ public class WorkShopServiceImpl implements WorkShopService {
     ImageService imageService;
     UniversityService universityService;
     SendEmail sendEmail;
+    NotificationService notificationService;
 
     /**
      * Lấy danh sách tất cả các Workshop với phân trang.
@@ -260,27 +264,35 @@ public class WorkShopServiceImpl implements WorkShopService {
     }
 
     @Override
-    public WorkshopApprovedResponse approved(WorkshopApprovedRequest req) {
+    public WorkshopApprovedResponse approved(WorkshopApprovedRequest req) throws ParseException {
 
-        Workshop job = findById(req.getId());
-        validateWorkshopForStateChange(job, State.APPROVED);
-        job.setStatusBrowse(State.APPROVED);
-        String emailBusiness = job.getUniversity().getEmail();
+        Workshop workshop = findById(req.getId());
+        validateWorkshopForStateChange(workshop, State.APPROVED);
+        workshop.setStatusBrowse(State.APPROVED);
+        String emailBusiness = workshop.getUniversity().getEmail();
+
         EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_WORKSHOP, "");
         sendEmail.sendApprovedWorkshopNotification(emailDTO,
-                job.getTitle());
+                workshop.getTitle());
+
+        String message = String.format("%s: %s", APPROVED_WORKSHOP, workshop.getTitle());
+        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
         return WorkshopApprovedResponse.of(Boolean.TRUE);
     }
 
     @Override
-    public WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) {
+    public WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException {
 
-        Workshop job = findById(req.getId());
-        validateWorkshopForStateChange(job, State.REJECTED);
-        job.setStatusBrowse(State.REJECTED);
-        String emailBusiness = job.getUniversity().getEmail();
+        Workshop workshop = findById(req.getId());
+        validateWorkshopForStateChange(workshop, State.REJECTED);
+        workshop.setStatusBrowse(State.REJECTED);
+        // Gửi thông báo email
+        String emailBusiness = workshop.getUniversity().getEmail();
         EmailDTO emailDTO = new EmailDTO(emailBusiness, REJECTED_WORKSHOP, "");
-        sendEmail.sendRRejectedWorkshopNotification(emailDTO, job.getTitle(), req.getMessage());
+        sendEmail.sendRRejectedWorkshopNotification(emailDTO, workshop.getTitle(), req.getMessage());
+        // Gửi thông báo hệ thống
+        String message = String.format("%s: %s", REJECTED_WORKSHOP, workshop.getTitle());
+        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
         return WorkshopRejectedResponse.of(req.getMessage());
     }
 

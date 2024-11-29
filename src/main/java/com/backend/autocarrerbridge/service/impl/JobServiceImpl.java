@@ -1,17 +1,12 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_APPROVED;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_REJECTED;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_ACCOUNT_STATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_JOB_STATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_APPROVED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_REJECTED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EXIST_JOB;
-import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
@@ -21,8 +16,10 @@ import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.stereotype.Service;
@@ -50,9 +47,11 @@ import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class JobServiceImpl implements JobService {
     private final JobRepository jobRepository;
     private final TokenService tokenService;
@@ -60,6 +59,7 @@ public class JobServiceImpl implements JobService {
     private final IndustryRepo industryRepo;
     private final BusinessRepository businessRepository;
     private final EmployeeRepository employeeRepository;
+    private final NotificationService notificationService;
     private final ConvertJob convertJob;
     private final SendEmail sendEmail;
 
@@ -235,27 +235,36 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public JobApprovedResponse approved(JobApprovedRequest req) {
+    public JobApprovedResponse approved(JobApprovedRequest req) throws ParseException {
 
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.APPROVED);
         job.setStatusBrowse(State.APPROVED);
         String emailBusiness = job.getBusiness().getEmail();
+
         EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_JOB, "");
         sendEmail.sendApprovedJobNotification(emailDTO,
                 job.getTitle());
+
+        String message = String.format("%s: %s", APPROVED_JOB, job.getTitle());
+        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
         return JobApprovedResponse.of(Boolean.TRUE);
     }
 
     @Override
-    public JobRejectedResponse rejected(JobRejectedRequest req) {
+    public JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException {
 
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.REJECTED);
         job.setStatusBrowse(State.REJECTED);
         String emailBusiness = job.getBusiness().getEmail();
+        // Gửi thông báo email
         EmailDTO emailDTO = new EmailDTO(emailBusiness, REJECTED_JOB, "");
         sendEmail.sendRRejectedJobNotification(emailDTO, job.getTitle(), req.getMessage());
+        // Gửi thông báo hệ thống
+        String message = String.format("%s: %s. Lý do: %s", APPROVED_JOB, job.getTitle(), req.getMessage());
+        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+
         return JobRejectedResponse.of(req.getMessage());
     }
 

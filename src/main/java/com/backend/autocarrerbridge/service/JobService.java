@@ -20,7 +20,7 @@ public interface JobService {
 
     ApiResponse<Object> inactiveJob(Integer jobId) throws ParseException;
 
-    JobApprovedResponse approved(JobApprovedRequest req);
+    JobApprovedResponse approved(JobApprovedRequest req) throws ParseException;
 
-    JobRejectedResponse rejected(JobRejectedRequest req);
+    JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException;
 }

@@ -106,10 +106,10 @@ public class Constant {
     public static final String ACCOUNT = "Tài Khoản Của Bạn";
     public static final String APPROVED_ACCOUNT = "Tài khoản của bạn đã được chấp nhận.";
     public static final String REJECTED_ACCOUNT = "Tài khoản của bạn đã bị từ chối.";
-    public static final String APPROVED_WORKSHOP = "Tài khoản của bạn đã được chấp nhận.";
-    public static final String REJECTED_WORKSHOP = "Tài khoản của bạn đã bị từ chối.";
-    public static final String APPROVED_JOB = "Tài khoản của bạn đã được chấp nhận.";
-    public static final String REJECTED_JOB = "Tài khoản của bạn đã bị từ chối.";
+    public static final String APPROVED_WORKSHOP = "Tin hội thảo của bạn đã được phê duyệt.";
+    public static final String REJECTED_WORKSHOP = "Tin hội thảo của bạn đã bị từ chối phê duyệt.";
+    public static final String APPROVED_JOB = "Tin tuyển dụng của bạn đã được phê duyệt.";
+    public static final String REJECTED_JOB = "Tin tuyển dụng của bạn đã bị từ chối phê duyệt.";
 
     public static final String EMAIL_REQUIRED_MESSAGE = "Email không được để trống.";
     public static final String EMAIL_INVALID_MESSAGE = "Định dạng email không hợp lệ.";
@@ -187,6 +187,7 @@ public class Constant {
     public static final String INVALID_JOB_STATE_MESSAGE = "Trạng thái tin tuyển dụng không hợp lệ.";
 
     // Workshop
+    public static final String NO_EXIST_WORKSHOP = "Công việc không tồn tại";
     public static final String WORKSHOP_ALREADY_APPROVED_MESSAGE = "Workshop này đã được chấp nhận.";
     public static final String WORKSHOP_ALREADY_REJECTED_MESSAGE = "Workshop này đã bị từ chối.";
     public static final String INVALID_WORKSHOP_STATE_MESSAGE = "Trạng thái workshop này không hợp lệ.";

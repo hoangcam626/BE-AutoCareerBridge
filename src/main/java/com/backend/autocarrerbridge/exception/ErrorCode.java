@@ -77,6 +77,7 @@ import static com.backend.autocarrerbridge.util.Constant.NO_CONTENT_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.util.Constant.NO_EXIST_INDUSTRY;
 import static com.backend.autocarrerbridge.util.Constant.NO_EXIST_JOB;
+import static com.backend.autocarrerbridge.util.Constant.NO_EXIST_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.NUMBER_MAX_STUDENT_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NUMBER_MIN_STUDENT_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.OPEN_IMAGE_MESSAGE;
@@ -217,8 +218,9 @@ public enum ErrorCode {
 
     // Các lỗi duyệt thông tin
     ERROR_JOB_ALREADY_REJECTED(BAD_REQUEST, JOB_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_JOB_ALREADY_APPROVED(BAD_REQUEST, JOB_ALREADY_APPROVED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_INVALID_JOB_STATE(BAD_REQUEST, INVALID_JOB_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
-    ERROR_NO_EXIST_WORKSHOP(BAD_REQUEST,"", HttpStatus.BAD_REQUEST),
+    ERROR_NO_EXIST_WORKSHOP(BAD_REQUEST,NO_EXIST_WORKSHOP, HttpStatus.BAD_REQUEST),
     ERROR_WORKSHOP_ALREADY_APPROVED(BAD_REQUEST, WORKSHOP_ALREADY_APPROVED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WORKSHOP_ALREADY_REJECTED(BAD_REQUEST, WORKSHOP_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_INVALID_WORKSHOP_STATE(BAD_REQUEST, INVALID_WORKSHOP_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
