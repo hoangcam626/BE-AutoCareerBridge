@@ -56,6 +56,7 @@ public class Constant {
     public static final String ERROR_TOKEN_INVALID_MESSAGE = "Token không hợp lệ.";
     public static final String ERROR_APPROVED = "Người dùng đã được phê duyệt.";
     public static final String ERROR_NAME_EMPTY = "Tên không được để trống";
+    public static final String ERROR_LIST_EMPTY_MESAGE = "Danh sách rỗng";
 
     // Lỗi liên quan đến hình ảnh
     public static final String EMPTY_FILE_MESSAGE = "Tệp rỗng.";

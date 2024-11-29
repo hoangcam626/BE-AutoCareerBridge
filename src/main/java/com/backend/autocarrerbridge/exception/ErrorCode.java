@@ -14,6 +14,7 @@ import static com.backend.autocarrerbridge.util.Constant.CANCEL_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_LIST_EMPTY_MESAGE;
 import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.HAVE_RELATION;
@@ -106,12 +107,12 @@ import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.LOCATION_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE;
 
-
 @Getter
 public enum ErrorCode {
 
     /** Không có nội dung hiển thị */
     ERROR_CODE_NOT_FOUND(NOT_FOUND, NO_CONTENT_MESSAGE, HttpStatus.NOT_FOUND),
+    ERROR_LIST_EMPTY(BAD_REQUEST,ERROR_LIST_EMPTY_MESAGE,HttpStatus.BAD_REQUEST),
 
     // Ngành nghề
     /** Tên hoặc mã của ngành đã tồn tại */
