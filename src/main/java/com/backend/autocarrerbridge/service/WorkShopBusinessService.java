@@ -10,4 +10,5 @@ public interface WorkShopBusinessService {
     WorkShopBusinessReponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state);
 
     String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest);
+    String acceptBusiness(WorkShopBusinessRequest workShopBusinessRequest);
 }

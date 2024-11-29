@@ -28,6 +28,7 @@ public class Constant {
     public static final String INTERNAL_SERVER_ERROR_MESSAGE = "Lỗi máy chủ nội bộ";
     public static final String VALIDATION_ERROR_MESSAGE = "Lỗi xác thực";
     public static final String NOTIFICATION_WAIT = "Vui lòng chờ";
+    public static final String SUCCESS_ACCEPT_MESSAGE = "Chấp nhận yêu cầu thành công!";
 
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
@@ -125,6 +126,7 @@ public class Constant {
     public static final String REQUEST_TO_ATTEND_WORKSHOP =
             "Yêu cầu tham gia hội thảo thành công, Vui lòng đợi để chờ duyệt.";
     public static final String REQUEST_WORKSHOP_FAIL = "Doanh nghiệp đã yêu cầu tham gia vui lòng đợi!.";
+    public static final String REQUEST_ALREADY_ACCEPT = "Doanh nghiệp đã được duyệt!.";
     // Trường đại học
     public static final String REGISTER_UNIVERSITY =
             "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
@@ -156,7 +158,7 @@ public class Constant {
     public static final String NUMBER_MAX_STUDENT_MAJOR_MESSAGE = "Tối đa chỉ được 1.000 sinh viên .";
     public static final String ID_MAJOR_NOT_NULL_MESSAGE = " Không tìm thấy khoa .";
 
-    //Employee
+    // Employee
     public static final String NAME_NOT_BLANK_MESSAGE = "Tên không được để trống";
     public static final String GENDER_NOT_BLANK_MESSAGE = "Giới tính không được để trống";
     public static final String DOB_NOT_BLANK_MESSAGE = "Ngày sinh không được để trống";
@@ -164,7 +166,7 @@ public class Constant {
     public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
     public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
 
-    //Administrative
+    // Administrative
     public static final String DISTRICT_NOT_FOUND_MESSAGE = "Không tìm thấy Quận/Huyện";
     public static final String PROVINCE_NOT_FOUND_MESSAGE = "Không tìm thấy Tỉnh/Thành phố";
     public static final String WARD_NOT_FOUND_MESSAGE = "Không tìm thấy Xã/Phường";
@@ -172,8 +174,8 @@ public class Constant {
     public static final String DISTRICT_NOT_BLANK_MESSAGE = "Quận/Huyện không được để trống";
     public static final String WARD_NOT_BLANK_MESSAGE = "Xã/Phường không được để trống";
 
-
-    //Location
+    // Location
+    public static final String LOCATION_NOT_FOUND_MESSAGE = "Không tìm thấy location tron Database";
 
     // Exception database
     public static final String FILED_DB_NOT_UNIQUE_MESSAGE = "Trường trong database không duy nhất, hãy kiểm tra db";
@@ -183,4 +185,13 @@ public class Constant {
     public static final String NO_EXIST_JOB = "Công việc không tồn tại";
     public static final String INACTIVE_JOB = "Vô hiệu hóa công việc thành công";
     public static final String ALREADY_INACTIVE = "Đã bị vô hiệu hóa trước đó";
+
+    //Hợp tác
+    public static final String HAVE_RELATION = "Bạn đã gửi yêu cầu hợp tác, vui lòng đợi chấp thuận";
+    public static final String SEND_REQUEST_SUCCESS = "Đã gửi yêu cầu hợp tác thành công";
+    public static final String APPROVED_RELATION = "Đã hợp tác";
+    public static final String REJECTED_RELATION = "Yêu cầu hợp tác đã bị từ chối";
+    public static final String CANCEL_RELATION = "Yêu cầu hợp tác đã bị hủy trước đó";
+    public static final String CANCELED_SUCCESSFUL = "Hủy thành công";
+
 }

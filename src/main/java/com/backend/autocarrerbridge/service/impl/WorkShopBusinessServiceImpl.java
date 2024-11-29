@@ -3,15 +3,17 @@ package com.backend.autocarrerbridge.service.impl;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
 
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessReponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.entity.Business;
@@ -64,8 +66,8 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
             throw new AppException(ERROR_NO_CONTENT);
         }
         // Chuyển đổi danh sách doanh nghiệp thành BusinessResponse
-        List<BusinessResponse> businessResponses = businesses.stream()
-                .map(business -> modelMapper.map(business, BusinessResponse.class))
+        List<BusinessColabResponse> businessResponses = businesses.stream()
+                .map(business -> modelMapper.map(business, BusinessColabResponse.class))
                 .toList();
 
         // Tạo và trả về response chứa thông tin workshop và danh sách doanh nghiệp
@@ -84,8 +86,8 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
     @Override
     public String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest) {
         // Kiểm tra xem doanh nghiệp đã tham gia workshop chưa
-        if (workShopBussinessRepository.existsByWorkshopIdAndBusinessId(
-                workShopBusinessRequest.getBusinessID(), workShopBusinessRequest.getWorkshopID())) {
+        if (workShopBussinessRepository.checkExistWorkShop(
+                workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID()) != null) {
             throw new AppException(ERROR_FAIL_WORK_SHOP);
         }
 
@@ -109,4 +111,43 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
 
         return REQUEST_TO_ATTEND_WORKSHOP;
     }
+
+    /**
+     * Chấp nhận kết nối giữa workshop và business.
+     * Kiểm tra xem workshop và business có tồn tại và trạng thái hiện tại có phù hợp để chấp nhận không.
+     * Nếu đã tồn tại và được phê duyệt trước đó, ném ngoại lệ. Nếu không, cập nhật trạng thái kết nối thành "APPROVED".
+     *
+     * @param workShopBusinessRequest Đối tượng chứa thông tin workshopID và businessID.
+     * @return Thông báo thành công nếu chấp nhận kết nối thành công.
+     * @throws AppException Nếu không tìm thấy kết nối hoặc kết nối đã được chấp nhận trước đó.
+     */
+    @Override
+    public String acceptBusiness(WorkShopBusinessRequest workShopBusinessRequest) {
+
+        // Kiểm tra sự tồn tại của kết nối giữa workshop và business dựa vào workshopID và businessID.
+        WorkshopBusiness workshopBusiness = workShopBussinessRepository.checkExistWorkShop(
+                workShopBusinessRequest.getWorkshopID(),
+                workShopBusinessRequest.getBusinessID()
+        );
+
+        // Nếu không tìm thấy kết nối, ném ngoại lệ với mã lỗi NOT_FOUNDED.
+        if (workshopBusiness == null) {
+            throw new AppException(ErrorCode.NOT_FOUNDED);
+        }
+
+        // Nếu kết nối đã ở trạng thái "APPROVED", ném ngoại lệ với mã lỗi ERROR_ALREADY_ACCEPT.
+        if (workshopBusiness.getStatusConnected().equals(State.APPROVED)) {
+            throw new AppException(ErrorCode.ERROR_ALREADY_ACCEPT);
+        }
+
+        // Cập nhật trạng thái kết nối thành "APPROVED".
+        workshopBusiness.setStatusConnected(State.APPROVED);
+
+        // Lưu trạng thái kết nối đã cập nhật vào cơ sở dữ liệu.
+        workShopBussinessRepository.save(workshopBusiness);
+
+        // Trả về thông báo thành công sau khi cập nhật trạng thái.
+        return SUCCESS_ACCEPT_MESSAGE;
+    }
+
 }

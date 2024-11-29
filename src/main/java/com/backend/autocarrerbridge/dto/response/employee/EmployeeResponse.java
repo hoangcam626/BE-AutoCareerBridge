@@ -2,23 +2,24 @@ package com.backend.autocarrerbridge.dto.response.employee;
 
 import java.time.LocalDate;
 
+import com.backend.autocarrerbridge.dto.response.abstractaudit.AbstractAuditResponse;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
 import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EmployeeResponse {
+public class EmployeeResponse extends AbstractAuditResponse {
     Integer id;
 
     String name;

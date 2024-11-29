@@ -16,6 +16,9 @@ public interface WorkShopBusinessRepository extends JpaRepository<WorkshopBusine
     @Query(
             "select bs from Business bs join WorkshopBusiness wsb on wsb.business.id = bs.id where wsb.workshop.id = :workShopId and wsb.statusConnected =:state")
     Page<Business> getAllBusiness(@Param("workShopId") Integer workShopId, Pageable pageable, State state);
+    @Query("select ws from WorkshopBusiness ws where ws.workshop.id =:workshopId and ws.business.id =:businessId")
+    WorkshopBusiness checkExistWorkShop(@Param("workshopId") Integer workshopId, @Param("businessId") Integer businessId);
 
-    boolean existsByWorkshopIdAndBusinessId(Integer workshopId, Integer businessId);
+
+
 }
