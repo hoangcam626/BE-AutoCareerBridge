@@ -135,6 +135,11 @@ public class Constant {
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
+    public static final String NAME_UNIVERSITY_NOT_BLANK_MESSAGE = "Tên trường đại học không được rỗng.";
+    public static final String NAME_UNIVERSITY_SIZE_MESSAGE = "Tên trường đại học phải trong khoảng 10 đến 100 kí tự.";
+    public static final String WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE = "Website không được bỏ trống.";
+    public static final String FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE = "Năm thành lập không được bỏ trống.";
+    public static final String PHONE_UNIVERSITY_NOT_BLANK_MESSAGE = "Số điện thoại không được bỏ trống.";
 
     // section
     public static final String NAME_SECTION_NOT_BLANK_MESSAGE = "Tên khoa không được bỏ trống .";

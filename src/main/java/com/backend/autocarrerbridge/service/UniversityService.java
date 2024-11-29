@@ -24,4 +24,6 @@ public interface UniversityService {
     University findById(Integer id);
     List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName);
 
+
+
 }
