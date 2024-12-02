@@ -1,12 +1,12 @@
-package com.backend.autocarrerbridge.dto.response.subAdmin;
+package com.backend.autocarrerbridge.dto.response.university;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-@Data
-public class SubAdminDeleteResponse {
+public class UniversityRejectedResponse {
     private Boolean success;
 }

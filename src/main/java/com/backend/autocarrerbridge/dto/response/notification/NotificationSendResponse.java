@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor(staticName = "of")
-public class NotificationCreateResponse {
+public class NotificationSendResponse {
     private Integer id;
 }

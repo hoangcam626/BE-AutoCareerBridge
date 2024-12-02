@@ -1,12 +1,12 @@
-package com.backend.autocarrerbridge.dto.response.business;
+package com.backend.autocarrerbridge.dto.response.subadmin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class BusinessApprovedResponse {
+@NoArgsConstructor
+public class SubAdminUpdateResponse {
     private Boolean success;
 }
