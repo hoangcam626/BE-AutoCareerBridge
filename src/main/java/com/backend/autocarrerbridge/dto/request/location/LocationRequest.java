@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class LocationRequest extends AbstractAudit {
+    private Integer id;
 
     private String description;
 

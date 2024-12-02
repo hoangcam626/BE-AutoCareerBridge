@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
@@ -16,9 +17,7 @@ import com.backend.autocarrerbridge.util.enums.State;
 public interface WorkShopService {
     List<WorkShopResponse> getAllWorkShop(Pageable pageable, String keyword);
 
-    List<WorkShopResponse> getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword);
-
-    List<WorkShopResponse> getAllWorkShopByLocation();
+    WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword);
 
     WorkShopResponse createWorkShop(WorkShopRequest workShopRequest);
 

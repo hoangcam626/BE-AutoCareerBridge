@@ -1,27 +1,30 @@
 package com.backend.autocarrerbridge.dto.response.location;
 
+import com.backend.autocarrerbridge.dto.response.abstractaudit.AbstractAuditResponse;
 import com.backend.autocarrerbridge.dto.response.district.DistrictResponse;
 import com.backend.autocarrerbridge.dto.response.province.ProvinceResponse;
 import com.backend.autocarrerbridge.dto.response.ward.WardResponse;
-import com.backend.autocarrerbridge.entity.AbstractAudit;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Data
-public class LocationResponse extends AbstractAudit {
+@Getter
+@Setter
+@SuperBuilder
+public class LocationResponse extends AbstractAuditResponse {
+
     private Integer id;
 
     private String description;
 
-    private ProvinceResponse provinces;
+    private ProvinceResponse province;
 
-    private DistrictResponse districts;
+    private DistrictResponse district;
 
-    private WardResponse wards;
+    private WardResponse ward;
 }

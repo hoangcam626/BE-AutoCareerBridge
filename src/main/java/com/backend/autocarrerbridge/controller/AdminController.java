@@ -1,5 +1,10 @@
 package com.backend.autocarrerbridge.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest;
@@ -20,13 +25,10 @@ import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedRespon
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.JobService;
 import com.backend.autocarrerbridge.service.UniversityService;
+
 import com.backend.autocarrerbridge.service.WorkShopService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 
@@ -68,7 +70,6 @@ public class AdminController {
         var res = businessService.rejectedAccount(req);
         return new ApiResponse<>(res);
     }
-
 
     /**
      * API phê duyệt tài khoản trường đại học.

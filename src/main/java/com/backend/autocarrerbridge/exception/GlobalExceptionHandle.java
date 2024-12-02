@@ -47,7 +47,6 @@ public class GlobalExceptionHandle {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiException> handleDataIntegrityViolationException(
             DataIntegrityViolationException exception) {
-        String message = exception.getMessage();
         ErrorCode errorCode = ErrorCode.valueOf(String.valueOf(FILED_DB_NOT_UNIQUE));
 
         ApiException apiException = new ApiException();

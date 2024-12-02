@@ -14,6 +14,8 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
@@ -79,31 +81,25 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu không có nội dung
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
+    public WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
         List<Workshop> list = workShopRepository
                 .getAllWorkShopByUniversity(pageable, universityId, keyword)
                 .getContent();
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
         }
-        return list.stream()
+        List<WorkShopResponse> workshops = list.stream()
                 .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
                 .toList();
+        WorkShopUniversityResponse workShopUniversityResponse = new WorkShopUniversityResponse();
+        workShopUniversityResponse.setWorkshops(workshops);
+        workShopUniversityResponse.setUniversity(modelMapper.map(universityService.findById(universityId), UniversityResponse.class));
+        return workShopUniversityResponse;
     }
 
-    /**
-     * Lấy danh sách Workshop theo vị trí (hiện tại trả về danh sách rỗng).
-     *
-     * @return Danh sách Workshop theo vị trí
-     */
-    @Override
-    public List<WorkShopResponse> getAllWorkShopByLocation() {
-        return List.of();
-    }
 
     /**
      * Tạo một Workshop mới.
-     *
      * @param workShopRequest Thông tin Workshop cần tạo
      * @return Thông tin phản hồi của Workshop vừa tạo
      * @throws AppException Nếu có lỗi về trạng thái hoặc trường đại học không tồn tại
@@ -136,7 +132,7 @@ public class WorkShopServiceImpl implements WorkShopService {
     @Override
     public List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword) {
         List<Workshop> list = workShopRepository
-                .getAllApprovedWorkshop(pageable, state, keyword)
+                .getAllWorkshopByState(pageable, state, keyword)
                 .getContent();
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
@@ -180,8 +176,8 @@ public class WorkShopServiceImpl implements WorkShopService {
         // Kiểm tra nếu ngày hết hạn yêu cầu nằm ngoài khoảng thời gian của Workshop
         if (workShopRequest.getExpireDate().isAfter(workshop.getEndDate().toLocalDate())
                 || workShopRequest
-                .getExpireDate()
-                .isBefore(workshop.getStartDate().toLocalDate())) {
+                        .getExpireDate()
+                        .isBefore(workshop.getStartDate().toLocalDate())) {
             throw new AppException(ERROR_WORK_SHOP_DATE); // Ném lỗi nếu ngày hết hạn yêu cầu không hợp lệ
         }
 

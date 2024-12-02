@@ -13,21 +13,29 @@ import com.backend.autocarrerbridge.util.enums.State;
 @Repository
 public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
 
-    // Chỉ tìm kiếm trong tiêu đề workshop
-    @Query("SELECT ws FROM Workshop ws WHERE ws.status != 0 AND ws.title LIKE %:keyword%")
+    // Tìm kiếm trong tiêu đề workshop
+    @Query("SELECT ws FROM Workshop ws WHERE " +
+            "(:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<Workshop> getAllWorkShop(@Param("keyword") String keyword, Pageable pageable);
 
-    // Chỉ tìm kiếm trong tiêu đề workshop của các trường đại học cụ thể
-    @Query("SELECT ws FROM Workshop ws WHERE ws.university.id = :universityId AND ws.title LIKE %:keyword%")
+    // Tìm kiếm theo tiêu đề workshop của các trường đại học cụ thể
+    @Query("SELECT ws FROM Workshop ws WHERE " +
+            "(:universityId IS NULL OR ws.university.id = :universityId) " +
+            "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<Workshop> getAllWorkShopByUniversity(
             Pageable pageable, @Param("universityId") Integer universityId, @Param("keyword") String keyword);
 
-    // Chỉ tìm kiếm trong tiêu đề workshop (bỏ JOIN với University)
-    @Query("SELECT ws FROM Workshop ws WHERE ws.title LIKE %:keyword%")
+    // Tìm kiếm theo tiêu đề workshop theo địa điểm (không giới hạn bởi trường đại học)
+    @Query("SELECT ws FROM Workshop ws WHERE " +
+            "(:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<Workshop> getAllWorkShopByLocation(Pageable pageable, @Param("keyword") String keyword);
 
-    // Chỉ tìm kiếm trong tiêu đề workshop với trạng thái duyệt
-    @Query("SELECT ws FROM Workshop ws WHERE ws.statusBrowse = :approved AND ws.title LIKE %:keyword%")
-    Page<Workshop> getAllApprovedWorkshop(
+    // Tìm kiếm theo trạng thái duyệt (statusBrowse)
+    @Query("SELECT ws FROM Workshop ws WHERE " +
+            "(:approved IS NULL OR ws.statusBrowse = :approved) " +
+            "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<Workshop> getAllWorkshopByState(
             Pageable pageable, @Param("approved") State approved, @Param("keyword") String keyword);
 }
+
+

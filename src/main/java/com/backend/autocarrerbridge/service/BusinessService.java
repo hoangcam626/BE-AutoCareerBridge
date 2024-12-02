@@ -2,11 +2,11 @@ package com.backend.autocarrerbridge.service;
 
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
-import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;

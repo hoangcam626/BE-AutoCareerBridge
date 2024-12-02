@@ -1,7 +1,9 @@
 package com.backend.autocarrerbridge.util.email;
 
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.util.enums.State;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_REQUIRED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -11,11 +13,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.util.enums.State;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_NOT_FOUND;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_REQUIRED;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -167,8 +168,7 @@ public class SendEmail {
                 "Cảm ơn bạn đã sử dụng AutoCareerBridge. Dưới đây là mã xác nhận của bạn:",
                 verificationCode,
                 "Vui lòng sử dụng mã này để hoàn tất quá trình xác thực tài khoản của bạn.",
-                "Mã này sẽ hết hạn sau 15 phút."
-        );
+                "Mã này sẽ hết hạn sau 15 phút.");
     }
 
     private String getForgotPassword(String verificationCode) {
@@ -180,8 +180,7 @@ public class SendEmail {
                 "Cảm ơn bạn đã sử dụng AutoCareerBridge. Dưới đây là mã xác nhận đổi mật khẩu của bạn:",
                 verificationCode,
                 "Vui lòng sử dụng mã này để hoàn tất quá trình đổi mật khẩu của bạn.",
-                "Mã này sẽ hết hạn sau 5 phút."
-        );
+                "Mã này sẽ hết hạn sau 5 phút.");
     }
 
     private String buildHtmlTemplate(
@@ -246,15 +245,14 @@ public class SendEmail {
         String message = "";
         if (state == State.APPROVED) {
             title = "Tài khoản của bạn đã được chấp nhận"; // 'Chấp nhận' hoặc 'Từ chối'
-            message = "Chúng tôi vui mừng thông báo tài khoản của bạn đã được chấp nhận. " +
-                    "Bạn đã có thể đăng nhập vào hệ thống của chúng tôi.";
+            message = "Chúng tôi vui mừng thông báo tài khoản của bạn đã được chấp nhận. "
+                    + "Bạn đã có thể đăng nhập vào hệ thống của chúng tôi.";
         }
         if (state == State.REJECTED) {
             title = "Tài khoản của bạn đã được bị từ chối"; // 'Chấp nhận' hoặc 'Từ chối'
-            message = "Rất tiếc, tài khoản của bạn đã bị từ chối. " +
-                    "Chúng tôi nghi ngờ thông tin đăng ký của bạn. " +
-                    "Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tài khoản khác. " +
-                    "Hoặc liên hệ với chúng tôi để được hướng dẫn.";
+            message = "Rất tiếc, tài khoản của bạn đã bị từ chối. " + "Chúng tôi nghi ngờ thông tin đăng ký của bạn. "
+                    + "Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tài khoản khác. "
+                    + "Hoặc liên hệ với chúng tôi để được hướng dẫn.";
         }
         String content =
                         "            <td class=\"content\">" +
