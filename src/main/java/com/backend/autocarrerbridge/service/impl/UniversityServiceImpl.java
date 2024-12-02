@@ -41,9 +41,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import static com.backend.autocarrerbridge.util.Constant.APPROVED;
-import static com.backend.autocarrerbridge.util.Constant.REJECTED;
-
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor

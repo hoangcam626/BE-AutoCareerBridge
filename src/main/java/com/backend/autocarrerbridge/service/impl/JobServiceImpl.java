@@ -240,14 +240,14 @@ public class JobServiceImpl implements JobService {
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.APPROVED);
         job.setStatusBrowse(State.APPROVED);
-        String emailBusiness = job.getBusiness().getEmail();
+        String emailEmployee = job.getEmployee().getEmail();
 
-        EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_JOB, "");
+        EmailDTO emailDTO = new EmailDTO(emailEmployee, APPROVED_JOB, "");
         sendEmail.sendApprovedJobNotification(emailDTO,
                 job.getTitle());
 
         String message = String.format("%s: %s", APPROVED_JOB, job.getTitle());
-        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+        notificationService.send(NotificationSendRequest.of(emailEmployee, message));
         return JobApprovedResponse.of(Boolean.TRUE);
     }
 
@@ -257,13 +257,13 @@ public class JobServiceImpl implements JobService {
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.REJECTED);
         job.setStatusBrowse(State.REJECTED);
-        String emailBusiness = job.getBusiness().getEmail();
+        String emailEmployee = job.getEmployee().getEmail();
         // Gửi thông báo email
-        EmailDTO emailDTO = new EmailDTO(emailBusiness, REJECTED_JOB, "");
+        EmailDTO emailDTO = new EmailDTO(emailEmployee, REJECTED_JOB, "");
         sendEmail.sendRRejectedJobNotification(emailDTO, job.getTitle(), req.getMessage());
         // Gửi thông báo hệ thống
-        String message = String.format("%s: %s. Lý do: %s", APPROVED_JOB, job.getTitle(), req.getMessage());
-        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+        String message = String.format("%s: %s. Lý do: %s", REJECTED_JOB, job.getTitle(), req.getMessage());
+        notificationService.send(NotificationSendRequest.of(emailEmployee, message));
 
         return JobRejectedResponse.of(req.getMessage());
     }
