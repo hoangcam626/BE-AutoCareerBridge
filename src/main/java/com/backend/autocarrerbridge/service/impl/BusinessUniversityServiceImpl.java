@@ -1,5 +1,13 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.converter.SentRequestConverter;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
@@ -18,20 +26,16 @@ import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.util.List;
-import java.util.Objects;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor // Tự động tạo constructor cho các trường được đánh dấu final
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
+@FieldDefaults(
+        level = AccessLevel.PRIVATE,
+        makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
 public class BusinessUniversityServiceImpl implements BusinessUniversityService {
 
     // Khai báo các thành phần cần thiết trong service
@@ -48,7 +52,8 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     public Business getBusinessViaToken() throws ParseException {
         String token = tokenService.getJWT(); // Lấy token JWT
         String usernameToken = tokenService.getClaim(token, "sub"); // Lấy thông tin username từ token
-        Business businessToken = businessRepository.findByUsername(usernameToken); // Lấy thông tin doanh nghiệp từ database
+        Business businessToken =
+                businessRepository.findByUsername(usernameToken); // Lấy thông tin doanh nghiệp từ database
         if (businessToken == null) { // Kiểm tra nếu không tìm thấy
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
@@ -72,15 +77,13 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      */
     @Override
     public ApiResponse<Object> getSentRequest() throws ParseException {
-        List<BusinessUniversity> universities =
-                businessUniversityRepository.getSentRequestOfBusiness(getBusinessViaToken().getId());
+        List<BusinessUniversity> universities = businessUniversityRepository.getSentRequestOfBusiness(
+                getBusinessViaToken().getId());
         if (universities.isEmpty()) { // Nếu danh sách trống
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         List<SentRequestResponse> sentRequestResponse = sentRequestConverter.toSentRequestResponse(universities);
-        return ApiResponse.builder()
-                .data(sentRequestResponse)
-                .build();
+        return ApiResponse.builder().data(sentRequestResponse).build();
     }
 
     /**
@@ -88,7 +91,8 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      */
     @Override
     public ApiResponse<Object> sendRequest(Integer universityId) throws ParseException {
-        Business business = businessRepository.getBusinessById(getBusinessViaToken().getId());
+        Business business =
+                businessRepository.getBusinessById(getBusinessViaToken().getId());
         if (business == null || universityId == null) { // Kiểm tra các thông tin đầu vào
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
@@ -124,9 +128,7 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
             newRelation.setCreatedBy(business.getUserAccount().getUsername());
             businessUniversityRepository.save(newRelation);
         }
-        return ApiResponse.builder()
-                .data(Constant.SEND_REQUEST_SUCCESS)
-                .build();
+        return ApiResponse.builder().data(Constant.SEND_REQUEST_SUCCESS).build();
     }
 
     /**
@@ -134,30 +136,31 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      */
     @Override
     public ApiResponse<Object> cancelRequest(Integer universityId) throws ParseException {
-        BusinessUniversity businessUniversity =
-                businessUniversityRepository.findByBusinessIdAndUniversityId(getBusinessViaToken().getId(), universityId);
+        BusinessUniversity businessUniversity = businessUniversityRepository.findByBusinessIdAndUniversityId(
+                getBusinessViaToken().getId(), universityId);
         if (businessUniversity == null || universityId == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         // Nếu yêu cầu đang ở trạng thái active, đổi thành inactive
         if (businessUniversity.getStatus().equals(Status.ACTIVE)) {
             businessUniversity.setStatus(Status.INACTIVE);
-            businessUniversity.setUpdatedBy(getBusinessViaToken().getUserAccount().getUsername());
+            businessUniversity.setUpdatedBy(
+                    getBusinessViaToken().getUserAccount().getUsername());
             businessUniversityRepository.save(businessUniversity);
         } else {
             throw new AppException(ERROR_CANCEL_RELATION);
         }
-        return ApiResponse.builder()
-                .data(Constant.CANCELED_SUCCESSFUL)
-                .build();
+        return ApiResponse.builder().data(Constant.CANCELED_SUCCESSFUL).build();
     }
 
     // Các phương thức lấy danh sách hợp tác theo trạng thái
     @Override
     public List<CooperationUniversityResponse> getAllCooperationOfUniversity() throws ParseException {
-        List<BusinessUniversity> list = businessUniversityRepository.getAllRequestOfUniversity(getUniversityFromToken().getId());
+        List<BusinessUniversity> list = businessUniversityRepository.getAllRequestOfUniversity(
+                getUniversityFromToken().getId());
         List<CooperationUniversityResponse> listResponse = list.stream()
-                .map(businessUniversityMapper::toCooperationUniversityResponse).toList();
+                .map(businessUniversityMapper::toCooperationUniversityResponse)
+                .toList();
         if (listResponse.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LIST_EMPTY);
         }
@@ -166,9 +169,11 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
 
     @Override
     public List<CooperationUniversityResponse> getAllCooperationOfUniversityPending() throws ParseException {
-        List<BusinessUniversity> list = businessUniversityRepository.getBusinessUniversityPending(getUniversityFromToken().getId());
+        List<BusinessUniversity> list = businessUniversityRepository.getBusinessUniversityPending(
+                getUniversityFromToken().getId());
         List<CooperationUniversityResponse> listResponse = list.stream()
-                .map(businessUniversityMapper::toCooperationUniversityResponse).toList();
+                .map(businessUniversityMapper::toCooperationUniversityResponse)
+                .toList();
         if (listResponse.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LIST_EMPTY);
         }
@@ -177,9 +182,11 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
 
     @Override
     public List<CooperationUniversityResponse> getAllCooperationOfUniversityApprove() throws ParseException {
-        List<BusinessUniversity> list = businessUniversityRepository.getBusinessUniversityApprove(getUniversityFromToken().getId());
+        List<BusinessUniversity> list = businessUniversityRepository.getBusinessUniversityApprove(
+                getUniversityFromToken().getId());
         List<CooperationUniversityResponse> listResponse = list.stream()
-                .map(businessUniversityMapper::toCooperationUniversityResponse).toList();
+                .map(businessUniversityMapper::toCooperationUniversityResponse)
+                .toList();
         if (listResponse.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LIST_EMPTY);
         }
@@ -188,9 +195,11 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
 
     @Override
     public List<CooperationUniversityResponse> getAllCooperationOfUniversityReject() throws ParseException {
-        List<BusinessUniversity> list = businessUniversityRepository.getBusinessUniversityReject(getUniversityFromToken().getId());
+        List<BusinessUniversity> list = businessUniversityRepository.getBusinessUniversityReject(
+                getUniversityFromToken().getId());
         List<CooperationUniversityResponse> listResponse = list.stream()
-                .map(businessUniversityMapper::toCooperationUniversityResponse).toList();
+                .map(businessUniversityMapper::toCooperationUniversityResponse)
+                .toList();
         if (listResponse.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LIST_EMPTY);
         }
@@ -202,7 +211,8 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      */
     @Override
     public void approveRequetCooperation(Integer idBusinessUniversity) {
-        BusinessUniversity businessUniversity = businessUniversityRepository.findBusinessUniversityById(idBusinessUniversity);
+        BusinessUniversity businessUniversity =
+                businessUniversityRepository.findBusinessUniversityById(idBusinessUniversity);
         if (Objects.isNull(businessUniversity)) { // Nếu không tìm thấy
             throw new AppException(ErrorCode.NOT_FOUNDED);
         }

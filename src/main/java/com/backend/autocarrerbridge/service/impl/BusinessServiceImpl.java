@@ -3,10 +3,10 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
-import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
-import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
+import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import com.backend.autocarrerbridge.entity.Location;
@@ -148,7 +148,7 @@ public class BusinessServiceImpl implements BusinessService {
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
-        Location location= locationService.saveLocation(locationRequest);
+        Location location = locationService.saveLocation(locationRequest);
 
         LocationResponse locationResponse = locationMapper.toLocationResponse(location);
 
@@ -156,7 +156,7 @@ public class BusinessServiceImpl implements BusinessService {
         businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
         businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
-        BusinessResponse businessResponse=businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+        BusinessResponse businessResponse = businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
         businessResponse.setLocation(locationResponse);
         return businessResponse; // Lưu và trả về DTO
     }

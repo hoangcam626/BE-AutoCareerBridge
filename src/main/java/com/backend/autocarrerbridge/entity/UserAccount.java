@@ -1,8 +1,5 @@
 package com.backend.autocarrerbridge.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
-import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -52,8 +49,6 @@ public class UserAccount extends AbstractAudit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-
-
 
     @Override
     public boolean equals(Object object) {
