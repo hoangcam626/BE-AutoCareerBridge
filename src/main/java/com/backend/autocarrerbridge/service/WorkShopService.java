@@ -1,12 +1,17 @@
 package com.backend.autocarrerbridge.service;
 
+import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.util.enums.State;
 
 public interface WorkShopService {
@@ -23,4 +28,8 @@ public interface WorkShopService {
     WorkShopResponse removeWorkShop(Integer id);
 
     WorkShopResponse getWorkShopById(Integer id);
+
+    WorkshopApprovedResponse approved(WorkshopApprovedRequest req) throws ParseException;
+
+    WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException;
 }

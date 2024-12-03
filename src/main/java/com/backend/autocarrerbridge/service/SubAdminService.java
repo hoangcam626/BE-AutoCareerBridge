@@ -9,10 +9,10 @@ import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminDeleteRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminSelfRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminUpdateRequest;
-import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminCreateResponse;
-import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminDeleteResponse;
-import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminSelfResponse;
-import com.backend.autocarrerbridge.dto.response.subAdmin.SubAdminUpdateResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
 
 public interface SubAdminService {
     SubAdminCreateResponse create(SubAdminCreateRequest req) throws ParseException;

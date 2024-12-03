@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.dto.response.subAdmin;
+package com.backend.autocarrerbridge.dto.response.subadmin;
 
 import java.time.LocalDateTime;
 
