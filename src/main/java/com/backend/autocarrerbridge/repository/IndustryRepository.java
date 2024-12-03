@@ -13,7 +13,7 @@ import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.entity.Industry;
 
 @Repository
-public interface IndustryRepo extends JpaRepository<Industry, Integer> {
+public interface IndustryRepository extends JpaRepository<Industry, Integer> {
 
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustryResponse(industry) "
             + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE")
@@ -31,6 +31,8 @@ public interface IndustryRepo extends JpaRepository<Industry, Integer> {
      * Kiểm tra tên ngành đã tồn tại?
      */
     boolean existsByNameAndIdNot(String name, Integer id);
+    boolean existsByName(String name);
+    boolean existsByCode(String code);
 
     /**
      * Kiểm tra mã ngành đã tồn tại?

@@ -85,6 +85,7 @@ public class Constant {
     public static final String NO_CHANGES_DETECTED = "Không có thay đổi nào.";
     public static final String DELETED = "Xóa thành công.";
     public static final String NO_EXIST_INDUSTRY = "Ngành không tồn tại";
+    public static final String EXIST_INDUSTRY_OF_BUSINESS = "Doanh nghiệp đã có ngành nghề này";
 
     // Token - JWT
     public static final String JTI = "jti";
