@@ -37,6 +37,7 @@ import static com.backend.autocarrerbridge.util.Constant.ERROR_TOKEN_INVALID_MES
 import static com.backend.autocarrerbridge.util.Constant.ERROR_USER_EXIST;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_USER_EXISTED;
 import static com.backend.autocarrerbridge.util.Constant.EXIST_CODE;
+import static com.backend.autocarrerbridge.util.Constant.EXIST_INDUSTRY_OF_BUSINESS;
 import static com.backend.autocarrerbridge.util.Constant.EXIST_NAME;
 import static com.backend.autocarrerbridge.util.Constant.EXIST_NAME_AND_CODE;
 import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MESSAGE;
@@ -114,6 +115,7 @@ public enum ErrorCode {
     ERROR_INACTIVE(BAD_REQUEST, INACTIVE, HttpStatus.BAD_REQUEST),
     ERROR_EXIST_NAME_AND_CODE(BAD_REQUEST, EXIST_NAME_AND_CODE, HttpStatus.BAD_REQUEST),
     ERROR_EXIST_INDUSTRY(BAD_REQUEST, NO_EXIST_INDUSTRY, HttpStatus.BAD_REQUEST),
+    ERROR_EXIST_INDUSTRY_OF_BUSINESS(BAD_REQUEST, EXIST_INDUSTRY_OF_BUSINESS, HttpStatus.BAD_REQUEST),
 
     ERROR_EMPTY_FILE(BAD_REQUEST, EMPTY_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_TYPE_FILE(BAD_REQUEST, TYPE_FILE_MESSAGE, HttpStatus.BAD_REQUEST),

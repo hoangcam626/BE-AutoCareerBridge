@@ -25,7 +25,7 @@ import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
-import com.backend.autocarrerbridge.repository.IndustryRepo;
+import com.backend.autocarrerbridge.repository.IndustryRepository;
 import com.backend.autocarrerbridge.repository.JobRepository;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.JobService;
@@ -41,7 +41,7 @@ public class JobServiceImpl implements JobService {
     private final JobRepository jobRepository;
     private final TokenService tokenService;
     private final UserAccountRepository userAccountRepository;
-    private final IndustryRepo industryRepo;
+    private final IndustryRepository industryRepository;
     private final BusinessRepository businessRepository;
     private final EmployeeRepository employeeRepository;
     private final ConvertJob convertJob;
@@ -100,7 +100,7 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
         // Lấy thông tin industry qua job
-        Industry industry = industryRepo.getIndustriesById(job.getIndustry().getId());
+        Industry industry = industryRepository.getIndustriesById(job.getIndustry().getId());
         if (industry == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
@@ -133,7 +133,7 @@ public class JobServiceImpl implements JobService {
         if (userAccount == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
-        Industry industry = industryRepo.getIndustriesById(jobRequest.getIndustriesID());
+        Industry industry = industryRepository.getIndustriesById(jobRequest.getIndustriesID());
         if (industry == null) {
             throw new AppException(ERROR_EXIST_INDUSTRY);
         }
@@ -179,7 +179,7 @@ public class JobServiceImpl implements JobService {
         if (!job.getCreatedBy().equals(getUsernameViaToken())) {
             throw new AppException(ERROR_NO_EDIT_JOB);
         }
-        Industry industry = industryRepo.getIndustriesById(jobRequest.getIndustriesID());
+        Industry industry = industryRepository.getIndustriesById(jobRequest.getIndustriesID());
         if (industry == null) {
             throw new AppException(ERROR_EXIST_INDUSTRY);
         }
