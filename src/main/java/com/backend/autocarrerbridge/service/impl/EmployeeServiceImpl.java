@@ -4,7 +4,9 @@ import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 
+import com.backend.autocarrerbridge.service.ImageService;
 import jakarta.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -45,6 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     BusinessService businessService;
     UserAccountMapper userAccountMapper;
     RoleService roleService;
+    ImageService imageService;
 
     @Override
     public List<EmployeeResponse> getListEmployeee() throws ParseException {
@@ -88,6 +91,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             Business business = businessService.findByEmail(emailBusiness);
             employee.setBusiness(business);
             employee.setCreatedBy(emailBusiness);
+
+            //set anh cho nhan vien
+            employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
         } catch (ParseException e) {
             // Ném ngoại lệ nếu token không hợp lệ
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
@@ -129,8 +135,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee =
                 employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
 
+        // Check ảnh nếu có thì xóa và cập nhật
+        if(!Objects.isNull(request.getEmployeeImage()) && !request.getEmployeeImage().isEmpty()){
+            if(!Objects.isNull(employee.getEmployeeImageId()))
+                imageService.delete(employee.getEmployeeImageId());
+            employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
+        }
+
+        System.out.println(employee);
         // Cập nhật thông tin nhân viên từ request
         employeeMapper.udpateEmployee(employee, request);
+        System.out.println(employee);
+
         try {
             var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
             employee.setUpdatedBy(emailAccountLogin);

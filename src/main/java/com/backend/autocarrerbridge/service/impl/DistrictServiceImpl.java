@@ -1,8 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DISTRICT_NOT_FOUND;
-
 import java.util.List;
+import java.util.Objects;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,8 @@ import com.backend.autocarrerbridge.service.DistrictService;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+
 @Service
 @RequiredArgsConstructor
 public class DistrictServiceImpl implements DistrictService {
@@ -23,6 +24,11 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public List<DistrictResponse> getAllByProvinceId(Integer provinceId) {
+
+        if(Objects.isNull(provinceId)){
+            throw new AppException(ERROR_PROVINCE_NOT_BLANK);
+        }
+
         List<District> districts = districtRepository.findByProvinceId(provinceId);
 
         return districts.stream()
@@ -32,13 +38,17 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public DistrictResponse getById(Integer id) {
-        District district =
-                districtRepository.findById(id).orElseThrow(() -> new AppException(ERROR_DISTRICT_NOT_FOUND));
+
+        if(Objects.isNull(id)){
+            throw new AppException(ERROR_DISTRICT_NOT_BLANK);
+        }
+        District district = findDistrictById(id);
         return modelMapper.map(district, DistrictResponse.class);
     }
 
     @Override
     public District findDistrictById(Integer id) {
-        return districtRepository.findById(id).orElseThrow(() -> new AppException(ERROR_DISTRICT_NOT_FOUND));
+        return districtRepository.findById(id)
+                .orElseThrow(() -> new AppException(ERROR_DISTRICT_NOT_FOUND));
     }
 }

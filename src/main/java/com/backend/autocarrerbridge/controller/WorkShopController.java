@@ -154,6 +154,7 @@ public class WorkShopController {
                 .data(workShopBusinessService.requestToAttend(workShopBusinessRequest))
                 .build();
     }
+
     @PostMapping("/accept-request")
     public ApiResponse<Object> acceptRequestWorkShop(@RequestBody WorkShopBusinessRequest workShopBusinessRequest) {
         // Gửi yêu cầu tham gia workshop và trả về thông báo kết quả

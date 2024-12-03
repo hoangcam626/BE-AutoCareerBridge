@@ -15,5 +15,4 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Intege
 
     @Query("SELECT ua FROM UserAccount ua JOIN FETCH ua.username WHERE ua.id = :id")
     UserAccount findUserAccountWithUniversityById(@Param("id") Integer id);
-
 }

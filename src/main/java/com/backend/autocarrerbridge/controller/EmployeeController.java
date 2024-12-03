@@ -27,7 +27,7 @@ import lombok.experimental.FieldDefaults;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("employees")
+@RequestMapping("api/employees")
 public class EmployeeController {
     EmployeeService employeeService;
 
@@ -38,7 +38,7 @@ public class EmployeeController {
      * @return Thông tin chi tiết của nhân viên vừa được tạo.
      */
     @PostMapping("/create")
-    ApiResponse<EmployeeResponse> createEmployee(@RequestBody @Valid EmployeeRequest request) {
+    ApiResponse<EmployeeResponse> createEmployee(@Valid EmployeeRequest request) {
         return ApiResponse.<EmployeeResponse>builder()
                 .data(employeeService.addEmployee(request))
                 .build();
@@ -79,7 +79,7 @@ public class EmployeeController {
      */
     @PutMapping("/{employeeId}")
     ApiResponse<EmployeeResponse> updateEmployee(
-            @PathVariable Integer employeeId, @RequestBody @Valid EmployeeRequest request) {
+            @PathVariable Integer employeeId, @Valid EmployeeRequest request) {
         return ApiResponse.<EmployeeResponse>builder()
                 .data(employeeService.updateEmployee(employeeId, request))
                 .build();
