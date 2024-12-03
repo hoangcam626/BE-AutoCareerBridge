@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import com.backend.autocarrerbridge.repository.ProvinceRepository;
 import com.backend.autocarrerbridge.service.ProvinceService;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_PROVINCE_NOT_BLANK;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +33,10 @@ public class ProvinceServiceImpl implements ProvinceService {
 
     @Override
     public ProvinceResponse getById(Integer id) {
-        Province province =
-                provinceRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_PROVINCE_NOT_FOUND));
+        if(Objects.isNull(id)){
+            throw new AppException(ERROR_PROVINCE_NOT_BLANK);
+        }
+        Province province = findProvinceById(id);
         return modelMapper.map(province, ProvinceResponse.class);
     }
 

@@ -4,6 +4,7 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALR
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_REJECTED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_ACCOUNT_STATE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.ACCEPT_NP;
 import static com.backend.autocarrerbridge.util.Constant.ACCEPT_US;
 import static com.backend.autocarrerbridge.util.Constant.NEW_CODE;
@@ -72,11 +73,11 @@ public class UserAccountServiceImpl implements UserAccountService {
                 || userAccountRequest.getPassword() == null
                 || userAccountRequest.getUsername().isEmpty()
                 || userAccountRequest.getPassword().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+            throw new AppException(ERROR_USER_NOT_FOUND);
         }
         UserAccount user = userAccountRepository.findByUsername(userAccountRequest.getUsername());
         if (user == null) {
-            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+            throw new AppException(ERROR_USER_NOT_FOUND);
         }
 
         if (passwordEncoder.matches(userAccountRequest.getPassword(), user.getPassword())) {
@@ -120,7 +121,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public void saveRefreshTokenForUser(Integer id, String refreshToken) {
         UserAccount userAccounts = userAccountRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException(ErrorCode.ERROR_USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new RuntimeException(ERROR_USER_NOT_FOUND.getMessage()));
         userAccounts.setRefreshToken(refreshToken);
         userAccountRepository.save(userAccounts);
     }
@@ -176,7 +177,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponseDTO.getUsername());
         if (userAccountResponseDTO.getPassword() == null
                 || userAccountResponseDTO.getPassword().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+            throw new AppException(ERROR_USER_NOT_FOUND);
         }
         if (passwordEncoder.matches(userAccountResponseDTO.getNewPassword(), userAccount.getPassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_SAME);
@@ -238,7 +239,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
         // Kiểm tra xem email có tồn tại trong hệ thống không
         if (userAccountRepository.findByUsername(forgotPasswordRequest.getEmail()) == null) {
-            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+            throw new AppException(ERROR_USER_NOT_FOUND);
         }
 
         // Kiểm tra mã xác nhận có khớp với mã lưu trong Redis không

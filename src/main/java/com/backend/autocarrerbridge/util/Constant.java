@@ -56,6 +56,7 @@ public class Constant {
     public static final String ERROR_TOKEN_INVALID_MESSAGE = "Token không hợp lệ.";
     public static final String ERROR_APPROVED = "Người dùng đã được phê duyệt.";
     public static final String ERROR_NAME_EMPTY = "Tên không được để trống";
+    public static final String ERROR_LIST_EMPTY_MESAGE = "Danh sách rỗng";
 
     // Lỗi liên quan đến hình ảnh
     public static final String EMPTY_FILE_MESSAGE = "Tệp rỗng.";
@@ -75,7 +76,7 @@ public class Constant {
     public static final String NOT_FOUND_UNIVERSITY_MESSAGE = "Không tìm thấy trường đại học.";
     public static final String INVALID_LENGTH_PW_MESSAGE = "Độ dài mật khẩu không hợp lệ.";
     public static final String MIN_LENGTH_PW_MESSAGE = "Tổng độ dài các ký tự bắt buộc lớn hơn độ dài tối thiểu.";
-
+    public static final String CODE_EXIT_SUB_ADMIN_MESSAGE = "Mã nhân viên đã tồn tại.";
     // Ngành
     public static final String EXIST_NAME = "Tên ngành đã tồn tại.";
     public static final String EXIST_CODE = "Mã ngành đã tồn tại.";
@@ -97,7 +98,7 @@ public class Constant {
     public static final String APPLICATION_NAME = "AutoCareer";
     public static final String SCOPE = "scope";
 
-    // Tài khoản
+    // Email
     public static final String LOGIN_SUCCESS = "Đăng nhập thành công";
     public static final String LOGOUT_SUCCESS = "Đăng xuất thành công";
     public static final String SEND_CODE = "Mã code đã được gửi về email của bạn";
@@ -106,8 +107,12 @@ public class Constant {
     public static final String ACCEPT_US = " Xác nhận đăng ký tài khoản";
     public static final String NEW_CODE = "Mã cấp mật khẩu mới!";
     public static final String ACCOUNT = "Tài Khoản Của Bạn";
-    public static final String APPROVED = "Tài khoản của bạn đã được chấp nhận.";
-    public static final String REJECTED = "Tài khoản của bạn đã bị từ chối.";
+    public static final String APPROVED_ACCOUNT = "Tài khoản của bạn đã được chấp nhận.";
+    public static final String REJECTED_ACCOUNT = "Tài khoản của bạn đã bị từ chối.";
+    public static final String APPROVED_WORKSHOP = "Tin hội thảo của bạn đã được phê duyệt.";
+    public static final String REJECTED_WORKSHOP = "Tin hội thảo của bạn đã bị từ chối phê duyệt.";
+    public static final String APPROVED_JOB = "Tin tuyển dụng của bạn đã được phê duyệt.";
+    public static final String REJECTED_JOB = "Tin tuyển dụng của bạn đã bị từ chối phê duyệt.";
 
     public static final String EMAIL_REQUIRED_MESSAGE = "Email không được để trống.";
     public static final String EMAIL_INVALID_MESSAGE = "Định dạng email không hợp lệ.";
@@ -135,6 +140,11 @@ public class Constant {
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
+    public static final String NAME_UNIVERSITY_NOT_BLANK_MESSAGE = "Tên trường đại học không được rỗng.";
+    public static final String NAME_UNIVERSITY_SIZE_MESSAGE = "Tên trường đại học phải trong khoảng 10 đến 100 kí tự.";
+    public static final String WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE = "Website không được bỏ trống.";
+    public static final String FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE = "Năm thành lập không được bỏ trống.";
+    public static final String PHONE_UNIVERSITY_NOT_BLANK_MESSAGE = "Số điện thoại không được bỏ trống.";
 
     // section
     public static final String NAME_SECTION_NOT_BLANK_MESSAGE = "Tên khoa không được bỏ trống .";
@@ -181,6 +191,15 @@ public class Constant {
     public static final String NO_EXIST_JOB = "Công việc không tồn tại";
     public static final String INACTIVE_JOB = "Vô hiệu hóa công việc thành công";
     public static final String ALREADY_INACTIVE = "Đã bị vô hiệu hóa trước đó";
+    public static final String JOB_ALREADY_APPROVED_MESSAGE = "Tin tuyển dụng đã được chấp nhận.";
+    public static final String JOB_ALREADY_REJECTED_MESSAGE = "Tin tuyển dụng đã bị từ chối.";
+    public static final String INVALID_JOB_STATE_MESSAGE = "Trạng thái tin tuyển dụng không hợp lệ.";
+
+    // Workshop
+    public static final String NO_EXIST_WORKSHOP = "Công việc không tồn tại";
+    public static final String WORKSHOP_ALREADY_APPROVED_MESSAGE = "Workshop này đã được chấp nhận.";
+    public static final String WORKSHOP_ALREADY_REJECTED_MESSAGE = "Workshop này đã bị từ chối.";
+    public static final String INVALID_WORKSHOP_STATE_MESSAGE = "Trạng thái workshop này không hợp lệ.";
 
     // Hợp tác
     public static final String HAVE_RELATION = "Bạn đã gửi yêu cầu hợp tác, vui lòng đợi chấp thuận";
