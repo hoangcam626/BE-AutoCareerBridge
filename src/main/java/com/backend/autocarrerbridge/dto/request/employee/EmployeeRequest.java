@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,7 +31,7 @@ public class EmployeeRequest {
     @NotBlank(message = "CODE_EMPLOYEE_NOT_BLANK")
     String employeeCode;
 
-    Integer employeeImageId;
+    MultipartFile employeeImage;
 
     @NotBlank(message = "PHONE_NOT_BLANK")
     String phone;

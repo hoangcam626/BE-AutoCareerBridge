@@ -2,11 +2,11 @@ package com.backend.autocarrerbridge.service;
 
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.util.enums.State;
 
 public interface WorkShopService {

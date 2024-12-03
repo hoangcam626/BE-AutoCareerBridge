@@ -1,46 +1,47 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.util.Constant.APPROVED;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED;
+
 import java.util.List;
 import java.util.Objects;
 
-import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
-import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
-import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
-import com.backend.autocarrerbridge.entity.Location;
-import com.backend.autocarrerbridge.mapper.BusinessMapper;
-import com.backend.autocarrerbridge.mapper.LocationMapper;
-import com.backend.autocarrerbridge.service.LocationService;
-import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
-import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.SendEmail;
+import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.mapper.BusinessMapper;
+import com.backend.autocarrerbridge.mapper.LocationMapper;
 import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.ImageService;
+import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UserAccountService;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import static com.backend.autocarrerbridge.util.Constant.APPROVED;
-import static com.backend.autocarrerbridge.util.Constant.REJECTED;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -57,7 +58,7 @@ public class BusinessServiceImpl implements BusinessService {
     RedisTemplate<String, String> redisTemplate;
     LocationMapper locationMapper;
 
-    //Đăng ký doanh nghiệp mới.
+    // Đăng ký doanh nghiệp mới.
     @Transactional
     @Override
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
@@ -146,7 +147,7 @@ public class BusinessServiceImpl implements BusinessService {
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
-        Location location= locationService.saveLocation(locationRequest);
+        Location location = locationService.saveLocation(locationRequest);
 
         LocationResponse locationResponse = locationMapper.toLocationResponse(location);
 
@@ -154,7 +155,7 @@ public class BusinessServiceImpl implements BusinessService {
         businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
         businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
-        BusinessResponse businessResponse=businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+        BusinessResponse businessResponse = businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
         businessResponse.setLocation(locationResponse);
         return businessResponse; // Lưu và trả về DTO
     }
@@ -197,7 +198,7 @@ public class BusinessServiceImpl implements BusinessService {
      * @param req - đầu vào chứa ID của doanh nghiệp cần được phê duyệt.
      */
     @Override
-    public void approvedAccount(BusinessApprovedRequest req){
+    public void approvedAccount(BusinessApprovedRequest req) {
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -215,14 +216,14 @@ public class BusinessServiceImpl implements BusinessService {
      * @param req Yêu cầu chứa ID của doanh nghiệp cần bị từ chối.
      */
     @Override
-    public void rejectedAccount(BusinessRejectedRequest req){
+    public void rejectedAccount(BusinessRejectedRequest req) {
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
         // Từ chối tài khoản người thay đổi trạng thái thành "REJECTED".
         userAccountService.rejectedAccount(userAccount);
 
-        //Đổi trạng thái sang INACTIVE (xóa mềm thông tin doanh nghiệp)
+        // Đổi trạng thái sang INACTIVE (xóa mềm thông tin doanh nghiệp)
         business.setStatus(Status.INACTIVE);
         businessRepository.save(business);
 
@@ -230,6 +231,4 @@ public class BusinessServiceImpl implements BusinessService {
         EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED, "");
         sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
     }
-
-
 }

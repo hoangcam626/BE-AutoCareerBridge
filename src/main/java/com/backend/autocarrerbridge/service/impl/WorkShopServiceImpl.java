@@ -7,14 +7,14 @@ import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.exception.AppException;
@@ -62,7 +62,8 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu không có nội dung
      */
     @Override
-    public WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
+    public WorkShopUniversityResponse getAllWorkShopByUniversity(
+            Pageable pageable, Integer universityId, String keyword) {
         List<Workshop> list = workShopRepository
                 .getAllWorkShopByUniversity(pageable, universityId, keyword)
                 .getContent();
@@ -74,10 +75,10 @@ public class WorkShopServiceImpl implements WorkShopService {
                 .toList();
         WorkShopUniversityResponse workShopUniversityResponse = new WorkShopUniversityResponse();
         workShopUniversityResponse.setWorkshops(workshops);
-        workShopUniversityResponse.setUniversity(modelMapper.map(universityService.findById(universityId), UniversityResponse.class));
+        workShopUniversityResponse.setUniversity(
+                modelMapper.map(universityService.findById(universityId), UniversityResponse.class));
         return workShopUniversityResponse;
     }
-
 
     /**
      * Tạo một Workshop mới.
