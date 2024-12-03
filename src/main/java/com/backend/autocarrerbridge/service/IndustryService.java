@@ -22,5 +22,5 @@ public interface IndustryService {
 
     ApiResponse<Object> getIndustryOfBusiness(int page, int size, Pageable pageable) throws ParseException;
 
-    ApiResponse<Object> getIndustryDetail(Integer industryId) throws ParseException;
+    ApiResponse<Object> getIndustryDetail(Integer industryId);
 }

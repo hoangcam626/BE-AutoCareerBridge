@@ -251,7 +251,7 @@ public class IndustryServiceImp implements IndustryService {
     }
 
     @Override
-    public ApiResponse<Object> getIndustryDetail(Integer industryId) throws ParseException {
+    public ApiResponse<Object> getIndustryDetail(Integer industryId){
         Industry industry = industryRepository.getIndustriesById(industryId);
         if (industry == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);

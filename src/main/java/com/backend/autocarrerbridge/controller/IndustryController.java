@@ -103,7 +103,7 @@ public class IndustryController {
      * @apiNote được sử dụng xem chi tiết ngành nghề của doanh nghiệp.
      */
     @GetMapping("/get-detail")
-    public ApiResponse<Object> getIndustry(@RequestParam(value = "id") Integer id) throws ParseException {
+    public ApiResponse<Object> getIndustry(@RequestParam(value = "id") Integer id) {
         return industryService.getIndustryDetail(id);
     }
 }
