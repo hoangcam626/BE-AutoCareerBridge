@@ -92,6 +92,7 @@ import static com.backend.autocarrerbridge.util.Constant.REQUEST_ALREADY_ACCEPT;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_WORKSHOP_FAIL;
 import static com.backend.autocarrerbridge.util.Constant.SAVE_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_EXISTED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.SECTION_HAVE_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.STATUS_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
@@ -191,6 +192,7 @@ public enum ErrorCode {
     UNIVERSITY_SECTION_NOT_NULL(BAD_REQUEST, UNIVERSITY_SECTION_NOT_NULL_MESSAGE, HttpStatus.BAD_REQUEST),
     SECTION_NOT_FOUND(BAD_REQUEST, SECTION_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     SECTION_EXISTED(BAD_REQUEST, SECTION_EXISTED_MESSAGE, HttpStatus.BAD_REQUEST),
+    SECTION_HAVE_MAJOR(BAD_REQUEST,SECTION_HAVE_MAJOR_MESSAGE,HttpStatus.BAD_REQUEST),
     // validation major
     CODE_MAJOR_NOT_BLANK(BAD_REQUEST, CODE_MAJOR_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     CODE_MAJOR_NOT_LOGGER(BAD_REQUEST, NAME_MAJOR_NOT_LOGGER_MESSAGE, HttpStatus.BAD_REQUEST),

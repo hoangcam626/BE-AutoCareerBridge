@@ -148,6 +148,7 @@ public class Constant {
     public static final String UNIVERSITY_SECTION_NOT_NULL_MESSAGE = "Trường đại học là bắt buộc.";
     public static final String SECTION_NOT_FOUND_MESSAGE = "Không tìm thấy khoa.";
     public static final String SECTION_EXISTED_MESSAGE = "Tên khoa đã tồn tại .";
+    public static final String SECTION_HAVE_MAJOR_MESSAGE = "Khoa có dữ liệu chuyên ngành không thể xóa.";
 
     // major
     public static final String NAME_MAJOR_NOT_BLANK_MESSAGE = "Tên ngành không được bỏ trống .";
