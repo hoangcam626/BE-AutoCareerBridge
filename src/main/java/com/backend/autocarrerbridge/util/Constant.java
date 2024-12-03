@@ -200,12 +200,11 @@ public class Constant {
     public static final String WORKSHOP_ALREADY_REJECTED_MESSAGE = "Workshop này đã bị từ chối.";
     public static final String INVALID_WORKSHOP_STATE_MESSAGE = "Trạng thái workshop này không hợp lệ.";
 
-    //Hợp tác
+    // Hợp tác
     public static final String HAVE_RELATION = "Bạn đã gửi yêu cầu hợp tác, vui lòng đợi chấp thuận";
     public static final String SEND_REQUEST_SUCCESS = "Đã gửi yêu cầu hợp tác thành công";
     public static final String APPROVED_RELATION = "Đã hợp tác";
     public static final String REJECTED_RELATION = "Yêu cầu hợp tác đã bị từ chối";
     public static final String CANCEL_RELATION = "Yêu cầu hợp tác đã bị hủy trước đó";
     public static final String CANCELED_SUCCESSFUL = "Hủy thành công";
-
 }
