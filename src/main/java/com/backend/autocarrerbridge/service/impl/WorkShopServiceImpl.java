@@ -6,9 +6,13 @@ import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
+import com.backend.autocarrerbridge.entity.Location;
+import com.backend.autocarrerbridge.service.LocationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -39,7 +43,7 @@ public class WorkShopServiceImpl implements WorkShopService {
     ModelMapper modelMapper;
     ImageService imageService;
     UniversityService universityService;
-
+    LocationService locationService;
     /**
      * Lấy danh sách tất cả các Workshop với phân trang.
      * @param pageable Thông tin phân trang
@@ -91,6 +95,12 @@ public class WorkShopServiceImpl implements WorkShopService {
         Integer imageId = imageService.uploadFile(workShopRequest.getImageWorkshop()); // Tải ảnh lên
         workShopRequest.setStatus(Status.ACTIVE); // Đặt trạng thái ACTIVE
         workShopRequest.setStatusBrowse(PENDING); // Đặt trạng thái duyệt là PENDING
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setDistrictId(workShopRequest.getIdDistrict());
+        locationRequest.setProvinceId(workShopRequest.getIdProvince());
+        locationRequest.setWardId(workShopRequest.getIdWard());
+        locationRequest.setDescription(workShopRequest.getAddressDescription());
+        Location location =  locationService.saveLocation(locationRequest);
         University university = universityService.findById(workShopRequest.getUniversityId()); // Tìm trường đại học
         if (university == null) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu trường không tồn tại
@@ -98,7 +108,8 @@ public class WorkShopServiceImpl implements WorkShopService {
         // Ánh xạ từ request sang entity và lưu vào cơ sở dữ liệu
         Workshop workshop = modelMapper.map(workShopRequest, Workshop.class);
         workshop.setWorkshopImageId(imageId); // Gắn ảnh cho Workshop
-        workshop.setUniversity(university); // Gắn trường đại học cho Workshop
+        workshop.setUniversity(university);// Gắn trường đại học cho Workshop
+        workshop.setLocation(location);
         return modelMapper.map(workShopRepository.save(workshop), WorkShopResponse.class);
     }
 
@@ -134,56 +145,104 @@ public class WorkShopServiceImpl implements WorkShopService {
         // Kiểm tra tính hợp lệ của yêu cầu cập nhật Workshop
         validateWorkShop(workShopRequest);
 
-        // Lấy thông tin Workshop hiện tại từ cơ sở dữ liệu, nếu không tìm thấy thì ném lỗi
-        Workshop workshop = workShopRepository.findById(id).orElse(null);
-        if (workshop == null) {
-            throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu Workshop không tồn tại
-        }
+        // Lấy thông tin Workshop hiện tại từ cơ sở dữ liệu
+        Workshop workshop = findWorkshopById(id);
 
-        // Kiểm tra xem ngày bắt đầu và kết thúc của Workshop có hợp lệ với yêu cầu không
-        if (workshop.getStartDate().isAfter(workShopRequest.getEndDate())
-                || workshop.getEndDate().isBefore(workShopRequest.getStartDate())) {
-            throw new AppException(ERROR_WORK_SHOP_DATE); // Ném lỗi nếu ngày không hợp lệ
-        }
 
-        // Kiểm tra xem ngày hết hạn có nằm trong khoảng ngày của Workshop không
-        if (workshop.getExpireDate().isBefore(workShopRequest.getStartDate().toLocalDate())
-                || workshop.getExpireDate().isAfter(workShopRequest.getEndDate().toLocalDate())) {
-            throw new AppException(ERROR_WORK_SHOP_DATE); // Ném lỗi nếu ngày hết hạn không hợp lệ
-        }
-
-        // Kiểm tra nếu ngày hết hạn yêu cầu nằm ngoài khoảng thời gian của Workshop
-        if (workShopRequest.getExpireDate().isAfter(workshop.getEndDate().toLocalDate())
-                || workShopRequest
-                        .getExpireDate()
-                        .isBefore(workshop.getStartDate().toLocalDate())) {
-            throw new AppException(ERROR_WORK_SHOP_DATE); // Ném lỗi nếu ngày hết hạn yêu cầu không hợp lệ
-        }
+        // Cập nhật thông tin địa điểm nếu có thay đổi
+        Location location = updateLocationIfNeeded(workshop, workShopRequest);
 
         // Lưu lại ID của ảnh Workshop cũ để xóa sau này nếu có ảnh mới
         Integer oldImageId = workshop.getWorkshopImageId();
 
-        // Cấu hình Mapper để bỏ qua các giá trị null trong quá trình ánh xạ
-        modelMapper.getConfiguration().setSkipNullEnabled(true);
-
-        // Nếu yêu cầu có ảnh mới, tiến hành tải lên và cập nhật ID ảnh cho Workshop
-        if (workShopRequest.getImageWorkshop() != null) {
-            Integer imageId = imageService.uploadFile(workShopRequest.getImageWorkshop());
-            workshop.setWorkshopImageId(imageId); // Cập nhật ID ảnh mới
-        }
+        // Cập nhật ảnh nếu có ảnh mới
+        Integer newImageId = updateWorkshopImage(workShopRequest);
 
         // Ánh xạ các trường từ yêu cầu vào đối tượng Workshop
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(workShopRequest, workshop);
-
+        workshop.setLocation(location);
+        if(newImageId != null) {
+            workshop.setWorkshopImageId(newImageId);
+            deleteOldImageIfExists(oldImageId, newImageId);
+        }
         // Lưu Workshop đã cập nhật vào cơ sở dữ liệu
         Workshop savedWorkShop = workShopRepository.save(workshop);
 
         // Xóa ảnh cũ nếu có
-        imageService.delete(oldImageId);
 
         // Trả về đối tượng phản hồi với thông tin Workshop đã cập nhật
         return modelMapper.map(savedWorkShop, WorkShopResponse.class);
     }
+
+    private Workshop findWorkshopById(Integer id) {
+        return workShopRepository.findById(id)
+                .orElseThrow(() -> new AppException(ERROR_NO_CONTENT));
+    }
+
+
+
+    private Location updateLocationIfNeeded(Workshop workshop, WorkShopRequest workShopRequest) {
+        LocationRequest locationRequest = new LocationRequest();
+        boolean isUpdated = false;
+
+        // Kiểm tra nếu có sự thay đổi về district
+        if (!Objects.equals(workshop.getLocation().getDistrict().getId(), workShopRequest.getIdDistrict())) {
+            locationRequest.setDistrictId(workShopRequest.getIdDistrict());
+            isUpdated = true;
+        }
+        else{
+            locationRequest.setDistrictId(workshop.getLocation().getDistrict().getId());
+        }
+
+        // Kiểm tra nếu có sự thay đổi về province
+        if (!Objects.equals(workshop.getLocation().getProvince().getId(), workShopRequest.getIdProvince())) {
+            locationRequest.setProvinceId(workShopRequest.getIdProvince());
+            isUpdated = true;
+        }
+        else{
+            locationRequest.setProvinceId(workshop.getLocation().getProvince().getId());
+        }
+
+        // Kiểm tra nếu có sự thay đổi về ward
+        if (!Objects.equals(workshop.getLocation().getWard().getId(), workShopRequest.getIdWard())) {
+            locationRequest.setWardId(workShopRequest.getIdWard());
+            isUpdated = true;
+        }
+        else{
+            locationRequest.setWardId(workshop.getLocation().getWard().getId());
+        }
+        if (!Objects.equals(workshop.getLocation().getDescription(), workShopRequest.getAddressDescription())) {
+            locationRequest.setDescription(workShopRequest.getAddressDescription());
+            isUpdated = true;
+        }
+        else{
+            locationRequest.setDescription(workshop.getLocation().getDescription());
+        }
+
+        // Chỉ gọi saveLocation nếu có thay đổi
+        if (isUpdated) {
+            return locationService.saveLocation(locationRequest);
+        }
+
+        // Nếu không có thay đổi, trả lại địa điểm cũ
+        return workshop.getLocation();
+    }
+
+
+    private Integer updateWorkshopImage(WorkShopRequest workShopRequest) {
+        if (workShopRequest.getImageWorkshop() != null) {
+            return imageService.uploadFile(workShopRequest.getImageWorkshop());
+        }
+        return null;
+    }
+
+    private void deleteOldImageIfExists(Integer oldImageId, Integer newImageId) {
+        if (oldImageId != null && !oldImageId.equals(newImageId)) {
+            imageService.delete(oldImageId);
+        }
+    }
+
 
     /**
      * Kiểm tra tính hợp lệ của Workshop.
@@ -191,17 +250,21 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu ngày tháng không hợp lệ
      */
     public void validateWorkShop(WorkShopRequest workShopRequest) {
-        if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())
-                || workShopRequest.getEndDate().isBefore(workShopRequest.getStartDate())) {
-            throw new AppException(ERROR_WORK_SHOP_DATE); // Kiểm tra ngày bắt đầu và kết thúc
+        // Kiểm tra ngày bắt đầu và kết thúc
+        if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())) {
+            throw new AppException(ERROR_WORK_SHOP_DATE);
         }
-        LocalDate endDate = workShopRequest.getEndDate().toLocalDate();
+
         LocalDate startDate = workShopRequest.getStartDate().toLocalDate();
-        if (workShopRequest.getExpireDate().isAfter(endDate)
-                || workShopRequest.getExpireDate().isBefore(startDate)) {
-            throw new AppException(ERROR_WORK_SHOP_DATE); // Kiểm tra ngày hết hạn
+        LocalDate endDate = workShopRequest.getEndDate().toLocalDate();
+        LocalDate expireDate = workShopRequest.getExpireDate(); // Đảm bảo rằng expireDate là LocalDate
+
+        // Kiểm tra ngày hết hạn
+        if (expireDate.isAfter(endDate) || expireDate.isBefore(startDate)) {
+            throw new AppException(ERROR_WORK_SHOP_DATE);
         }
     }
+
     /**
      * Cập nhật thông tin một Workshop theo ID.
      * @param id ID của Workshop cần xoá mềm

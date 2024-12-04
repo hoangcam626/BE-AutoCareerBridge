@@ -1,0 +1,80 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    container_name: autocareerbridge-app
+    ports:
+      - "2222:1111"
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/autocareerbridge?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_MAIL_USERNAME: quocta.gov@gmail.com
+      SPRING_MAIL_PASSWORD: nrkllzwwziuemlpi
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_PROTOCOL: smtp
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_TRUST: smtp.gmail.com
+      JWT_SIGNERKEY: 4vWibUUTG0xqSCoRSLJD/pSWelkjvZuMFnrp2cRGlSuqCDCsZ+ovnMbFcem13+UQ
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      MEDIA_IMG_PATH: /app/images
+    volumes:
+      - ./images:/app/images
+    networks:
+      - backend
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0.32  # Use the exact version that fits your database structure
+    container_name: autocareerbridge-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: autocareerbridge
+      LANG: C.UTF-8
+    ports:
+      - "3307:3306" # Avoid port conflict with MySQL on host
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  backend:
+    name: backend
+    driver: bridge

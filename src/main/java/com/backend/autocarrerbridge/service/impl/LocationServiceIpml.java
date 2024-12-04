@@ -35,27 +35,58 @@ public class LocationServiceIpml implements LocationService {
 
     @Override
     public Location saveLocation(LocationRequest request) {
-        Location location = new Location();
+        Location location;
+
         try {
             var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
 
-            // check xem location của business đã có chưa nếu có thì lấy ra sửa
+            // Nếu có ID (Cập nhật)
             if (Objects.nonNull(request.getId())) {
                 location = locationRepository
                         .findById(request.getId())
                         .orElseThrow(() -> new AppException(ErrorCode.ERROR_LOCATION_NOT_FOUND));
-                location.setUpdatedBy(emailAccountLogin);
+
+                // Cập nhật thông tin
+                location.setUpdatedBy(emailAccountLogin); // Cập nhật thông tin người sửa
+
+                // Cập nhật các thông tin nếu có sự thay đổi
+                if (request.getDescription() != null && !request.getDescription().equals(location.getDescription())) {
+                    location.setDescription(request.getDescription());
+                }
+                if (request.getProvinceId() != null && !Objects.equals(request.getProvinceId(), location.getProvince().getId())) {
+                    location.setProvince(provinceService.findProvinceById(request.getProvinceId()));
+                }
+                if (request.getDistrictId() != null && !Objects.equals(request.getDistrictId(), location.getDistrict().getId())) {
+                    location.setDistrict(districtService.findDistrictById(request.getDistrictId()));
+                }
+                if (request.getWardId() != null && !Objects.equals(request.getWardId(), location.getWard().getId())) {
+                    location.setWard(wardService.findWardById(request.getWardId()));
+                }
+
             } else {
+
+                location = new Location();
                 location.setCreatedBy(emailAccountLogin);
+
+                if (request.getDescription() != null) {
+                    location.setDescription(request.getDescription());
+                }
+                if (request.getProvinceId() != null) {
+                    location.setProvince(provinceService.findProvinceById(request.getProvinceId()));
+                }
+                if (request.getDistrictId() != null) {
+                    location.setDistrict(districtService.findDistrictById(request.getDistrictId()));
+                }
+                if (request.getWardId() != null) {
+                    location.setWard(wardService.findWardById(request.getWardId()));
+                }
             }
-            location.setDescription(request.getDescription());
-            location.setProvince(provinceService.findProvinceById(request.getProvinceId()));
-            location.setDistrict(districtService.findDistrictById(request.getDistrictId()));
-            location.setWard(wardService.findWardById(request.getWardId()));
 
         } catch (ParseException e) {
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
+
         return locationRepository.save(location);
     }
+
 }

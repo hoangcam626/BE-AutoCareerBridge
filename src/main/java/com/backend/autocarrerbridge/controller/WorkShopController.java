@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,7 @@ public class WorkShopController {
     @GetMapping
     public ApiResponse<Object> getAllWorkShop(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "5") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String keyword) {
         return ApiResponse.builder()
                 .data(workShopService.getAllWorkShop(PageRequest.of(page, size), keyword))
@@ -51,7 +52,7 @@ public class WorkShopController {
      * @return ApiResponse chứa workshop vừa được tạo.
      */
     @PostMapping
-    public ApiResponse<Object> createWorkShop(@ModelAttribute WorkShopRequest workShopRequest) {
+    public ApiResponse<Object> createWorkShop(@ModelAttribute @Valid WorkShopRequest workShopRequest) {
         return ApiResponse.builder()
                 .data(workShopService.createWorkShop(workShopRequest))
                 .build();
@@ -68,7 +69,7 @@ public class WorkShopController {
     @GetMapping("/state/{state}")
     public ApiResponse<Object> getAllWorkShopByState(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "5") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String keyword,
             @PathVariable("state") State state) {
         return ApiResponse.builder()
@@ -87,7 +88,7 @@ public class WorkShopController {
     @GetMapping("/university/{universityId}")
     public ApiResponse<Object> getAllWorkShopByUniversity(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "5") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String keyword,
             @PathVariable("universityId") Integer universityId) {
         return ApiResponse.builder()
@@ -133,7 +134,7 @@ public class WorkShopController {
     @GetMapping("/{workShopId}")
     public ApiResponse<Object> getAllAcceptedBusiness(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "5") Integer size,
+            @RequestParam(defaultValue = "10") Integer size,
             @PathVariable("workShopId") Integer workShopId,
             @RequestParam State state) {
         // Trả về dữ liệu danh sách doanh nghiệp tham gia workshop với phân trang
@@ -154,6 +155,11 @@ public class WorkShopController {
                 .data(workShopBusinessService.requestToAttend(workShopBusinessRequest))
                 .build();
     }
+    /**
+     * Chấp nhận yêu cầu tham gia workshop của doanh nghiệp.
+     * @param workShopBusinessRequest - Thông tin yêu cầu tham gia workshop.
+     * @return - Response chứa thông báo kết quả yêu cầu tham gia.
+     */
     @PostMapping("/accept-request")
     public ApiResponse<Object> acceptRequestWorkShop(@RequestBody WorkShopBusinessRequest workShopBusinessRequest) {
         // Gửi yêu cầu tham gia workshop và trả về thông báo kết quả
