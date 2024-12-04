@@ -2,7 +2,8 @@ package com.backend.autocarrerbridge.controller;
 
 import java.text.ParseException;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,7 +25,6 @@ import lombok.Setter;
 @Setter
 @Getter
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class IndustryController {
     private final IndustryService industryService;
 
@@ -43,7 +43,7 @@ public class IndustryController {
     }
 
     /**
-     * API lấy danh sách tất cả ngành nghề.
+     * API lấy danh sách tất cả ngành nghề của Admin.
      * @apiNote được sử dụng để truy vấn tất cả các bản ghi ngành nghề từ cơ sở dữ liệu.
      */
     @GetMapping("/get-all")
@@ -76,5 +76,34 @@ public class IndustryController {
     @PutMapping("/inactive")
     public ApiResponse<Object> inactiveIndustry(@RequestParam Integer id) throws ParseException {
         return industryService.inactiveIndustry(id);
+    }
+
+    /**
+     * API để thêm ngành nghề vào doanh nghiệp.
+     * @apiNote được sử dụng để thêm một ngành nghề vào doanh nghiệp.
+     */
+    @PostMapping("/create-to-business")
+    public ApiResponse<Object> createIndustryToBusiness(@RequestParam(value = "id") Integer id) throws ParseException {
+        return industryService.createIndustryToBusiness(id);
+    }
+
+    /**
+     * API lấy danh sách ngành nghề của doanh nghiệp.
+     * @apiNote được sử dụng để thêm một ngành nghề vào doanh nghiệp.
+     */
+    @GetMapping("/get-all-industry-business")
+    public ApiResponse<Object> getIndustryOfBusiness(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size) throws ParseException {
+        Pageable pageable = PageRequest.of(page - 1 , size);
+        return industryService.getIndustryOfBusiness(page, size, pageable);
+    }
+
+    /**
+     * API Xem chi tiết ngành nghề của doanh nghiệp.
+     * @apiNote được sử dụng xem chi tiết ngành nghề của doanh nghiệp.
+     */
+    @GetMapping("/get-detail")
+    public ApiResponse<Object> getIndustry(@RequestParam(value = "id") Integer id) {
+        return industryService.getIndustryDetail(id);
     }
 }

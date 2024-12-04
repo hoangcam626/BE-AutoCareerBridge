@@ -3,25 +3,16 @@ package com.backend.autocarrerbridge.util;
 import java.util.regex.Pattern;
 
 public class Validation {
+    // Pre-compiled pattern for validating emails
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" + // Local part
+                    "(?:[a-zA-Z0-9-]+\\.)+"
+                    + // Domain
+                    "[a-zA-Z]{2,}$" // Top-level domain
+            );
+
     // Kiểm tra xem chuỗi có phải là email hợp lệ không
     public static boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
-
-        return email != null && Pattern.matches(emailRegex, email);
-    }
-
-    public static boolean isValidPhoneNumber(String phoneNumber) {
-        String phoneRegex = "^\\d{10}$"; // Giả sử số điện thoại là 10 chữ số
-        return phoneNumber != null && Pattern.matches(phoneRegex, phoneNumber);
-    }
-
-    // Kiểm tra xem chuỗi không được null và không rỗng
-    public static boolean isNotNullOrEmpty(String str) {
-        return str != null && !str.trim().isEmpty();
-    }
-
-    // Kiểm tra độ dài của một chuỗi có nằm trong khoảng hợp lệ không
-    public static boolean isValidLength(String str, int min, int max) {
-        return str != null && str.length() >= min && str.length() <= max;
+        return email != null && EMAIL_PATTERN.matcher(email).matches();
     }
 }
