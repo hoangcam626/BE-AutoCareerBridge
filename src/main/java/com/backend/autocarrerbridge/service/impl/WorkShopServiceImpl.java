@@ -4,16 +4,22 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
 import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.service.LocationService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -67,9 +73,9 @@ public class WorkShopServiceImpl implements WorkShopService {
      */
     @Override
     public WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
-        List<Workshop> list = workShopRepository
-                .getAllWorkShopByUniversity(pageable, universityId, keyword)
-                .getContent();
+        Page<Workshop> list = workShopRepository
+                .getAllWorkShopByUniversity(pageable, universityId, keyword);
+
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
         }
@@ -78,6 +84,7 @@ public class WorkShopServiceImpl implements WorkShopService {
                 .toList();
         WorkShopUniversityResponse workShopUniversityResponse = new WorkShopUniversityResponse();
         workShopUniversityResponse.setWorkshops(workshops);
+        workShopUniversityResponse.setTotalRecords((int) list.getTotalElements());
         workShopUniversityResponse.setUniversity(modelMapper.map(universityService.findById(universityId), UniversityResponse.class));
         return workShopUniversityResponse;
     }
@@ -294,5 +301,15 @@ public class WorkShopServiceImpl implements WorkShopService {
             throw new AppException(ERROR_NO_CONTENT);
         }
         return modelMapper.map(workshopById, WorkShopResponse.class);
+    }
+
+    @Override
+    public WorkshopApprovedResponse approved(WorkshopApprovedRequest req) throws ParseException {
+        return null;
+    }
+
+    @Override
+    public WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException {
+        return null;
     }
 }

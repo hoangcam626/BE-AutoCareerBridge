@@ -14,4 +14,6 @@ import lombok.NoArgsConstructor;
 public class WorkShopUniversityResponse {
     private UniversityResponse university;
     private List<WorkShopResponse> workshops;
+    private Integer totalRecords;
+
 }
