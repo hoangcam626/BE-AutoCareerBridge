@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.util.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,8 +36,12 @@ public class UserAccountLoginResponse {
     Integer updatedBy;
 
     RoleRequest role;
+
     BusinessLoginResponse business;
+
     UniversityResponse university;
+
+    SubAdminSelfResponse subAdmin;
 
     String accessToken;
 }

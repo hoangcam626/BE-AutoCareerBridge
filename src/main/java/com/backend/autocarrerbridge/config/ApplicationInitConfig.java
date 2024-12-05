@@ -69,7 +69,7 @@ public class ApplicationInitConfig {
 
     private void initializeDefaultAdmin(UserAccountRepository accountRepository) {
         Role role = roleRepository.findById(ADMIN.getValue()).orElse(null);
-        if (accountRepository.findByUsername(username) == null) {
+        if (accountRepository.findByUsername(DEFAULT_USERNAME) == null) {
             UserAccount userAccounts = UserAccount.builder()
                     .username(DEFAULT_USERNAME)
                     .password(passwordEncoder.encode(password))
