@@ -28,7 +28,6 @@ public class EmployeeRequest {
 
     String address;
 
-    @NotBlank(message = "CODE_EMPLOYEE_NOT_BLANK")
     String employeeCode;
 
     MultipartFile employeeImage;

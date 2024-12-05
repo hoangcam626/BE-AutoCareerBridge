@@ -22,4 +22,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     Employee findByUsername(String username);
 
     Employee getEmployeeById(Integer id);
+
+    @Query("select Max(id) as lastest_employee_id from Employee ")
+    Integer getLastEmployee();
 }

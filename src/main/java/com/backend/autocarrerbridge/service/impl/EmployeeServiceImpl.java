@@ -49,6 +49,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     RoleService roleService;
     ImageService imageService;
 
+    public String generateEmployeeCode(String emailBusiness, int lastEmployeeId) {
+        // Lấy hai chữ cái đầu tiên từ email (chữ thường, chuyển thành viết hoa)
+        String initials = emailBusiness.split("@")[0].substring(0, 3).toUpperCase();
+
+        int nextId=lastEmployeeId+1;
+        // Tạo mã nhân viên theo định dạng + employeeId
+        return initials + String.format("%05d", nextId);
+    }
+
     @Override
     public List<EmployeeResponse> getListEmployeee() throws ParseException {
         // Lấy thông tin xác thực của người dùng hiện tại từ SecurityContextHolder
@@ -84,6 +93,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse addEmployee(EmployeeRequest request) {
         // Chuyển đổi từ EmployeeRequest sang Employee Entity
         Employee employee = employeeMapper.toEmployee(request);
+        if(Objects.nonNull(employeeRepository.findByUsername(employee.getEmail()))){
+            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
+        }
 
         try {
             // Lấy email doanh nghiệp từ token và gán doanh nghiệp cho nhân viên
@@ -94,6 +106,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             //set anh cho nhan vien
             employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
+
+            //set ma tu gen cho nhan vien
+            Integer idLast = employeeRepository.getLastEmployee();
+            employee.setEmployeeCode(generateEmployeeCode(emailBusiness,idLast));
         } catch (ParseException e) {
             // Ném ngoại lệ nếu token không hợp lệ
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);

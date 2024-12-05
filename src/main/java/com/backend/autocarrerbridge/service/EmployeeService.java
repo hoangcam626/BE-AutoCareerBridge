@@ -19,4 +19,5 @@ public interface EmployeeService {
     EmployeeResponse updateEmployee(Integer id, EmployeeRequest request);
 
     void deleteEmployee(Integer id);
+
 }
