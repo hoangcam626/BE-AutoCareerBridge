@@ -217,6 +217,7 @@ public class SubAdminServiceImpl implements SubAdminService {
      * @param req - Thông tin cần kiểm tra.
      */
     public void validateCreate(SubAdminCreateRequest req) {
+
         if (!Validation.isValidEmail(req.getEmail())) {
             throw new AppException(ERROR_VALID_EMAIL);
         }
