@@ -3,7 +3,6 @@ package com.backend.autocarrerbridge.controller;
 import java.text.ParseException;
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
@@ -52,9 +51,9 @@ public class SubAdminController {
      */
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content =
-            @Content(
-                    mediaType = "multipart/form-data",
-                    schema = @Schema(implementation = SubAdminCreateRequest.class)))
+                    @Content(
+                            mediaType = "multipart/form-data",
+                            schema = @Schema(implementation = SubAdminCreateRequest.class)))
     @PostMapping("/create")
     public ApiResponse<SubAdminCreateResponse> create(@Valid @ModelAttribute SubAdminCreateRequest req) throws ParseException {
 
@@ -71,9 +70,9 @@ public class SubAdminController {
      */
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content =
-            @Content(
-                    mediaType = "multipart/form-data",
-                    schema = @Schema(implementation = SubAdminUpdateRequest.class)))
+                    @Content(
+                            mediaType = "multipart/form-data",
+                            schema = @Schema(implementation = SubAdminUpdateRequest.class)))
     @PutMapping("/update")
     public ApiResponse<SubAdminUpdateResponse> update(@Valid SubAdminUpdateRequest req) throws ParseException {
         var res = subAdminService.update(req);
@@ -118,16 +117,15 @@ public class SubAdminController {
     /**
      * API lấy danh sách sub-admin theo phân trang.
      *
-     * @param page     - Số trang cần lấy (bắt đầu từ 0).
+     * @param page - Số trang cần lấy (bắt đầu từ 0).
      * @param pageSize - Số lượng bản ghi trên mỗi trang.
      * @return ApiResponse chứa danh sách sub-admin trong trang yêu cầu.
      */
     @GetMapping("/get-paging")
     public ApiResponse<Page<SubAdminSelfResponse>> getSubAdmins(
             @RequestParam(value = "page") int page,
-            @RequestParam(value = "pageSize") int pageSize,
-            @RequestParam(value = "keyword") String keyword) {
-        var res = subAdminService.pageSubAdmins(PageInfo.of(page, pageSize, keyword));
+            @RequestParam(value = "pageSize") int pageSize) {
+        var res = subAdminService.pageSubAdmins(page, pageSize);
         return new ApiResponse<>(res);
     }
 }
