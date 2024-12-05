@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -28,5 +27,4 @@ public class BusinessLoginResponse {
     LocalDate createdAt;
     LocalDate updatedAt;
     LocationResponse location;
-
 }

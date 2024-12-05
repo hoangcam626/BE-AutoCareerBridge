@@ -1,11 +1,12 @@
 package com.backend.autocarrerbridge.converter;
 
-import com.backend.autocarrerbridge.dto.response.cooperation.SentRequestResponse;
-import com.backend.autocarrerbridge.entity.BusinessUniversity;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.backend.autocarrerbridge.dto.response.cooperation.SentRequestResponse;
+import com.backend.autocarrerbridge.entity.BusinessUniversity;
 
 @Component
 public class SentRequestConverter {

@@ -57,7 +57,7 @@ public class Constant {
     public static final String ERROR_TOKEN_INVALID_MESSAGE = "Token không hợp lệ.";
     public static final String ERROR_APPROVED = "Người dùng đã được phê duyệt.";
     public static final String ERROR_NAME_EMPTY = "Tên không được để trống";
-    public static final String ERROR_LIST_EMPTY_MESSAGE = "Danh sách rỗng";
+    public static final String ERROR_LIST_EMPTY_MESAGE = "Danh sách rỗng";
 
     // Lỗi liên quan đến hình ảnh
     public static final String EMPTY_FILE_MESSAGE = "Tệp rỗng.";
@@ -87,6 +87,7 @@ public class Constant {
     public static final String NO_CHANGES_DETECTED = "Không có thay đổi nào.";
     public static final String DELETED = "Xóa thành công.";
     public static final String NO_EXIST_INDUSTRY = "Ngành không tồn tại";
+    public static final String EXIST_INDUSTRY_OF_BUSINESS = "Doanh nghiệp đã có ngành nghề này";
 
     // Token - JWT
     public static final String JTI = "jti";
@@ -155,6 +156,7 @@ public class Constant {
     public static final String UNIVERSITY_SECTION_NOT_NULL_MESSAGE = "Trường đại học là bắt buộc.";
     public static final String SECTION_NOT_FOUND_MESSAGE = "Không tìm thấy khoa.";
     public static final String SECTION_EXISTED_MESSAGE = "Tên khoa đã tồn tại .";
+    public static final String SECTION_HAVE_MAJOR_MESSAGE = "Khoa có dữ liệu chuyên ngành không thể xóa.";
 
     // major
     public static final String NAME_MAJOR_NOT_BLANK_MESSAGE = "Tên ngành không được bỏ trống .";
@@ -202,12 +204,11 @@ public class Constant {
     public static final String WORKSHOP_ALREADY_REJECTED_MESSAGE = "Workshop này đã bị từ chối.";
     public static final String INVALID_WORKSHOP_STATE_MESSAGE = "Trạng thái workshop này không hợp lệ.";
 
-    //Hợp tác
+    // Hợp tác
     public static final String HAVE_RELATION = "Bạn đã gửi yêu cầu hợp tác, vui lòng đợi chấp thuận";
     public static final String SEND_REQUEST_SUCCESS = "Đã gửi yêu cầu hợp tác thành công";
     public static final String APPROVED_RELATION = "Đã hợp tác";
     public static final String REJECTED_RELATION = "Yêu cầu hợp tác đã bị từ chối";
     public static final String CANCEL_RELATION = "Yêu cầu hợp tác đã bị hủy trước đó";
     public static final String CANCELED_SUCCESSFUL = "Hủy thành công";
-
 }

@@ -1,6 +1,11 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_APPROVED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_REJECTED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_ACCOUNT_STATE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.ACCEPT_NP;
 import static com.backend.autocarrerbridge.util.Constant.ACCEPT_US;
 import static com.backend.autocarrerbridge.util.Constant.NEW_CODE;
@@ -31,10 +36,15 @@ import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
+import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
+import com.backend.autocarrerbridge.service.IntermediaryService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -112,7 +122,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     /**
      * Lưu refresh token cho tài khoản người dùng.
      *
-     * @param id           id của tài khoản người dùng.
+     * @param id id của tài khoản người dùng.
      * @param refreshToken token cần lưu.
      * @throws RuntimeException nếu không tìm thấy tài khoản.
      */
@@ -163,8 +173,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         req.setState(State.REJECTED);
         userAccountRepository.save(req);
     }
-//   @PreAuthorize("hasAuthority('SCOPE_Admin')")
-//   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+    //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+    //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
 
     /**
      * Cập nhật mật khẩu cho tài khoản người dùng.
@@ -235,7 +245,8 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public String handleForgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         // Kiểm tra email có hợp lệ không
-        if (forgotPasswordRequest.getEmail() == null || forgotPasswordRequest.getEmail().isEmpty()) {
+        if (forgotPasswordRequest.getEmail() == null
+                || forgotPasswordRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
@@ -245,8 +256,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
 
         // Kiểm tra mã xác nhận có khớp với mã lưu trong Redis không
-        if (!forgotPasswordRequest.getForgotCode().equals(
-                redisTemplate.opsForValue().get(PREFIX_FG + forgotPasswordRequest.getEmail()))) {
+        if (!forgotPasswordRequest
+                .getForgotCode()
+                .equals(redisTemplate.opsForValue().get(PREFIX_FG + forgotPasswordRequest.getEmail()))) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
 

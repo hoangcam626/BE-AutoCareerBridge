@@ -9,7 +9,6 @@ import static com.backend.autocarrerbridge.util.Constant.NO_CONTENT_MESSAGE;
 @Data
 @AllArgsConstructor(staticName = "of")
 public class NotificationSendRequest {
-
     @NotBlank(message = NO_CONTENT_MESSAGE)
     private String toUsername;
 

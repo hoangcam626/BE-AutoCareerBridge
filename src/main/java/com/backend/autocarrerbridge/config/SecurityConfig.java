@@ -45,19 +45,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // default co accept all quyen ko can jwt
-    //  @Bean
-    //  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-    //    return httpSecurity
-    //        .csrf(csrf -> csrf.disable())
-    //        .authorizeRequests(auth -> auth
-    //                .anyRequest().permitAll()
-    //            // Cho phép truy cập vào tất cả các yêu cầu mà không cần xác thực
-    //        )
-    //        .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
-    //        .build();
-    //  }
-
     @Bean
     public JwtBlacklistFilter jwtBlacklistFilter() {
         return new JwtBlacklistFilter(redisTemplate, tokenService);

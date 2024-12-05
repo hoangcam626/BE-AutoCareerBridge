@@ -1,11 +1,10 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
-import com.backend.autocarrerbridge.service.BusinessUniversityService;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
+
+import java.text.ParseException;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,14 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
-import java.util.List;
+import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
+import com.backend.autocarrerbridge.service.BusinessUniversityService;
 
-import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @RestController // Đánh dấu lớp này là một RESTful controller
 @RequiredArgsConstructor // Tự động sinh constructor với các trường được đánh dấu là final
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true) // Thiết lập phạm vi truy cập mặc định và đánh dấu các trường là final
+@FieldDefaults(
+        level = AccessLevel.PRIVATE,
+        makeFinal = true) // Thiết lập phạm vi truy cập mặc định và đánh dấu các trường là final
 @RequestMapping("api/cooperation") // Định nghĩa đường dẫn cơ sở cho các API
 public class CooperationController {
 
@@ -122,11 +126,8 @@ public class CooperationController {
      * @return thông báo thành công
      */
     @GetMapping("/approve-request/{buId}")
-    ApiResponse<String> approveRequestCooperation(@PathVariable Integer buId){
+    ApiResponse<String> approveRequestCooperation(@PathVariable Integer buId) {
         businessUniversityService.approveRequetCooperation(buId);
-        return ApiResponse.<String>builder()
-                .data(SUCCESS_MESSAGE)
-                .build();
+        return ApiResponse.<String>builder().data(SUCCESS_MESSAGE).build();
     }
-
 }

@@ -66,7 +66,7 @@ public class SectionConverter {
     // Phương thức chuyển đổi Section entity thành SectionRequest (dùng để trả về response)
     public static SectionRequest convertToResponse(Section section) {
         // Lấy danh sách major
-        List<MajorRequest> majorRequestList = section.getMajors().stream()
+        List<MajorRequest> majorRequestList = section.getMajors() != null ? section.getMajors().stream()
                 .map(major -> MajorRequest.builder()
                         .id(major.getId())
                         .code(major.getCode())
@@ -80,7 +80,7 @@ public class SectionConverter {
                         .createdBy(major.getCreatedBy())
                         .updatedBy(major.getUpdatedBy())
                         .build())
-                .toList();
+                .toList() : List.of();
 
         return SectionRequest.builder()
                 .id(section.getId())

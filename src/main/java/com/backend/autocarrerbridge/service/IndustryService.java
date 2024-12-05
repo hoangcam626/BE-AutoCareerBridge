@@ -4,6 +4,7 @@ import java.text.ParseException;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
+import org.springframework.data.domain.Pageable;
 
 public interface IndustryService {
 
@@ -16,4 +17,11 @@ public interface IndustryService {
     ApiResponse<Object> updateIndustry(IndustryRequest industryRequest) throws ParseException;
 
     ApiResponse<Object> inactiveIndustry(Integer id) throws ParseException;
+
+    ApiResponse<Object> createIndustryToBusiness(Integer industryId) throws ParseException;
+
+    ApiResponse<Object> getIndustryOfBusiness(int page, int size, Pageable pageable) throws ParseException;
+
+    ApiResponse<Object> getIndustryDetail(Integer industryId) throws ParseException;
+    ApiResponse<Object> inactiveIndustryOfBusiness(Integer businessIndustryId) throws ParseException;
 }

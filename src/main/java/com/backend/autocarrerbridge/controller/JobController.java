@@ -2,6 +2,8 @@ package com.backend.autocarrerbridge.controller;
 
 import java.text.ParseException;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,8 +33,10 @@ public class JobController {
      * @return Danh sách các công việc đã đăng tuyển.
      */
     @GetMapping("/get-all-job")
-    public ApiResponse<Object> getAllJob() throws ParseException {
-        return jobService.getAllJob();
+    public ApiResponse<Object> getAllJob(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size) throws ParseException {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return jobService.getAllJob(page, size, pageable);
     }
 
     /**
