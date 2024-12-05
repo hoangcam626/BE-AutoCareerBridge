@@ -1,41 +1,42 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
-import com.backend.autocarrerbridge.converter.UniversityConverter;
-import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
-import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
-import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
-import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
-import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
-import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
-import com.backend.autocarrerbridge.service.ImageService;
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.SendEmail;
-import com.backend.autocarrerbridge.util.enums.Status;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.converter.UniversityConverter;
 import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
+import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
+import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.UniversityRepository;
+import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.UserAccountService;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.PredefinedRole;
 import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -146,7 +147,7 @@ public class UniversityServiceImpl implements UniversityService {
         // Từ chối tài khoản người thay đổi trạng thái thành "REJECTED".
         userAccountService.rejectedAccount(userAccount);
 
-        //Đổi trạng thái sang INACTIVE (xóa mềm thông tin doanh nghiệp)
+        // Đổi trạng thái sang INACTIVE (xóa mềm thông tin doanh nghiệp)
         university.setStatus(Status.INACTIVE);
         universityRepository.save(university);
 
@@ -160,27 +161,29 @@ public class UniversityServiceImpl implements UniversityService {
     @Transactional
     @Override
     public UniversityResponse update(int id, UniversityRequest universityRequest) {
-        University university = universityRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+        University university = universityRepository
+                .findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
         university.setName(universityRequest.getName());
         university.setWebsite(universityRequest.getWebsite());
         university.setFoundedYear(universityRequest.getFoundedYear());
         university.setPhone(universityRequest.getPhone());
         university.setDescription(universityRequest.getDescription());
 
-        if (universityRequest.getLogoImageId() != null && !universityRequest.getLogoImageId().isEmpty()) {
+        if (universityRequest.getLogoImageId() != null
+                && !universityRequest.getLogoImageId().isEmpty()) {
             // Tải lên ảnh mới và lưu ID của ảnh
             university.setLogoImageId(imageService.uploadFile(universityRequest.getLogoImageId()));
         }
         universityRepository.save(university);
         return UniversityConverter.convertToResponse(university);
-
     }
 
     @Override
     public List<UniversityResponse> getById(int id) {
-        University university = universityRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+        University university = universityRepository
+                .findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
         return List.of(UniversityConverter.convertToResponse(university));
     }
 
@@ -199,7 +202,8 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName) {
         List<University> list = universityRepository.findUniversity(address, universityName);
-        return list.stream().map(university -> modelMapper.map(university,UniversityResponse.class)).toList();
+        return list.stream()
+                .map(university -> modelMapper.map(university, UniversityResponse.class))
+                .toList();
     }
-
 }

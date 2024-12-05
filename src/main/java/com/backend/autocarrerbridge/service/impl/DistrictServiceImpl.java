@@ -1,5 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -14,8 +16,6 @@ import com.backend.autocarrerbridge.service.DistrictService;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
-
 @Service
 @RequiredArgsConstructor
 public class DistrictServiceImpl implements DistrictService {
@@ -25,7 +25,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public List<DistrictResponse> getAllByProvinceId(Integer provinceId) {
 
-        if(Objects.isNull(provinceId)){
+        if (Objects.isNull(provinceId)) {
             throw new AppException(ERROR_PROVINCE_NOT_BLANK);
         }
 
@@ -39,7 +39,7 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public DistrictResponse getById(Integer id) {
 
-        if(Objects.isNull(id)){
+        if (Objects.isNull(id)) {
             throw new AppException(ERROR_DISTRICT_NOT_BLANK);
         }
         District district = findDistrictById(id);
@@ -48,7 +48,6 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public District findDistrictById(Integer id) {
-        return districtRepository.findById(id)
-                .orElseThrow(() -> new AppException(ERROR_DISTRICT_NOT_FOUND));
+        return districtRepository.findById(id).orElseThrow(() -> new AppException(ERROR_DISTRICT_NOT_FOUND));
     }
 }

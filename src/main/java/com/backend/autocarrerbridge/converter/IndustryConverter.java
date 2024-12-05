@@ -1,11 +1,12 @@
 package com.backend.autocarrerbridge.converter;
 
-import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
-import com.backend.autocarrerbridge.entity.BusinessIndustry;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
+import com.backend.autocarrerbridge.entity.BusinessIndustry;
 
 @Component
 public class IndustryConverter {
