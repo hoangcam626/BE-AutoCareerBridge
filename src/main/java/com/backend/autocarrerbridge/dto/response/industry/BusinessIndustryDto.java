@@ -22,8 +22,8 @@ public class BusinessIndustryDto {
     String industryCode;
     String businessName;
     Status status;
-    LocalDateTime creatAt;
-    String createdBy;
+    LocalDateTime createAt;
+    String createBy;
     public BusinessIndustryDto(BusinessIndustry businessIndustry) {
         this.id = businessIndustry.getId();
         this.businessId = businessIndustry.getBusiness().getId();
@@ -32,7 +32,7 @@ public class BusinessIndustryDto {
         this.industryCode = businessIndustry.getIndustry().getCode();
         this.businessName = businessIndustry.getBusiness().getName();
         this.status = businessIndustry.getStatus();
-        this.creatAt = LocalDateTime.now();
-        this.createdBy = businessIndustry.getCreatedBy();
+        this.createAt = LocalDateTime.now();
+        this.createBy = businessIndustry.getCreatedBy();
     }
 }

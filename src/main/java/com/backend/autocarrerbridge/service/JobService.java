@@ -8,9 +8,10 @@ import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRequest;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import org.springframework.data.domain.Pageable;
 
 public interface JobService {
-    ApiResponse<Object> getAllJob() throws ParseException;
+    ApiResponse<Object> getAllJob(int page, int size, Pageable pageable) throws ParseException;
 
     ApiResponse<Object> createJob(JobRequest jobRequest) throws ParseException;
 
