@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+import static com.backend.autocarrerbridge.util.Constant.REJECT_ACCEPT_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
 
@@ -54,12 +55,13 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
         if (state != State.PENDING && state != State.APPROVED && state != State.REJECTED) {
             throw new AppException(ERROR_NO_CONTENT);
         }
+
         // Lấy thông tin workshop theo ID
         WorkShopResponse workShopResponse = workShopService.getWorkShopById(workshopId);
 
         // Lấy danh sách các doanh nghiệp tham gia workshop
         List<Business> businesses = workShopBussinessRepository
-                .getAllBusiness(workshopId, pageable, state)
+                .getAllBusiness(workshopId, state, pageable)
                 .getContent();
         if (businesses.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
@@ -146,5 +148,30 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
 
         // Trả về thông báo thành công sau khi cập nhật trạng thái.
         return SUCCESS_ACCEPT_MESSAGE;
+    }
+
+    @Override
+    public String rejectBusiness(WorkShopBusinessRequest workShopBusinessRequest) {
+        WorkshopBusiness workshopBusiness = workShopBussinessRepository.checkExistWorkShop(
+                workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID());
+
+        // Nếu không tìm thấy kết nối, ném ngoại lệ với mã lỗi NOT_FOUNDED.
+        if (workshopBusiness == null) {
+            throw new AppException(ErrorCode.NOT_FOUNDED);
+        }
+
+        // Nếu kết nối đã ở trạng thái "APPROVED", ném ngoại lệ với mã lỗi ERROR_ALREADY_ACCEPT.
+        if (workshopBusiness.getStatusConnected().equals(State.APPROVED)) {
+            throw new AppException(ErrorCode.ERROR_ALREADY_ACCEPT);
+        }
+
+        // Cập nhật trạng thái kết nối thành "APPROVED".
+        workshopBusiness.setStatusConnected(State.REJECTED);
+
+        // Lưu trạng thái kết nối đã cập nhật vào cơ sở dữ liệu.
+        workShopBussinessRepository.save(workshopBusiness);
+
+        // Trả về thông báo thành công sau khi cập nhật trạng thái.
+        return REJECT_ACCEPT_MESSAGE;
     }
 }

@@ -72,6 +72,7 @@ public class WorkShopController {
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) String keyword,
             @PathVariable("state") State state) {
+
         return ApiResponse.builder()
                 .data(workShopService.getAllWorkShopByState(PageRequest.of(page, size), state, keyword))
                 .build();
@@ -137,6 +138,7 @@ public class WorkShopController {
             @RequestParam(defaultValue = "10") Integer size,
             @PathVariable("workShopId") Integer workShopId,
             @RequestParam State state) {
+
         // Trả về dữ liệu danh sách doanh nghiệp tham gia workshop với phân trang
         return ApiResponse.builder()
                 .data(workShopBusinessService.getAllColabBusiness(workShopId, PageRequest.of(page, size), state))
@@ -165,6 +167,18 @@ public class WorkShopController {
         // Gửi yêu cầu tham gia workshop và trả về thông báo kết quả
         return ApiResponse.builder()
                 .data(workShopBusinessService.acceptBusiness(workShopBusinessRequest))
+                .build();
+    }
+    /**
+     * Chấp nhận yêu cầu tham gia workshop của doanh nghiệp.
+     * @param workShopBusinessRequest - Thông tin yêu cầu tham gia workshop.
+     * @return - Response chứa thông báo kết quả yêu cầu tham gia.
+     */
+    @PostMapping("/reject-request")
+    public ApiResponse<Object> rejectRequestWorkShop(@RequestBody WorkShopBusinessRequest workShopBusinessRequest) {
+        // Gửi yêu cầu tham gia workshop và trả về thông báo kết quả
+        return ApiResponse.builder()
+                .data(workShopBusinessService.rejectBusiness(workShopBusinessRequest))
                 .build();
     }
 }

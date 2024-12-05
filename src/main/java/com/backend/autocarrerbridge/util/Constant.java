@@ -29,6 +29,7 @@ public class Constant {
     public static final String VALIDATION_ERROR_MESSAGE = "Lỗi xác thực";
     public static final String NOTIFICATION_WAIT = "Vui lòng chờ";
     public static final String SUCCESS_ACCEPT_MESSAGE = "Chấp nhận yêu cầu thành công!";
+    public static final String REJECT_ACCEPT_MESSAGE = "Từ chối thành công!";
 
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
