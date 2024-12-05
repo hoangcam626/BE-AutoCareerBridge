@@ -19,7 +19,7 @@ public interface SubAdminService {
 
     SubAdminUpdateResponse update(SubAdminUpdateRequest req) throws ParseException;
 
-    SubAdminSelfResponse self(SubAdminSelfRequest req);
+    SubAdminSelfResponse detail(SubAdminSelfRequest req);
 
     SubAdminDeleteResponse delete(SubAdminDeleteRequest req);
 

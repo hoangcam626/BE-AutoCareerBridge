@@ -1,10 +1,15 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_JOB_STATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_APPROVED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_REJECTED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_JOB_STATE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_APPROVED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_REJECTED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_BUSINESS;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EXIST_JOB;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
@@ -14,18 +19,32 @@ import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
+import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
+import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.service.NotificationService;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
+import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.service.NotificationService;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
-import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRequest;
-import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Employee;
@@ -40,14 +59,12 @@ import com.backend.autocarrerbridge.repository.IndustryRepository;
 import com.backend.autocarrerbridge.repository.JobRepository;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.JobService;
-import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.service.TokenService;
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +90,7 @@ public class JobServiceImpl implements JobService {
         String usernameToken = tokenService.getClaim(token, "sub");
         Employee employeeToken = employeeRepository.findByUsername(usernameToken);
         if (employeeToken == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
+            throw new AppException(ERROR_ACCOUNT_IS_NULL);
         }
         return employeeToken;
     }
@@ -91,19 +108,20 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách công việc mà doanh nghiệp đã đăng
      */
     @Override
-    public ApiResponse<Object> getAllJob() throws ParseException {
+    public ApiResponse<Object> getAllJob(int page, int size, Pageable pageable) throws ParseException {
         // Lấy thông tin của business qua employee
         Business business =
                 businessRepository.getBusinessByEmployeeId(getEmployeeViaToken().getId());
         if (business == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
+            throw new AppException(ERROR_NOT_FOUND_BUSINESS);
         }
         // Lấy danh sách công việc của doanh nghiệp
-        List<JobResponse> jobs = jobRepository.getAllJob(business.getId());
+        Page<JobResponse> jobs = jobRepository.getAllJob(business.getId(), pageable);
         if (jobs.isEmpty()) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
-        return ApiResponse.builder().data(jobs).build();
+        PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobs);
+        return ApiResponse.builder().data(pagingResponse).build();
     }
 
     /**
@@ -117,16 +135,15 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
         // Lấy thông tin industry qua job
-        Industry industry =
-                industryRepository.getIndustriesById(job.getIndustry().getId());
+        Industry industry = industryRepository.getIndustriesById(job.getIndustry().getId());
         if (industry == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
+            throw new AppException(ERROR_EXIST_INDUSTRY);
         }
         // Lấy thông tin business qua job
         Business business =
                 businessRepository.getBusinessByEmployeeId(job.getBusiness().getId());
         if (business == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
+            throw new AppException(ERROR_NOT_FOUND_BUSINESS);
         }
         // Lấy thông tin employee qua job
         Employee employee = employeeRepository.getEmployeeById(job.getEmployee().getId());
@@ -149,7 +166,7 @@ public class JobServiceImpl implements JobService {
         String usernameToken = tokenService.getClaim(token, "sub");
         UserAccount userAccount = userAccountRepository.findByUsername(usernameToken);
         if (userAccount == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
+            throw new AppException(ERROR_ACCOUNT_IS_NULL);
         }
         Industry industry = industryRepository.getIndustriesById(jobRequest.getIndustriesID());
         if (industry == null) {
@@ -159,7 +176,7 @@ public class JobServiceImpl implements JobService {
         Business business =
                 businessRepository.getBusinessByEmployeeId(getEmployeeViaToken().getId());
         if (business == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
+            throw new AppException(ERROR_NOT_FOUND_BUSINESS);
         }
         Job job = Job.builder()
                 .title(jobRequest.getTitle())
@@ -244,7 +261,8 @@ public class JobServiceImpl implements JobService {
         String emailEmployee = job.getEmployee().getEmail();
 
         EmailDTO emailDTO = new EmailDTO(emailEmployee, APPROVED_JOB, "");
-        sendEmail.sendApprovedJobNotification(emailDTO, job.getTitle());
+        sendEmail.sendApprovedJobNotification(emailDTO,
+                job.getTitle());
 
         String message = String.format("%s: %s", APPROVED_JOB, job.getTitle());
         notificationService.send(NotificationSendRequest.of(emailEmployee, message));
@@ -276,8 +294,9 @@ public class JobServiceImpl implements JobService {
 
         // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
         if (req.getStatusBrowse() == targetState) {
-            throw new AppException(
-                    targetState == State.APPROVED ? ERROR_JOB_ALREADY_APPROVED : ERROR_JOB_ALREADY_REJECTED);
+            throw new AppException(targetState == State.APPROVED
+                    ? ERROR_JOB_ALREADY_APPROVED
+                    : ERROR_JOB_ALREADY_REJECTED);
         }
 
         // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)

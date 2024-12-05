@@ -29,6 +29,7 @@ public class Constant {
     public static final String VALIDATION_ERROR_MESSAGE = "Lỗi xác thực";
     public static final String NOTIFICATION_WAIT = "Vui lòng chờ";
     public static final String SUCCESS_ACCEPT_MESSAGE = "Chấp nhận yêu cầu thành công!";
+    public static final String REJECT_ACCEPT_MESSAGE = "Từ chối thành công!";
 
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
@@ -39,6 +40,7 @@ public class Constant {
 
     // Thông báo lỗi cụ thể
     public static final String ERROR_INVALID_EMAIL = "Email không hợp lệ.";
+    public static final String ERROR_INVALID_PHONE = "Email không hợp lệ.";
     public static final String ERROR_EXIST = "Email đã tồn tại.";
     public static final String ERROR_NOT_FOUND = "Không tìm thấy email.";
     public static final String ERROR_USER_EXIST = "Tên người dùng đã tồn tại.";
@@ -70,6 +72,7 @@ public class Constant {
     public static final String NOT_FOUND_FILE_IMAGE_MESSAGE = "Không tìm thấy tệp trong bộ nhớ.";
 
     // Thông báo lỗi Sub-admin
+    public static final String NO_CODE_SUB_ADMIN = "Mã quản trị viên không được để trống";
     public static final String NOT_FOUND_SUB_ADMIN = "Không tìm thấy sub-admin theo id.";
     public static final String NOT_FOUND_ROLE = "Không tìm thấy vai trò.";
     public static final String NOT_FOUND_BUSINESS_MESSAGE = "Không tìm thấy doanh nghiệp.";

@@ -12,4 +12,6 @@ public interface WorkShopBusinessService {
     String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest);
 
     String acceptBusiness(WorkShopBusinessRequest workShopBusinessRequest);
+
+    String rejectBusiness(WorkShopBusinessRequest workShopBusinessRequest);
 }

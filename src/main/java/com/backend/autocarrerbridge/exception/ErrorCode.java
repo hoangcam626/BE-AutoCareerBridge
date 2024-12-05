@@ -1,15 +1,30 @@
 package com.backend.autocarrerbridge.exception;
 
+import java.util.Arrays;
+
+import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
+
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_REJECTED_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_RELATION;
-import static com.backend.autocarrerbridge.util.Constant.BAD_REQUEST;
 import static com.backend.autocarrerbridge.util.Constant.CANCEL_RELATION;
-import static com.backend.autocarrerbridge.util.Constant.CODE_EMPLOYEE_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_EXIT_SUB_ADMIN_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_INVALID_PHONE;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_LIST_EMPTY_MESAGE;
+import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.HAVE_RELATION;
+import static com.backend.autocarrerbridge.util.Constant.ID_MAJOR_NOT_NULL_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_ACCOUNT_STATE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_REJECTED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_IS_NULL;
+import static com.backend.autocarrerbridge.util.Constant.BAD_REQUEST;
+import static com.backend.autocarrerbridge.util.Constant.CODE_EMPLOYEE_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CREATED_BY_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DATE_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.DATE_WORK_SHOP_MESSAGE;
@@ -17,8 +32,6 @@ import static com.backend.autocarrerbridge.util.Constant.DELETE_IMAGE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DES_WORK_SHOP_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DIRECTORY_FILE_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DOB_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.EMAIL_INVALID_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.EMAIL_NOT_BLANK_MESSAGE;
@@ -27,7 +40,6 @@ import static com.backend.autocarrerbridge.util.Constant.EMPTY_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_APPROVED;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_EXIST;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_INVALID_EMAIL;
-import static com.backend.autocarrerbridge.util.Constant.ERROR_LIST_EMPTY_MESAGE;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_NAME_EMPTY;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_NOT_EMPTY_PW;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_NOT_FOUND;
@@ -42,16 +54,11 @@ import static com.backend.autocarrerbridge.util.Constant.EXIST_CODE;
 import static com.backend.autocarrerbridge.util.Constant.EXIST_INDUSTRY_OF_BUSINESS;
 import static com.backend.autocarrerbridge.util.Constant.EXIST_NAME;
 import static com.backend.autocarrerbridge.util.Constant.EXIST_NAME_AND_CODE;
-import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.FORGOT_CODE_EMPTY_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.FORGOT_CODE_INVALID_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.FORGOT_CODE_REQUIRED_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.GENDER_NOT_BLANK_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.HAVE_RELATION;
-import static com.backend.autocarrerbridge.util.Constant.ID_MAJOR_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE;
-import static com.backend.autocarrerbridge.util.Constant.INVALID_ACCOUNT_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_JOB_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_LENGTH_PW_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_WORKSHOP_STATE_MESSAGE;
@@ -76,6 +83,7 @@ import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND_ROLE;
 import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND_SUB_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND_UNIVERSITY_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NO_CHANGES_DETECTED;
+import static com.backend.autocarrerbridge.util.Constant.NO_CODE_SUB_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.NO_CONTENT_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.util.Constant.NO_EXIST_INDUSTRY;
@@ -106,22 +114,20 @@ import static com.backend.autocarrerbridge.util.Constant.USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.USER_PENDING;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.LOCATION_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WORKSHOP_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WORKSHOP_ALREADY_REJECTED_MESSAGE;
 
 import java.util.Arrays;
 
-import org.springframework.http.HttpStatus;
-
-import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
 
     /** Không có nội dung hiển thị */
     ERROR_CODE_NOT_FOUND(NOT_FOUND, NO_CONTENT_MESSAGE, HttpStatus.NOT_FOUND),
-    ERROR_LIST_EMPTY(BAD_REQUEST, ERROR_LIST_EMPTY_MESAGE, HttpStatus.BAD_REQUEST),
+    ERROR_LIST_EMPTY(BAD_REQUEST,ERROR_LIST_EMPTY_MESAGE,HttpStatus.BAD_REQUEST),
 
     // Ngành nghề
     /** Tên hoặc mã của ngành đã tồn tại */
@@ -133,6 +139,7 @@ public enum ErrorCode {
     ERROR_EXIST_INDUSTRY(BAD_REQUEST, NO_EXIST_INDUSTRY, HttpStatus.BAD_REQUEST),
     ERROR_EXIST_INDUSTRY_OF_BUSINESS(BAD_REQUEST, EXIST_INDUSTRY_OF_BUSINESS, HttpStatus.BAD_REQUEST),
 
+    // Các lỗi liên quan đến image
     ERROR_EMPTY_FILE(BAD_REQUEST, EMPTY_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_TYPE_FILE(BAD_REQUEST, TYPE_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_LIMIT_SIZE_FILE(BAD_REQUEST, LIMIT_SIZE_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -141,10 +148,13 @@ public enum ErrorCode {
     ERROR_DELETE_IMAGE(BAD_REQUEST, DELETE_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_IMAGE(BAD_REQUEST, NOT_FOUND_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_FIND_IMAGE(BAD_REQUEST, NOT_FOUND_FILE_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
-    NO_CHANGE_DETECTED(SUCCESS, NO_CHANGES_DETECTED, HttpStatus.OK),
     ERROR_OPEN_IMAGE(BAD_REQUEST, OPEN_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    NO_CHANGE_DETECTED(SUCCESS, NO_CHANGES_DETECTED, HttpStatus.OK),
+    ERROR_NO_CODE_SUB_ADMIN(BAD_REQUEST, NO_CODE_SUB_ADMIN, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_SUB_ADMIN(BAD_REQUEST, NOT_FOUND_SUB_ADMIN, HttpStatus.BAD_REQUEST),
     ERROR_VALID_EMAIL(BAD_REQUEST, ERROR_INVALID_EMAIL, HttpStatus.BAD_REQUEST),
+    ERROR_VALID_PHONE(BAD_REQUEST, ERROR_INVALID_PHONE, HttpStatus.BAD_REQUEST),
     ERROR_EMAIL_EXIST(BAD_REQUEST, ERROR_EXIST, HttpStatus.BAD_REQUEST),
     ERROR_EMAIL_NOT_FOUND(BAD_REQUEST, ERROR_NOT_FOUND, HttpStatus.BAD_REQUEST),
     ERROR_USER(BAD_REQUEST, ERROR_USER_EXIST, HttpStatus.BAD_REQUEST),
@@ -202,7 +212,7 @@ public enum ErrorCode {
     UNIVERSITY_SECTION_NOT_NULL(BAD_REQUEST, UNIVERSITY_SECTION_NOT_NULL_MESSAGE, HttpStatus.BAD_REQUEST),
     SECTION_NOT_FOUND(BAD_REQUEST, SECTION_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     SECTION_EXISTED(BAD_REQUEST, SECTION_EXISTED_MESSAGE, HttpStatus.BAD_REQUEST),
-    SECTION_HAVE_MAJOR(BAD_REQUEST, SECTION_HAVE_MAJOR_MESSAGE, HttpStatus.BAD_REQUEST),
+    SECTION_HAVE_MAJOR(BAD_REQUEST,SECTION_HAVE_MAJOR_MESSAGE,HttpStatus.BAD_REQUEST),
     // validation major
     CODE_MAJOR_NOT_BLANK(BAD_REQUEST, CODE_MAJOR_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     CODE_MAJOR_NOT_LOGGER(BAD_REQUEST, NAME_MAJOR_NOT_LOGGER_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -225,6 +235,7 @@ public enum ErrorCode {
     ERROR_INVALID_ACCOUNT_STATE(BAD_REQUEST, INVALID_ACCOUNT_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_ACCOUNT_IS_NULL(BAD_REQUEST, ACCOUNT_IS_NULL, HttpStatus.BAD_REQUEST),
 
+    // Các lỗi liên quan đến đơn vị hành chính
     ERROR_PROVINCE_NOT_FOUND(BAD_REQUEST, PROVINCE_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_DISTRICT_NOT_FOUND(BAD_REQUEST, DISTRICT_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WARD_NOT_FOUND(BAD_REQUEST, WARD_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -243,21 +254,23 @@ public enum ErrorCode {
     /**Yêu cầu đã bị hủy trước đó*/
     ERROR_CANCEL_RELATION(BAD_REQUEST, CANCEL_RELATION, HttpStatus.BAD_REQUEST),
 
-    // Validation university
-    NAME_UNIVERSITY_NOT_BLANK(BAD_REQUEST, NAME_UNIVERSITY_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
-    NAME_UNIVERSITY_SIZE(BAD_REQUEST, NAME_UNIVERSITY_SIZE_MESSAGE, HttpStatus.BAD_REQUEST),
-    WEBSITE_UNIVERSITY_NOT_BLANK(BAD_REQUEST, WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
-    FOUNDED_YEAR_UNIVERSITY_NOT_BLANK(BAD_REQUEST, FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
-    PHONE_UNIVERSITY_NOT_BLANK(BAD_REQUEST, PHONE_UNIVERSITY_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    //Validation university
+    NAME_UNIVERSITY_NOT_BLANK(BAD_REQUEST,NAME_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    NAME_UNIVERSITY_SIZE(BAD_REQUEST,NAME_UNIVERSITY_SIZE_MESSAGE,HttpStatus.BAD_REQUEST),
+    WEBSITE_UNIVERSITY_NOT_BLANK(BAD_REQUEST,WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    FOUNDED_YEAR_UNIVERSITY_NOT_BLANK(BAD_REQUEST,FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    PHONE_UNIVERSITY_NOT_BLANK(BAD_REQUEST,PHONE_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
 
     // Các lỗi duyệt thông tin
     ERROR_JOB_ALREADY_REJECTED(BAD_REQUEST, JOB_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_JOB_ALREADY_APPROVED(BAD_REQUEST, JOB_ALREADY_APPROVED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_INVALID_JOB_STATE(BAD_REQUEST, INVALID_JOB_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
-    ERROR_NO_EXIST_WORKSHOP(BAD_REQUEST, NO_EXIST_WORKSHOP, HttpStatus.BAD_REQUEST),
+    ERROR_NO_EXIST_WORKSHOP(BAD_REQUEST,NO_EXIST_WORKSHOP, HttpStatus.BAD_REQUEST),
     ERROR_WORKSHOP_ALREADY_APPROVED(BAD_REQUEST, WORKSHOP_ALREADY_APPROVED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WORKSHOP_ALREADY_REJECTED(BAD_REQUEST, WORKSHOP_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_INVALID_WORKSHOP_STATE(BAD_REQUEST, INVALID_WORKSHOP_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
+
     ;
 
     private final int code;

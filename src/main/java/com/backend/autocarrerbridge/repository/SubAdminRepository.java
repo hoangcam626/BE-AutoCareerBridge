@@ -26,4 +26,6 @@ public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
 
     @Query("select sa from SubAdmin sa where sa.status <> 0")
     List<SubAdmin> findAllByStatus();
+
+    SubAdmin findByEmail(String email);
 }

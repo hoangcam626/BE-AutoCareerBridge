@@ -7,9 +7,11 @@ import static com.backend.autocarrerbridge.util.Constant.TITLE_WORK_SHOP_MESSAGE
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.autocarrerbridge.util.enums.State;
@@ -30,6 +32,7 @@ public class WorkShopRequest {
     private String title;
 
     @NotNull(message = DES_WORK_SHOP_MESSAGE)
+    @Lob
     private String description;
 
     private Status status;
@@ -40,16 +43,19 @@ public class WorkShopRequest {
     private LocalDateTime updatedAt;
     private String updatedBy;
 
-    @NotBlank(message = DATE_WORK_SHOP_MESSAGE)
+
     private LocalDateTime startDate;
 
-    @NotBlank(message = DATE_WORK_SHOP_MESSAGE)
+
     private LocalDateTime endDate;
 
-    @NotBlank(message = DATE_WORK_SHOP_MESSAGE)
+
     private LocalDate expireDate;
 
     private MultipartFile imageWorkshop;
-    private Integer locationId;
+    private Integer idProvince;
+    private Integer idDistrict;
+    private Integer idWard;
+    private String addressDescription;
     private Integer universityId;
 }

@@ -1,12 +1,18 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY_OF_BUSINESS;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_BUSINESS;
 import static com.backend.autocarrerbridge.util.Constant.DELETED;
 
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.BusinessIndustry;
+import com.backend.autocarrerbridge.repository.BusinessIndustryRepository;
+import com.backend.autocarrerbridge.repository.BusinessRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,16 +21,10 @@ import org.springframework.stereotype.Service;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryPagingRequest;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
-import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.BusinessIndustry;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.BusinessIndustryRepository;
-import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.repository.IndustryRepository;
 import com.backend.autocarrerbridge.service.IndustryService;
 import com.backend.autocarrerbridge.service.TokenService;
@@ -51,7 +51,7 @@ public class IndustryServiceImp implements IndustryService {
         String usernameToken = tokenService.getClaim(token, "sub");
         Business businessToken = businessRepository.findByUsername(usernameToken);
         if (businessToken == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
+            throw new AppException(ERROR_NOT_FOUND_BUSINESS);
         }
         return businessToken;
     }
@@ -114,7 +114,7 @@ public class IndustryServiceImp implements IndustryService {
     public ApiResponse<Object> createIndustry(IndustryRequest industryRequest) throws ParseException {
         Industry industry = new Industry();
         if (industryRequest.getName() == null || industryRequest.getName().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+            throw new AppException(ErrorCode.ERROR_EXIST_INDUSTRY);
         }
         // Kiểm tra tên và mã ngành nghề tổn tại chưa
         if (industryRepository.existsByName(industryRequest.getName())) {
@@ -145,7 +145,7 @@ public class IndustryServiceImp implements IndustryService {
         }
         Industry industry = industryRepository.getIndustriesById(industryRequest.getId());
         if (industry == null) {
-            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+            throw new AppException(ErrorCode.ERROR_EXIST_INDUSTRY);
         }
 
         // Kiểm tra name, code, status có thay đổi hay không
@@ -190,7 +190,7 @@ public class IndustryServiceImp implements IndustryService {
         }
         Industry industry = industryRepository.getIndustriesById(id);
         if (industry == null) {
-            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+            throw new AppException(ErrorCode.ERROR_EXIST_INDUSTRY);
         }
         // Nếu ngành đã bị vô hiệu hoá thì trả ra thông báo
         if (industry.getStatus() == Status.INACTIVE) {
@@ -207,10 +207,9 @@ public class IndustryServiceImp implements IndustryService {
      */
     @Override
     public ApiResponse<Object> createIndustryToBusiness(Integer industryId) throws ParseException {
-        Business business =
-                businessRepository.getBusinessById(getBusinessViaToken().getId());
+        Business business = businessRepository.getBusinessById(getBusinessViaToken().getId());
         if (business == null) {
-            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+            throw new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS);
         }
         if (industryId == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
@@ -221,7 +220,7 @@ public class IndustryServiceImp implements IndustryService {
         Industry industry = industryRepository.getIndustriesById(industryId);
 
         if (industry == null) {
-            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+            throw new AppException(ErrorCode.ERROR_EXIST_INDUSTRY);
         }
         BusinessIndustry newBusinessIndustry;
         // Nếu doanh nghiệp đã có ngành nghề thì trả ra thông báo
@@ -242,8 +241,8 @@ public class IndustryServiceImp implements IndustryService {
 
     @Override
     public ApiResponse<Object> getIndustryOfBusiness(int page, int size, Pageable pageable) throws ParseException {
-        Page<BusinessIndustryDto> list = businessIndustryRepository.getIndustryOfBusiness(
-                getBusinessViaToken().getId(), pageable);
+        Page<BusinessIndustryDto> list =
+                businessIndustryRepository.getIndustryOfBusiness(getBusinessViaToken().getId(), pageable);
         if (list.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
@@ -252,12 +251,25 @@ public class IndustryServiceImp implements IndustryService {
     }
 
     @Override
-    public ApiResponse<Object> getIndustryDetail(Integer industryId) {
-        Industry industry = industryRepository.getIndustriesById(industryId);
-        if (industry == null) {
-            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+    public ApiResponse<Object> getIndustryDetail(Integer industryId) throws ParseException {
+        BusinessIndustry businessIndustry =
+                businessIndustryRepository.findByBusinessIdAndIndustryId(getBusinessViaToken().getId(),industryId);
+        if (businessIndustry == null) {
+            throw new AppException(ErrorCode.ERROR_EXIST_CODE);
         }
-        IndustryResponse industryResponse = new IndustryResponse(industry);
-        return ApiResponse.builder().data(industryResponse).build();
+        BusinessIndustryDto businessIndustryDto = new BusinessIndustryDto(businessIndustry);
+        return ApiResponse.builder().data(businessIndustryDto).build();
+    }
+
+    @Override
+    public ApiResponse<Object> inactiveIndustryOfBusiness(Integer businessIndustryId) throws ParseException {
+        BusinessIndustry existBusinessIndustry = businessIndustryRepository.getByBusinessIndustryId(businessIndustryId);
+        if(existBusinessIndustry == null) {
+           throw  new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+        }
+            businessIndustryRepository.delete(existBusinessIndustry);
+        return ApiResponse.builder()
+                .data(DELETED)
+                .build();
     }
 }
