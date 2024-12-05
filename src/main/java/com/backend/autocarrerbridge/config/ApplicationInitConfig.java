@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.config;
 
+import static com.backend.autocarrerbridge.util.Constant.DEFAULT_PASSWORD;
 import static com.backend.autocarrerbridge.util.Constant.DEFAULT_USERNAME;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_BUSINESS;
@@ -15,7 +16,6 @@ import static com.backend.autocarrerbridge.util.enums.PredefinedRole.UNIVERSITY;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,12 +39,6 @@ public class ApplicationInitConfig {
     final PasswordEncoder passwordEncoder;
 
     final RoleRepository roleRepository;
-
-    @Value("${security.default.username}")
-    private String username;
-
-    @Value("${security.default.password}")
-    private String password;
 
     @Bean
     ApplicationRunner applicationRunner(UserAccountRepository accountRepository) {
@@ -72,7 +66,7 @@ public class ApplicationInitConfig {
         if (accountRepository.findByUsername(DEFAULT_USERNAME) == null) {
             UserAccount userAccounts = UserAccount.builder()
                     .username(DEFAULT_USERNAME)
-                    .password(passwordEncoder.encode(password))
+                    .password(passwordEncoder.encode(DEFAULT_PASSWORD))
                     .role(role)
                     .state(State.APPROVED)
                     .build();

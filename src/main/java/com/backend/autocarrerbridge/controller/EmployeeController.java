@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -78,8 +77,7 @@ public class EmployeeController {
      * @return Thông tin chi tiết của nhân viên sau khi cập nhật.
      */
     @PutMapping("/{employeeId}")
-    ApiResponse<EmployeeResponse> updateEmployee(
-            @PathVariable Integer employeeId, @Valid EmployeeRequest request) {
+    ApiResponse<EmployeeResponse> updateEmployee(@PathVariable Integer employeeId, @Valid EmployeeRequest request) {
         return ApiResponse.<EmployeeResponse>builder()
                 .data(employeeService.updateEmployee(employeeId, request))
                 .build();
