@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -41,8 +42,11 @@ public class Workshop extends AbstractAudit {
     @Column(name = "title")
     private String title;
 
+    @Lob
     @Column(name = "description")
     private String description;
+
+
 
     @Column(name = "expire_date")
     private LocalDate expireDate;
