@@ -66,23 +66,21 @@ public class SectionConverter {
     // Phương thức chuyển đổi Section entity thành SectionRequest (dùng để trả về response)
     public static SectionRequest convertToResponse(Section section) {
         // Lấy danh sách major
-        List<MajorRequest> majorRequestList = section.getMajors() != null
-                ? section.getMajors().stream()
-                        .map(major -> MajorRequest.builder()
-                                .id(major.getId())
-                                .code(major.getCode())
-                                .name(major.getName())
-                                .status(major.getStatus())
-                                .numberStudent(major.getNumberStudent())
-                                .description(major.getDescription())
-                                .sectionId(major.getId())
-                                .createdAt(major.getCreatedAt())
-                                .updatedAt(major.getUpdatedAt())
-                                .createdBy(major.getCreatedBy())
-                                .updatedBy(major.getUpdatedBy())
-                                .build())
-                        .toList()
-                : List.of();
+        List<MajorRequest> majorRequestList = section.getMajors() != null ? section.getMajors().stream()
+                .map(major -> MajorRequest.builder()
+                        .id(major.getId())
+                        .code(major.getCode())
+                        .name(major.getName())
+                        .status(major.getStatus())
+                        .numberStudent(major.getNumberStudent())
+                        .description(major.getDescription())
+                        .sectionId(major.getId())
+                        .createdAt(major.getCreatedAt())
+                        .updatedAt(major.getUpdatedAt())
+                        .createdBy(major.getCreatedBy())
+                        .updatedBy(major.getUpdatedBy())
+                        .build())
+                .toList() : List.of();
 
         return SectionRequest.builder()
                 .id(section.getId())
