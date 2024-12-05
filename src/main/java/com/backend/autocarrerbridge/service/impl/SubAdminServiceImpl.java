@@ -1,15 +1,12 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_EXIST;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_SUB_ADMIN;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SUB_ADMIN_CODE_EXIST;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_EMAIL;
-import static com.backend.autocarrerbridge.exception.ErrorCode.NO_CHANGE_DETECTED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
@@ -104,8 +101,11 @@ public class SubAdminServiceImpl implements SubAdminService {
 
         validateCreate(req); // Gọi hàm kiểm tra dữ liệu đầu vào
         var subAdmin = modelMapper.map(req, SubAdmin.class); // Map thông tin dữ liệu đầu vào
-        var imgId = imageService.uploadFile(req.getSubAdminImage()); // Gọi hàm lưu ảnh
-        subAdmin.setSubAdminImageId(imgId);
+
+        if (req.getSubAdminImage() != null && !req.getSubAdminImage().isEmpty()) {
+            var imgId = imageService.uploadFile(req.getSubAdminImage()); // Gọi hàm lưu ảnh
+            subAdmin.setSubAdminImageId(imgId);
+        }
 
         // Gọi hàm sinh password tự động và khởi tạo tài khoản người dùng
         PasswordGenerator pw = new PasswordGenerator(8, 12);
@@ -139,38 +139,54 @@ public class SubAdminServiceImpl implements SubAdminService {
      */
     @Override
     public SubAdminUpdateResponse update(SubAdminUpdateRequest req) throws ParseException {
-        // Tìm đối tượng cập nhật bắng id
+        // Tìm đối tượng cần cập nhật bằng ID
         var subAdmin = getSubAdmin(req.getId());
 
-        // Các biến kiểm tra các trường đầu vào có thay đổi so với database hay không
-        boolean isSameAddress = subAdmin.getAddress().equals(req.getAddress());
-        boolean isSamePhone = subAdmin.getPhone().equals(req.getPhone());
-        boolean isNullImage =
-                req.getSubAdminImage() == null || req.getSubAdminImage().isEmpty();
+        // Kiểm tra sự thay đổi của các trường
+        boolean hasChanges = false;
 
-        // Bắn thông báo không có gì thay đổi nếu tất cả các biến là true
-        if (isSameAddress && isSamePhone && isNullImage) {
+        if (!subAdmin.getName().equals(req.getName())) {
+            subAdmin.setName(req.getName());
+            hasChanges = true;
+        }
+
+        if (!subAdmin.getGender().equals(req.getGender())) {
+            subAdmin.setGender(req.getGender());
+            hasChanges = true;
+        }
+
+        if (!subAdmin.getAddress().equals(req.getAddress())) {
+            subAdmin.setAddress(req.getAddress());
+            hasChanges = true;
+        }
+
+        if (!subAdmin.getPhone().equals(req.getPhone())) {
+            subAdmin.setPhone(req.getPhone());
+            hasChanges = true;
+        }
+
+        if (req.getSubAdminImage() != null && !req.getSubAdminImage().isEmpty()) {
+            if (subAdmin.getSubAdminImageId() != null) {
+                imageService.delete(subAdmin.getSubAdminImageId());
+            }
+            var imgId = imageService.uploadFile(req.getSubAdminImage()); // Gọi hàm lưu ảnh
+            subAdmin.setSubAdminImageId(imgId);
+            hasChanges = true;
+        }
+
+        // Bắn thông báo nếu không có thay đổi
+        if (!hasChanges) {
             throw new AppException(NO_CHANGE_DETECTED);
         }
 
-        // Lưu thông tin trường nếu thay đổi
-        if (!isSameAddress) {
-            subAdmin.setAddress(req.getAddress());
-        }
-        if (!isSamePhone) {
-            subAdmin.setPhone(req.getPhone());
-        }
-        if (!isNullImage) {
-            var imgId = imageService.uploadFile(req.getSubAdminImage());
-            subAdmin.setSubAdminImageId(imgId);
-        }
+        // Lưu thông tin người thay đổi
+        var updatedBy = tokenService.getClaim(tokenService.getJWT(), SUB);
+        subAdmin.setUpdatedBy(updatedBy);
 
-        // Lưu người thay đổi
-        var nameAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
-        subAdmin.setUpdatedBy(nameAccountLogin);
-
-        // Lưu vào database
+        // Lưu thông tin vào cơ sở dữ liệu
         subAdminRepository.save(subAdmin);
+
+        // Trả về phản hồi thành công
         return SubAdminUpdateResponse.of(Boolean.TRUE);
     }
 
@@ -181,7 +197,7 @@ public class SubAdminServiceImpl implements SubAdminService {
      * @return Thông tin chi tiết của sub-admin.
      */
     @Override
-    public SubAdminSelfResponse self(SubAdminSelfRequest req) {
+    public SubAdminSelfResponse detail(SubAdminSelfRequest req) {
         // Tìm đối tượng lấy ra bằng id
         var subAdmin = getSubAdmin(req.getId());
         return modelMapper.map(subAdmin, SubAdminSelfResponse.class);
@@ -219,6 +235,9 @@ public class SubAdminServiceImpl implements SubAdminService {
     public void validateCreate(SubAdminCreateRequest req) {
         if (!Validation.isValidEmail(req.getEmail())) {
             throw new AppException(ERROR_VALID_EMAIL);
+        }
+        if (Objects.nonNull(req.getPhone()) && !Validation.isValidPhoneNumber(req.getPhone())) {
+            throw new AppException(ERROR_VALID_PHONE);
         }
         if (subAdminRepository.existsBySubAdminCode(req.getSubAdminCode())) {
             throw new AppException(ERROR_SUB_ADMIN_CODE_EXIST);

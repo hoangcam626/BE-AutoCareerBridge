@@ -1,10 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_APPROVED;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_ALREADY_REJECTED;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_ACCOUNT_STATE;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_USER_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 import static com.backend.autocarrerbridge.util.Constant.ACCEPT_NP;
 import static com.backend.autocarrerbridge.util.Constant.ACCEPT_US;
 import static com.backend.autocarrerbridge.util.Constant.NEW_CODE;
@@ -17,10 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
 
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 
 
 import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.service.IntermediaryService;
 import org.modelmapper.ModelMapper;
@@ -72,51 +70,49 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserAccountLoginResponse authenticateUser(UserAccountRequest userAccountRequest) {
 
-        if (userAccountRequest.getUsername() == null
-                || userAccountRequest.getPassword() == null
-                || userAccountRequest.getUsername().isEmpty()
-                || userAccountRequest.getPassword().isEmpty()) {
-            throw new AppException(ERROR_USER_NOT_FOUND);
-        }
+        validateRequest(userAccountRequest);
         UserAccount user = userAccountRepository.findByUsername(userAccountRequest.getUsername());
         if (user == null) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
+        validatePassword(userAccountRequest.getPassword(), user.getPassword());
+        validateUserState(user.getState());
 
-        if (passwordEncoder.matches(userAccountRequest.getPassword(), user.getPassword())) {
-            if (user.getState().equals(State.PENDING)) {
-                throw new AppException(ErrorCode.ERROR_USER_PENDING);
-            }
-            // Chuyển thông tin từ user -> response
-            UserAccountRequest userRequest = new UserAccountRequest();
-            userRequest.setStatus(user.getStatus());
-            userRequest.setId(user.getId());
-            userRequest.setUsername(user.getUsername());
-            userRequest.setPassword(user.getPassword());
-            userRequest.setRole(modelMapper.map(user.getRole(), RoleRequest.class));
-            UserAccountLoginResponse userAccountLoginResponse = new UserAccountLoginResponse();
-            modelMapper.map(userRequest, userAccountLoginResponse);
-            // Check xem co phai la business khong
-            Business business = intermediaryService.findBusinessByEmail(userAccountRequest.getUsername());
-            if (business != null) {
-                userAccountLoginResponse.setBusiness(modelMapper.map(business, BusinessLoginResponse.class));
-            }
-            // check xem co phai la univeristy ko
-            University university = intermediaryService.findUniversityByEmail(userAccountRequest.getUsername());
-            if(university != null){
-                userAccountLoginResponse.setUniversity(modelMapper.map(university,UniversityResponse.class));
-            }
+        // Chuyển thông tin từ user -> response
+        UserAccountLoginResponse userAccountLoginResponse = new UserAccountLoginResponse();
+        modelMapper.map(user, userAccountLoginResponse);
+        userAccountLoginResponse.setRole(modelMapper.map(user.getRole(), RoleRequest.class));
 
-            return userAccountLoginResponse;
-        } else {
-            throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
+        switch (user.getRole().getName()) {
+            case "BUSINESS":
+                Business business = intermediaryService.findBusinessByEmail(userAccountRequest.getUsername());
+                if (business != null) {
+                    userAccountLoginResponse.setBusiness(modelMapper.map(business, BusinessLoginResponse.class));
+                }
+                break;
+            case "UNIVERSITY":
+                University university = intermediaryService.findUniversityByEmail(userAccountRequest.getUsername());
+                if (university != null) {
+                    userAccountLoginResponse.setUniversity(modelMapper.map(university, UniversityResponse.class));
+                }
+                break;
+            case "SUB_ADMIN":
+                SubAdmin subAdmin = intermediaryService.findSubAdminByEmail(userAccountRequest.getUsername());
+                if (subAdmin != null) {
+                    userAccountLoginResponse.setSubAdmin(modelMapper.map(subAdmin, SubAdminSelfResponse.class));
+                }
+                break;
+            default:
+                break;
         }
+
+        return userAccountLoginResponse;
     }
 
     /**
      * Lưu refresh token cho tài khoản người dùng.
      *
-     * @param id id của tài khoản người dùng.
+     * @param id           id của tài khoản người dùng.
      * @param refreshToken token cần lưu.
      * @throws RuntimeException nếu không tìm thấy tài khoản.
      */
@@ -142,7 +138,9 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public UserAccount registerUser(UserAccount userAccount) {
-
+        if(Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))){
+            throw new AppException(ERROR_EMAIL_EXIST);
+        }
         UserAccount newAccount = UserAccount.builder()
                 .username(userAccount.getUsername())
                 .password(passwordEncoder.encode(userAccount.getPassword()))
@@ -165,8 +163,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         req.setState(State.REJECTED);
         userAccountRepository.save(req);
     }
-    //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
-    //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+//   @PreAuthorize("hasAuthority('SCOPE_Admin')")
+//   @PreAuthorize("hasAuthority('SCOPE_Admin')")
 
     /**
      * Cập nhật mật khẩu cho tài khoản người dùng.
@@ -196,6 +194,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         userAccount.setPassword(passwordEncoder.encode(userAccountResponseDTO.getNewPassword()));
         return modelMapper.map(userAccountRepository.save(userAccount), UserAccountLoginResponse.class);
     }
+
     /**
      * Tạo mã xác minh cho email.
      *
@@ -216,6 +215,7 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
         return EmailCode.builder().email(email).code(code).build();
     }
+
     // Gen ra mã reset mật khẩu
     @Override
     public EmailCode generatePasswordResetCode(String email) {
@@ -336,6 +336,27 @@ public class UserAccountServiceImpl implements UserAccountService {
         // Chỉ cho phép thay đổi trạng thái từ PENDING
         if (req.getState() != State.PENDING) {
             throw new AppException(ERROR_INVALID_ACCOUNT_STATE);
+        }
+    }
+
+    private void validateRequest(UserAccountRequest userAccountRequest) {
+        if (userAccountRequest.getUsername() == null
+                || userAccountRequest.getPassword() == null
+                || userAccountRequest.getUsername().isEmpty()
+                || userAccountRequest.getPassword().isEmpty()) {
+            throw new AppException(ERROR_USER_NOT_FOUND);
+        }
+    }
+
+    private void validatePassword(String inputPassword, String storedPassword) {
+        if (!passwordEncoder.matches(inputPassword, storedPassword)) {
+            throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
+        }
+    }
+
+    private void validateUserState(State state) {
+        if (state.equals(State.PENDING)) {
+            throw new AppException(ErrorCode.ERROR_USER_PENDING);
         }
     }
 }
