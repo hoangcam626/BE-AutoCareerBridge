@@ -7,12 +7,6 @@ import static com.backend.autocarrerbridge.util.Constant.DELETED;
 import java.text.ParseException;
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.BusinessIndustry;
-import com.backend.autocarrerbridge.repository.BusinessIndustryRepository;
-import com.backend.autocarrerbridge.repository.BusinessRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,10 +15,16 @@ import org.springframework.stereotype.Service;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryPagingRequest;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
+import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.BusinessIndustry;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.repository.BusinessIndustryRepository;
+import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.repository.IndustryRepository;
 import com.backend.autocarrerbridge.service.IndustryService;
 import com.backend.autocarrerbridge.service.TokenService;
@@ -207,7 +207,8 @@ public class IndustryServiceImp implements IndustryService {
      */
     @Override
     public ApiResponse<Object> createIndustryToBusiness(Integer industryId) throws ParseException {
-        Business business = businessRepository.getBusinessById(getBusinessViaToken().getId());
+        Business business =
+                businessRepository.getBusinessById(getBusinessViaToken().getId());
         if (business == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
@@ -241,8 +242,8 @@ public class IndustryServiceImp implements IndustryService {
 
     @Override
     public ApiResponse<Object> getIndustryOfBusiness(int page, int size, Pageable pageable) throws ParseException {
-        Page<BusinessIndustryDto> list =
-                businessIndustryRepository.getIndustryOfBusiness(getBusinessViaToken().getId(), pageable);
+        Page<BusinessIndustryDto> list = businessIndustryRepository.getIndustryOfBusiness(
+                getBusinessViaToken().getId(), pageable);
         if (list.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
@@ -251,7 +252,7 @@ public class IndustryServiceImp implements IndustryService {
     }
 
     @Override
-    public ApiResponse<Object> getIndustryDetail(Integer industryId){
+    public ApiResponse<Object> getIndustryDetail(Integer industryId) {
         Industry industry = industryRepository.getIndustriesById(industryId);
         if (industry == null) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);

@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
-import com.backend.autocarrerbridge.service.ImageService;
 import jakarta.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,6 +23,7 @@ import com.backend.autocarrerbridge.mapper.UserAccountMapper;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.EmployeeService;
+import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.service.UserAccountService;
@@ -53,7 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         // Lấy hai chữ cái đầu tiên từ email (chữ thường, chuyển thành viết hoa)
         String initials = emailBusiness.split("@")[0].substring(0, 3).toUpperCase();
 
-        int nextId=lastEmployeeId+1;
+        int nextId = lastEmployeeId + 1;
         // Tạo mã nhân viên theo định dạng + employeeId
         return initials + String.format("%05d", nextId);
     }
@@ -93,7 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponse addEmployee(EmployeeRequest request) {
         // Chuyển đổi từ EmployeeRequest sang Employee Entity
         Employee employee = employeeMapper.toEmployee(request);
-        if(Objects.nonNull(employeeRepository.findByUsername(employee.getEmail()))){
+        if (Objects.nonNull(employeeRepository.findByUsername(employee.getEmail()))) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
 
@@ -104,12 +104,18 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setBusiness(business);
             employee.setCreatedBy(emailBusiness);
 
-            //set anh cho nhan vien
-            employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
+            // set anh cho nhan vien
+            if(Objects.nonNull(request.getEmployeeImage()))
+                employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
 
-            //set ma tu gen cho nhan vien
-            Integer idLast = employeeRepository.getLastEmployee();
-            employee.setEmployeeCode(generateEmployeeCode(emailBusiness,idLast));
+            // set ma tu gen cho nhan vien
+            int idLast;
+            if(Objects.isNull(employeeRepository.getLastEmployee())) {
+                idLast=0;
+            }else
+                idLast=employeeRepository.getLastEmployee();
+
+            employee.setEmployeeCode(generateEmployeeCode(emailBusiness, idLast));
         } catch (ParseException e) {
             // Ném ngoại lệ nếu token không hợp lệ
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
@@ -152,9 +158,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
 
         // Check ảnh nếu có thì xóa và cập nhật
-        if(!Objects.isNull(request.getEmployeeImage()) && !request.getEmployeeImage().isEmpty()){
-            if(!Objects.isNull(employee.getEmployeeImageId()))
-                imageService.delete(employee.getEmployeeImageId());
+        if (!Objects.isNull(request.getEmployeeImage())
+                && !request.getEmployeeImage().isEmpty()) {
+            if (!Objects.isNull(employee.getEmployeeImageId())) imageService.delete(employee.getEmployeeImageId());
             employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
         }
 

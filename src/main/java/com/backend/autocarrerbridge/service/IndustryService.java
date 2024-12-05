@@ -2,9 +2,10 @@ package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
 
+import org.springframework.data.domain.Pageable;
+
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
-import org.springframework.data.domain.Pageable;
 
 public interface IndustryService {
 

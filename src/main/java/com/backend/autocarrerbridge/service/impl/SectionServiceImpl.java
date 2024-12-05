@@ -60,8 +60,9 @@ public class SectionServiceImpl implements SectionService {
 
     @Override
     public SectionRequest deleteSection(int id) {
-        Section section = sectionRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
-        if(!section.getMajors().isEmpty()){
+        Section section =
+                sectionRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
+        if (!section.getMajors().isEmpty()) {
             throw new AppException(ErrorCode.SECTION_HAVE_MAJOR);
         }
         sectionRepository.delete(section);

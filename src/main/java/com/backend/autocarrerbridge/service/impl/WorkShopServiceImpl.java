@@ -14,29 +14,29 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
-import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
-import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
-import com.backend.autocarrerbridge.service.NotificationService;
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.repository.WorkShopRepository;
 import com.backend.autocarrerbridge.service.ImageService;
+import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.WorkShopService;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 
@@ -81,7 +81,8 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu không có nội dung
      */
     @Override
-    public WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
+    public WorkShopUniversityResponse getAllWorkShopByUniversity(
+            Pageable pageable, Integer universityId, String keyword) {
         List<Workshop> list = workShopRepository
                 .getAllWorkShopByUniversity(pageable, universityId, keyword)
                 .getContent();
@@ -93,10 +94,10 @@ public class WorkShopServiceImpl implements WorkShopService {
                 .toList();
         WorkShopUniversityResponse workShopUniversityResponse = new WorkShopUniversityResponse();
         workShopUniversityResponse.setWorkshops(workshops);
-        workShopUniversityResponse.setUniversity(modelMapper.map(universityService.findById(universityId), UniversityResponse.class));
+        workShopUniversityResponse.setUniversity(
+                modelMapper.map(universityService.findById(universityId), UniversityResponse.class));
         return workShopUniversityResponse;
     }
-
 
     /**
      * Tạo một Workshop mới.
@@ -268,8 +269,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         String emailBusiness = workshop.getUniversity().getEmail();
 
         EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_WORKSHOP, "");
-        sendEmail.sendApprovedWorkshopNotification(emailDTO,
-                workshop.getTitle());
+        sendEmail.sendApprovedWorkshopNotification(emailDTO, workshop.getTitle());
 
         String message = String.format("%s: %s", APPROVED_WORKSHOP, workshop.getTitle());
         notificationService.send(NotificationSendRequest.of(emailBusiness, message));
@@ -299,9 +299,8 @@ public class WorkShopServiceImpl implements WorkShopService {
     private void validateWorkshopForStateChange(Workshop req, State targetState) {
         // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
         if (req.getStatusBrowse() == targetState) {
-            throw new AppException(targetState == State.APPROVED
-                    ? ERROR_WORKSHOP_ALREADY_APPROVED
-                    : ERROR_WORKSHOP_ALREADY_REJECTED);
+            throw new AppException(
+                    targetState == State.APPROVED ? ERROR_WORKSHOP_ALREADY_APPROVED : ERROR_WORKSHOP_ALREADY_REJECTED);
         }
 
         // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)

@@ -92,9 +92,10 @@ public class IndustryController {
      * @apiNote được sử dụng để thêm một ngành nghề vào doanh nghiệp.
      */
     @GetMapping("/get-all-industry-business")
-    public ApiResponse<Object> getIndustryOfBusiness(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "10") int size) throws ParseException {
-        Pageable pageable = PageRequest.of(page - 1 , size);
+    public ApiResponse<Object> getIndustryOfBusiness(
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
+            throws ParseException {
+        Pageable pageable = PageRequest.of(page - 1, size);
         return industryService.getIndustryOfBusiness(page, size, pageable);
     }
 

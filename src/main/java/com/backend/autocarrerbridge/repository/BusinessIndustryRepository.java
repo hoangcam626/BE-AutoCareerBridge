@@ -1,13 +1,13 @@
 package com.backend.autocarrerbridge.repository;
 
-import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
-import com.backend.autocarrerbridge.entity.BusinessIndustry;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
+import com.backend.autocarrerbridge.entity.BusinessIndustry;
 
 @Repository
 public interface BusinessIndustryRepository extends JpaRepository<BusinessIndustry, Integer> {

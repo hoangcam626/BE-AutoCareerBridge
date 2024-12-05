@@ -14,20 +14,18 @@ import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 import java.text.ParseException;
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
-import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
-import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
-import com.backend.autocarrerbridge.service.NotificationService;
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRequest;
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
+import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Employee;
@@ -42,12 +40,14 @@ import com.backend.autocarrerbridge.repository.IndustryRepository;
 import com.backend.autocarrerbridge.repository.JobRepository;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.JobService;
+import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -117,7 +117,8 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
         // Lấy thông tin industry qua job
-        Industry industry = industryRepository.getIndustriesById(job.getIndustry().getId());
+        Industry industry =
+                industryRepository.getIndustriesById(job.getIndustry().getId());
         if (industry == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
@@ -243,8 +244,7 @@ public class JobServiceImpl implements JobService {
         String emailEmployee = job.getEmployee().getEmail();
 
         EmailDTO emailDTO = new EmailDTO(emailEmployee, APPROVED_JOB, "");
-        sendEmail.sendApprovedJobNotification(emailDTO,
-                job.getTitle());
+        sendEmail.sendApprovedJobNotification(emailDTO, job.getTitle());
 
         String message = String.format("%s: %s", APPROVED_JOB, job.getTitle());
         notificationService.send(NotificationSendRequest.of(emailEmployee, message));
@@ -276,9 +276,8 @@ public class JobServiceImpl implements JobService {
 
         // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
         if (req.getStatusBrowse() == targetState) {
-            throw new AppException(targetState == State.APPROVED
-                    ? ERROR_JOB_ALREADY_APPROVED
-                    : ERROR_JOB_ALREADY_REJECTED);
+            throw new AppException(
+                    targetState == State.APPROVED ? ERROR_JOB_ALREADY_APPROVED : ERROR_JOB_ALREADY_REJECTED);
         }
 
         // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)

@@ -31,7 +31,9 @@ public interface IndustryRepository extends JpaRepository<Industry, Integer> {
      * Kiểm tra tên ngành đã tồn tại?
      */
     boolean existsByNameAndIdNot(String name, Integer id);
+
     boolean existsByName(String name);
+
     boolean existsByCode(String code);
 
     /**
