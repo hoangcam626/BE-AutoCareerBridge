@@ -14,7 +14,7 @@ public enum ErrorCode {
 
     /** Không có nội dung hiển thị */
     ERROR_CODE_NOT_FOUND(NOT_FOUND, NO_CONTENT_MESSAGE, HttpStatus.NOT_FOUND),
-    ERROR_LIST_EMPTY(BAD_REQUEST, ERROR_LIST_EMPTY_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_LIST_EMPTY(BAD_REQUEST, ERROR_LIST_EMPTY_MESAGE, HttpStatus.BAD_REQUEST),
 
     // Ngành nghề
     /** Tên hoặc mã của ngành đã tồn tại */

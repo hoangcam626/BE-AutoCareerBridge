@@ -6,7 +6,6 @@ import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
@@ -237,9 +236,9 @@ public class SubAdminServiceImpl implements SubAdminService {
         if (!Validation.isValidEmail(req.getEmail())) {
             throw new AppException(ERROR_VALID_EMAIL);
         }
-        if (Objects.nonNull(req.getPhone()) && !Validation.isValidPhoneNumber(req.getPhone())) {
-            throw new AppException(ERROR_VALID_PHONE);
-        }
+//        if (Objects.nonNull(req.getPhone()) && !Validation.is(req.getPhone())) {
+//            throw new AppException(ERROR_VALID_PHONE);
+//        }
         if (subAdminRepository.existsBySubAdminCode(req.getSubAdminCode())) {
             throw new AppException(ERROR_SUB_ADMIN_CODE_EXIST);
         }
