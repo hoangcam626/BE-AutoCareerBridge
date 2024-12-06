@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +15,10 @@ import com.backend.autocarrerbridge.repository.DistrictRepository;
 import com.backend.autocarrerbridge.service.DistrictService;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DISTRICT_NOT_BLANK;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DISTRICT_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_PROVINCE_NOT_BLANK;
 
 @Service
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,6 +29,14 @@ import com.backend.autocarrerbridge.repository.ImageRepository;
 import com.backend.autocarrerbridge.service.ImageService;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DELETE_IMAGE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DIRECTORY_FILE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMPTY_FILE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FIND_IMAGE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_LIMIT_SIZE_FILE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SAVE_FILE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_TYPE_FILE;
 
 /**
  * ImageServiceImpl là lớp triển khai cho ImageService, cung cấp các chức năng xử lý tệp hình ảnh.
