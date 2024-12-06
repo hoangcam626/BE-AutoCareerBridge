@@ -240,9 +240,9 @@ public class IndustryServiceImp implements IndustryService {
     }
 
     @Override
-    public ApiResponse<Object> getIndustryOfBusiness(int page, int size, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getIndustryOfBusiness(int page, int size, String keyword, Pageable pageable) throws ParseException {
         Page<BusinessIndustryDto> list =
-                businessIndustryRepository.getIndustryOfBusiness(getBusinessViaToken().getId(), pageable);
+                businessIndustryRepository.getIndustryOfBusiness(getBusinessViaToken().getId(), keyword, pageable);
         if (list.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
@@ -253,7 +253,7 @@ public class IndustryServiceImp implements IndustryService {
     @Override
     public ApiResponse<Object> getIndustryDetail(Integer industryId) throws ParseException {
         BusinessIndustry businessIndustry =
-                businessIndustryRepository.findByBusinessIdAndIndustryId(getBusinessViaToken().getId(),industryId);
+                businessIndustryRepository.findByBusinessIdAndIndustryId(getBusinessViaToken().getId(), industryId);
         if (businessIndustry == null) {
             throw new AppException(ErrorCode.ERROR_EXIST_CODE);
         }
@@ -262,12 +262,12 @@ public class IndustryServiceImp implements IndustryService {
     }
 
     @Override
-    public ApiResponse<Object> inactiveIndustryOfBusiness(Integer businessIndustryId) throws ParseException {
+    public ApiResponse<Object> inactiveIndustryOfBusiness(Integer businessIndustryId) {
         BusinessIndustry existBusinessIndustry = businessIndustryRepository.getByBusinessIndustryId(businessIndustryId);
-        if(existBusinessIndustry == null) {
-           throw  new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+        if (existBusinessIndustry == null) {
+            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-            businessIndustryRepository.delete(existBusinessIndustry);
+        businessIndustryRepository.delete(existBusinessIndustry);
         return ApiResponse.builder()
                 .data(DELETED)
                 .build();
