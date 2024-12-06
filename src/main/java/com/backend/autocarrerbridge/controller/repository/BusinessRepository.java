@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.repository;
+package com.backend.autocarrerbridge.controller.repository;
 
 import java.awt.print.Pageable;
 import java.util.List;
