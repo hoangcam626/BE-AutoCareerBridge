@@ -4,10 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.backend.autocarrerbridge.entity.Business;
+import org.springframework.stereotype.Repository;
 
 import java.awt.print.Pageable;
 import java.util.List;
-
+@Repository
 public interface BusinessRepository extends JpaRepository<Business, Integer> {
     Business findByEmail(String email);
 
@@ -20,7 +21,14 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     /**
      * Tìm business qua username/email
      */
-    @Query("SELECT e FROM Business e JOIN e.userAccount u WHERE u.username = :username")
+    @Query("""
+                SELECT DISTINCT b\s
+                FROM Business b\s
+                LEFT JOIN b.userAccount u
+                LEFT JOIN Employee e ON e.business.id = b.id
+                LEFT JOIN e.userAccount eu
+                WHERE u.username = :username OR eu.username = :username
+           \s""")
     Business findByUsername(String username);
 
     /**

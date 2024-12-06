@@ -14,12 +14,11 @@ import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
 import java.text.ParseException;
-import java.util.List;
+
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
@@ -85,6 +84,21 @@ public class JobServiceImpl implements JobService {
     }
 
     /**
+     * Lấy Business từ token
+     */
+    public Business getBusinessViaToken() throws ParseException {
+        // Cắt chuỗi token
+        String token = tokenService.getJWT();
+        // Lấy username từ token
+        String usernameToken = tokenService.getClaim(token, "sub");
+        Business businessToken = businessRepository.findByUsername(usernameToken);
+        if (businessToken == null) {
+            throw new AppException(ERROR_NOT_FOUND_BUSINESS);
+        }
+        return businessToken;
+    }
+
+    /**
      * Lấy username của employee qua token
      */
     public String getUsernameViaToken() throws ParseException {
@@ -92,20 +106,21 @@ public class JobServiceImpl implements JobService {
         // Lấy username từ token
         return tokenService.getClaim(token, "sub");
     }
+    /**
+     * Lấy danh sách tất cả công việc
+     */
+    @Override
+    public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
+        return ApiResponse.builder().data(jobRepository.getAllJob(keyword, pageable)).build();
+    }
 
     /**
      * Lấy danh sách công việc mà doanh nghiệp đã đăng
      */
     @Override
-    public ApiResponse<Object> getAllJob(int page, int size, Pageable pageable) throws ParseException {
-        // Lấy thông tin của business qua employee
-        Business business =
-                businessRepository.getBusinessByEmployeeId(getEmployeeViaToken().getId());
-        if (business == null) {
-            throw new AppException(ERROR_NOT_FOUND_BUSINESS);
-        }
+    public ApiResponse<Object> getAllJobOfBusiness(int page, int size, String keyword, Pageable pageable) throws ParseException {
         // Lấy danh sách công việc của doanh nghiệp
-        Page<JobResponse> jobs = jobRepository.getAllJob(business.getId(), pageable);
+        Page<JobResponse> jobs = jobRepository.getAllJobOfBusiness(getBusinessViaToken().getId(), keyword, pageable);
         if (jobs.isEmpty()) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
@@ -260,7 +275,6 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException {
-
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.REJECTED);
         job.setStatusBrowse(State.REJECTED);
