@@ -27,20 +27,38 @@ import lombok.experimental.FieldDefaults;
 public class JobController {
 
     JobService jobService;
+
     /**
      * API lấy danh sách tất cả công việc đã được đăng tuyển.
-     * @apiNote Sử dụng để truy vấn danh sách công việc trong cơ sở dữ liệu.
+     *
      * @return Danh sách các công việc đã đăng tuyển.
+     * @apiNote Sử dụng để truy vấn danh sách công việc trong cơ sở dữ liệu.
      */
     @GetMapping("/get-all-job")
     public ApiResponse<Object> getAllJob(@RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "10") int size) throws ParseException {
+                                         @RequestParam(defaultValue = "10") int size,
+                                         @RequestParam String keyword) throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return jobService.getAllJob(page, size, pageable);
+        return jobService.getAllJobOfBusiness(page, size, keyword, pageable);
+    }
+
+    /**
+     * API lấy danh sách tất cả công việc đã được đăng tuyển của doanh nghiệp.
+     *
+     * @return Danh sách các công việc đã đăng tuyển.
+     * @apiNote Sử dụng để truy vấn danh sách công việc trong cơ sở dữ liệu.
+     */
+    @GetMapping("/get-all-job-of-business")
+    public ApiResponse<Object> getAllJobOfBusiness(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int size,
+                                         @RequestParam String keyword) throws ParseException {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return jobService.getAllJobOfBusiness(page, size, keyword, pageable);
     }
 
     /**
      * API để lấy chi tiết công việc đã đăng tuyển
+     *
      * @apiNote để truy vấn chi tiết công việc trong cơ sở dữ liệu
      */
     @GetMapping("/get-detail")
@@ -50,6 +68,7 @@ public class JobController {
 
     /**
      * API để tao công việc
+     *
      * @apiNote để để thêm công việc vào cơ sở dữ liệu
      */
     @PostMapping("/create-job")
@@ -59,6 +78,7 @@ public class JobController {
 
     /**
      * API để cập nhật công việc
+     *
      * @apiNote để để cập nhật thông tin công việc vào cơ sở dữ liệu
      */
     @PutMapping("/update-job")
@@ -69,6 +89,7 @@ public class JobController {
 
     /**
      * API để vô hiệu hóa công việc
+     *
      * @apiNote để để vô hiệu hóa công việc đã đăng
      */
     @PutMapping("/inactive-job")

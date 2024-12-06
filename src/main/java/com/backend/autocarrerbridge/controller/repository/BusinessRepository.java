@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.repository;
+package com.backend.autocarrerbridge.controller.repository;
 
 import java.awt.print.Pageable;
 import java.util.List;
@@ -20,7 +20,14 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     /**
      * Tìm business qua username/email
      */
-    @Query("SELECT e FROM Business e JOIN e.userAccount u WHERE u.username = :username")
+    @Query("""
+                SELECT DISTINCT b\s
+                FROM Business b\s
+                LEFT JOIN b.userAccount u
+                LEFT JOIN Employee e ON e.business.id = b.id
+                LEFT JOIN e.userAccount eu
+                WHERE u.username = :username OR eu.username = :username
+           \s""")
     Business findByUsername(String username);
 
     /**

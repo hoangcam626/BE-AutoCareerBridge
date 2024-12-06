@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.repository;
+package com.backend.autocarrerbridge.controller.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

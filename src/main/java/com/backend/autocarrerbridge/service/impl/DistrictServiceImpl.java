@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.backend.autocarrerbridge.dto.response.district.DistrictResponse;
 import com.backend.autocarrerbridge.entity.District;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.repository.DistrictRepository;
+import com.backend.autocarrerbridge.controller.repository.DistrictRepository;
 import com.backend.autocarrerbridge.service.DistrictService;
 
 import lombok.RequiredArgsConstructor;
