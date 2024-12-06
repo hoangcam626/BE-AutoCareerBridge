@@ -14,6 +14,7 @@ import static com.backend.autocarrerbridge.util.Constant.CODE_EXIT_SUB_ADMIN_MES
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_INVALID_PHONE;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_LIST_EMPTY_MESAGE;
 import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
@@ -82,6 +83,7 @@ import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND_ROLE;
 import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND_SUB_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.NOT_FOUND_UNIVERSITY_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NO_CHANGES_DETECTED;
+import static com.backend.autocarrerbridge.util.Constant.NO_CODE_SUB_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.NO_CONTENT_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.util.Constant.NO_EXIST_INDUSTRY;
@@ -112,9 +114,12 @@ import static com.backend.autocarrerbridge.util.Constant.USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.USER_PENDING;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WARD_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.LOCATION_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WORKSHOP_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WORKSHOP_ALREADY_REJECTED_MESSAGE;
+
+import java.util.Arrays;
 
 
 @Getter
@@ -134,6 +139,7 @@ public enum ErrorCode {
     ERROR_EXIST_INDUSTRY(BAD_REQUEST, NO_EXIST_INDUSTRY, HttpStatus.BAD_REQUEST),
     ERROR_EXIST_INDUSTRY_OF_BUSINESS(BAD_REQUEST, EXIST_INDUSTRY_OF_BUSINESS, HttpStatus.BAD_REQUEST),
 
+    // Các lỗi liên quan đến image
     ERROR_EMPTY_FILE(BAD_REQUEST, EMPTY_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_TYPE_FILE(BAD_REQUEST, TYPE_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_LIMIT_SIZE_FILE(BAD_REQUEST, LIMIT_SIZE_FILE_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -142,10 +148,13 @@ public enum ErrorCode {
     ERROR_DELETE_IMAGE(BAD_REQUEST, DELETE_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_IMAGE(BAD_REQUEST, NOT_FOUND_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_FIND_IMAGE(BAD_REQUEST, NOT_FOUND_FILE_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
-    NO_CHANGE_DETECTED(SUCCESS, NO_CHANGES_DETECTED, HttpStatus.OK),
     ERROR_OPEN_IMAGE(BAD_REQUEST, OPEN_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    NO_CHANGE_DETECTED(SUCCESS, NO_CHANGES_DETECTED, HttpStatus.OK),
+    ERROR_NO_CODE_SUB_ADMIN(BAD_REQUEST, NO_CODE_SUB_ADMIN, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_SUB_ADMIN(BAD_REQUEST, NOT_FOUND_SUB_ADMIN, HttpStatus.BAD_REQUEST),
     ERROR_VALID_EMAIL(BAD_REQUEST, ERROR_INVALID_EMAIL, HttpStatus.BAD_REQUEST),
+    ERROR_VALID_PHONE(BAD_REQUEST, ERROR_INVALID_PHONE, HttpStatus.BAD_REQUEST),
     ERROR_EMAIL_EXIST(BAD_REQUEST, ERROR_EXIST, HttpStatus.BAD_REQUEST),
     ERROR_EMAIL_NOT_FOUND(BAD_REQUEST, ERROR_NOT_FOUND, HttpStatus.BAD_REQUEST),
     ERROR_USER(BAD_REQUEST, ERROR_USER_EXIST, HttpStatus.BAD_REQUEST),
@@ -226,6 +235,7 @@ public enum ErrorCode {
     ERROR_INVALID_ACCOUNT_STATE(BAD_REQUEST, INVALID_ACCOUNT_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_ACCOUNT_IS_NULL(BAD_REQUEST, ACCOUNT_IS_NULL, HttpStatus.BAD_REQUEST),
 
+    // Các lỗi liên quan đến đơn vị hành chính
     ERROR_PROVINCE_NOT_FOUND(BAD_REQUEST, PROVINCE_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_DISTRICT_NOT_FOUND(BAD_REQUEST, DISTRICT_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_WARD_NOT_FOUND(BAD_REQUEST, WARD_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),

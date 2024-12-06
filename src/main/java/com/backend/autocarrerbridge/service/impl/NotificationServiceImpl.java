@@ -1,5 +1,13 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.util.Constant.SUB;
+
+import java.text.ParseException;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationDetailResponse;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationSendResponse;
@@ -11,14 +19,8 @@ import com.backend.autocarrerbridge.repository.UserNotificationRepository;
 import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.service.UserAccountService;
+
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.util.List;
-
-import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 @Service
 @RequiredArgsConstructor
@@ -29,15 +31,12 @@ public class NotificationServiceImpl implements NotificationService {
     private final TokenService tokenService;
     private final ModelMapper modelMapper;
 
-
     @Override
     public NotificationSendResponse send(NotificationSendRequest req) throws ParseException {
 
         // Create
-        Notification notification = Notification.builder()
-                .message(req.getMessage())
-                .statusRead(0)
-                .build();
+        Notification notification =
+                Notification.builder().message(req.getMessage()).statusRead(0).build();
         String usernameLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
         notification.setCreatedBy(usernameLogin);
         notification = notificationRepository.save(notification);
@@ -56,7 +55,8 @@ public class NotificationServiceImpl implements NotificationService {
     public List<NotificationDetailResponse> getAllUserNotification() throws ParseException {
         String usernameLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
         UserAccount userAccount = userAccountService.getUserByUsername(usernameLogin);
-        List<Notification> notifications = userNotificationRepository.getAllNotificationByUserAccountId(userAccount.getId());
+        List<Notification> notifications =
+                userNotificationRepository.getAllNotificationByUserAccountId(userAccount.getId());
         return notifications.stream()
                 .map(n -> modelMapper.map(n, NotificationDetailResponse.class))
                 .toList();

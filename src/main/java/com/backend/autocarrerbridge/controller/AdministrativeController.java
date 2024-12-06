@@ -46,7 +46,7 @@ public class AdministrativeController {
      * @return ApiResponse chứa thông tin chi tiết của tỉnh.
      */
     @GetMapping("/get-province")
-    public ApiResponse<ProvinceResponse> getProvinceById(@RequestParam(value = "id", required = false)Integer id) {
+    public ApiResponse<ProvinceResponse> getProvinceById(@RequestParam(value = "id", required = false) Integer id) {
         var res = provinceService.getById(id);
         return new ApiResponse<>(res);
     }
@@ -58,7 +58,8 @@ public class AdministrativeController {
      * @return ApiResponse chứa danh sách các huyện thuộc tỉnh.
      */
     @GetMapping("/get-all-districts")
-    public ApiResponse<List<DistrictResponse>> getAllDistricts(@RequestParam(value = "provinceId", required = false)Integer provinceId) {
+    public ApiResponse<List<DistrictResponse>> getAllDistricts(
+            @RequestParam(value = "provinceId", required = false) Integer provinceId) {
         var res = districtService.getAllByProvinceId(provinceId);
         return new ApiResponse<>(res);
     }
@@ -82,7 +83,8 @@ public class AdministrativeController {
      * @return ApiResponse chứa danh sách các xã/phường thuộc huyện.
      */
     @GetMapping("/get-all-wards")
-    public ApiResponse<List<WardResponse>> getAllWards(@RequestParam(value = "districtId", required = false) Integer districtId) {
+    public ApiResponse<List<WardResponse>> getAllWards(
+            @RequestParam(value = "districtId", required = false) Integer districtId) {
         var res = wardService.getAllByDistrictId(districtId);
         return new ApiResponse<>(res);
     }
