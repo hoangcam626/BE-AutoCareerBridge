@@ -23,8 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.UserAccount;
-import com.backend.autocarrerbridge.repository.RoleRepository;
-import com.backend.autocarrerbridge.repository.UserAccountRepository;
+import com.backend.autocarrerbridge.controller.repository.RoleRepository;
+import com.backend.autocarrerbridge.controller.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.AccessLevel;
