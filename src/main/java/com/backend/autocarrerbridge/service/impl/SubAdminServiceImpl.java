@@ -26,7 +26,7 @@ import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse
 import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.repository.SubAdminRepository;
+import com.backend.autocarrerbridge.controller.repository.SubAdminRepository;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.SubAdminService;
