@@ -21,7 +21,7 @@ import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.entity.WorkshopBusiness;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.WorkShopBusinessRepository;
+import com.backend.autocarrerbridge.repository.WorkShopBusinessRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.WorkShopBusinessService;
 import com.backend.autocarrerbridge.service.WorkShopService;
