@@ -94,6 +94,8 @@ public class Constant {
     public static final String JTI = "jti";
     public static final String TOKEN_BLACKLIST = "Token đã bị xoá!";
     public static final String DEFAULT_USERNAME = "admin@domain.com";
+    public static final String DEFAULT_PASSWORD = "admin";
+
     public static final String SUB = "sub";
     public static final String PREFIX_NP = "/np";
     public static final String PREFIX_FG = "/fg";

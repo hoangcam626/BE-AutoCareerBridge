@@ -1,5 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -9,12 +11,10 @@ import org.springframework.stereotype.Service;
 import com.backend.autocarrerbridge.dto.response.ward.WardResponse;
 import com.backend.autocarrerbridge.entity.Ward;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.repository.WardRepository;
+import com.backend.autocarrerbridge.controller.repository.WardRepository;
 import com.backend.autocarrerbridge.service.WardService;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class WardServiceImpl implements WardService {
     @Override
     public List<WardResponse> getAllByDistrictId(Integer districtId) {
 
-        if(Objects.isNull(districtId)){
+        if (Objects.isNull(districtId)) {
             throw new AppException(ERROR_DISTRICT_NOT_BLANK);
         }
 
@@ -40,7 +40,7 @@ public class WardServiceImpl implements WardService {
     @Override
     public WardResponse getById(Integer id) {
 
-        if(Objects.isNull(id)){
+        if (Objects.isNull(id)) {
             throw new AppException(ERROR_WARD_NOT_BLANK);
         }
         Ward ward = findWardById(id);
