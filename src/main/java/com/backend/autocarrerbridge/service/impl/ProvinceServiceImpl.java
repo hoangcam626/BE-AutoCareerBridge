@@ -12,7 +12,7 @@ import com.backend.autocarrerbridge.dto.response.province.ProvinceResponse;
 import com.backend.autocarrerbridge.entity.Province;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.ProvinceRepository;
+import com.backend.autocarrerbridge.repository.ProvinceRepository;
 import com.backend.autocarrerbridge.service.ProvinceService;
 
 import lombok.RequiredArgsConstructor;

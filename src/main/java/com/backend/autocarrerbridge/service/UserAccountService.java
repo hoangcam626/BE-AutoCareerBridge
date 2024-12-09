@@ -27,4 +27,6 @@ public interface UserAccountService {
     void approvedAccount(UserAccount userAccount);
 
     void rejectedAccount(UserAccount userAccount);
+
+
 }

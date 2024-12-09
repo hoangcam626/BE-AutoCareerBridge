@@ -28,7 +28,7 @@ import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.controller.repository.WorkShopRepository;
+import com.backend.autocarrerbridge.repository.WorkShopRepository;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.WorkShopService;
@@ -109,9 +109,10 @@ public class WorkShopServiceImpl implements WorkShopService {
         locationRequest.setDescription(workShopRequest.getAddressDescription());
         Location location =  locationService.saveLocation(locationRequest);
         University university = universityService.findById(workShopRequest.getUniversityId()); // Tìm trường đại học
-        if (university == null) {
+        if (Objects.equals(university,null)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu trường không tồn tại
         }
+
         // Ánh xạ từ request sang entity và lưu vào cơ sở dữ liệu
         Workshop workshop = modelMapper.map(workShopRequest, Workshop.class);
         workshop.setWorkshopImageId(imageId); // Gắn ảnh cho Workshop

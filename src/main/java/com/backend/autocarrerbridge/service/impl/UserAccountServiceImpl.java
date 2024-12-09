@@ -16,6 +16,7 @@ import static com.backend.autocarrerbridge.util.Constant.PREFIX_NP;
 
 import java.util.concurrent.TimeUnit;
 
+import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
 
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
@@ -39,7 +40,8 @@ import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginRespons
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.UserAccountRepository;
+
+
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -209,31 +211,33 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public EmailCode generateVerificationCode(String email) {
-        String code = generateCode(email);
         UserAccount userAccount = userAccountRepository.findByUsername(email);
         if (userAccount != null && userAccount.getState().equals(State.APPROVED)) {
             throw new AppException(ErrorCode.ERROR_USER_APPROVED);
         }
-
+        String code = generateCode(email);
         if (code.equals(codeExist)) {
-            return EmailCode.builder().email(email).code(NOTIFICATION_WAIT).build();
+            return EmailCode.builder().email(email).verificationCode(NOTIFICATION_WAIT).build();
         }
-        return EmailCode.builder().email(email).code(code).build();
+        return EmailCode.builder().email(email).verificationCode(code).build();
     }
 
     // Gen ra mã reset mật khẩu
     @Override
     public EmailCode generatePasswordResetCode(String email) {
+        if(userAccountRepository.findByUsername(email) == null){
+            throw new AppException(ERROR_USER_NOT_FOUND);
+        }
         // Tạo mã reset mật khẩu cho email
         String code = generateCodeForgot(email);
 
         // Nếu mã đã tồn tại, trả về thông báo yêu cầu đợi
         if (code.equals(codeExist)) {
-            return EmailCode.builder().email(email).code(NOTIFICATION_WAIT).build();
+            throw new AppException(ERROR_FORGOT_EMAIL);
         }
 
         // Trả về mã reset mật khẩu mới
-        return EmailCode.builder().email(email).code(code).build();
+        return EmailCode.builder().email(email).verificationCode(code).build();
     }
 
     // Thực hiện thay đổi mật khẩu khi quên mật khẩu

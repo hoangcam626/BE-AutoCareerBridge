@@ -14,8 +14,8 @@ import com.backend.autocarrerbridge.entity.Major;
 import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.MajorRepository;
-import com.backend.autocarrerbridge.controller.repository.SectionRepository;
+import com.backend.autocarrerbridge.repository.MajorRepository;
+import com.backend.autocarrerbridge.repository.SectionRepository;
 import com.backend.autocarrerbridge.service.MajorService;
 
 import lombok.RequiredArgsConstructor;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.backend.autocarrerbridge.dto.response.ward.WardResponse;
 import com.backend.autocarrerbridge.entity.Ward;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.controller.repository.WardRepository;
+import com.backend.autocarrerbridge.repository.WardRepository;
 import com.backend.autocarrerbridge.service.WardService;
 
 import lombok.RequiredArgsConstructor;

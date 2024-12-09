@@ -11,6 +11,7 @@ import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterRespon
 import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.util.email.EmailCode;
 
 public interface BusinessService {
     BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest);
@@ -30,4 +31,7 @@ public interface BusinessService {
     BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req);
 
     BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req);
+
+    EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest);
+
 }

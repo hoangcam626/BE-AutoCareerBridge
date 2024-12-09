@@ -6,6 +6,7 @@ import java.util.List;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
 
+
 public interface BusinessUniversityService {
     ApiResponse<Object> getSentRequest() throws ParseException;
 
@@ -22,4 +23,6 @@ public interface BusinessUniversityService {
     List<CooperationUniversityResponse> getAllCooperationOfUniversityReject() throws ParseException;
 
     void approveRequetCooperation(Integer idBusinesUniversity);
+
+
 }
