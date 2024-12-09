@@ -7,14 +7,13 @@ import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedRespon
 import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
-import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedResponse;
-import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.mapper.LocationMapper;
 import com.backend.autocarrerbridge.service.LocationService;
+import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -43,8 +42,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
+
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
+
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -65,24 +67,10 @@ public class BusinessServiceImpl implements BusinessService {
     @Transactional
     @Override
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
-        if (userBusinessRequest == null) {
-            throw new IllegalArgumentException("User business data cannot be null");
-        }
 
-        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
-        Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
-        if (existingBusiness != null) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-
-        // Xác thực mật khẩu
-        if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
-            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
-        }
-
-        if (userBusinessRequest.getLicenseImage() == null
-                || userBusinessRequest.getLicenseImage().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_LICENSE);
+        checkValidateRegister(userBusinessRequest);
+        if(userBusinessRequest.getVerificationCode() == null){
+            throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
         if (!Objects.equals(
                 redisTemplate.opsForValue().get(userBusinessRequest.getEmail()),
@@ -98,7 +86,6 @@ public class BusinessServiceImpl implements BusinessService {
         } catch (Exception e) {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
-
         // Tạo và lưu UserAccount
         UserAccount userAccount = new UserAccount();
         modelMapper.map(userBusinessRequest, userAccount);
@@ -239,5 +226,31 @@ public class BusinessServiceImpl implements BusinessService {
         return BusinessRejectedResponse.of(Boolean.TRUE);
     }
 
+    @Override
+    public EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest) {
+        checkValidateRegister(userBusinessRequest);
+        return userAccountService.generateVerificationCode(userBusinessRequest.getEmail());
+    }
+    public void checkValidateRegister(UserBusinessRequest userBusinessRequest){
+        if (userBusinessRequest == null) {
+            throw new  AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+
+        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
+        Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
+        if (existingBusiness != null) {
+            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
+        }
+
+        // Xác thực mật khẩu
+        if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
+            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
+        }
+
+        if (userBusinessRequest.getLicenseImage() == null
+                || userBusinessRequest.getLicenseImage().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_LICENSE);
+        }
+    }
 
 }

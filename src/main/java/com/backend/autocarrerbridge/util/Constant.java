@@ -127,6 +127,7 @@ public class Constant {
     public static final String ACCOUNT_ALREADY_REJECTED_MESSAGE = "Tài khoản đã bị từ chối.";
     public static final String INVALID_ACCOUNT_STATE_MESSAGE = "Trạng thái tài khoản không hợp lệ.";
     public static final String ACCOUNT_IS_NULL = "Tài khoản người dùng đang trống.";
+    public static final String SENDED_FORGOT_PASS = "Mã đã được gửi vui lòng kiểm tra email.";
 
     // Doanh nghiệp
     public static final String REGISTER_BUSINESS =

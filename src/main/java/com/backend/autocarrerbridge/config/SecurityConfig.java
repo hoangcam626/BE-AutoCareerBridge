@@ -27,7 +27,6 @@ import com.backend.autocarrerbridge.service.TokenService;
 
 import lombok.RequiredArgsConstructor;
 
-@SuppressWarnings("squid:S4502")
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -56,6 +55,8 @@ public class SecurityConfig {
         "/api/accounts/refresh",
         "/api/accounts/login",
         "/api/accounts/verify",
+            "/api/business/verify-business",
+            "/api/university/verify-university",
         "/api/accounts/forgot-code",
         "/api/accounts/forgot-pass",
         "/api/accounts/jwt-introspect",

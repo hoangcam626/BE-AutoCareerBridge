@@ -9,6 +9,7 @@ import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterRe
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.entity.University;
+import com.backend.autocarrerbridge.util.email.EmailCode;
 
 import java.util.List;
 
@@ -29,6 +30,6 @@ public interface UniversityService {
 
     List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName);
 
-
+    EmailCode generaterCode(UserUniversityRequest userUniversityRequest);
 
 }

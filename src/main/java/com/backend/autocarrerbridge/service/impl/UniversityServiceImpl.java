@@ -14,6 +14,7 @@ import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedRe
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.service.ImageService;
+import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -55,37 +56,12 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     public UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest) {
-
-        // Kiểm tra password và rePassword có khớp không
-        if (userUniversityRequest.getPassword() == null
-                || userUniversityRequest.getRePassword() == null
-                || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {
-            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
-        }
-
-        if (universityRepository.findByPhone(userUniversityRequest.getPhone()) != null) {
-            throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
-        }
-
-        if (userUniversityRequest.getEmail() == null
-                || userUniversityRequest.getEmail().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
+        checkValidateUniversity(userUniversityRequest);
         if (!Objects.equals(
                 redisTemplate.opsForValue().get(userUniversityRequest.getEmail()),
                 userUniversityRequest.getVerificationCode())) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
-        if (userUniversityRequest.getName() == null
-                || userUniversityRequest.getName().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
-        }
-
-        // Kiểm tra xem email đã được đăng ký trước đó hay chưa
-        if (userAccountService.getUserByUsername(userUniversityRequest.getEmail()) != null) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-
         // Set Role
         Role role = roleService.findById(PredefinedRole.UNIVERSITY.getValue());
         // Tạo UserAccount từ DTO
@@ -200,6 +176,37 @@ public class UniversityServiceImpl implements UniversityService {
     public List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName) {
         List<University> list = universityRepository.findUniversity(address, universityName);
         return list.stream().map(university -> modelMapper.map(university,UniversityResponse.class)).toList();
+    }
+
+    @Override
+    public EmailCode generaterCode(UserUniversityRequest userUniversityRequest) {
+        checkValidateUniversity(userUniversityRequest);
+        return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
+    }
+    public void checkValidateUniversity(UserUniversityRequest userUniversityRequest){
+        if (userUniversityRequest.getPassword() == null
+                || userUniversityRequest.getRePassword() == null
+                || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {
+            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
+        }
+
+        if (universityRepository.findByPhone(userUniversityRequest.getPhone()) != null) {
+            throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
+        }
+
+        if (userUniversityRequest.getEmail() == null
+                || userUniversityRequest.getEmail().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
+        }
+        if (userUniversityRequest.getName() == null
+                || userUniversityRequest.getName().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
+        }
+
+        // Kiểm tra xem email đã được đăng ký trước đó hay chưa
+        if (userAccountService.getUserByUsername(userUniversityRequest.getEmail()) != null) {
+            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
+        }
     }
 
 }
