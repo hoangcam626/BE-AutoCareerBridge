@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EmailCode {
     private String email;
-    private String code;
+    private String verificationCode;
 }

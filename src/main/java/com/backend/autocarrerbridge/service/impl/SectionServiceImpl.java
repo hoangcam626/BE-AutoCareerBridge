@@ -14,8 +14,8 @@ import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.SectionRepository;
-import com.backend.autocarrerbridge.controller.repository.UniversityRepository;
+import com.backend.autocarrerbridge.repository.SectionRepository;
+import com.backend.autocarrerbridge.repository.UniversityRepository;
 import com.backend.autocarrerbridge.service.SectionService;
 
 import lombok.RequiredArgsConstructor;

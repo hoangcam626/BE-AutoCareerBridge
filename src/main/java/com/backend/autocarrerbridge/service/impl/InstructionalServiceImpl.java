@@ -1,16 +1,17 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import com.backend.autocarrerbridge.controller.repository.InstructionalRepository;
-import com.backend.autocarrerbridge.converter.InstructionalConverter;
+import com.backend.autocarrerbridge.repository.InstructionalRepository;
 import com.backend.autocarrerbridge.dto.request.instructional.InstructionalRequest;
 import com.backend.autocarrerbridge.dto.response.instructional.InstructionalResponse;
-import com.backend.autocarrerbridge.entity.Instructional;
 import com.backend.autocarrerbridge.service.InstructionalService;
 import jakarta.transaction.Transactional;
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+
 public class InstructionalServiceImpl implements InstructionalService {
 
   private final InstructionalRepository instructionalRepository;

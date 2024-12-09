@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
+
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_RELATION;
@@ -119,8 +120,6 @@ import static com.backend.autocarrerbridge.util.Constant.WEBSITE_UNIVERSITY_NOT_
 import static com.backend.autocarrerbridge.util.Constant.WORKSHOP_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.WORKSHOP_ALREADY_REJECTED_MESSAGE;
 
-import java.util.Arrays;
-
 
 @Getter
 public enum ErrorCode {
@@ -195,6 +194,7 @@ public enum ErrorCode {
     ERROR_DATE_EMPTY(BAD_REQUEST, DATE_WORK_SHOP_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_FAIL_WORK_SHOP(BAD_REQUEST, REQUEST_WORKSHOP_FAIL, HttpStatus.BAD_REQUEST),
     ERROR_WORK_SHOP_DATE(BAD_REQUEST, DATE_WORKSHOP, HttpStatus.BAD_REQUEST),
+    ERROR_FORGOT_EMAIL(BAD_REQUEST, SENDED_FORGOT_PASS, HttpStatus.BAD_REQUEST),
 
     //    validate @NotBlank Employee
     GENDER_NOT_BLANK(BAD_REQUEST, GENDER_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),

@@ -11,7 +11,7 @@ import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.LocationRepository;
+import com.backend.autocarrerbridge.repository.LocationRepository;
 import com.backend.autocarrerbridge.service.DistrictService;
 import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.ProvinceService;
