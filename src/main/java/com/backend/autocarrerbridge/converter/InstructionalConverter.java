@@ -1,20 +1,17 @@
 package com.backend.autocarrerbridge.converter;
-
 import static com.backend.autocarrerbridge.util.Constant.SUB;
-
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
 import java.text.ParseException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.backend.autocarrerbridge.dto.request.instructional.InstructionalRequest;
 import com.backend.autocarrerbridge.dto.response.instructional.InstructionalResponse;
 import com.backend.autocarrerbridge.entity.Instructional;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.service.impl.TokenServiceImpl;
+
 
 @Component
 public class InstructionalConverter {
@@ -49,7 +46,6 @@ public class InstructionalConverter {
                         UserAccount.builder().id(request.getUserAccountId()).build())
                 .build();
     }
-
     /**
      * Chuyển đổi từ Instructional entity sang InstructionalResponse.
      *
@@ -87,28 +83,22 @@ public class InstructionalConverter {
         }
         return response;
     }
-
-    /**
-     * Cập nhật Instructional entity từ InstructionalRequest.
-     *
-     * @param request       Đối tượng InstructionalRequest chứa dữ liệu cập nhật.
-     * @param instructional Đối tượng Instructional entity cần được cập nhật.
-     */
-    public void updateEntityFormRequest(InstructionalRequest request, Instructional instructional) {
-        if (request == null || instructional == null) {
-            return;
-        }
-        instructional.setName(request.getName());
-        instructional.setGender(request.getGender());
-        instructional.setDateOfBirth(request.getDateOfBirth());
-        instructional.setEmail(request.getEmail());
-        instructional.setAddress(request.getAddress());
-        instructional.setInstructionalCode(request.getInstructionalCode());
-        instructional.setInstructionalImageId(request.getInstructionalImageId());
-        instructional.setPhone(request.getPhone());
-        instructional.setUniversity(
-                University.builder().id(request.getUniversityId()).build());
-        instructional.setUserAccount(
-                UserAccount.builder().id(request.getUserAccountId()).build());
+  /**
+   * Cập nhật Instructional entity từ InstructionalRequest.
+   *
+   * @param request       Đối tượng InstructionalRequest chứa dữ liệu cập nhật.
+   * @param instructional Đối tượng Instructional entity cần được cập nhật.
+   */
+  public void updateEntityFormRequest(InstructionalRequest request, Instructional instructional) {
+    if (request == null || instructional == null) {
+      return;
     }
+    instructional.setName(request.getName());
+    instructional.setGender(request.getGender());
+    instructional.setDateOfBirth(request.getDateOfBirth());
+    instructional.setAddress(request.getAddress());
+    instructional.setInstructionalCode(request.getInstructionalCode());
+    instructional.setPhone(request.getPhone());
+    instructional.setUniversity(University.builder().id(request.getUniversityId()).build());
+  }
 }

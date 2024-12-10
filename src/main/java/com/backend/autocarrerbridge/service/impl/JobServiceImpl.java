@@ -13,6 +13,7 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
+import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
@@ -21,7 +22,6 @@ import com.backend.autocarrerbridge.dto.request.notification.NotificationSendReq
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.data.domain.Page;

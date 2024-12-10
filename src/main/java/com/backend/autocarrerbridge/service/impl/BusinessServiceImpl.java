@@ -226,6 +226,7 @@ public class BusinessServiceImpl implements BusinessService {
         return BusinessRejectedResponse.of(Boolean.TRUE);
     }
 
+
     @Override
     public EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest) {
         checkValidateRegister(userBusinessRequest);

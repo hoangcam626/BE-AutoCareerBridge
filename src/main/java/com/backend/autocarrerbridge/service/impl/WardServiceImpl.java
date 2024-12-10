@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
+import com.backend.autocarrerbridge.service.WardService;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +13,6 @@ import com.backend.autocarrerbridge.dto.response.ward.WardResponse;
 import com.backend.autocarrerbridge.entity.Ward;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.repository.WardRepository;
-import com.backend.autocarrerbridge.service.WardService;
 
 import lombok.RequiredArgsConstructor;
 
