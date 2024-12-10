@@ -19,13 +19,16 @@ import java.util.concurrent.TimeUnit;
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
 
+import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 
 
 import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.University;
+import com.backend.autocarrerbridge.repository.EmployeeRepository;
 import com.backend.autocarrerbridge.service.IntermediaryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,6 +43,7 @@ import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginRespons
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -64,6 +68,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     String codeExist = "Exist";
     Integer codeTime = 60;
     IntermediaryService intermediaryService;
+    private final EmployeeRepository employeeRepository;
 
     /**
      * Xác thực người dùng dựa trên tên đăng nhập và mật khẩu.
@@ -105,6 +110,13 @@ public class UserAccountServiceImpl implements UserAccountService {
                 SubAdmin subAdmin = intermediaryService.findSubAdminByEmail(userAccountRequest.getUsername());
                 if (subAdmin != null) {
                     userAccountLoginResponse.setSubAdmin(modelMapper.map(subAdmin, SubAdminSelfResponse.class));
+                }
+                break;
+            case "EMPLOYEE":
+                Employee employee = employeeRepository.findByUsername(userAccountRequest.getUsername());
+                if (employee != null) {
+                    userAccountLoginResponse.setEmployee(modelMapper.map(employee, EmployeeResponse.class));
+                    userAccountLoginResponse.getEmployee().setBusinessId(employee.getBusiness().getId());
                 }
                 break;
             default:
