@@ -16,30 +16,27 @@ import static com.backend.autocarrerbridge.util.Constant.PREFIX_NP;
 
 import java.util.concurrent.TimeUnit;
 
-import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
-
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
-import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
-
-
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.SubAdmin;
-import com.backend.autocarrerbridge.entity.University;
-import com.backend.autocarrerbridge.service.IntermediaryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.controller.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.dto.request.account.ForgotPasswordRequest;
 import com.backend.autocarrerbridge.dto.request.account.PasswordChangeRequest;
 import com.backend.autocarrerbridge.dto.request.account.RoleRequest;
 import com.backend.autocarrerbridge.dto.request.account.UserAccountRequest;
 import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginResponse;
+import com.backend.autocarrerbridge.dto.response.business.BusinessLoginResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.SubAdmin;
+import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.UserAccountRepository;
+import com.backend.autocarrerbridge.service.IntermediaryService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -143,7 +140,7 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public UserAccount registerUser(UserAccount userAccount) {
-        if(Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))){
+        if (Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))) {
             throw new AppException(ERROR_EMAIL_EXIST);
         }
         UserAccount newAccount = UserAccount.builder()

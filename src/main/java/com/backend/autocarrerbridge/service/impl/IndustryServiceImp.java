@@ -7,25 +7,25 @@ import static com.backend.autocarrerbridge.util.Constant.DELETED;
 import java.text.ParseException;
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.BusinessIndustry;
-import com.backend.autocarrerbridge.controller.repository.BusinessIndustryRepository;
-import com.backend.autocarrerbridge.controller.repository.BusinessRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.controller.repository.BusinessIndustryRepository;
+import com.backend.autocarrerbridge.controller.repository.BusinessRepository;
+import com.backend.autocarrerbridge.controller.repository.IndustryRepository;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryPagingRequest;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
+import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.BusinessIndustry;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.IndustryRepository;
 import com.backend.autocarrerbridge.service.IndustryService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -207,7 +207,8 @@ public class IndustryServiceImp implements IndustryService {
      */
     @Override
     public ApiResponse<Object> createIndustryToBusiness(Integer industryId) throws ParseException {
-        Business business = businessRepository.getBusinessById(getBusinessViaToken().getId());
+        Business business =
+                businessRepository.getBusinessById(getBusinessViaToken().getId());
         if (business == null) {
             throw new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS);
         }
@@ -240,9 +241,10 @@ public class IndustryServiceImp implements IndustryService {
     }
 
     @Override
-    public ApiResponse<Object> getIndustryOfBusiness(int page, int size, String keyword, Pageable pageable) throws ParseException {
-        Page<BusinessIndustryDto> list =
-                businessIndustryRepository.getIndustryOfBusiness(getBusinessViaToken().getId(), keyword, pageable);
+    public ApiResponse<Object> getIndustryOfBusiness(int page, int size, String keyword, Pageable pageable)
+            throws ParseException {
+        Page<BusinessIndustryDto> list = businessIndustryRepository.getIndustryOfBusiness(
+                getBusinessViaToken().getId(), keyword, pageable);
         if (list.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
@@ -252,8 +254,8 @@ public class IndustryServiceImp implements IndustryService {
 
     @Override
     public ApiResponse<Object> getIndustryDetail(Integer industryId) throws ParseException {
-        BusinessIndustry businessIndustry =
-                businessIndustryRepository.findByBusinessIdAndIndustryId(getBusinessViaToken().getId(), industryId);
+        BusinessIndustry businessIndustry = businessIndustryRepository.findByBusinessIdAndIndustryId(
+                getBusinessViaToken().getId(), industryId);
         if (businessIndustry == null) {
             throw new AppException(ErrorCode.ERROR_EXIST_CODE);
         }
@@ -268,8 +270,6 @@ public class IndustryServiceImp implements IndustryService {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
         businessIndustryRepository.delete(existBusinessIndustry);
-        return ApiResponse.builder()
-                .data(DELETED)
-                .build();
+        return ApiResponse.builder().data(DELETED).build();
     }
 }

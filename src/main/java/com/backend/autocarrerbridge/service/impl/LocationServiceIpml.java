@@ -7,11 +7,11 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.controller.repository.LocationRepository;
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.LocationRepository;
 import com.backend.autocarrerbridge.service.DistrictService;
 import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.ProvinceService;
@@ -50,16 +50,23 @@ public class LocationServiceIpml implements LocationService {
                 location.setUpdatedBy(emailAccountLogin); // Cập nhật thông tin người sửa
 
                 // Cập nhật các thông tin nếu có sự thay đổi
-                if (request.getDescription() != null && !request.getDescription().equals(location.getDescription())) {
+                if (request.getDescription() != null
+                        && !request.getDescription().equals(location.getDescription())) {
                     location.setDescription(request.getDescription());
                 }
-                if (request.getProvinceId() != null && !Objects.equals(request.getProvinceId(), location.getProvince().getId())) {
+                if (request.getProvinceId() != null
+                        && !Objects.equals(
+                                request.getProvinceId(), location.getProvince().getId())) {
                     location.setProvince(provinceService.findProvinceById(request.getProvinceId()));
                 }
-                if (request.getDistrictId() != null && !Objects.equals(request.getDistrictId(), location.getDistrict().getId())) {
+                if (request.getDistrictId() != null
+                        && !Objects.equals(
+                                request.getDistrictId(), location.getDistrict().getId())) {
                     location.setDistrict(districtService.findDistrictById(request.getDistrictId()));
                 }
-                if (request.getWardId() != null && !Objects.equals(request.getWardId(), location.getWard().getId())) {
+                if (request.getWardId() != null
+                        && !Objects.equals(
+                                request.getWardId(), location.getWard().getId())) {
                     location.setWard(wardService.findWardById(request.getWardId()));
                 }
 
@@ -88,5 +95,4 @@ public class LocationServiceIpml implements LocationService {
 
         return locationRepository.save(location);
     }
-
 }

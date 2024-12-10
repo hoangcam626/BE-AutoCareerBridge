@@ -8,14 +8,14 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.controller.repository.SectionRepository;
+import com.backend.autocarrerbridge.controller.repository.UniversityRepository;
 import com.backend.autocarrerbridge.converter.SectionConverter;
 import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
 import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.SectionRepository;
-import com.backend.autocarrerbridge.controller.repository.UniversityRepository;
 import com.backend.autocarrerbridge.service.SectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,8 @@ public class SectionServiceImpl implements SectionService {
     public SectionRequest createSection(SectionRequest sectionRequest) {
         // Tìm university dựa trên universityId trong sectionRequest
         University university = universityRepository
-            .findById(sectionRequest.getUniversityId())
-            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+                .findById(sectionRequest.getUniversityId())
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
 
         // Kiểm tra xem section với tên này đã tồn tại chưa
         if (sectionRepository.findByName(sectionRequest.getName()) != null) {
@@ -66,8 +66,8 @@ public class SectionServiceImpl implements SectionService {
     @Override
     public SectionRequest updateSection(int id, SectionRequest sectionRequest) {
         // Tìm section dựa trên ID
-        Section section = sectionRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
+        Section section =
+                sectionRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
 
         // Cập nhật các trường thông tin của section
         section.setName(sectionRequest.getName());
@@ -90,8 +90,8 @@ public class SectionServiceImpl implements SectionService {
     @Override
     public SectionRequest deleteSection(int id) {
         // Tìm section dựa trên ID
-        Section section = sectionRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
+        Section section =
+                sectionRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
 
         // Kiểm tra xem section có chứa major nào không
         if (!section.getMajors().isEmpty()) {
@@ -129,8 +129,8 @@ public class SectionServiceImpl implements SectionService {
     @Override
     public List<SectionRequest> getSectionById(int id) {
         // Tìm section dựa trên ID
-        Section section = sectionRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
+        Section section =
+                sectionRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
 
         // Chuyển đổi Section entity thành SectionRequest và trả về dưới dạng danh sách
         return List.of(SectionConverter.convertToResponse(section));

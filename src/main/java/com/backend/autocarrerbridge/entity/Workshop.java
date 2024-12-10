@@ -46,8 +46,6 @@ public class Workshop extends AbstractAudit {
     @Column(name = "description")
     private String description;
 
-
-
     @Column(name = "expire_date")
     private LocalDate expireDate;
 

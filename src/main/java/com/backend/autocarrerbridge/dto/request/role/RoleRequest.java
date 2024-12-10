@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.dto.request.role;
 
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

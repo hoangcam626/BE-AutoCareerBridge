@@ -43,12 +43,12 @@ public class MajorConverter {
 
         // Xây dựng đối tượng Major từ MajorRequest
         Major major = Major.builder()
-            .id(majorRequest.getId())
-            .name(majorRequest.getName())
-            .code(majorRequest.getCode())
-            .numberStudent(majorRequest.getNumberStudent())
-            .description(majorRequest.getDescription())
-            .build();
+                .id(majorRequest.getId())
+                .name(majorRequest.getName())
+                .code(majorRequest.getCode())
+                .numberStudent(majorRequest.getNumberStudent())
+                .description(majorRequest.getDescription())
+                .build();
         major.setStatus(majorRequest.getStatus() != null ? majorRequest.getStatus() : Status.ACTIVE);
         major.setCreatedAt(majorRequest.getCreatedAt() != null ? majorRequest.getCreatedAt() : LocalDateTime.now());
         major.setUpdatedAt(LocalDateTime.now());
@@ -79,17 +79,17 @@ public class MajorConverter {
      */
     public static MajorRequest convertToDTO(Major major) {
         return MajorRequest.builder()
-            .id(major.getId())
-            .name(major.getName())
-            .code(major.getCode())
-            .numberStudent(major.getNumberStudent())
-            .description(major.getDescription())
-            .status(major.getStatus())
-            .createdAt(major.getCreatedAt())
-            .updatedAt(major.getUpdatedAt())
-            .createdBy(major.getCreatedBy())
-            .updatedBy(major.getUpdatedBy())
-            .sectionId(major.getSection().getId())
-            .build();
+                .id(major.getId())
+                .name(major.getName())
+                .code(major.getCode())
+                .numberStudent(major.getNumberStudent())
+                .description(major.getDescription())
+                .status(major.getStatus())
+                .createdAt(major.getCreatedAt())
+                .updatedAt(major.getUpdatedAt())
+                .createdBy(major.getCreatedBy())
+                .updatedBy(major.getUpdatedBy())
+                .sectionId(major.getSection().getId())
+                .build();
     }
 }

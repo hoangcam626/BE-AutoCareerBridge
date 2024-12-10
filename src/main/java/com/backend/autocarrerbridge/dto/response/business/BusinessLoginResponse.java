@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

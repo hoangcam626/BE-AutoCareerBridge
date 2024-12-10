@@ -1,6 +1,8 @@
 package com.backend.autocarrerbridge.service.impl;
 
-
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DISTRICT_NOT_BLANK;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DISTRICT_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WARD_NOT_BLANK;
 
 import java.util.List;
 import java.util.Objects;
@@ -8,17 +10,13 @@ import java.util.Objects;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.controller.repository.WardRepository;
 import com.backend.autocarrerbridge.dto.response.ward.WardResponse;
 import com.backend.autocarrerbridge.entity.Ward;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.controller.repository.WardRepository;
 import com.backend.autocarrerbridge.service.WardService;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DISTRICT_NOT_BLANK;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DISTRICT_NOT_FOUND;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WARD_NOT_BLANK;
 
 @Service
 @RequiredArgsConstructor

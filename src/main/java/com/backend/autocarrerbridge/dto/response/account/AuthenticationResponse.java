@@ -2,7 +2,6 @@ package com.backend.autocarrerbridge.dto.response.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

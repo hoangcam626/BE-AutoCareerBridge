@@ -8,14 +8,14 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.autocarrerbridge.controller.repository.MajorRepository;
+import com.backend.autocarrerbridge.controller.repository.SectionRepository;
 import com.backend.autocarrerbridge.converter.MajorConverter;
 import com.backend.autocarrerbridge.dto.request.major.MajorRequest;
 import com.backend.autocarrerbridge.entity.Major;
 import com.backend.autocarrerbridge.entity.Section;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.MajorRepository;
-import com.backend.autocarrerbridge.controller.repository.SectionRepository;
 import com.backend.autocarrerbridge.service.MajorService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,8 @@ public class MajorServiceImpl implements MajorService {
     public MajorRequest createMajor(MajorRequest majorRequest) {
         // Tìm section dựa trên sectionId trong majorRequest
         Section section = sectionRepository
-            .findById(majorRequest.getSectionId())
-            .orElseThrow(() -> new AppException(ErrorCode.ERROR_SECTION_NOT_FOUND));
+                .findById(majorRequest.getSectionId())
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_SECTION_NOT_FOUND));
 
         // Kiểm tra xem major với tên này đã tồn tại chưa
         if (majorRepository.findByName(majorRequest.getName()) != null) {
@@ -66,8 +66,7 @@ public class MajorServiceImpl implements MajorService {
     @Override
     public MajorRequest updateMajor(int id, MajorRequest majorRequest) {
         // Tìm major dựa trên ID
-        Major major = majorRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
+        Major major = majorRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
 
         // Cập nhật các trường thông tin của major
         major.setCode(majorRequest.getCode());
@@ -92,8 +91,7 @@ public class MajorServiceImpl implements MajorService {
     @Override
     public MajorRequest deleteMajor(int id) {
         // Tìm major dựa trên ID
-        Major major = majorRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
+        Major major = majorRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
 
         // Xóa major khỏi cơ sở dữ liệu
         majorRepository.delete(major);
@@ -126,8 +124,7 @@ public class MajorServiceImpl implements MajorService {
     @Override
     public List<MajorRequest> getMajorById(int id) {
         // Tìm major dựa trên ID
-        Major major = majorRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
+        Major major = majorRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
 
         // Chuyển đổi Major entity thành MajorRequest và trả về dưới dạng danh sách
         return List.of(MajorConverter.convertToDTO(major));
