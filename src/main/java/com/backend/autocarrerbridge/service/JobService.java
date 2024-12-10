@@ -6,8 +6,11 @@ import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRequest;
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface JobService {
@@ -24,4 +27,6 @@ public interface JobService {
     JobApprovedResponse approved(JobApprovedRequest req) throws ParseException;
 
     JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException;
+
+    Page<JobResponse> getPagingByState(PageInfo info, Integer state);
 }

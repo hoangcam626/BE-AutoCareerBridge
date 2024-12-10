@@ -1,13 +1,14 @@
 package com.backend.autocarrerbridge.repository;
 
-import java.awt.print.Pageable;
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.backend.autocarrerbridge.entity.Business;
 
+@Repository
 public interface BusinessRepository extends JpaRepository<Business, Integer> {
     Business findByEmail(String email);
 
@@ -29,6 +30,21 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     @Query("SELECT b FROM Business b WHERE b.id = :id")
     Business getBusinessById(Integer id);
 
-    @Query("select b from Business b WHERE b.userAccount.state = 1 and b.status <> 0")
-    List<Business> findAllByStatus(Pageable pageable);
+    /**
+     * Tìm kiếm các doanh nghiệp theo tạng thái và từ tìm kiếm
+     */
+    @Query("SELECT b " +
+            "FROM Business b " +
+            "WHERE b.userAccount.state = :state " +
+            "AND (:keyword IS NULL OR " +
+            "     (LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "      OR LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%')))) " +
+            "ORDER BY " +
+            "   CASE " +
+            "       WHEN LOWER(b.name) = LOWER(:keyword) THEN 1 " +
+            "       WHEN LOWER(b.email) = LOWER(:keyword) THEN 1 " +
+            "       WHEN LOWER(CONCAT(b.name, ' ', b.email)) LIKE LOWER(CONCAT('%', :keyword, '%')) THEN 2 " +
+            "       ELSE 3 " +
+            "   END")
+    Page<Business> findAllByState(Pageable pageable, Integer state, String keyword);
 }

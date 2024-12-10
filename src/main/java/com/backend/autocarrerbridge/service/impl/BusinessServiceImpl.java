@@ -6,9 +6,13 @@ import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -196,8 +200,6 @@ public class BusinessServiceImpl implements BusinessService {
 
     /**
      * Phương thức chấp nhận tài khoản doanh nghiệp
-     *
-     * @param req - đầu vào chứa ID của doanh nghiệp cần được phê duyệt.
      */
     @Override
     public BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req) {
@@ -216,8 +218,6 @@ public class BusinessServiceImpl implements BusinessService {
 
     /**
      * Phương thức từ chối tài khoản doanh nghiệp.
-     *
-     * @param req Yêu cầu chứa ID của doanh nghiệp cần bị từ chối.
      */
     @Override
     public BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req) {
@@ -236,5 +236,18 @@ public class BusinessServiceImpl implements BusinessService {
         sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
 
         return BusinessRejectedResponse.of(Boolean.TRUE);
+    }
+
+    /**
+     * Phương thức lấy danh sách các doanh nghiệp theo trạng thái và keyword tìm kiếm
+     */
+    @Override
+    public Page<BusinessResponse> getPagingByState(PageInfo req, Integer state) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        Page<Business> businesses = businessRepository.findAllByState(pageable, state, req.getKeyword());
+
+        return businesses.map(b ->
+                modelMapper.map(b, BusinessResponse.class)
+        );
     }
 }

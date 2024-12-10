@@ -6,11 +6,13 @@ import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.entity.Business;
+import org.springframework.data.domain.Page;
 
 public interface BusinessService {
     BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest);
@@ -30,4 +32,6 @@ public interface BusinessService {
     BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req);
 
     BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req);
+
+    Page<BusinessResponse> getPagingByState(PageInfo req, Integer state );
 }

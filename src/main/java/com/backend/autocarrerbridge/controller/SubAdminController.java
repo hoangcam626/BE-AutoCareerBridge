@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.controller;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
 import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
@@ -117,15 +118,16 @@ public class SubAdminController {
     /**
      * API lấy danh sách sub-admin theo phân trang.
      *
-     * @param page - Số trang cần lấy (bắt đầu từ 0).
+     * @param pageNo - Số trang cần lấy (bắt đầu từ 0).
      * @param pageSize - Số lượng bản ghi trên mỗi trang.
      * @return ApiResponse chứa danh sách sub-admin trong trang yêu cầu.
      */
     @GetMapping("/get-paging")
     public ApiResponse<Page<SubAdminSelfResponse>> getSubAdmins(
-            @RequestParam(value = "page") int page,
-            @RequestParam(value = "pageSize") int pageSize) {
-        var res = subAdminService.pageSubAdmins(page, pageSize);
+            @RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "keyword", required = false) String keyword) {
+        var res = subAdminService.pageSubAdmins(PageInfo.of(pageNo, pageSize, keyword));
         return new ApiResponse<>(res);
     }
 }

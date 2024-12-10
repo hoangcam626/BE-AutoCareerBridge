@@ -6,7 +6,9 @@ import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -61,32 +63,7 @@ public class SubAdminServiceImpl implements SubAdminService {
     private final ModelMapper modelMapper;
     private final SendEmail sendEmail;
 
-    /**
-     * Lấy danh sách sub-admin theo phân trang.
-     *
-     * @param page     - Số trang cần lấy.
-     * @param pageSize - Số lượng phần tử trong mỗi trang.
-     * @return Danh sách sub-admin dưới dạng đối tượng phân trang.
-     */
-    @Override
-    public Page<SubAdminSelfResponse> pageSubAdmins(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
-        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable);
-        return subAdmins.map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class));
-    }
 
-    /**
-     * Lấy danh sách tất cả sub-admin đang hoạt động.
-     *
-     * @return Danh sách sub-admin.
-     */
-    @Override
-    public List<SubAdminSelfResponse> listSubAdmins() {
-        List<SubAdmin> subAdmins = subAdminRepository.findAllByStatus();
-        return subAdmins.stream()
-                .map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class))
-                .toList();
-    }
 
     /**
      * Tạo một sub-admin mới
@@ -217,6 +194,32 @@ public class SubAdminServiceImpl implements SubAdminService {
     }
 
     /**
+     * Lấy danh sách sub-admin theo phân trang.
+     *
+     * @param req - chứa trang bắt đầu, số lượng mỗi trang, từ tìm kếm.
+     * @return Danh sách sub-admin dưới dạng đối tượng phân trang.
+     */
+    @Override
+    public Page<SubAdminSelfResponse> pageSubAdmins(PageInfo req) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable, req.getKeyword());
+        return subAdmins.map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class));
+    }
+
+    /**
+     * Lấy danh sách tất cả sub-admin.
+     *
+     * @return Danh sách sub-admin.
+     */
+    @Override
+    public List<SubAdminSelfResponse> listSubAdmins() {
+        List<SubAdmin> subAdmins = subAdminRepository.findAll();
+        return subAdmins.stream()
+                .map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class))
+                .toList();
+    }
+
+    /**
      * Tìm kiếm sub-admin theo id.
      *
      * @param id - Id của sub-admin cần tìm.
@@ -236,9 +239,9 @@ public class SubAdminServiceImpl implements SubAdminService {
         if (!Validation.isValidEmail(req.getEmail())) {
             throw new AppException(ERROR_VALID_EMAIL);
         }
-//        if (Objects.nonNull(req.getPhone()) && !Validation.is(req.getPhone())) {
-//            throw new AppException(ERROR_VALID_PHONE);
-//        }
+        if (Objects.nonNull(req.getPhone()) && !Validation.isValidPhoneNumber(req.getPhone())) {
+            throw new AppException(ERROR_VALID_PHONE);
+        }
         if (subAdminRepository.existsBySubAdminCode(req.getSubAdminCode())) {
             throw new AppException(ERROR_SUB_ADMIN_CODE_EXIST);
         }
