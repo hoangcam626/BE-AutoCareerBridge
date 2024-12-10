@@ -155,7 +155,11 @@ public class JobServiceImpl implements JobService {
      */
     @Override
     public ApiResponse<Object> createJob(JobRequest jobRequest) throws ParseException {
-        UserAccount userAccount = userAccountRepository.findByUsername(getUsernameViaToken());
+        // Cắt chuỗi token
+        String token = tokenService.getJWT();
+        // Lấy username từ token
+        String usernameToken = tokenService.getClaim(token, "sub");
+        UserAccount userAccount = userAccountRepository.findByUsername(usernameToken);
         if (userAccount == null) {
             throw new AppException(ERROR_ACCOUNT_IS_NULL);
         }
@@ -164,6 +168,11 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_EXIST_INDUSTRY);
         }
 
+        Business business =
+                businessRepository.getBusinessByEmployeeId(getEmployeeViaToken().getId());
+        if (business == null) {
+            throw new AppException(ERROR_NOT_FOUND_BUSINESS);
+        }
         Job job = Job.builder()
                 .title(jobRequest.getTitle())
                 .jobDescription(jobRequest.getJobDescription())
@@ -174,12 +183,12 @@ public class JobServiceImpl implements JobService {
                 .benefit(jobRequest.getBenefit())
                 .workingTime(jobRequest.getWorkingTime())
                 .industry(industry)
-                .business(getBusinessViaToken())
+                .business(business)
                 .employee(getEmployeeViaToken())
                 .statusBrowse(State.PENDING)
                 .build();
         job.setStatus(Status.ACTIVE);
-        job.setCreatedBy(userAccount.getUsername());
+        job.setCreatedBy(usernameToken);
         jobRepository.save(job);
         JobResponse jobResponse = new JobResponse(job);
         return ApiResponse.builder().data(jobResponse).build();

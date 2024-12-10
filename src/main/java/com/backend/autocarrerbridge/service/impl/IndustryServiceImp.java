@@ -4,7 +4,6 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUS
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_BUSINESS;
 import static com.backend.autocarrerbridge.util.Constant.DELETED;
 
-import java.text.CollationElementIterator;
 import java.text.ParseException;
 import java.util.List;
 
