@@ -39,15 +39,15 @@ public class SectionConverter {
     public static Section convertToEntity(SectionRequest sectionRequest) {
         // Tạo một đối tượng Section mới từ sectionRequest
         Section section = Section.builder()
-            .id(sectionRequest.getId())
-            .name(sectionRequest.getName())
-            .description(sectionRequest.getDescription())
-            .build();
+                .id(sectionRequest.getId())
+                .name(sectionRequest.getName())
+                .description(sectionRequest.getDescription())
+                .build();
         // Nếu không có status trong request, mặc định là ACTIVE
         section.setStatus(sectionRequest.getStatus() != null ? sectionRequest.getStatus() : Status.ACTIVE);
         // Nếu không có thời gian tạo, lấy thời gian hiện tại
         section.setCreatedAt(
-            sectionRequest.getCreatedAt() != null ? sectionRequest.getCreatedAt() : LocalDateTime.now());
+                sectionRequest.getCreatedAt() != null ? sectionRequest.getCreatedAt() : LocalDateTime.now());
         // Cập nhật thời gian chỉnh sửa là thời gian hiện tại
         section.setUpdatedAt(LocalDateTime.now());
         // Lấy thông tin người dùng từ token và gán vào trường createdBy và updatedBy
@@ -79,34 +79,34 @@ public class SectionConverter {
     public static SectionRequest convertToResponse(Section section) {
         // Lấy danh sách major và chuyển đổi từng phần tử sang MajorRequest
         List<MajorRequest> majorRequestList = section.getMajors() != null
-            ? section.getMajors().stream()
-            .map(major -> MajorRequest.builder()
-                .id(major.getId())
-                .code(major.getCode())
-                .name(major.getName())
-                .status(major.getStatus())
-                .numberStudent(major.getNumberStudent())
-                .description(major.getDescription())
-                .sectionId(major.getId())
-                .createdAt(major.getCreatedAt())
-                .updatedAt(major.getUpdatedAt())
-                .createdBy(major.getCreatedBy())
-                .updatedBy(major.getUpdatedBy())
-                .build())
-            .toList()
-            : List.of();
+                ? section.getMajors().stream()
+                        .map(major -> MajorRequest.builder()
+                                .id(major.getId())
+                                .code(major.getCode())
+                                .name(major.getName())
+                                .status(major.getStatus())
+                                .numberStudent(major.getNumberStudent())
+                                .description(major.getDescription())
+                                .sectionId(major.getId())
+                                .createdAt(major.getCreatedAt())
+                                .updatedAt(major.getUpdatedAt())
+                                .createdBy(major.getCreatedBy())
+                                .updatedBy(major.getUpdatedBy())
+                                .build())
+                        .toList()
+                : List.of();
 
         return SectionRequest.builder()
-            .id(section.getId())
-            .name(section.getName())
-            .description(section.getDescription())
-            .status(section.getStatus())
-            .createdAt(section.getCreatedAt())
-            .updatedAt(section.getUpdatedAt())
-            .createdBy(section.getCreatedBy())
-            .updatedBy(section.getUpdatedBy())
-            .universityId(section.getUniversity().getId())
-            .majorList(majorRequestList)
-            .build();
+                .id(section.getId())
+                .name(section.getName())
+                .description(section.getDescription())
+                .status(section.getStatus())
+                .createdAt(section.getCreatedAt())
+                .updatedAt(section.getUpdatedAt())
+                .createdBy(section.getCreatedBy())
+                .updatedBy(section.getUpdatedBy())
+                .universityId(section.getUniversity().getId())
+                .majorList(majorRequestList)
+                .build();
     }
 }

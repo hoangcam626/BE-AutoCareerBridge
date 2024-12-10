@@ -6,7 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @NoArgsConstructor
@@ -28,8 +33,6 @@ public class EmployeeRequest {
     String email;
 
     String address;
-
-    String employeeCode;
 
     MultipartFile employeeImage;
 

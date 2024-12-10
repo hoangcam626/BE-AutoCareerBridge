@@ -6,7 +6,11 @@ import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
 import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import com.backend.autocarrerbridge.entity.Business;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data

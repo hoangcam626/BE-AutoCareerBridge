@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.exception;
 
-
 import java.util.Objects;
 
 import org.springframework.http.ResponseEntity;
@@ -41,6 +40,4 @@ public class GlobalExceptionHandle {
         apiException.setMessage(errorCode.getMessage());
         return ResponseEntity.status(errorCode.getHttpStatus()).body(apiException);
     }
-
-
 }

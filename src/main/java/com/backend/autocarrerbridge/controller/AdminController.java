@@ -1,6 +1,9 @@
 package com.backend.autocarrerbridge.controller;
 
+import java.text.ParseException;
+
 import jakarta.validation.Valid;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,12 +30,10 @@ import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedRespon
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.JobService;
 import com.backend.autocarrerbridge.service.UniversityService;
-
 import com.backend.autocarrerbridge.service.WorkShopService;
+
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-
-import java.text.ParseException;
 
 /**
  * Controller xử lý các API dành riêng cho quản trị viên (admin v sub-admin)
@@ -56,7 +57,7 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/approved-business")
-    public ApiResponse<BusinessApprovedResponse> approvedBusiness(@Valid @RequestBody BusinessApprovedRequest req){
+    public ApiResponse<BusinessApprovedResponse> approvedBusiness(@Valid @RequestBody BusinessApprovedRequest req) {
         var res = businessService.approvedAccount(req);
         return new ApiResponse<>(res);
     }
@@ -68,7 +69,7 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/rejected-business")
-    public ApiResponse<BusinessRejectedResponse> rejectedBusiness(@Valid @RequestBody BusinessRejectedRequest req){
+    public ApiResponse<BusinessRejectedResponse> rejectedBusiness(@Valid @RequestBody BusinessRejectedRequest req) {
         var res = businessService.rejectedAccount(req);
         return new ApiResponse<>(res);
     }
@@ -80,11 +81,11 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/approved-university")
-    public ApiResponse<UniversityApprovedResponse> approvedUniversity(@Valid @RequestBody UniversityApprovedRequest req){
+    public ApiResponse<UniversityApprovedResponse> approvedUniversity(
+            @Valid @RequestBody UniversityApprovedRequest req) {
         var res = universityService.approvedAccount(req);
         return new ApiResponse<>(res);
     }
-
 
     /**
      * API từ chối tài khoản trường đại học.
@@ -93,7 +94,8 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/rejected-university")
-    public ApiResponse<UniversityRejectedResponse> rejectedUniversity(@Valid @RequestBody UniversityRejectedRequest req){
+    public ApiResponse<UniversityRejectedResponse> rejectedUniversity(
+            @Valid @RequestBody UniversityRejectedRequest req) {
         var res = universityService.rejectedAccount(req);
         return new ApiResponse<>(res);
     }
@@ -105,7 +107,8 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/approved-job")
-    public ApiResponse<JobApprovedResponse> approvedJob(@Valid @RequestBody JobApprovedRequest req) throws ParseException {
+    public ApiResponse<JobApprovedResponse> approvedJob(@Valid @RequestBody JobApprovedRequest req)
+            throws ParseException {
         var res = jobService.approved(req);
         return new ApiResponse<>(res);
     }
@@ -117,7 +120,8 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/rejected-job")
-    public ApiResponse<JobRejectedResponse> rejectedJob(@Valid @RequestBody JobRejectedRequest req) throws ParseException {
+    public ApiResponse<JobRejectedResponse> rejectedJob(@Valid @RequestBody JobRejectedRequest req)
+            throws ParseException {
         var res = jobService.rejected(req);
         return new ApiResponse<>(res);
     }
@@ -129,7 +133,8 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/approved-workshop")
-    public ApiResponse<WorkshopApprovedResponse> approvedWorkshop(@Valid @RequestBody WorkshopApprovedRequest req) throws ParseException {
+    public ApiResponse<WorkshopApprovedResponse> approvedWorkshop(@Valid @RequestBody WorkshopApprovedRequest req)
+            throws ParseException {
         var res = workShopService.approved(req);
         return new ApiResponse<>(res);
     }
@@ -141,7 +146,8 @@ public class AdminController {
      * @return ApiResponse phản hồi sau khi thực hiện thành công.
      */
     @PostMapping("/rejected-workshop")
-    public ApiResponse<WorkshopRejectedResponse> rejectedWorkshop(@Valid @RequestBody WorkshopRejectedRequest req) throws ParseException {
+    public ApiResponse<WorkshopRejectedResponse> rejectedWorkshop(@Valid @RequestBody WorkshopRejectedRequest req)
+            throws ParseException {
         var res = workShopService.rejected(req);
         return new ApiResponse<>(res);
     }

@@ -35,9 +35,11 @@ public class JobController {
      * @apiNote Sử dụng để truy vấn danh sách công việc trong cơ sở dữ liệu.
      */
     @GetMapping("/get-all-job")
-    public ApiResponse<Object> getAllJob(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size,
-                                         @RequestParam String keyword) throws ParseException {
+    public ApiResponse<Object> getAllJob(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword)
+            throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
         return jobService.getAllJobOfBusiness(page, size, keyword, pageable);
     }
@@ -49,9 +51,11 @@ public class JobController {
      * @apiNote Sử dụng để truy vấn danh sách công việc trong cơ sở dữ liệu.
      */
     @GetMapping("/get-all-job-of-business")
-    public ApiResponse<Object> getAllJobOfBusiness(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size,
-                                         @RequestParam String keyword) throws ParseException {
+    public ApiResponse<Object> getAllJobOfBusiness(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword)
+            throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
         return jobService.getAllJobOfBusiness(page, size, keyword, pageable);
     }
