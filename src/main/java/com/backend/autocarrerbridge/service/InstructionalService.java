@@ -10,7 +10,7 @@ public interface InstructionalService {
 
   InstructionalResponse updateInstructional(int id, InstructionalRequest request);
 
-  InstructionalRequest deleteInstructional(int id);
+  InstructionalResponse deleteInstructional(int id);
 
   List<InstructionalResponse> getAllInstructional();
 

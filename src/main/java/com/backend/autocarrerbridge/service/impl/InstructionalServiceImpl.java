@@ -9,7 +9,6 @@ import com.backend.autocarrerbridge.entity.Instructional;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.InstructionalRepository;
 import com.backend.autocarrerbridge.dto.request.instructional.InstructionalRequest;
 import com.backend.autocarrerbridge.dto.response.instructional.InstructionalResponse;
 import com.backend.autocarrerbridge.service.ImageService;
@@ -31,7 +30,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 

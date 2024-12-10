@@ -18,25 +18,25 @@ import lombok.experimental.SuperBuilder;
 @Builder
 public class InstructionalResponse {
 
-    private Integer id;
+  private Integer id;
 
-    private String name;
+  private String name;
 
-    private String gender;
+  private String gender;
 
-    private LocalDate dateOfBirth;
+  private LocalDate dateOfBirth;
 
-    private String email;
+  private String email;
 
-    private String address;
+  private String address;
 
-    private String instructionalCode;
+  private String instructionalCode;
 
-    private Integer instructionalImageId;
+  private Integer instructionalImageId;
 
-    private String phone;
+  private String phone;
 
-    private Integer universityId;
+  private Integer universityId;
 
   private Integer userAccountId;
 
