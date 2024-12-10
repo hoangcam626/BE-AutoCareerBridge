@@ -35,4 +35,19 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<Workshop> getAllWorkshopByState(
             Pageable pageable, @Param("approved") State approved, @Param("keyword") String keyword);
+
+    @Query("SELECT ws " +
+            "FROM Workshop ws " +
+            "WHERE ws.statusBrowse = :state  " +
+            "AND (:keyword IS NULL OR " +
+            "   (ws.title LIKE LOWER(CONCAT('%', :keyword, '%'))) OR" +
+            "   (ws.university.name LIKE LOWER(CONCAT('%', :keyword, '%'))))" +
+            "ORDER BY " +
+            "   CASE " +
+            "       WHEN (ws.title) = :keyword THEN 1 " +
+            "       WHEN ws.university.name = :keyword THEN 1" +
+            "       WHEN CONCAT(ws.title, ' ', ws.university.name, ' ') LIKE %:keyword% THEN 2 " +
+            "       ELSE 3 " +
+            "   END")
+    Page<Workshop> findAllByState(Pageable pageable, Integer state, String keyword);
 }

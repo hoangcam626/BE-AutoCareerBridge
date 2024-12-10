@@ -13,18 +13,31 @@ import com.backend.autocarrerbridge.entity.SubAdmin;
 @Repository
 public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
 
-    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END "
-            + "FROM SubAdmin sa WHERE sa.email = :email AND sa.status <> 0")
+    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM SubAdmin sa WHERE sa.email = :email AND sa.status <> 0")
     boolean existsByEmail(String email);
 
-    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END "
-            + "FROM SubAdmin sa WHERE sa.subAdminCode = :code AND sa.status <> 0")
+    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM SubAdmin sa WHERE sa.subAdminCode = :code AND sa.status <> 0")
     boolean existsBySubAdminCode(String code);
 
-    @Query("select sa from SubAdmin sa where sa.status <> 0")
-    Page<SubAdmin> findAllPageable(Pageable pageable);
+    @Query(value = "SELECT sa " +
+            "FROM SubAdmin sa " +
+            "WHERE (:keyword IS NULL OR " +
+            "       LOWER(sa.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "       LOWER(sa.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "       LOWER(sa.subAdminCode) LIKE LOWER(CONCAT('%', :keyword, '%')))" +
+            "ORDER BY " +
+            "   CASE " +
+            "       WHEN (sa.name) = :keyword THEN 1 " +
+            "       WHEN sa.subAdminCode = :keyword THEN 1" +
+            "       WHEN sa.email = :keyword THEN 1" +
+            "       WHEN CONCAT(sa.name, ' ', sa.email, ' ', sa.subAdminCode) LIKE %:keyword% THEN 2 " +
+            "       ELSE 3 " +
+            "   END")
+    Page<SubAdmin> findAllPageable(Pageable pageable, String keyword);
 
-    @Query("select sa from SubAdmin sa where sa.status <> 0")
+    @Query("select sa from SubAdmin sa where  sa.status <> 0")
     List<SubAdmin> findAllByStatus();
 
     SubAdmin findByEmail(String email);
