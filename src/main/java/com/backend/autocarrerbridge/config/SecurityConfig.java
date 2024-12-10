@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -71,20 +72,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtBlacklistFilter jwtBlacklistFilter)
             throws Exception {
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
 
         return httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .authorizeRequests(auth -> auth.requestMatchers(HttpMethod.POST, AUTH_WHITELIST)
-                        .permitAll()
-                        .requestMatchers(AUTH_WHITELIST)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                .csrf(AbstractHttpConfigurer::disable) // Vô hiệu hóa CSRF
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, AUTH_WHITELIST).permitAll() // Cho phép các POST request trong AUTH_WHITELIST
+                        .requestMatchers(AUTH_WHITELIST).permitAll() // Cho phép các request trong AUTH_WHITELIST
+                        .anyRequest().authenticated() // Yêu cầu xác thực cho các request khác
+                )
                 .addFilterBefore(
-                        jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class) // Thêm Filter trước xử lý JWT
+                        jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class // Thêm JWT Filter trước xử lý UsernamePasswordAuthentication
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))) // Cấu hình JWT decoder
                 .build();
     }
+
 
     @Bean
     public JwtDecoder jwtDecoder() {
