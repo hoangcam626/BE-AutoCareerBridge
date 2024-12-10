@@ -11,6 +11,7 @@ import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterRe
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.entity.University;
+import com.backend.autocarrerbridge.util.email.EmailCode;
 
 public interface UniversityService {
     UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest);
@@ -28,4 +29,7 @@ public interface UniversityService {
     University findById(Integer id);
 
     List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName);
+
+    EmailCode generaterCode(UserUniversityRequest userUniversityRequest);
+
 }

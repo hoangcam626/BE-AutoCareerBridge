@@ -164,10 +164,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
         }
 
-        System.out.println(employee);
         // Cập nhật thông tin nhân viên từ request
         employeeMapper.udpateEmployee(employee, request);
-        System.out.println(employee);
 
         try {
             var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
