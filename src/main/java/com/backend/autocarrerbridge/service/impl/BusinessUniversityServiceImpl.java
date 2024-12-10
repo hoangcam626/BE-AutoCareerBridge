@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
+import com.backend.autocarrerbridge.service.TokenService;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +23,6 @@ import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.repository.BusinessUniversityRepository;
 import com.backend.autocarrerbridge.repository.UniversityRepository;
 import com.backend.autocarrerbridge.service.BusinessUniversityService;
-import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.Constant;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;

@@ -1,7 +1,8 @@
 package com.backend.autocarrerbridge.dto.response.instructional;
 
-import com.backend.autocarrerbridge.dto.response.abstractaudit.AbstractAuditResponse;
+import com.backend.autocarrerbridge.util.enums.Status;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,14 +10,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Getter
 @Setter
 @Builder
-public class InstructionalResponse extends AbstractAuditResponse {
+public class InstructionalResponse {
 
   private Integer id;
 
@@ -39,5 +39,15 @@ public class InstructionalResponse extends AbstractAuditResponse {
   private Integer universityId;
 
   private Integer userAccountId;
+
+  private Status status;
+
+  private LocalDateTime createdAt;
+
+  private LocalDateTime updatedAt;
+
+  private String createdBy;
+
+  private String updatedBy;
 
 }

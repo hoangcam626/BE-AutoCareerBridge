@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class PageInfo {
-    private int pageNo;
-    private int pageSize;
+    private Integer pageNo;
+    private Integer pageSize;
     private String keyword;
 }

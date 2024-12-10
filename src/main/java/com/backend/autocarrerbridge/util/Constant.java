@@ -94,7 +94,7 @@ public class Constant {
     public static final String JTI = "jti";
     public static final String TOKEN_BLACKLIST = "Token đã bị xoá!";
     public static final String DEFAULT_USERNAME = "admin@domain.com";
-    public static final String DEFAULT_PASSWORD = "admin";
+    public static final String DEFAULT_PW = "admin";
 
     public static final String SUB = "sub";
     public static final String PREFIX_NP = "/np";
@@ -129,6 +129,7 @@ public class Constant {
     public static final String ACCOUNT_ALREADY_REJECTED_MESSAGE = "Tài khoản đã bị từ chối.";
     public static final String INVALID_ACCOUNT_STATE_MESSAGE = "Trạng thái tài khoản không hợp lệ.";
     public static final String ACCOUNT_IS_NULL = "Tài khoản người dùng đang trống.";
+    public static final String SENDED_FORGOT_PASS = "Mã đã được gửi vui lòng kiểm tra email.";
 
     // Doanh nghiệp
     public static final String REGISTER_BUSINESS =
@@ -214,4 +215,7 @@ public class Constant {
     public static final String REJECTED_RELATION = "Yêu cầu hợp tác đã bị từ chối";
     public static final String CANCEL_RELATION = "Yêu cầu hợp tác đã bị hủy trước đó";
     public static final String CANCELED_SUCCESSFUL = "Hủy thành công";
+
+    //Giáo vụ
+    public static final String INSTRUCTIONAL_EXIST_MESSAGE ="Giáo vụ không tồn tại";
 }

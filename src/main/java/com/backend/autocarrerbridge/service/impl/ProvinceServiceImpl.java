@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_PROVINCE_NOT_BLANK;
 
+import com.backend.autocarrerbridge.service.ProvinceService;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,7 +14,6 @@ import com.backend.autocarrerbridge.entity.Province;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.repository.ProvinceRepository;
-import com.backend.autocarrerbridge.service.ProvinceService;
 
 import lombok.RequiredArgsConstructor;
 

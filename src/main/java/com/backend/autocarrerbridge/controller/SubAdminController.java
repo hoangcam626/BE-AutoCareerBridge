@@ -3,11 +3,8 @@ package com.backend.autocarrerbridge.controller;
 import java.text.ParseException;
 import java.util.List;
 
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
-import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
 import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminDeleteRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminSelfRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminUpdateRequest;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminCreateResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminDeleteResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminSelfResponse;
+import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse;
 import com.backend.autocarrerbridge.service.SubAdminService;
 
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,11 +53,12 @@ public class SubAdminController {
      */
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content =
-                    @Content(
-                            mediaType = "multipart/form-data",
-                            schema = @Schema(implementation = SubAdminCreateRequest.class)))
+            @Content(
+                    mediaType = "multipart/form-data",
+                    schema = @Schema(implementation = SubAdminCreateRequest.class)))
     @PostMapping("/create")
-    public ApiResponse<SubAdminCreateResponse> create(@Valid @ModelAttribute SubAdminCreateRequest req) throws ParseException {
+    public ApiResponse<SubAdminCreateResponse> create(@Valid @ModelAttribute SubAdminCreateRequest req)
+            throws ParseException {
 
         var res = subAdminService.create(req);
         return new ApiResponse<>(res);
@@ -70,9 +73,9 @@ public class SubAdminController {
      */
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             content =
-                    @Content(
-                            mediaType = "multipart/form-data",
-                            schema = @Schema(implementation = SubAdminUpdateRequest.class)))
+            @Content(
+                    mediaType = "multipart/form-data",
+                    schema = @Schema(implementation = SubAdminUpdateRequest.class)))
     @PutMapping("/update")
     public ApiResponse<SubAdminUpdateResponse> update(@Valid SubAdminUpdateRequest req) throws ParseException {
         var res = subAdminService.update(req);
@@ -117,15 +120,16 @@ public class SubAdminController {
     /**
      * API lấy danh sách sub-admin theo phân trang.
      *
-     * @param page - Số trang cần lấy (bắt đầu từ 0).
+     * @param pageNo   - Số trang cần lấy (bắt đầu từ 0).
      * @param pageSize - Số lượng bản ghi trên mỗi trang.
      * @return ApiResponse chứa danh sách sub-admin trong trang yêu cầu.
      */
     @GetMapping("/get-paging")
     public ApiResponse<Page<SubAdminSelfResponse>> getSubAdmins(
-            @RequestParam(value = "page") int page,
-            @RequestParam(value = "pageSize") int pageSize) {
-        var res = subAdminService.pageSubAdmins(page, pageSize);
+            @RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "keyword", required = false) String keyword) {
+        var res = subAdminService.pageSubAdmins(PageInfo.of(pageNo, pageSize, keyword));
         return new ApiResponse<>(res);
     }
 }
