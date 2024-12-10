@@ -167,7 +167,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         // Cập nhật thông tin nhân viên từ request
-        employeeMapper.udpateEmployee(employee, request);
+        employeeMapper.updateEmployee(employee, request);
 
         try {
             var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
@@ -210,7 +210,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeResponse.setBusinessId(employee.getBusiness().getId());
             return employeeResponse;
         });
-        PagingResponse<EmployeeResponse> pagingEmployeeResponse = new PagingResponse<>(list);
-        return pagingEmployeeResponse;
+        return new PagingResponse<>(list);
     }
 }

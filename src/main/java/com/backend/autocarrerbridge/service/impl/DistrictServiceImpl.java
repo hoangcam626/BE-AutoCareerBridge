@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
+import com.backend.autocarrerbridge.service.DistrictService;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +13,6 @@ import com.backend.autocarrerbridge.dto.response.district.DistrictResponse;
 import com.backend.autocarrerbridge.entity.District;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.repository.DistrictRepository;
-import com.backend.autocarrerbridge.service.DistrictService;
 
 import lombok.RequiredArgsConstructor;
 
