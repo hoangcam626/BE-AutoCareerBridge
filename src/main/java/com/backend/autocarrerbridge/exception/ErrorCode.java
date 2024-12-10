@@ -105,6 +105,7 @@ import static com.backend.autocarrerbridge.util.Constant.SAVE_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_EXISTED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_HAVE_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.SENDED_FORGOT_PASS;
 import static com.backend.autocarrerbridge.util.Constant.STATUS_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.TAX_CODE;
