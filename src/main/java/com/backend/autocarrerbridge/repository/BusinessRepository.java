@@ -21,15 +21,14 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     /**
      * Tìm business qua username/email
      */
-    @Query(
-            """
-				SELECT DISTINCT b\s
-				FROM Business b\s
-				LEFT JOIN b.userAccount u
-				LEFT JOIN Employee e ON e.business.id = b.id
-				LEFT JOIN e.userAccount eu
-				WHERE u.username = :username OR eu.username = :username
-		\s""")
+    @Query("""
+                SELECT DISTINCT b\s
+                FROM Business b\s
+                LEFT JOIN b.userAccount u
+                LEFT JOIN Employee e ON e.business.id = b.id
+                LEFT JOIN e.userAccount eu
+                WHERE u.username = :username OR eu.username = :username
+           \s""")
     Business findByUsername(String username);
 
     /**

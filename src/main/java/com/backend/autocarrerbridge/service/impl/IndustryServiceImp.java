@@ -7,7 +7,9 @@ import static com.backend.autocarrerbridge.util.Constant.DELETED;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.industry.DeleteIndustryRequest;
 import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
+import com.backend.autocarrerbridge.dto.response.industry.CheckIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.BusinessIndustry;
@@ -243,11 +245,15 @@ public class IndustryServiceImp implements IndustryService {
     public ApiResponse<Object> getIndustryOfBusiness(int page, int size, String keyword, Pageable pageable) throws ParseException {
         Page<BusinessIndustryDto> list =
                 businessIndustryRepository.getIndustryOfBusiness(getBusinessViaToken().getId(), keyword, pageable);
-        if (list.isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
-        }
         PagingResponse<BusinessIndustryDto> pagingResponse = new PagingResponse<>(list);
         return ApiResponse.builder().data(pagingResponse).build();
+    }
+
+    @Override
+    public ApiResponse<Object> getIndustryOfBusinessNoPag() throws ParseException {
+        return ApiResponse.builder()
+                .data(businessIndustryRepository.getIndustryOfBusinessNoPag(getBusinessViaToken().getId()))
+                .build();
     }
 
     @Override
@@ -255,21 +261,37 @@ public class IndustryServiceImp implements IndustryService {
         BusinessIndustry businessIndustry =
                 businessIndustryRepository.findByBusinessIdAndIndustryId(getBusinessViaToken().getId(), industryId);
         if (businessIndustry == null) {
-            throw new AppException(ErrorCode.ERROR_EXIST_CODE);
+            throw new AppException(ErrorCode.ERROR_EXIST_INDUSTRY);
         }
         BusinessIndustryDto businessIndustryDto = new BusinessIndustryDto(businessIndustry);
         return ApiResponse.builder().data(businessIndustryDto).build();
     }
 
     @Override
-    public ApiResponse<Object> inactiveIndustryOfBusiness(Integer businessIndustryId) {
-        BusinessIndustry existBusinessIndustry = businessIndustryRepository.getByBusinessIndustryId(businessIndustryId);
-        if (existBusinessIndustry == null) {
+    public ApiResponse<Object> inactiveIndustryOfBusiness(DeleteIndustryRequest deleteIndustryRequest) {
+        if (deleteIndustryRequest.getBusinessIndustryId() == null
+                || deleteIndustryRequest.getBusinessIndustryId().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
-        businessIndustryRepository.delete(existBusinessIndustry);
+        // Kiểm tra và xóa từng ngành nghề trong danh sách
+        List<BusinessIndustry> industriesToDelete =
+                businessIndustryRepository.findByIdIn(deleteIndustryRequest.getBusinessIndustryId());
+        if (industriesToDelete.isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+        }
+
+        // Xóa tất cả các ngành nghề tìm thấy
+        businessIndustryRepository.deleteAll(industriesToDelete);
+
         return ApiResponse.builder()
                 .data(DELETED)
                 .build();
+    }
+
+    @Override
+    public ApiResponse<Object> checkIndustryExist(Integer industryId) throws ParseException {
+        boolean exists = businessIndustryRepository.existsByIndustry_IdAndBusiness_Id(getBusinessViaToken().getId() ,industryId);
+        return ApiResponse.builder()
+                .data(new CheckIndustryResponse(exists)).build();
     }
 }
