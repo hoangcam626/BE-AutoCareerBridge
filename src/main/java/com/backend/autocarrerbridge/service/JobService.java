@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 public interface JobService {
     ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException;
 
-    ApiResponse<Object> getAllJobOfBusiness(int page, int size, String keyword, Pageable pageable) throws ParseException;
+    ApiResponse<Object> getAllJobOfBusinessPaging(int page, int size, String keyword, Pageable pageable) throws ParseException;
 
     ApiResponse<Object> createJob(JobRequest jobRequest) throws ParseException;
 

@@ -1,7 +1,9 @@
 package com.backend.autocarrerbridge.controller;
 
 import java.text.ParseException;
+import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.industry.DeleteIndustryRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -108,6 +110,16 @@ public class IndustryController {
     }
 
     /**
+     * API lấy danh sách ngành nghề của doanh nghiệp.
+     *
+     * @apiNote được sử dụng để thêm một ngành nghề vào doanh nghiệp.
+     */
+    @GetMapping("/get-all-industry-business-no-pag")
+    public ApiResponse<Object> getIndustryOfBusinessNoPag() throws ParseException {
+        return industryService.getIndustryOfBusinessNoPag();
+    }
+
+    /**
      * API Xem chi tiết ngành nghề của doanh nghiệp.
      *
      * @apiNote được sử dụng xem chi tiết ngành nghề của doanh nghiệp.
@@ -122,9 +134,13 @@ public class IndustryController {
      *
      * @apiNote được sử dụng xóa ngành nghề của doanh nghiệp.
      */
-    @DeleteMapping("/delete")
-    public ApiResponse<Object> deleteBusinessIndustry(
-            @RequestParam Integer businessIndustryId) throws ParseException {
-        return industryService.inactiveIndustryOfBusiness(businessIndustryId);
+    @PostMapping("/delete")
+    public ApiResponse<Object> deleteBusinessIndustry(@RequestBody DeleteIndustryRequest deleteIndustryRequest) throws ParseException {
+        return industryService.inactiveIndustryOfBusiness(deleteIndustryRequest);
+    }
+
+    @GetMapping("/check")
+    public ApiResponse<Object> checkIndustry(@RequestParam Integer industryId) throws ParseException {
+        return industryService.checkIndustryExist(industryId);
     }
 }

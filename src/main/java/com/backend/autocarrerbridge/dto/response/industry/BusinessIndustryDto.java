@@ -32,7 +32,7 @@ public class BusinessIndustryDto {
         this.industryCode = businessIndustry.getIndustry().getCode();
         this.businessName = businessIndustry.getBusiness().getName();
         this.status = businessIndustry.getStatus();
-        this.createAt = LocalDateTime.now();
+        this.createAt = businessIndustry.getCreatedAt();
         this.createBy = businessIndustry.getCreatedBy();
     }
 }

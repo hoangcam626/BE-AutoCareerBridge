@@ -56,6 +56,7 @@ public class EmployeeResponse extends AbstractAuditResponse {
         this.employeeCode = employee.getEmployeeCode();
         this.employeeImageId = employee.getEmployeeImageId();
         this.phone = employee.getPhone();
+        this.businessId = employee.getBusiness().getId();
         this.status = employee.getStatus();
     }
 }
