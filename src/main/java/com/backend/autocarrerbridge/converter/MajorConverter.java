@@ -19,6 +19,7 @@ import com.backend.autocarrerbridge.util.enums.Status;
 @Component
 public class MajorConverter {
 
+    // TokenServiceImpl được sử dụng để lấy thông tin từ JWT
     private static TokenServiceImpl tokenService;
 
     // Constructor được sử dụng để inject TokenServiceImpl vào trong MajorConverter
@@ -27,12 +28,20 @@ public class MajorConverter {
         MajorConverter.tokenService = tokenService;
     }
 
+    // Constructor private ngăn việc tạo đối tượng trực tiếp từ ngoài
     private MajorConverter() {
-        // Constructor private ngăn việc tạo đối tượng trực tiếp từ ngoài
+        // Không làm gì
     }
 
+    /**
+     * Chuyển đổi từ MajorRequest sang Major entity.
+     *
+     * @param majorRequest Đối tượng MajorRequest cần chuyển đổi.
+     * @return Đối tượng Major entity đã chuyển đổi.
+     */
     public static Major convertToEntity(MajorRequest majorRequest) {
 
+        // Xây dựng đối tượng Major từ MajorRequest
         Major major = Major.builder()
                 .id(majorRequest.getId())
                 .name(majorRequest.getName())
@@ -45,14 +54,16 @@ public class MajorConverter {
         major.setUpdatedAt(LocalDateTime.now());
 
         try {
+            // Lấy thông tin người dùng hiện tại từ token và đặt vào createdBy, updatedBy
             String currentUser = tokenService.getClaim(tokenService.getJWT(), SUB);
             major.setCreatedBy(currentUser);
             major.setUpdatedBy(currentUser);
         } catch (ParseException e) {
-
+            // Ném ra AppException nếu token không hợp lệ
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
 
+        // Thiết lập section cho Major
         Section section = new Section();
         section.setId(majorRequest.getSectionId());
         major.setSection(section);
@@ -60,6 +71,12 @@ public class MajorConverter {
         return major;
     }
 
+    /**
+     * Chuyển đổi từ Major entity sang MajorRequest.
+     *
+     * @param major Đối tượng Major entity cần chuyển đổi.
+     * @return Đối tượng MajorRequest đã chuyển đổi.
+     */
     public static MajorRequest convertToDTO(Major major) {
         return MajorRequest.builder()
                 .id(major.getId())

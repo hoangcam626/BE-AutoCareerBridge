@@ -1,10 +1,11 @@
 package com.backend.autocarrerbridge.dto.request.notification;
 
+import static com.backend.autocarrerbridge.util.Constant.NO_CONTENT_MESSAGE;
+
 import jakarta.validation.constraints.NotBlank;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import static com.backend.autocarrerbridge.util.Constant.NO_CONTENT_MESSAGE;
 
 @Data
 @AllArgsConstructor(staticName = "of")

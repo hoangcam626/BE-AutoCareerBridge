@@ -13,6 +13,7 @@ import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedRe
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.entity.University;
 import org.springframework.data.domain.Page;
+import com.backend.autocarrerbridge.util.email.EmailCode;
 
 public interface UniversityService {
     UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest);
@@ -32,4 +33,7 @@ public interface UniversityService {
     List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName);
 
     Page<UniversityResponse> getPagingByState(PageInfo req, Integer state);
+
+    EmailCode generaterCode(UserUniversityRequest userUniversityRequest);
+
 }

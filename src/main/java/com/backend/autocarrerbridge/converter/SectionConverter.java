@@ -21,6 +21,7 @@ import com.backend.autocarrerbridge.util.enums.Status;
 @Component
 public class SectionConverter {
 
+    // TokenServiceImpl được sử dụng để lấy thông tin từ JWT
     private static TokenServiceImpl tokenService;
 
     // Constructor được sử dụng để inject TokenServiceImpl vào trong SectionConverter
@@ -29,7 +30,12 @@ public class SectionConverter {
         SectionConverter.tokenService = tokenService;
     }
 
-    // Phương thức chuyển đổi SectionRequest thành Section entity
+    /**
+     * Chuyển đổi từ SectionRequest sang Section entity.
+     *
+     * @param sectionRequest Đối tượng SectionRequest cần chuyển đổi.
+     * @return Đối tượng Section entity đã chuyển đổi.
+     */
     public static Section convertToEntity(SectionRequest sectionRequest) {
         // Tạo một đối tượng Section mới từ sectionRequest
         Section section = Section.builder()
@@ -50,22 +56,28 @@ public class SectionConverter {
             section.setCreatedBy(currentUser);
             section.setUpdatedBy(currentUser);
         } catch (ParseException e) {
-
+            // Ném ra AppException nếu token không hợp lệ
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
 
+        // Nếu universityId không null, tạo và gán đối tượng University
         if (sectionRequest.getUniversityId() != null) {
             University university = new University();
             university.setId(sectionRequest.getUniversityId());
             section.setUniversity(university);
-        } // tedAt
+        }
 
         return section;
     }
 
-    // Phương thức chuyển đổi Section entity thành SectionRequest (dùng để trả về response)
+    /**
+     * Chuyển đổi từ Section entity sang SectionRequest (dùng để trả về response).
+     *
+     * @param section Đối tượng Section entity cần chuyển đổi.
+     * @return Đối tượng SectionRequest đã chuyển đổi.
+     */
     public static SectionRequest convertToResponse(Section section) {
-        // Lấy danh sách major
+        // Lấy danh sách major và chuyển đổi từng phần tử sang MajorRequest
         List<MajorRequest> majorRequestList = section.getMajors() != null
                 ? section.getMajors().stream()
                         .map(major -> MajorRequest.builder()

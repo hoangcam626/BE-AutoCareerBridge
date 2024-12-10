@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
 import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
+import static com.backend.autocarrerbridge.util.Constant.SEND_CODE;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 
 import java.util.List;
@@ -50,7 +51,14 @@ public class BusinessController {
                 .data(businessService.registerBusiness(userBusinessRequest))
                 .build();
     }
-
+    @PostMapping("/verify-business")
+    public ApiResponse<Object> verifyBusiness(@ModelAttribute @Valid UserBusinessRequest userBusinessRequest){
+        return ApiResponse.builder()
+                .code(SUCCESS)
+                .message(SEND_CODE)
+                .data(businessService.generateEmailCode(userBusinessRequest))
+                .build();
+    }
     /**
      * API cập nhật thông tin doanh nghiệp.
      * @apiNote Sử dụng để chỉnh sửa thông tin của một doanh nghiệp dựa trên ID doanh nghiệp.

@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.config;
 
-import static com.backend.autocarrerbridge.util.Constant.DEFAULT_PASSWORD;
+import static com.backend.autocarrerbridge.util.Constant.DEFAULT_PW;
 import static com.backend.autocarrerbridge.util.Constant.DEFAULT_USERNAME;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_BUSINESS;
@@ -66,7 +66,7 @@ public class ApplicationInitConfig {
         if (accountRepository.findByUsername(DEFAULT_USERNAME) == null) {
             UserAccount userAccounts = UserAccount.builder()
                     .username(DEFAULT_USERNAME)
-                    .password(passwordEncoder.encode(DEFAULT_PASSWORD))
+                    .password(passwordEncoder.encode(DEFAULT_PW))
                     .role(role)
                     .state(State.APPROVED)
                     .build();
