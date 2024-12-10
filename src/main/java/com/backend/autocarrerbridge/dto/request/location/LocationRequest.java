@@ -1,17 +1,17 @@
 package com.backend.autocarrerbridge.dto.request.location;
 
-import com.backend.autocarrerbridge.entity.AbstractAudit;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
-public class LocationRequest extends AbstractAudit {
+@Getter
+@Setter
+public class LocationRequest{
     private Integer id;
 
     private String description;
