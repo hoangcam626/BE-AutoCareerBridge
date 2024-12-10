@@ -13,6 +13,7 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
+import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
@@ -21,7 +22,6 @@ import com.backend.autocarrerbridge.dto.request.notification.NotificationSendReq
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.data.domain.Page;
@@ -40,11 +40,11 @@ import com.backend.autocarrerbridge.entity.Job;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.BusinessRepository;
-import com.backend.autocarrerbridge.controller.repository.EmployeeRepository;
-import com.backend.autocarrerbridge.controller.repository.IndustryRepository;
-import com.backend.autocarrerbridge.controller.repository.JobRepository;
-import com.backend.autocarrerbridge.controller.repository.UserAccountRepository;
+import com.backend.autocarrerbridge.repository.BusinessRepository;
+import com.backend.autocarrerbridge.repository.EmployeeRepository;
+import com.backend.autocarrerbridge.repository.IndustryRepository;
+import com.backend.autocarrerbridge.repository.JobRepository;
+import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.JobService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.enums.State;

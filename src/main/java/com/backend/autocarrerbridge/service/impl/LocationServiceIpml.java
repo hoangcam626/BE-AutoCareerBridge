@@ -2,6 +2,10 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.util.Constant.SUB;
 
+import com.backend.autocarrerbridge.service.DistrictService;
+import com.backend.autocarrerbridge.service.ProvinceService;
+import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.service.WardService;
 import java.text.ParseException;
 import java.util.Objects;
 
@@ -11,12 +15,8 @@ import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.LocationRepository;
-import com.backend.autocarrerbridge.service.DistrictService;
+import com.backend.autocarrerbridge.repository.LocationRepository;
 import com.backend.autocarrerbridge.service.LocationService;
-import com.backend.autocarrerbridge.service.ProvinceService;
-import com.backend.autocarrerbridge.service.TokenService;
-import com.backend.autocarrerbridge.service.WardService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

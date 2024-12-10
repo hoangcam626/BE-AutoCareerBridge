@@ -27,7 +27,7 @@ import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.controller.repository.UniversityRepository;
+import com.backend.autocarrerbridge.repository.UniversityRepository;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.UniversityService;

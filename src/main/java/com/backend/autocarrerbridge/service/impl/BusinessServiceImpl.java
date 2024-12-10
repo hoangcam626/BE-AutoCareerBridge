@@ -29,7 +29,7 @@ import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.mapper.BusinessMapper;
 import com.backend.autocarrerbridge.mapper.LocationMapper;
-import com.backend.autocarrerbridge.controller.repository.BusinessRepository;
+import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.LocationService;

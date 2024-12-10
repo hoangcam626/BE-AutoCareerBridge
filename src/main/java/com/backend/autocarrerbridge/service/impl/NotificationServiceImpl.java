@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.util.Constant.SUB;
 
+import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
 import java.util.List;
 
@@ -14,9 +15,8 @@ import com.backend.autocarrerbridge.dto.response.notification.NotificationSendRe
 import com.backend.autocarrerbridge.entity.Notification;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.entity.UserNotification;
-import com.backend.autocarrerbridge.controller.repository.NotificationRepository;
-import com.backend.autocarrerbridge.controller.repository.UserNotificationRepository;
-import com.backend.autocarrerbridge.service.NotificationService;
+import com.backend.autocarrerbridge.repository.NotificationRepository;
+import com.backend.autocarrerbridge.repository.UserNotificationRepository;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.service.UserAccountService;
 

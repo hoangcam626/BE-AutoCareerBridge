@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface InstructionalService {
 
-  InstructionalRequest createInstructional(InstructionalRequest instructionalRequest);
+  InstructionalResponse createInstructional(InstructionalRequest request);
 
-  InstructionalRequest updateInstructional(int id, InstructionalRequest instructionalRequest);
+  InstructionalResponse updateInstructional(int id, InstructionalRequest request);
 
-  InstructionalRequest deleteInstructional(int id);
+  InstructionalResponse deleteInstructional(int id);
 
   List<InstructionalResponse> getAllInstructional();
 

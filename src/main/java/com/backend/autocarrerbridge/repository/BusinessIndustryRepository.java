@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.controller.repository;
+package com.backend.autocarrerbridge.repository;
 
 import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import com.backend.autocarrerbridge.entity.BusinessIndustry;

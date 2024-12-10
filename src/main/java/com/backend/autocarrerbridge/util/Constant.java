@@ -214,4 +214,7 @@ public class Constant {
     public static final String REJECTED_RELATION = "Yêu cầu hợp tác đã bị từ chối";
     public static final String CANCEL_RELATION = "Yêu cầu hợp tác đã bị hủy trước đó";
     public static final String CANCELED_SUCCESSFUL = "Hủy thành công";
+
+    //Giáo vụ
+    public static final String INSTRUCTIONAL_EXIST_MESSAGE ="Giáo vụ không tồn tại";
 }

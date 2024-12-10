@@ -28,7 +28,7 @@ import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.controller.repository.WorkShopRepository;
+import com.backend.autocarrerbridge.repository.WorkShopRepository;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.service.WorkShopService;

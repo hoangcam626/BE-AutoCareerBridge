@@ -20,6 +20,7 @@ import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MES
 import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.HAVE_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.ID_MAJOR_NOT_NULL_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_EXIST_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_ACCOUNT_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_REJECTED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_IS_NULL;
@@ -261,6 +262,9 @@ public enum ErrorCode {
     WEBSITE_UNIVERSITY_NOT_BLANK(BAD_REQUEST,WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
     FOUNDED_YEAR_UNIVERSITY_NOT_BLANK(BAD_REQUEST,FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
     PHONE_UNIVERSITY_NOT_BLANK(BAD_REQUEST,PHONE_UNIVERSITY_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+
+    //Validation giáo vụ
+    INSTRUCTIONS_NOT_EXIST(BAD_REQUEST,INSTRUCTIONAL_EXIST_MESSAGE,HttpStatus.BAD_REQUEST),
 
     // Các lỗi duyệt thông tin
     ERROR_JOB_ALREADY_REJECTED(BAD_REQUEST, JOB_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),

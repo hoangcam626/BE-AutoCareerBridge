@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class InstructionalRequest {
+public class InstructionalRequest{
 
   private Integer id;
 
@@ -26,9 +27,9 @@ public class InstructionalRequest {
 
   private String address;
 
-  private String instructionalCode;
+  private MultipartFile instructionalImageId;
 
-  private Integer instructionalImageId;
+  private String instructionalCode;
 
   private String phone;
 

@@ -1,16 +1,10 @@
 package com.backend.autocarrerbridge.converter;
-
-import static com.backend.autocarrerbridge.util.Constant.SUB;
-
 import com.backend.autocarrerbridge.dto.request.instructional.InstructionalRequest;
 import com.backend.autocarrerbridge.dto.response.instructional.InstructionalResponse;
 import com.backend.autocarrerbridge.entity.Instructional;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.service.impl.TokenServiceImpl;
-import java.text.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +28,7 @@ public class InstructionalConverter {
     if (request == null) {
       return null;
     }
+
     return Instructional.builder()
         .id(request.getId())
         .name(request.getName())
@@ -58,7 +53,7 @@ public class InstructionalConverter {
     if (instructional == null) {
       return null;
     }
-    InstructionalResponse response = InstructionalResponse.builder()
+   return InstructionalResponse.builder()
         .id(instructional.getId())
         .name(instructional.getName())
         .gender(instructional.getGender())
@@ -68,22 +63,14 @@ public class InstructionalConverter {
         .instructionalCode(instructional.getInstructionalCode())
         .instructionalImageId(instructional.getInstructionalImageId())
         .phone(instructional.getPhone())
+        .status(instructional.getStatus())
+        .createdAt(instructional.getCreatedAt())
+        .updatedAt(instructional.getUpdatedAt())
+        .createdBy(instructional.getCreatedBy())
+        .updatedBy(instructional.getUpdatedBy())
         .universityId(instructional.getUniversity().getId())
         .userAccountId(instructional.getUserAccount().getId())
         .build();
-    response.setStatus(response.getStatus());
-    response.setCreatedAt(response.getCreatedAt());
-    response.setUpdatedAt(response.getUpdatedAt());
-
-    try {
-      String currentUser = tokenService.getClaim(tokenService.getJWT(), SUB);
-      response.setCreatedBy(currentUser);
-      response.setUpdatedBy(currentUser);
-    } catch (ParseException e) {
-
-      throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
-    }
-    return response;
   }
 
   /**
@@ -99,13 +86,9 @@ public class InstructionalConverter {
     instructional.setName(request.getName());
     instructional.setGender(request.getGender());
     instructional.setDateOfBirth(request.getDateOfBirth());
-    instructional.setEmail(request.getEmail());
     instructional.setAddress(request.getAddress());
     instructional.setInstructionalCode(request.getInstructionalCode());
-    instructional.setInstructionalImageId(request.getInstructionalImageId());
     instructional.setPhone(request.getPhone());
     instructional.setUniversity(University.builder().id(request.getUniversityId()).build());
-    instructional.setUserAccount(UserAccount.builder().id(request.getUserAccountId()).build());
-
   }
 }

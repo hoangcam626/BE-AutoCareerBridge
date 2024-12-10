@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.controller.repository;
+package com.backend.autocarrerbridge.repository;
 
 import com.backend.autocarrerbridge.entity.Instructional;
 import org.springframework.data.jpa.repository.JpaRepository;
