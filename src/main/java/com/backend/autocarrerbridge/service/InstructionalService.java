@@ -1,8 +1,8 @@
 package com.backend.autocarrerbridge.service;
 
+import java.util.List;
 import com.backend.autocarrerbridge.dto.request.instructional.InstructionalRequest;
 import com.backend.autocarrerbridge.dto.response.instructional.InstructionalResponse;
-import java.util.List;
 
 public interface InstructionalService {
 
@@ -10,7 +10,7 @@ public interface InstructionalService {
 
   InstructionalResponse updateInstructional(int id, InstructionalRequest request);
 
-  InstructionalResponse deleteInstructional(int id);
+  InstructionalRequest deleteInstructional(int id);
 
   List<InstructionalResponse> getAllInstructional();
 

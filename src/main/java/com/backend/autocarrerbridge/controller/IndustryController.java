@@ -100,9 +100,11 @@ public class IndustryController {
      * @apiNote được sử dụng để thêm một ngành nghề vào doanh nghiệp.
      */
     @GetMapping("/get-all-industry-business")
-    public ApiResponse<Object> getIndustryOfBusiness(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "10") int size,
-                                                     @RequestParam String keyword) throws ParseException {
+    public ApiResponse<Object> getIndustryOfBusiness(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword)
+            throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
         return industryService.getIndustryOfBusiness(page, size, keyword, pageable);
     }
@@ -123,8 +125,7 @@ public class IndustryController {
      * @apiNote được sử dụng xóa ngành nghề của doanh nghiệp.
      */
     @DeleteMapping("/delete")
-    public ApiResponse<Object> deleteBusinessIndustry(
-            @RequestParam Integer businessIndustryId) throws ParseException {
+    public ApiResponse<Object> deleteBusinessIndustry(@RequestParam Integer businessIndustryId) throws ParseException {
         return industryService.inactiveIndustryOfBusiness(businessIndustryId);
     }
 }
