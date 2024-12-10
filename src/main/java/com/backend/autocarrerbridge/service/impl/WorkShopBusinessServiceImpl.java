@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.controller.repository.WorkShopBusinessRepository;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessReponse;
@@ -22,6 +21,7 @@ import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.entity.WorkshopBusiness;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.repository.WorkShopBusinessRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.WorkShopBusinessService;
 import com.backend.autocarrerbridge.service.WorkShopService;

@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.config;
 
-import static com.backend.autocarrerbridge.util.Constant.DEFAULT_PASSWORD;
+import static com.backend.autocarrerbridge.util.Constant.DEFAULT_PW;
 import static com.backend.autocarrerbridge.util.Constant.DEFAULT_USERNAME;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_BUSINESS;
@@ -21,10 +21,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.backend.autocarrerbridge.controller.repository.RoleRepository;
-import com.backend.autocarrerbridge.controller.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.UserAccount;
+import com.backend.autocarrerbridge.repository.RoleRepository;
+import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.AccessLevel;
@@ -66,7 +66,7 @@ public class ApplicationInitConfig {
         if (accountRepository.findByUsername(DEFAULT_USERNAME) == null) {
             UserAccount userAccounts = UserAccount.builder()
                     .username(DEFAULT_USERNAME)
-                    .password(passwordEncoder.encode(DEFAULT_PASSWORD))
+                    .password(passwordEncoder.encode(DEFAULT_PW))
                     .role(role)
                     .state(State.APPROVED)
                     .build();

@@ -1,10 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_EXIST;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_SUB_ADMIN;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SUB_ADMIN_CODE_EXIST;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_EMAIL;
-import static com.backend.autocarrerbridge.exception.ErrorCode.NO_CHANGE_DETECTED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.SUB;
 
@@ -19,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.controller.repository.SubAdminRepository;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminDeleteRequest;
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminSelfRequest;
@@ -31,6 +26,7 @@ import com.backend.autocarrerbridge.dto.response.subadmin.SubAdminUpdateResponse
 import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.repository.SubAdminRepository;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.service.RoleService;
 import com.backend.autocarrerbridge.service.SubAdminService;
@@ -240,9 +236,9 @@ public class SubAdminServiceImpl implements SubAdminService {
         if (!Validation.isValidEmail(req.getEmail())) {
             throw new AppException(ERROR_VALID_EMAIL);
         }
-        //        if (Objects.nonNull(req.getPhone()) && !Validation.is(req.getPhone())) {
-        //            throw new AppException(ERROR_VALID_PHONE);
-        //        }
+//        if (Objects.nonNull(req.getPhone()) && !Validation.is(req.getPhone())) {
+//            throw new AppException(ERROR_VALID_PHONE);
+//        }
         if (subAdminRepository.existsBySubAdminCode(req.getSubAdminCode())) {
             throw new AppException(ERROR_SUB_ADMIN_CODE_EXIST);
         }

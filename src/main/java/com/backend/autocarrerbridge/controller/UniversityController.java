@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
 import static com.backend.autocarrerbridge.util.Constant.REGISTER_UNIVERSITY;
+import static com.backend.autocarrerbridge.util.Constant.SEND_CODE;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
@@ -41,7 +42,14 @@ public class UniversityController {
                 .data(universityService.registerUniversity(userUniversityRequest))
                 .build();
     }
-
+    @PostMapping("/verify-university")
+    public ApiResponse<Object> verifyUniversity(@RequestBody @Valid UserUniversityRequest userUniversityRequest){
+        return ApiResponse.builder()
+                .code(SUCCESS)
+                .message(SEND_CODE)
+                .data(universityService.generaterCode(userUniversityRequest))
+                .build();
+    }
     @PostMapping("/update/{id}")
     public ApiResponse<Object> updateUniversity(
             @PathVariable("id") int id, @ModelAttribute UniversityRequest universityRequest) {

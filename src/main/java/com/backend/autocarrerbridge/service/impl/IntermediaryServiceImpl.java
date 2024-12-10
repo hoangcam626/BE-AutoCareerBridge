@@ -2,12 +2,12 @@ package com.backend.autocarrerbridge.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.controller.repository.BusinessRepository;
-import com.backend.autocarrerbridge.controller.repository.SubAdminRepository;
-import com.backend.autocarrerbridge.controller.repository.UniversityRepository;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.University;
+import com.backend.autocarrerbridge.repository.BusinessRepository;
+import com.backend.autocarrerbridge.repository.SubAdminRepository;
+import com.backend.autocarrerbridge.repository.UniversityRepository;
 import com.backend.autocarrerbridge.service.IntermediaryService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,4 +33,5 @@ public class IntermediaryServiceImpl implements IntermediaryService {
     public SubAdmin findSubAdminByEmail(String email) {
         return subAdminRepository.findByEmail(email);
     }
+
 }

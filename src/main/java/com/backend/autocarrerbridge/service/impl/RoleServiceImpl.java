@@ -2,8 +2,8 @@ package com.backend.autocarrerbridge.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.controller.repository.RoleRepository;
 import com.backend.autocarrerbridge.entity.Role;
+import com.backend.autocarrerbridge.repository.RoleRepository;
 import com.backend.autocarrerbridge.service.RoleService;
 
 import lombok.AccessLevel;

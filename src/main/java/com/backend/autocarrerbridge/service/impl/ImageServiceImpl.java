@@ -1,12 +1,6 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DELETE_IMAGE;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_DIRECTORY_FILE;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMPTY_FILE;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FIND_IMAGE;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_LIMIT_SIZE_FILE;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SAVE_FILE;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_TYPE_FILE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,10 +22,10 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.backend.autocarrerbridge.controller.repository.ImageRepository;
 import com.backend.autocarrerbridge.dto.response.image.ImageResponse;
 import com.backend.autocarrerbridge.entity.Image;
 import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.repository.ImageRepository;
 import com.backend.autocarrerbridge.service.ImageService;
 
 import lombok.RequiredArgsConstructor;

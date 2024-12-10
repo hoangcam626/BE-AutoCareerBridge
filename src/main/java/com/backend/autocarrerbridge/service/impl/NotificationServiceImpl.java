@@ -8,14 +8,14 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.controller.repository.NotificationRepository;
-import com.backend.autocarrerbridge.controller.repository.UserNotificationRepository;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationDetailResponse;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationSendResponse;
 import com.backend.autocarrerbridge.entity.Notification;
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.entity.UserNotification;
+import com.backend.autocarrerbridge.repository.NotificationRepository;
+import com.backend.autocarrerbridge.repository.UserNotificationRepository;
 import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.service.UserAccountService;

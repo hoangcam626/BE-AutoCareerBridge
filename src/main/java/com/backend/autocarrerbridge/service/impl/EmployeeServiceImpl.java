@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.controller.repository.EmployeeRepository;
 import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
 import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
 import com.backend.autocarrerbridge.entity.Business;
@@ -24,6 +23,7 @@ import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.mapper.EmployeeMapper;
 import com.backend.autocarrerbridge.mapper.UserAccountMapper;
+import com.backend.autocarrerbridge.repository.EmployeeRepository;
 import com.backend.autocarrerbridge.service.BusinessService;
 import com.backend.autocarrerbridge.service.EmployeeService;
 import com.backend.autocarrerbridge.service.ImageService;
@@ -166,10 +166,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
         }
 
-        System.out.println(employee);
         // Cập nhật thông tin nhân viên từ request
         employeeMapper.udpateEmployee(employee, request);
-        System.out.println(employee);
 
         try {
             var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);

@@ -1,4 +1,4 @@
-package com.backend.autocarrerbridge.controller.repository;
+package com.backend.autocarrerbridge.repository;
 
 import java.util.List;
 
