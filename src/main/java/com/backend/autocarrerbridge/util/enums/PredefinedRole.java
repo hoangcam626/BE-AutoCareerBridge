@@ -8,7 +8,8 @@ public enum PredefinedRole {
     BUSINESS(2),
     UNIVERSITY(3),
     EMPLOYEE(4),
-    SUB_ADMIN(5);
+    SUB_ADMIN(5),
+    INSTRUCTIONAL(6);
 
     private final int value;
 

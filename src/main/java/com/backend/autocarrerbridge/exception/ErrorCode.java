@@ -8,6 +8,21 @@ import lombok.Getter;
 
 
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
+import static com.backend.autocarrerbridge.util.Constant.APPROVED_RELATION;
+import static com.backend.autocarrerbridge.util.Constant.CANCEL_RELATION;
+import static com.backend.autocarrerbridge.util.Constant.CODE_EXIT_SUB_ADMIN_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_INVALID_PHONE;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_LIST_EMPTY_MESAGE;
+import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.HAVE_RELATION;
+import static com.backend.autocarrerbridge.util.Constant.ID_MAJOR_NOT_NULL_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_EXIST_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_ACCOUNT_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_REJECTED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
@@ -105,6 +120,7 @@ import static com.backend.autocarrerbridge.util.Constant.SAVE_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_EXISTED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_HAVE_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.SENDED_FORGOT_PASS;
 import static com.backend.autocarrerbridge.util.Constant.STATUS_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.TAX_CODE;
@@ -260,6 +276,9 @@ public enum ErrorCode {
     WEBSITE_UNIVERSITY_NOT_BLANK(BAD_REQUEST, WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     FOUNDED_YEAR_UNIVERSITY_NOT_BLANK(BAD_REQUEST, FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     PHONE_UNIVERSITY_NOT_BLANK(BAD_REQUEST, PHONE_UNIVERSITY_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
+
+    //Validation giáo vụ
+    INSTRUCTIONS_NOT_EXIST(BAD_REQUEST,INSTRUCTIONAL_EXIST_MESSAGE,HttpStatus.BAD_REQUEST),
 
     // Các lỗi duyệt thông tin
     ERROR_JOB_ALREADY_REJECTED(BAD_REQUEST, JOB_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
