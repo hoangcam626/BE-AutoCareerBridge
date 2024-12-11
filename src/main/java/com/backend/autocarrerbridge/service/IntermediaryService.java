@@ -8,5 +8,6 @@ public interface IntermediaryService {
     University findUniversityByEmail(String email);
 
     Business findBusinessByEmail(String email);
+
     SubAdmin findSubAdminByEmail(String email);
 }

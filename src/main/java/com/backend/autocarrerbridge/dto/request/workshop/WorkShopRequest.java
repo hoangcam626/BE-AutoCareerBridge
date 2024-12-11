@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.dto.request.workshop;
 
-import static com.backend.autocarrerbridge.util.Constant.DATE_WORK_SHOP_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DES_WORK_SHOP_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.TITLE_WORK_SHOP_MESSAGE;
 
@@ -11,7 +10,6 @@ import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.autocarrerbridge.util.enums.State;
@@ -43,12 +41,9 @@ public class WorkShopRequest {
     private LocalDateTime updatedAt;
     private String updatedBy;
 
-
     private LocalDateTime startDate;
 
-
     private LocalDateTime endDate;
-
 
     private LocalDate expireDate;
 

@@ -1,7 +1,9 @@
 package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
+import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.industry.DeleteIndustryRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
@@ -23,6 +25,11 @@ public interface IndustryService {
 
     ApiResponse<Object> getIndustryOfBusiness(int page, int size, String keyword, Pageable pageable) throws ParseException;
 
+    ApiResponse<Object> getIndustryOfBusinessNoPag() throws ParseException;
+
     ApiResponse<Object> getIndustryDetail(Integer industryId) throws ParseException;
-    ApiResponse<Object> inactiveIndustryOfBusiness(Integer businessIndustryId) throws ParseException;
+
+    ApiResponse<Object> inactiveIndustryOfBusiness(DeleteIndustryRequest deleteIndustryRequest) throws ParseException;
+
+    ApiResponse<Object> checkIndustryExist(Integer industryId) throws ParseException;
 }

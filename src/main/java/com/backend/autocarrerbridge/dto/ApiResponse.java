@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.dto;
 
-import static com.backend.autocarrerbridge.util.Constant.*;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,39 +1,40 @@
 package com.backend.autocarrerbridge.dto.request.instructional;
 
 import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class InstructionalRequest {
+public class InstructionalRequest{
 
-  private Integer id;
+    private Integer id;
 
-  private String name;
+    private String name;
 
-  private String gender;
+    private String gender;
 
-  private LocalDate dateOfBirth;
+    private LocalDate dateOfBirth;
 
-  private String email;
+    private String email;
 
-  private String address;
+    private String address;
 
-  private String instructionalCode;
+    private MultipartFile instructionalImageId;
 
-  private Integer instructionalImageId;
+    private String instructionalCode;
 
-  private String phone;
+    private String phone;
 
-  private Integer universityId;
+    private Integer universityId;
 
-  private Integer userAccountId;
-
+    private Integer userAccountId;
 }

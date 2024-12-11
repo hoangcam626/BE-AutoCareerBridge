@@ -6,6 +6,16 @@ import java.util.Objects;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import jakarta.transaction.Transactional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.converter.UniversityConverter;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
@@ -176,6 +186,16 @@ public class UniversityServiceImpl implements UniversityService {
     public List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName) {
         List<University> list = universityRepository.findUniversity(address, universityName);
         return list.stream().map(university -> modelMapper.map(university,UniversityResponse.class)).toList();
+    }
+
+    /**
+     * Lấy danh sách các trường đại học phân trang theo trạng thái.
+     */
+    @Override
+    public Page<UniversityResponse> getPagingByState(PageInfo req, Integer state) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        Page<University> universities= universityRepository.findAllByState(pageable, state, req.getKeyword());
+        return universities.map(u -> modelMapper.map(u, UniversityResponse.class));
     }
 
     @Override

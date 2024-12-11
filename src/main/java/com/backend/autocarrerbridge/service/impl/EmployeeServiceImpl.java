@@ -6,9 +6,12 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.employee.EmployeeRequest;
@@ -105,15 +108,14 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setCreatedBy(emailBusiness);
 
             // set anh cho nhan vien
-            if(Objects.nonNull(request.getEmployeeImage()))
+            if (Objects.nonNull(request.getEmployeeImage()))
                 employee.setEmployeeImageId(imageService.uploadFile(request.getEmployeeImage()));
 
             // set ma tu gen cho nhan vien
             int idLast;
-            if(Objects.isNull(employeeRepository.getLastEmployee())) {
-                idLast=0;
-            }else
-                idLast=employeeRepository.getLastEmployee();
+            if (Objects.isNull(employeeRepository.getLastEmployee())) {
+                idLast = 0;
+            } else idLast = employeeRepository.getLastEmployee();
 
             employee.setEmployeeCode(generateEmployeeCode(emailBusiness, idLast));
         } catch (ParseException e) {
@@ -165,7 +167,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         // Cập nhật thông tin nhân viên từ request
-        employeeMapper.udpateEmployee(employee, request);
+        employeeMapper.updateEmployee(employee, request);
 
         try {
             var emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
@@ -188,5 +190,26 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setStatus(Status.INACTIVE);
         employeeRepository.save(employee); // Lưu thay đổi vào cơ sở dữ liệu
         employeeRepository.flush(); // Đồng bộ dữ liệu với cơ sở dữ liệu
+    }
+
+    @Override
+    public PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage(int page, int size, String keyword, Pageable pageable) {
+        String emailAccountLogin;
+        try {
+            emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
+        } catch (ParseException e) {
+            throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
+        }
+        // Lấy dữ liệu phân trang từ repository
+        var employees = employeeRepository.getEmployeeForPaging(emailAccountLogin, keyword, pageable);
+
+        // Chuyển đổi danh sách các employee sang Page<EmployeeResponse>
+        Page<EmployeeResponse> list = employees.map(employee -> {
+            EmployeeResponse employeeResponse = employeeMapper.toEmployeeResponse(employee);
+            // Thêm thông tin businessId vào employeeResponse
+            employeeResponse.setBusinessId(employee.getBusiness().getId());
+            return employeeResponse;
+        });
+        return new PagingResponse<>(list);
     }
 }
