@@ -14,6 +14,7 @@ import static com.backend.autocarrerbridge.util.Constant.NOTIFICATION_WAIT;
 import static com.backend.autocarrerbridge.util.Constant.PREFIX_FG;
 import static com.backend.autocarrerbridge.util.Constant.PREFIX_NP;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
@@ -67,6 +68,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     Integer codeTime = 60;
     IntermediaryService intermediaryService;
 
+
     /**
      * Xác thực người dùng dựa trên tên đăng nhập và mật khẩu.
      *
@@ -79,7 +81,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
         validateRequest(userAccountRequest);
         UserAccount user = userAccountRepository.findByUsername(userAccountRequest.getUsername());
-        if (user == null) {
+        if (Objects.isNull(user)) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
         validatePassword(userAccountRequest.getPassword(), user.getPassword());
@@ -182,8 +184,9 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccountResponseDTO) {
+
         UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponseDTO.getUsername());
-        if (userAccountResponseDTO.getPassword() == null
+        if (Objects.isNull(userAccountResponseDTO.getPassword())
                 || userAccountResponseDTO.getPassword().isEmpty()) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
@@ -212,7 +215,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public EmailCode generateVerificationCode(String email) {
         UserAccount userAccount = userAccountRepository.findByUsername(email);
-        if (userAccount != null && userAccount.getState().equals(State.APPROVED)) {
+        if (!Objects.isNull(userAccount) && userAccount.getState().equals(State.APPROVED)) {
             throw new AppException(ErrorCode.ERROR_USER_APPROVED);
         }
         String code = generateCode(email);
@@ -225,7 +228,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     // Gen ra mã reset mật khẩu
     @Override
     public EmailCode generatePasswordResetCode(String email) {
-        if(userAccountRepository.findByUsername(email) == null){
+        if(Objects.isNull(userAccountRepository.findByUsername(email))){
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
         // Tạo mã reset mật khẩu cho email
@@ -244,13 +247,13 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public String handleForgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         // Kiểm tra email có hợp lệ không
-        if (forgotPasswordRequest.getEmail() == null
+        if (Objects.isNull(forgotPasswordRequest.getEmail())
                 || forgotPasswordRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
         // Kiểm tra xem email có tồn tại trong hệ thống không
-        if (userAccountRepository.findByUsername(forgotPasswordRequest.getEmail()) == null) {
+        if (Objects.isNull(userAccountRepository.findByUsername(forgotPasswordRequest.getEmail()))) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
 

@@ -144,7 +144,7 @@ public class UniversityServiceImpl implements UniversityService {
         university.setPhone(universityRequest.getPhone());
         university.setDescription(universityRequest.getDescription());
 
-        if (universityRequest.getLogoImageId() != null && !universityRequest.getLogoImageId().isEmpty()) {
+        if (!Objects.isNull(universityRequest.getLogoImageId()) && !universityRequest.getLogoImageId().isEmpty()) {
             // Tải lên ảnh mới và lưu ID của ảnh
             university.setLogoImageId(imageService.uploadFile(universityRequest.getLogoImageId()));
         }
@@ -183,9 +183,9 @@ public class UniversityServiceImpl implements UniversityService {
         checkValidateUniversity(userUniversityRequest);
         return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
     }
-    public void checkValidateUniversity(UserUniversityRequest userUniversityRequest){
-        if (userUniversityRequest.getPassword() == null
-                || userUniversityRequest.getRePassword() == null
+    public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
+        if (Objects.isNull(userUniversityRequest.getPassword())
+                || Objects.isNull(userUniversityRequest.getRePassword())
                 || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
@@ -194,17 +194,17 @@ public class UniversityServiceImpl implements UniversityService {
             throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
         }
 
-        if (userUniversityRequest.getEmail() == null
+        if (Objects.isNull(userUniversityRequest.getEmail())
                 || userUniversityRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-        if (userUniversityRequest.getName() == null
+
+        if (Objects.isNull(userUniversityRequest.getName())
                 || userUniversityRequest.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
-        // Kiểm tra xem email đã được đăng ký trước đó hay chưa
-        if (userAccountService.getUserByUsername(userUniversityRequest.getEmail()) != null) {
+        if (!Objects.isNull(userAccountService.getUserByUsername(userUniversityRequest.getEmail()))) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
     }

@@ -109,7 +109,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         locationRequest.setDescription(workShopRequest.getAddressDescription());
         Location location =  locationService.saveLocation(locationRequest);
         University university = universityService.findById(workShopRequest.getUniversityId()); // Tìm trường đại học
-        if (Objects.equals(university,null)) {
+        if (Objects.isNull(university)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu trường không tồn tại
         }
 
@@ -239,7 +239,7 @@ public class WorkShopServiceImpl implements WorkShopService {
 
 
     private Integer updateWorkshopImage(WorkShopRequest workShopRequest) {
-        if (workShopRequest.getImageWorkshop() != null) {
+        if (!Objects.isNull(workShopRequest.getImageWorkshop())) {
             return imageService.uploadFile(workShopRequest.getImageWorkshop());
         }
         return null;
@@ -282,7 +282,7 @@ public class WorkShopServiceImpl implements WorkShopService {
     @Override
     public WorkShopResponse removeWorkShop(Integer id) {
         Workshop workshop = workShopRepository.findById(id).orElse(null);
-        if (workshop == null) {
+        if (Objects.isNull(workshop)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu Workshop không tồn tại
         }
         workshop.setStatus(Status.INACTIVE);
@@ -298,7 +298,7 @@ public class WorkShopServiceImpl implements WorkShopService {
     @Override
     public WorkShopResponse getWorkShopById(Integer id) {
         Workshop workshopById = workShopRepository.findById(id).orElse(null);
-        if (workshopById == null) {
+        if (Objects.isNull(workshopById)) {
             throw new AppException(ERROR_NO_CONTENT);
         }
         return modelMapper.map(workshopById, WorkShopResponse.class);

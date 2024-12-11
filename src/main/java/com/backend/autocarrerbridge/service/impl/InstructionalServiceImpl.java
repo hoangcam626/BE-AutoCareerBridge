@@ -6,8 +6,6 @@ import com.backend.autocarrerbridge.dto.response.instructional.InstructionalResp
 import com.backend.autocarrerbridge.service.InstructionalService;
 import jakarta.transaction.Transactional;
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
