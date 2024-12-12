@@ -11,10 +11,10 @@ import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedRespon
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.enums.State;
-import org.springframework.data.domain.Page;
 
 public interface BusinessService {
     BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest);
@@ -35,9 +35,9 @@ public interface BusinessService {
 
     BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req);
 
-    Page<BusinessResponse> getPagingByState(PageInfo req, State state );
+    PagingResponse<BusinessResponse> getPagingByState(PageInfo req, State state );
 
-    Page<BusinessResponse> getAllBusinesses(PageInfo req);
+    PagingResponse<BusinessResponse> getAllBusinesses(PageInfo req);
 
     EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest);
 }

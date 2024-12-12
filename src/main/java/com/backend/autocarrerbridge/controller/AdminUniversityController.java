@@ -1,8 +1,8 @@
 package com.backend.autocarrerbridge.controller;
 
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.validation.Valid;
 
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,9 +69,9 @@ public class AdminUniversityController {
      * @return ApiResponse chứa danh sách trường đại học đã được phê duyệt.
      */
     @GetMapping("/all-universities")
-    public ApiResponse<Page<UniversityResponse>> getAllUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                                         @RequestParam(value = "keyword", required = false) String keyword) {
+    public ApiResponse<PagingResponse<UniversityResponse>> getAllUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                          @RequestParam(value = "keyword", required = false) String keyword) {
         var res = universityService.getAllUniversities(PageInfo.of(pageNo, pageSize, keyword));
         return new ApiResponse<>(res);
     }
@@ -85,7 +85,7 @@ public class AdminUniversityController {
      * @return ApiResponse chứa danh sách trường đại học đã được phê duyệt.
      */
     @GetMapping("/approved-universities")
-    public ApiResponse<Page<UniversityResponse>> getApprovedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    public ApiResponse<PagingResponse<UniversityResponse>> getApprovedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                          @RequestParam(value = "keyword", required = false) String keyword) {
         var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED.getValue());
@@ -101,7 +101,7 @@ public class AdminUniversityController {
      * @return ApiResponse chứa danh sách trường đại học đang chờ phê duyệt.
      */
     @GetMapping("/pending-universities")
-    public ApiResponse<Page<UniversityResponse>> getPendingUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    public ApiResponse<PagingResponse<UniversityResponse>> getPendingUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                         @RequestParam(value = "keyword", required = false) String keyword) {
         var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING.getValue());
@@ -117,7 +117,7 @@ public class AdminUniversityController {
      * @return ApiResponse chứa danh sách trường đại học đã bị từ chối.
      */
     @GetMapping("/rejected-universities")
-    public ApiResponse<Page<UniversityResponse>> getRejectedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    public ApiResponse<PagingResponse<UniversityResponse>> getRejectedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                          @RequestParam(value = "keyword", required = false) String keyword) {
         var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED.getValue());

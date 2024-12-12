@@ -1,10 +1,10 @@
 package com.backend.autocarrerbridge.controller;
 
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.validation.Valid;
 
 import java.text.ParseException;
 
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,9 +63,9 @@ public class AdminWorkshopController {
     }
 
     @GetMapping("/approved-workshops")
-    public ApiResponse<Page<WorkShopResponse>> getApprovedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
+    public ApiResponse<PagingResponse<WorkShopResponse>> getApprovedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                           @RequestParam(value = "keyword", required = false) String keyword) {
         var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
         return new ApiResponse<>(res);
     }
@@ -79,7 +79,7 @@ public class AdminWorkshopController {
      * @return ApiResponse chứa danh sách hội thảo đang chờ phê duyệt.
      */
     @GetMapping("/pending-workshops")
-    public ApiResponse<Page<WorkShopResponse>> getPendingWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    public ApiResponse<PagingResponse<WorkShopResponse>> getPendingWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
         var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
@@ -95,7 +95,7 @@ public class AdminWorkshopController {
      * @return ApiResponse chứa danh sách hội thảo đã bị từ chối.
      */
     @GetMapping("/rejected-workshops")
-    public ApiResponse<Page<WorkShopResponse>> getRejectedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    public ApiResponse<PagingResponse<WorkShopResponse>> getRejectedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                     @RequestParam(value = "keyword", required = false) String keyword) {
         var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);

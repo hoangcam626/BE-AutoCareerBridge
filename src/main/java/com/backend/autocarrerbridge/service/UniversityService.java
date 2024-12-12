@@ -7,12 +7,12 @@ import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.entity.University;
-import org.springframework.data.domain.Page;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 
 public interface UniversityService {
@@ -32,9 +32,9 @@ public interface UniversityService {
 
     List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName);
 
-    Page<UniversityResponse> getPagingByState(PageInfo req, Integer state);
+    PagingResponse<UniversityResponse> getPagingByState(PageInfo req, Integer state);
 
-    Page<UniversityResponse> getAllUniversities(PageInfo req);
+    PagingResponse<UniversityResponse> getAllUniversities(PageInfo req);
 
     EmailCode generateCode(UserUniversityRequest userUniversityRequest);
 

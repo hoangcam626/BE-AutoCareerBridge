@@ -8,6 +8,7 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -188,10 +189,11 @@ public class UniversityServiceImpl implements UniversityService {
      * Lấy danh sách các trường đại học phân trang theo trạng thái.
      */
     @Override
-    public Page<UniversityResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<UniversityResponse> getPagingByState(PageInfo req, Integer state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<University> universities = universityRepository.findAllByState(pageable, state, req.getKeyword());
-        return universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        return new PagingResponse<>(res);
     }
 
 
@@ -199,10 +201,11 @@ public class UniversityServiceImpl implements UniversityService {
      * Lấy danh sách tất cả các trường đại học gồm phân trang và tìm kiếm.
      */
     @Override
-    public Page<UniversityResponse> getAllUniversities(PageInfo req) {
+    public PagingResponse<UniversityResponse> getAllUniversities(PageInfo req) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<University> universities = universityRepository.findAll(pageable, req.getKeyword());
-        return universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        return new PagingResponse<>(res);
     }
 
     @Override

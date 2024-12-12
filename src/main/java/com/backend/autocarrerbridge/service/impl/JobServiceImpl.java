@@ -302,10 +302,11 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách công việc theo trạng thái với phân trang.
      */
     @Override
-    public Page<JobResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<JobResponse> getPagingByState(PageInfo req, Integer state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<Job> jobs = jobRepository.findAllByState(pageable, state, req.getKeyword());
-        return jobs.map(j -> modelMapper.map(j, JobResponse.class));
+        Page<JobResponse> res = jobs.map(j -> modelMapper.map(j, JobResponse.class));
+        return new PagingResponse<>(res);
     }
 
     /**

@@ -19,6 +19,7 @@ import com.backend.autocarrerbridge.dto.request.notification.NotificationSendReq
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
@@ -126,7 +127,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         locationRequest.setDescription(workShopRequest.getAddressDescription());
         Location location = locationService.saveLocation(locationRequest);
         University university = universityService.findById(workShopRequest.getUniversityId()); // Tìm trường đại học
-        if (Objects.equals(university,null)) {
+        if (Objects.equals(university, null)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu trường không tồn tại
         }
 
@@ -348,10 +349,11 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Trang kết quả chứa danh sách Workshop.
      */
     @Override
-    public Page<WorkShopResponse> getPagingByState(PageInfo info, State state) {
+    public PagingResponse<WorkShopResponse> getPagingByState(PageInfo info, State state) {
         Pageable pageable = PageRequest.of(info.getPageNo(), info.getPageSize());
         Page<Workshop> workshops = workShopRepository.findAllByState(pageable, state, info.getKeyword());
-        return workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
+        Page<WorkShopResponse> res = workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
+        return new PagingResponse<>(res);
     }
 
     /**

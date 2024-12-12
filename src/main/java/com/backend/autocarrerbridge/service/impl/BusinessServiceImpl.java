@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -46,11 +47,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
-
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
-
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -73,7 +71,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
 
         checkValidateRegister(userBusinessRequest);
-        if(userBusinessRequest.getVerificationCode() == null){
+        if (userBusinessRequest.getVerificationCode() == null) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
         if (!Objects.equals(
@@ -190,7 +188,7 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức chấp nhận tài khoản doanh nghiệp
      */
     @Override
-    public BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req){
+    public BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req) {
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -208,7 +206,7 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức từ chối tài khoản doanh nghiệp.
      */
     @Override
-    public BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req){
+    public BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req) {
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -230,26 +228,24 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức lấy danh sách các doanh nghiệp theo trạng thái và keyword tìm kiếm
      */
     @Override
-    public Page<BusinessResponse> getPagingByState(PageInfo req, State state) {
+    public PagingResponse<BusinessResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<Business> businesses = businessRepository.findAllByState(pageable, state, req.getKeyword());
-
-        return businesses.map(b ->
-                modelMapper.map(b, BusinessResponse.class)
-        );
+        Page<BusinessResponse> res = businesses.map(b ->
+                modelMapper.map(b, BusinessResponse.class));
+        return new PagingResponse<>(res);
     }
 
     /**
      * Phương thức lấy danh sách tất cả các doanh nghiệp và tìm kiếm
      */
     @Override
-    public Page<BusinessResponse> getAllBusinesses(PageInfo req) {
+    public PagingResponse<BusinessResponse> getAllBusinesses(PageInfo req) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<Business> businesses = businessRepository.findAll(pageable, req.getKeyword());
-
-        return businesses.map(b ->
-                modelMapper.map(b, BusinessResponse.class)
-        );
+        Page<BusinessResponse> res = businesses.map(b ->
+                modelMapper.map(b, BusinessResponse.class));
+        return new PagingResponse<>(res);
     }
 
     @Override
@@ -257,9 +253,10 @@ public class BusinessServiceImpl implements BusinessService {
         checkValidateRegister(userBusinessRequest);
         return userAccountService.generateVerificationCode(userBusinessRequest.getEmail());
     }
-    public void checkValidateRegister(UserBusinessRequest userBusinessRequest){
+
+    public void checkValidateRegister(UserBusinessRequest userBusinessRequest) {
         if (userBusinessRequest == null) {
-            throw new  AppException(ErrorCode.ERROR_NO_CONTENT);
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
 
         // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
