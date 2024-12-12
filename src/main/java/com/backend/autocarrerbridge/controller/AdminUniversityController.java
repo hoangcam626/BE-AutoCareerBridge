@@ -68,6 +68,22 @@ public class AdminUniversityController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách trường đại học đã được phê duyệt.
      */
+    @GetMapping("/all-universities")
+    public ApiResponse<Page<UniversityResponse>> getAllUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                         @RequestParam(value = "keyword", required = false) String keyword) {
+        var res = universityService.getAllUniversities(PageInfo.of(pageNo, pageSize, keyword));
+        return new ApiResponse<>(res);
+    }
+
+    /**
+     * API lấy danh sách trường đại học đã được phê duyệt với thông tin phân trang.
+     *
+     * @param pageNo   Số trang cần lấy, mặc định là 0.
+     * @param pageSize Số lượng bản ghi trên mỗi trang, mặc định là 10.
+     * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
+     * @return ApiResponse chứa danh sách trường đại học đã được phê duyệt.
+     */
     @GetMapping("/approved-universities")
     public ApiResponse<Page<UniversityResponse>> getApprovedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,

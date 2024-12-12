@@ -113,7 +113,7 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách tất cả công việc
      */
     @Override
-    public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getAllJob(String keyword, Pageable pageable){
         return ApiResponse.builder().data(jobRepository.getAllJob(keyword, pageable)).build();
     }
 

@@ -35,5 +35,5 @@ public interface WorkShopService {
 
     WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException;
 
-    Page<WorkShopResponse> getPagingByState(PageInfo info, int state);
+    Page<WorkShopResponse> getPagingByState(PageInfo info, State state);
 }

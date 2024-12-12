@@ -34,6 +34,8 @@ public interface UniversityService {
 
     Page<UniversityResponse> getPagingByState(PageInfo req, Integer state);
 
-    EmailCode generaterCode(UserUniversityRequest userUniversityRequest);
+    Page<UniversityResponse> getAllUniversities(PageInfo req);
+
+    EmailCode generateCode(UserUniversityRequest userUniversityRequest);
 
 }

@@ -230,9 +230,22 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức lấy danh sách các doanh nghiệp theo trạng thái và keyword tìm kiếm
      */
     @Override
-    public Page<BusinessResponse> getPagingByState(PageInfo req, Integer state) {
+    public Page<BusinessResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<Business> businesses = businessRepository.findAllByState(pageable, state, req.getKeyword());
+
+        return businesses.map(b ->
+                modelMapper.map(b, BusinessResponse.class)
+        );
+    }
+
+    /**
+     * Phương thức lấy danh sách tất cả các doanh nghiệp và tìm kiếm
+     */
+    @Override
+    public Page<BusinessResponse> getAllBusinesses(PageInfo req) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        Page<Business> businesses = businessRepository.findAll(pageable, req.getKeyword());
 
         return businesses.map(b ->
                 modelMapper.map(b, BusinessResponse.class)

@@ -40,14 +40,15 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "FROM Workshop ws " +
             "WHERE ws.statusBrowse = :state  " +
             "AND (:keyword IS NULL OR " +
-            "   (ws.title LIKE LOWER(CONCAT('%', :keyword, '%'))) OR" +
-            "   (ws.university.name LIKE LOWER(CONCAT('%', :keyword, '%'))))" +
+            "   (ws.title LIKE LOWER(CONCAT('%', :keyword, '%'))) OR " +
+            "   (ws.university.name LIKE LOWER(CONCAT('%', :keyword, '%')))) " +
+            "AND ws.status <> 0 " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN (ws.title) = :keyword THEN 1 " +
             "       WHEN ws.university.name = :keyword THEN 1" +
-            "       WHEN CONCAT(ws.title, ' ', ws.university.name, ' ') LIKE %:keyword% THEN 2 " +
-            "       ELSE 3 " +
-            "   END")
-    Page<Workshop> findAllByState(Pageable pageable, Integer state, String keyword);
+            "       ELSE 2 " +
+            "   END," +
+            "   ws.createdAt DESC ")
+    Page<Workshop> findAllByState(Pageable pageable, State state, String keyword);
 }

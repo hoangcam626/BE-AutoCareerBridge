@@ -348,12 +348,9 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Trang kết quả chứa danh sách Workshop.
      */
     @Override
-    public Page<WorkShopResponse> getPagingByState(PageInfo info, int state) {
+    public Page<WorkShopResponse> getPagingByState(PageInfo info, State state) {
         Pageable pageable = PageRequest.of(info.getPageNo(), info.getPageSize());
         Page<Workshop> workshops = workShopRepository.findAllByState(pageable, state, info.getKeyword());
-        if (workshops.isEmpty()) {
-            throw new AppException(ERROR_NO_CONTENT);
-        }
         return workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
     }
 

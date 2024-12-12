@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import java.text.ParseException;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,5 +109,20 @@ public class AdminJobController {
                                                           @RequestParam(value = "keyword", required = false) String keyword) {
         var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED.getValue());
         return new ApiResponse<>(res);
+    }
+
+    /**
+     * API lấy danh sách tất cả tin tuyển dụng với thông tin phân trang.
+     *
+     * @param pageNo   Số trang cần lấy, mặc định là 0.
+     * @param pageSize Số lượng bản ghi trên mỗi trang, mặc định là 10.
+     * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
+     * @return ApiResponse chứa danh sách tin tuyển dụng.
+     */
+    @GetMapping("/all-jobs")
+    public ApiResponse<Object> getAllJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                          @RequestParam(value = "keyword", required = false) String keyword) {
+        return jobService.getAllJob(keyword, PageRequest.of(pageNo, pageSize));
     }
 }

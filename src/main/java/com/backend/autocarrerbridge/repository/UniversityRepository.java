@@ -31,12 +31,28 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
             "AND (:keyword IS NULL OR " +
             "     LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "     LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND u.status <> 0 " +
             "ORDER BY " +
             "   CASE " +
-            "       WHEN (u.name) = :keyword THEN 1 " +
+            "       WHEN u.name = :keyword THEN 1 " +
             "       WHEN u.email = :keyword THEN 1" +
-            "       WHEN CONCAT(u.name, ' ', u.email, ' ') LIKE %:keyword% THEN 2 " +
-            "       ELSE 3 " +
-            "   END")
+            "       ELSE 2 " +
+            "   END, " +
+            "   u.createdAt DESC ")
     Page<University> findAllByState(Pageable pageable, Integer state, String keyword);
+
+    @Query("SELECT u " +
+            "FROM University u " +
+            "WHERE (:keyword IS NULL OR " +
+            "     LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "     LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND u.status <> 0 " +
+            "ORDER BY " +
+            "   CASE " +
+            "       WHEN u.name = :keyword THEN 1 " +
+            "       WHEN u.email = :keyword THEN 1" +
+            "       ELSE 2 " +
+            "   END," +
+            "   u.createdAt DESC ")
+    Page<University> findAll(Pageable pageable, String keyword);
 }

@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
@@ -17,25 +18,20 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.converter.UniversityConverter;
+import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
-import jakarta.transaction.Transactional;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
-import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
-import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -147,7 +143,7 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public UniversityResponse update(int id, UniversityRequest universityRequest) {
         University university = universityRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
         university.setName(universityRequest.getName());
         university.setWebsite(universityRequest.getWebsite());
         university.setFoundedYear(universityRequest.getFoundedYear());
@@ -166,7 +162,7 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public List<UniversityResponse> getById(int id) {
         University university = universityRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
         return List.of(UniversityConverter.convertToResponse(university));
     }
 
@@ -185,7 +181,7 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName) {
         List<University> list = universityRepository.findUniversity(address, universityName);
-        return list.stream().map(university -> modelMapper.map(university,UniversityResponse.class)).toList();
+        return list.stream().map(university -> modelMapper.map(university, UniversityResponse.class)).toList();
     }
 
     /**
@@ -194,16 +190,28 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public Page<UniversityResponse> getPagingByState(PageInfo req, Integer state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<University> universities= universityRepository.findAllByState(pageable, state, req.getKeyword());
+        Page<University> universities = universityRepository.findAllByState(pageable, state, req.getKeyword());
+        return universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+    }
+
+
+    /**
+     * Lấy danh sách tất cả các trường đại học gồm phân trang và tìm kiếm.
+     */
+    @Override
+    public Page<UniversityResponse> getAllUniversities(PageInfo req) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        Page<University> universities = universityRepository.findAll(pageable, req.getKeyword());
         return universities.map(u -> modelMapper.map(u, UniversityResponse.class));
     }
 
     @Override
-    public EmailCode generaterCode(UserUniversityRequest userUniversityRequest) {
+    public EmailCode generateCode(UserUniversityRequest userUniversityRequest) {
         checkValidateUniversity(userUniversityRequest);
         return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
     }
-    public void checkValidateUniversity(UserUniversityRequest userUniversityRequest){
+
+    public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
         if (userUniversityRequest.getPassword() == null
                 || userUniversityRequest.getRePassword() == null
                 || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {
