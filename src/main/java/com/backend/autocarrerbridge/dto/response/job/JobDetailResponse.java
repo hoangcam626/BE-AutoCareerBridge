@@ -36,6 +36,8 @@ public class JobDetailResponse {
     Location workLocation;
     LocalDateTime createAt;
     String createBy;
+    LocalDateTime updateAt;
+    String updateBy;
     IndustryResponse industry;
     EmployeeResponse employee;
     BusinessResponse business;
@@ -55,6 +57,8 @@ public class JobDetailResponse {
         this.workLocation = job.getBusiness().getLocation();
         this.createAt = job.getCreatedAt();
         this.createBy = job.getCreatedBy();
+        this.updateAt = job.getUpdatedAt();
+        this.updateBy = job.getUpdatedBy();
         this.industry = industry;
         this.employee = employee;
         this.business = business;

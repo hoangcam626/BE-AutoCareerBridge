@@ -32,4 +32,5 @@ public interface JobService {
     JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException;
 
     Page<JobResponse> getPagingByState(PageInfo info, Integer state);
+    ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;
 }

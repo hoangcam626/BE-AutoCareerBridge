@@ -11,6 +11,7 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_BUSINESS;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EXIST_JOB;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
@@ -18,6 +19,7 @@ import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
+import java.time.LocalDate;
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
@@ -127,6 +129,23 @@ public class JobServiceImpl implements JobService {
     public ApiResponse<Object> getAllJobOfBusinessPaging(int page, int size, String keyword, Pageable pageable) throws ParseException {
         // Lấy danh sách công việc của doanh nghiệp
         Page<JobResponse> jobs = jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), keyword, pageable);
+
+        // Kiểm tra và cập nhật trạng thái nếu expireDate quá ngày hôm nay
+        LocalDate today = LocalDate.now();
+        jobs.forEach(job -> {
+            if (job.getExpireDate() != null && job.getExpireDate().isBefore(today)) {
+                Job entity = findById(job.getJobId());
+                if (entity != null && entity.getStatus() != Status.INACTIVE) {
+                    entity.setStatus(Status.INACTIVE);
+                    try {
+                        entity.setUpdatedBy(getUsernameViaToken());
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                    jobRepository.save(entity);
+                }
+            }
+        });
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobs);
         return ApiResponse.builder().data(pagingResponse).build();
     }
@@ -230,6 +249,8 @@ public class JobServiceImpl implements JobService {
         job.setWorkingTime(jobRequest.getWorkingTime());
         job.setIndustry(industry);
         job.setUpdatedBy(getUsernameViaToken());
+        job.setStatus(Status.ACTIVE);
+        job.setStatusBrowse(State.PENDING);
         jobRepository.save(job);
         JobResponse jobResponse = new JobResponse(job);
         return ApiResponse.builder().data(jobResponse).build();
@@ -244,6 +265,9 @@ public class JobServiceImpl implements JobService {
         Job job = findById(jobId);
         if (job == null) {
             throw new AppException(ERROR_NO_EXIST_JOB);
+        }
+        if (!job.getCreatedBy().equals(getUsernameViaToken())) {
+            throw new AppException(ERROR_NO_INACTIVE_JOB);
         }
         if (job.getStatus() == Status.INACTIVE) {
             throw new AppException(ErrorCode.ERROR_ALREADY_INACTIVE);
@@ -303,6 +327,14 @@ public class JobServiceImpl implements JobService {
         return jobs.map(j -> modelMapper.map(j, JobResponse.class));
     }
 
+    @Override
+    public ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException {
+        // kiểm tra quyền
+        boolean hasPermission = checkInactive(jobId);
+
+        return ApiResponse.builder().data(hasPermission).build();
+    }
+
     /**
      * Tìm bài đăng công việc theo ID.
      */
@@ -326,5 +358,17 @@ public class JobServiceImpl implements JobService {
         if (req.getStatusBrowse() != State.PENDING) {
             throw new AppException(ERROR_INVALID_JOB_STATE);
         }
+    }
+
+    /**
+     * Kiểm tra xem người dùng có quyền vô hiệu hóa công việc này không
+     */
+    private boolean checkInactive(Integer jobId) throws ParseException {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new AppException(ERROR_NO_INACTIVE_JOB));
+
+        // Lấy thông tin người dùng hiện tại
+        // Kiểm tra quyền xóa
+        return job.getCreatedBy().equals(getUsernameViaToken());
     }
 }

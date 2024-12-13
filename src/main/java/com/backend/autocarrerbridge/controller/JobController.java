@@ -96,4 +96,9 @@ public class JobController {
     public ApiResponse<Object> inactiveJob(@RequestParam Integer jobId) throws ParseException {
         return jobService.inactiveJob(jobId);
     }
+
+    @GetMapping("/check-inactive-permission")
+    public ApiResponse<Object> checkInactivePermission(@RequestParam Integer jobId) throws ParseException {
+        return jobService.checkDeletePermission(jobId);
+    }
 }
