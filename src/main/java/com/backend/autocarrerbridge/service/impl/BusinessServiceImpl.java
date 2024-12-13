@@ -127,11 +127,6 @@ public class BusinessServiceImpl implements BusinessService {
         Business businessUpdate =
                 businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
 
-        // Kiểm tra email mới có trùng với doanh nghiệp khác không
-        if (!businessUpdate.getEmail().equals(request.getEmail())) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
@@ -146,8 +141,10 @@ public class BusinessServiceImpl implements BusinessService {
         LocationResponse locationResponse = locationMapper.toLocationResponse(location);
 
         // set ảnh cho business
-        businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
-        businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
+        if(Objects.nonNull(request.getBusinessImage()))
+            businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
+        if(Objects.nonNull(request.getLicenseImage()))
+            businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
         BusinessResponse businessResponse = businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
         businessResponse.setLocation(locationResponse);

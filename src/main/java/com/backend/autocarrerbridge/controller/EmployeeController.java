@@ -107,7 +107,7 @@ public class EmployeeController {
             throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
         return ApiResponse.builder()
-                .data(employeeService.getAllEmployeeOfBusinessPage(page,size,keyword,pageable))
+                .data(employeeService.getAllEmployeeOfBusinessPage(keyword,pageable))
                 .build();
     }
 }

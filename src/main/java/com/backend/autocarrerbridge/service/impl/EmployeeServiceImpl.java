@@ -193,7 +193,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage(int page, int size, String keyword, Pageable pageable) {
+    public PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage( String keyword, Pageable pageable) {
         String emailAccountLogin;
         try {
             emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);

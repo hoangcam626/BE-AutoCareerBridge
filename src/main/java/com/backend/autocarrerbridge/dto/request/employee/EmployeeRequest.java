@@ -14,6 +14,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.GENDER_NOT_BLANK;
+import static com.backend.autocarrerbridge.exception.ErrorCode.NAME_NOT_BLANK;
+import static com.backend.autocarrerbridge.exception.ErrorCode.PHONE_NOT_BLANK;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_NAME_EMPTY;
+import static com.backend.autocarrerbridge.util.Constant.GENDER_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.NAME_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.PHONE_NOT_BLANK_MESSAGE;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,21 +29,21 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployeeRequest {
-    @NotBlank(message = "NAME_NOT_BLANK")
+    @NotBlank(message = NAME_NOT_BLANK_MESSAGE)
     String name;
 
-    @NotBlank(message = "GENDER_NOT_BLANK")
+    @NotBlank(message = GENDER_NOT_BLANK_MESSAGE)
     String gender;
 
     LocalDate dateOfBirth;
 
-    @NotBlank(message = "EMAIL_NOT_BLANK")
+    @NotBlank(message = ERROR_NAME_EMPTY)
     String email;
 
     String address;
 
     MultipartFile employeeImage;
 
-    @NotBlank(message = "PHONE_NOT_BLANK")
+    @NotBlank(message = PHONE_NOT_BLANK_MESSAGE)
     String phone;
 }

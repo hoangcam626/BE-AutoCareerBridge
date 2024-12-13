@@ -68,7 +68,7 @@ public class BusinessController {
      */
     @PostMapping("/{businessId}")
     ApiResponse<BusinessResponse> updateBusiness(
-            @PathVariable Integer businessId, @Valid BusinessUpdateRequest request) {
+            @PathVariable Integer businessId, BusinessUpdateRequest request) {
         return ApiResponse.<BusinessResponse>builder()
                 .data(businessService.updateBusiness(businessId, request))
                 .build();
