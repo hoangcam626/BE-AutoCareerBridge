@@ -108,7 +108,7 @@ public class IndustryController {
             @RequestParam String keyword)
             throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return industryService.getIndustryOfBusiness(page, size, keyword, pageable);
+        return industryService.getIndustryOfBusiness(keyword, pageable);
     }
 
     /**

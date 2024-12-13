@@ -245,7 +245,7 @@ public class IndustryServiceImp implements IndustryService {
     }
 
     @Override
-    public ApiResponse<Object> getIndustryOfBusiness(int page, int size, String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getIndustryOfBusiness(String keyword, Pageable pageable) throws ParseException {
         Page<BusinessIndustryDto> list =
                 businessIndustryRepository.getIndustryOfBusiness(getBusinessViaToken().getId(), keyword, pageable);
         PagingResponse<BusinessIndustryDto> pagingResponse = new PagingResponse<>(list);

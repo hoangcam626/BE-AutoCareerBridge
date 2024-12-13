@@ -30,6 +30,7 @@ import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.modelmapper.ModelMapper;
@@ -116,7 +117,7 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách tất cả công việc
      */
     @Override
-    public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getAllJob(String keyword, Pageable pageable) throws ParseException {
         Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);
         return ApiResponse.builder().data(pagingResponse).build();
@@ -126,7 +127,7 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách công việc mà doanh nghiệp đã đăng
      */
     @Override
-    public ApiResponse<Object> getAllJobOfBusinessPaging(int page, int size, String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getAllJobOfBusinessPaging(String keyword, Pageable pageable) throws ParseException {
         // Lấy danh sách công việc của doanh nghiệp
         Page<JobResponse> jobs = jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), keyword, pageable);
 
@@ -185,6 +186,9 @@ public class JobServiceImpl implements JobService {
         String token = tokenService.getJWT();
         // Lấy username từ token
         String usernameToken = tokenService.getClaim(token, "sub");
+        Validation.validateTitle(jobRequest.getTitle());
+        Validation.validateSalary(jobRequest.getSalary());
+        Validation.validateExpireDate(jobRequest.getExpireDate());
         UserAccount userAccount = userAccountRepository.findByUsername(usernameToken);
         if (userAccount == null) {
             throw new AppException(ERROR_ACCOUNT_IS_NULL);
@@ -225,6 +229,9 @@ public class JobServiceImpl implements JobService {
      */
     @Override
     public ApiResponse<Object> updateJob(Integer jobId, JobRequest jobRequest) throws ParseException {
+        Validation.validateTitle(jobRequest.getTitle());
+        Validation.validateSalary(jobRequest.getSalary());
+        Validation.validateExpireDate(jobRequest.getExpireDate());
         // Tìm job theo ID
         Job job = findById(jobId);
         // Kiểm tra tên người tạo và tên đăng nhập của người đăng nhập

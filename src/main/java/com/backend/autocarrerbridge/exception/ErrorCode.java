@@ -74,8 +74,13 @@ import static com.backend.autocarrerbridge.util.Constant.HAVE_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.ID_MAJOR_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_ACCOUNT_STATE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_EXPIRED_DATE;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_EXPIRED_DATE_FUTRURE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_JOB_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_LENGTH_PW_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_SALARY;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_TITLE;
+import static com.backend.autocarrerbridge.util.Constant.INVALID_TITLE_OUT;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_WORKSHOP_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.JOB_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.JOB_ALREADY_REJECTED_MESSAGE;
@@ -373,6 +378,11 @@ public enum ErrorCode {
     ERROR_NO_INACTIVE_JOB(BAD_REQUEST, NO_INACTIVE_JOB, HttpStatus.BAD_REQUEST),
     ERROR_NO_EXIST_JOB(BAD_REQUEST, NO_EXIST_JOB, HttpStatus.BAD_REQUEST),
     ERROR_ALREADY_INACTIVE(BAD_REQUEST, ALREADY_INACTIVE, HttpStatus.BAD_REQUEST),
+    ERROR_TITLE(BAD_REQUEST, INVALID_TITLE, HttpStatus.BAD_REQUEST),
+    ERROR_TITLE_OUT(BAD_REQUEST, INVALID_TITLE_OUT, HttpStatus.BAD_REQUEST),
+    ERROR_SALARY(BAD_REQUEST, INVALID_SALARY, HttpStatus.BAD_REQUEST),
+    ERROR_EXPIRED_DATE(BAD_REQUEST, INVALID_EXPIRED_DATE, HttpStatus.BAD_REQUEST),
+    ERROR_EXPIRED_DATE_FUTRURE(BAD_REQUEST, INVALID_EXPIRED_DATE_FUTRURE, HttpStatus.BAD_REQUEST),
 
     // Database
     FILED_DB_NOT_UNIQUE(BAD_REQUEST, FILED_DB_NOT_UNIQUE_MESSAGE, HttpStatus.BAD_REQUEST),

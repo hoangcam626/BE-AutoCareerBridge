@@ -39,7 +39,7 @@ public class JobController {
                                          @RequestParam(defaultValue = "10") int size,
                                          @RequestParam String keyword) throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return jobService.getAllJob(page, size, keyword, pageable);
+        return jobService.getAllJob(keyword, pageable);
     }
 
     /**
@@ -53,7 +53,7 @@ public class JobController {
                                          @RequestParam(defaultValue = "10") int size,
                                          @RequestParam String keyword) throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return jobService.getAllJobOfBusinessPaging(page, size, keyword, pageable);
+        return jobService.getAllJobOfBusinessPaging(keyword, pageable);
     }
 
     /**
