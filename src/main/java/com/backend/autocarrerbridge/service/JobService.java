@@ -17,8 +17,7 @@ import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 public interface JobService {
     ApiResponse<Object> getAllJob(String keyword, Pageable pageable);
 
-    ApiResponse<Object> getAllJobOfBusiness(int page, int size, String keyword, Pageable pageable)
-            throws ParseException;
+    ApiResponse<Object> getAllJobOfBusinessPaging(int page, int size, String keyword, Pageable pageable) throws ParseException;
 
     ApiResponse<Object> createJob(JobRequest jobRequest) throws ParseException;
 
@@ -33,4 +32,6 @@ public interface JobService {
     JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException;
 
     PagingResponse<JobResponse> getPagingByState(PageInfo info, Integer state);
+
+    ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;
 }

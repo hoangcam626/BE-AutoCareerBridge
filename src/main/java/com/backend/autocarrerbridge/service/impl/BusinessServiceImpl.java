@@ -71,7 +71,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
 
         checkValidateRegister(userBusinessRequest);
-        if (userBusinessRequest.getVerificationCode() == null) {
+        if(userBusinessRequest.getVerificationCode() == null){
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
         if (!Objects.equals(

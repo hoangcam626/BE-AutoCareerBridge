@@ -182,7 +182,7 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName) {
         List<University> list = universityRepository.findUniversity(address, universityName);
-        return list.stream().map(university -> modelMapper.map(university, UniversityResponse.class)).toList();
+        return list.stream().map(university -> modelMapper.map(university,UniversityResponse.class)).toList();
     }
 
     /**

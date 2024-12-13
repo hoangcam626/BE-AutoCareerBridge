@@ -7,8 +7,10 @@ import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.dto.response.employee.EmployeeResponse;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.entity.Job;
+import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.util.enums.State;
 
+import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +32,12 @@ public class JobDetailResponse {
     String benefit;
     String workingTime;
     State statusBrowse;
+    Status status;
+    Location workLocation;
     LocalDateTime createAt;
     String createBy;
+    LocalDateTime updateAt;
+    String updateBy;
     IndustryResponse industry;
     EmployeeResponse employee;
     BusinessResponse business;
@@ -47,8 +53,12 @@ public class JobDetailResponse {
         this.benefit = job.getBenefit();
         this.workingTime = job.getWorkingTime();
         this.statusBrowse = job.getStatusBrowse();
+        this.status = job.getStatus();
+        this.workLocation = job.getBusiness().getLocation();
         this.createAt = job.getCreatedAt();
         this.createBy = job.getCreatedBy();
+        this.updateAt = job.getUpdatedAt();
+        this.updateBy = job.getUpdatedBy();
         this.industry = industry;
         this.employee = employee;
         this.business = business;

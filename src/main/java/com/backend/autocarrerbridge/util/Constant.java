@@ -89,6 +89,7 @@ public class Constant {
     public static final String DELETED = "Xóa thành công.";
     public static final String NO_EXIST_INDUSTRY = "Ngành không tồn tại";
     public static final String EXIST_INDUSTRY_OF_BUSINESS = "Doanh nghiệp đã có ngành nghề này";
+    public static final String EXIST_INDUSTRY_OF_JOB = "Ngành nghề đang được sử dụng";
 
     // Token - JWT
     public static final String JTI = "jti";
@@ -194,7 +195,8 @@ public class Constant {
     public static final String FILED_DB_NOT_UNIQUE_MESSAGE = "Trường trong database không duy nhất, hãy kiểm tra db";
 
     // Công việc đã đăng
-    public static final String NO_EDIT_JOB = "Bạn không có quyền chỉnh sửa job này";
+    public static final String NO_EDIT_JOB = "Bạn không có quyền chỉnh sửa công viêc này";
+    public static final String NO_INACTIVE_JOB = "Bạn không có quyền vô hiệu hóa công việc này";
     public static final String NO_EXIST_JOB = "Công việc không tồn tại";
     public static final String INACTIVE_JOB = "Vô hiệu hóa công việc thành công";
     public static final String ALREADY_INACTIVE = "Đã bị vô hiệu hóa trước đó";

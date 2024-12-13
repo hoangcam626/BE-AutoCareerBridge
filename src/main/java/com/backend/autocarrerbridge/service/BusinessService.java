@@ -15,6 +15,7 @@ import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.enums.State;
+import org.springframework.data.domain.Page;
 
 public interface BusinessService {
     BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest);
@@ -40,4 +41,6 @@ public interface BusinessService {
     PagingResponse<BusinessResponse> getAllBusinesses(PageInfo req);
 
     EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest);
+
+    Page<BusinessResponse> getPagingByState(PageInfo req, Integer state );
 }

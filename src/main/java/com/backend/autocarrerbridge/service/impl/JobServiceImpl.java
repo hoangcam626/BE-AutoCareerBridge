@@ -1,5 +1,7 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import com.backend.autocarrerbridge.converter.ConvertJob;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
@@ -9,19 +11,25 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_BUSINESS;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_EXIST_JOB;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
+import java.time.LocalDate;
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
@@ -54,6 +62,7 @@ import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -115,18 +124,36 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> getAllJob(String keyword, Pageable pageable){
         return ApiResponse.builder().data(jobRepository.getAllJob(keyword, pageable)).build();
+    public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
+        Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
+        PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);
+        return ApiResponse.builder().data(pagingResponse).build();
     }
 
     /**
      * Lấy danh sách công việc mà doanh nghiệp đã đăng
      */
     @Override
-    public ApiResponse<Object> getAllJobOfBusiness(int page, int size, String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getAllJobOfBusinessPaging(int page, int size, String keyword, Pageable pageable) throws ParseException {
         // Lấy danh sách công việc của doanh nghiệp
-        Page<JobResponse> jobs = jobRepository.getAllJobOfBusiness(getBusinessViaToken().getId(), keyword, pageable);
-        if (jobs.isEmpty()) {
-            throw new AppException(ERROR_NO_EXIST_JOB);
-        }
+        Page<JobResponse> jobs = jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), keyword, pageable);
+
+        // Kiểm tra và cập nhật trạng thái nếu expireDate quá ngày hôm nay
+        LocalDate today = LocalDate.now();
+        jobs.forEach(job -> {
+            if (job.getExpireDate() != null && job.getExpireDate().isBefore(today)) {
+                Job entity = findById(job.getJobId());
+                if (entity != null && entity.getStatus() != Status.INACTIVE) {
+                    entity.setStatus(Status.INACTIVE);
+                    try {
+                        entity.setUpdatedBy(getUsernameViaToken());
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                    jobRepository.save(entity);
+                }
+            }
+        });
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobs);
         return ApiResponse.builder().data(pagingResponse).build();
     }
@@ -135,7 +162,7 @@ public class JobServiceImpl implements JobService {
      * Xem chi tiết công việc
      */
     @Override
-    public ApiResponse<Object> getJobDetail(Integer jobId) {
+    public ApiResponse<Object> getJobDetail(Integer jobId) throws ParseException {
         // Lấy thông tin chi tiết công việc
         Job job = jobRepository.getJobDetail(jobId);
         if (job == null) {
@@ -146,19 +173,14 @@ public class JobServiceImpl implements JobService {
         if (industry == null) {
             throw new AppException(ERROR_EXIST_INDUSTRY);
         }
-        // Lấy thông tin business qua job
-        Business business =
-                businessRepository.getBusinessByEmployeeId(job.getBusiness().getId());
-        if (business == null) {
-            throw new AppException(ERROR_NOT_FOUND_BUSINESS);
-        }
+
         // Lấy thông tin employee qua job
         Employee employee = employeeRepository.getEmployeeById(job.getEmployee().getId());
         if (employee == null) {
             throw new AppException(ERROR_CODE_NOT_FOUND);
         }
         // Trả về jobDetailResponse
-        JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, industry, business, employee);
+        JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, industry, getBusinessViaToken(), employee);
         return ApiResponse.builder().data(jobDetailResponse).build();
     }
 
@@ -235,6 +257,8 @@ public class JobServiceImpl implements JobService {
         job.setWorkingTime(jobRequest.getWorkingTime());
         job.setIndustry(industry);
         job.setUpdatedBy(getUsernameViaToken());
+        job.setStatus(Status.ACTIVE);
+        job.setStatusBrowse(State.PENDING);
         jobRepository.save(job);
         JobResponse jobResponse = new JobResponse(job);
         return ApiResponse.builder().data(jobResponse).build();
@@ -249,6 +273,9 @@ public class JobServiceImpl implements JobService {
         Job job = findById(jobId);
         if (job == null) {
             throw new AppException(ERROR_NO_EXIST_JOB);
+        }
+        if (!job.getCreatedBy().equals(getUsernameViaToken())) {
+            throw new AppException(ERROR_NO_INACTIVE_JOB);
         }
         if (job.getStatus() == Status.INACTIVE) {
             throw new AppException(ErrorCode.ERROR_ALREADY_INACTIVE);
@@ -309,6 +336,14 @@ public class JobServiceImpl implements JobService {
         return new PagingResponse<>(res);
     }
 
+    @Override
+    public ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException {
+        // kiểm tra quyền
+        boolean hasPermission = checkInactive(jobId);
+
+        return ApiResponse.builder().data(hasPermission).build();
+    }
+
     /**
      * Tìm bài đăng công việc theo ID.
      */
@@ -332,5 +367,17 @@ public class JobServiceImpl implements JobService {
         if (req.getStatusBrowse() != State.PENDING) {
             throw new AppException(ERROR_INVALID_JOB_STATE);
         }
+    }
+
+    /**
+     * Kiểm tra xem người dùng có quyền vô hiệu hóa công việc này không
+     */
+    private boolean checkInactive(Integer jobId) throws ParseException {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new AppException(ERROR_NO_INACTIVE_JOB));
+
+        // Lấy thông tin người dùng hiện tại
+        // Kiểm tra quyền xóa
+        return job.getCreatedBy().equals(getUsernameViaToken());
     }
 }

@@ -127,7 +127,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         locationRequest.setDescription(workShopRequest.getAddressDescription());
         Location location = locationService.saveLocation(locationRequest);
         University university = universityService.findById(workShopRequest.getUniversityId()); // Tìm trường đại học
-        if (Objects.equals(university, null)) {
+        if (Objects.equals(university,null)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu trường không tồn tại
         }
 
