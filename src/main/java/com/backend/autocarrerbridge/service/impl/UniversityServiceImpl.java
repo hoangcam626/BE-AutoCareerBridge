@@ -111,7 +111,7 @@ public class UniversityServiceImpl implements UniversityService {
 
         // Email để thông báo tài khoản đã được phê duyệt.
         EmailDTO emailDTO = new EmailDTO(university.getEmail(), APPROVED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED, "");
 
         return UniversityApprovedResponse.of(Boolean.TRUE);
     }
@@ -135,7 +135,7 @@ public class UniversityServiceImpl implements UniversityService {
 
         // Gửi email để thông báo tài khoản đã bị từ chối.
         EmailDTO emailDTO = new EmailDTO(university.getEmail(), REJECTED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED, req.getMessage());
 
         return UniversityRejectedResponse.of(Boolean.TRUE);
     }

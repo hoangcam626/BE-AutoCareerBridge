@@ -31,7 +31,6 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
             "AND (:keyword IS NULL OR " +
             "     LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "     LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "AND u.status <> 0 " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN u.name = :keyword THEN 1 " +
@@ -46,7 +45,6 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
             "WHERE (:keyword IS NULL OR " +
             "     LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "     LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "AND u.status <> 0 " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN u.name = :keyword THEN 1 " +

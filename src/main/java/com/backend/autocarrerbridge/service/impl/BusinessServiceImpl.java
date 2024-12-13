@@ -197,7 +197,7 @@ public class BusinessServiceImpl implements BusinessService {
 
         // Email để thông báo tài khoản đã được phê duyệt.
         EmailDTO emailDTO = new EmailDTO(business.getEmail(), APPROVED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED, "");
 
         return BusinessApprovedResponse.of(Boolean.TRUE);
     }
@@ -219,7 +219,7 @@ public class BusinessServiceImpl implements BusinessService {
 
         // Gửi email để thông báo tài khoản đã bị từ chối.
         EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED, req.getMessage());
 
         return BusinessRejectedResponse.of(Boolean.TRUE);
     }

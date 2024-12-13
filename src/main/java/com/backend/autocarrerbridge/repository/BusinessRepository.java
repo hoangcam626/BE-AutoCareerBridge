@@ -46,7 +46,6 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
             "AND (:keyword IS NULL OR " +
             "     LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "      OR LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "AND b.status <> 0 " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN LOWER(b.name) = LOWER(:keyword) THEN 1 " +
@@ -64,7 +63,6 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
             "WHERE (:keyword IS NULL OR " +
             "     (LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "      OR LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%')))) " +
-            "AND b.status <> 0 " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN LOWER(b.name) = LOWER(:keyword) THEN 1 " +

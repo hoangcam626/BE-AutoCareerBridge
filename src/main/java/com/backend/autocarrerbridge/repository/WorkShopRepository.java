@@ -14,8 +14,10 @@ import com.backend.autocarrerbridge.util.enums.State;
 public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
 
     // Tìm kiếm trong tiêu đề workshop
-    @Query("SELECT ws FROM Workshop ws WHERE "
-            + "(:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    @Query("SELECT ws FROM Workshop ws " +
+            "WHERE (:keyword IS NULL " +
+            "OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND ws.status <> 0")
     Page<Workshop> getAllWorkShop(@Param("keyword") String keyword, Pageable pageable);
 
     // Tìm kiếm theo tiêu đề workshop của các trường đại học cụ thể
