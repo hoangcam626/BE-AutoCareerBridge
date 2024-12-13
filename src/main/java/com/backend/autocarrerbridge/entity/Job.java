@@ -45,13 +45,13 @@ public class Job extends AbstractAudit {
     @Column(name = "salary")
     private Integer salary;
 
-    @Column(name = "job_description")
+    @Column(name = "job_description", columnDefinition = "TEXT")
     private String jobDescription;
 
-    @Column(name = "requirement")
+    @Column(name = "requirement", columnDefinition = "TEXT")
     private String requirement;
 
-    @Column(name = "benefit")
+    @Column(name = "benefit", columnDefinition = "TEXT")
     private String benefit;
 
     @Column(name = "working_time")

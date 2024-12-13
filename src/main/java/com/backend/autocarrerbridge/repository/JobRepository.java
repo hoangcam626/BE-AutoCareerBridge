@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.repository;
 
+import com.backend.autocarrerbridge.entity.Industry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +20,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
      * Lấy danh sách công việc của doanh nghiệp
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
-            + "FROM Job job join job.business business where business.id =:businessId AND job.status = 1" +
+            + "FROM Job job join job.business business where business.id =:businessId " +
+            "AND job.status = 1" +
             "AND (:keyword IS NULL OR :keyword = '' " +
             "OR job.level like %:keyword% or job.title like %:keyword%)" +
             "ORDER BY job.createdAt DESC ")
@@ -53,4 +55,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             "       ELSE 3 " +
             "   END")
     Page<Job> findAllByState(Pageable pageable, Integer state, String keyword);
+
+    /**
+     * Tìm job qua ngành nghề
+     */
+    List<Job> findByIndustry(Industry industry);
+
 }
