@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -46,11 +47,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
-
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
-
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -190,7 +188,7 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức chấp nhận tài khoản doanh nghiệp
      */
     @Override
-    public BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req){
+    public BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req) {
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -199,7 +197,7 @@ public class BusinessServiceImpl implements BusinessService {
 
         // Email để thông báo tài khoản đã được phê duyệt.
         EmailDTO emailDTO = new EmailDTO(business.getEmail(), APPROVED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED, "");
 
         return BusinessApprovedResponse.of(Boolean.TRUE);
     }
@@ -208,7 +206,7 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức từ chối tài khoản doanh nghiệp.
      */
     @Override
-    public BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req){
+    public BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req) {
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -221,7 +219,7 @@ public class BusinessServiceImpl implements BusinessService {
 
         // Gửi email để thông báo tài khoản đã bị từ chối.
         EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED, req.getMessage());
 
         return BusinessRejectedResponse.of(Boolean.TRUE);
     }
@@ -230,13 +228,24 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức lấy danh sách các doanh nghiệp theo trạng thái và keyword tìm kiếm
      */
     @Override
-    public Page<BusinessResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<BusinessResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<Business> businesses = businessRepository.findAllByState(pageable, state, req.getKeyword());
+        Page<BusinessResponse> res = businesses.map(b ->
+                modelMapper.map(b, BusinessResponse.class));
+        return new PagingResponse<>(res);
+    }
 
-        return businesses.map(b ->
-                modelMapper.map(b, BusinessResponse.class)
-        );
+    /**
+     * Phương thức lấy danh sách tất cả các doanh nghiệp và tìm kiếm
+     */
+    @Override
+    public PagingResponse<BusinessResponse> getAllBusinesses(PageInfo req) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        Page<Business> businesses = businessRepository.findAll(pageable, req.getKeyword());
+        Page<BusinessResponse> res = businesses.map(b ->
+                modelMapper.map(b, BusinessResponse.class));
+        return new PagingResponse<>(res);
     }
 
     @Override
@@ -244,9 +253,10 @@ public class BusinessServiceImpl implements BusinessService {
         checkValidateRegister(userBusinessRequest);
         return userAccountService.generateVerificationCode(userBusinessRequest.getEmail());
     }
-    public void checkValidateRegister(UserBusinessRequest userBusinessRequest){
+
+    public void checkValidateRegister(UserBusinessRequest userBusinessRequest) {
         if (userBusinessRequest == null) {
-            throw new  AppException(ErrorCode.ERROR_NO_CONTENT);
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
 
         // Kiểm tra xem email doanh nghiệp đã tồn tại chưa

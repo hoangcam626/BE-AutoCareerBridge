@@ -1,8 +1,8 @@
 package com.backend.autocarrerbridge.controller;
 
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.validation.Valid;
 
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,6 +61,21 @@ public class AdminBusinessController {
     }
 
     /**
+     * API lấy danh sách tất cả doanh nghiệp với thông tin phân trang.
+     *
+     * @param pageNo   Số trang cần lấy, mặc định là 0.
+     * @param pageSize Số lượng bản ghi trên mỗi trang, mặc định là 10.
+     * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
+     * @return ApiResponse chứa danh sách doanh nghiệp.
+     */
+    @GetMapping("/all-businesses")
+    public ApiResponse<PagingResponse<BusinessResponse>> getAllBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam(value = "keyword", required = false) String keyword) {
+        var res = businessService.getAllBusinesses(PageInfo.of(pageNo, pageSize, keyword));
+
+        return new ApiResponse<>(res);
+    }
+
+    /**
      * API lấy danh sách doanh nghiệp đã được phê duyệt với thông tin phân trang.
      *
      * @param pageNo   Số trang cần lấy, mặc định là 0.
@@ -69,10 +84,8 @@ public class AdminBusinessController {
      * @return ApiResponse chứa danh sách doanh nghiệp đã được phê duyệt.
      */
     @GetMapping("/approved-businesses")
-    public ApiResponse<Page<BusinessResponse>> getApprovedBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                                     @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED.getValue());
+    public ApiResponse<PagingResponse<BusinessResponse>> getApprovedBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam(value = "keyword", required = false) String keyword) {
+        var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
         return new ApiResponse<>(res);
     }
 
@@ -85,10 +98,8 @@ public class AdminBusinessController {
      * @return ApiResponse chứa danh sách doanh nghiệp đang chờ phê duyệt.
      */
     @GetMapping("/pending-businesses")
-    public ApiResponse<Page<BusinessResponse>> getPendingBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING.getValue());
+    public ApiResponse<PagingResponse<BusinessResponse>> getPendingBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam(value = "keyword", required = false) String keyword) {
+        var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
         return new ApiResponse<>(res);
     }
 
@@ -101,10 +112,8 @@ public class AdminBusinessController {
      * @return ApiResponse chứa danh sách doanh nghiệp đã bị từ chối.
      */
     @GetMapping("/rejected-businesses")
-    public ApiResponse<Page<BusinessResponse>> getRejectedBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                                     @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED.getValue());
+    public ApiResponse<PagingResponse<BusinessResponse>> getRejectedBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam(value = "keyword", required = false) String keyword) {
+        var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);
         return new ApiResponse<>(res);
     }
 }

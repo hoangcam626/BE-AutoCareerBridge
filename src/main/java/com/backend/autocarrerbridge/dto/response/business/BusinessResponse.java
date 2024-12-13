@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.dto.response.business;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
 import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
@@ -30,8 +30,8 @@ public class BusinessResponse {
     String description;
     Integer businessImageId;
     Integer licenseImageId;
-    LocalDate createdAt;
-    LocalDate updatedAt;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
     LocationResponse location;
     UserAccountResponse userAccount;
 

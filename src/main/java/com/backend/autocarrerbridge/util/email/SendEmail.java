@@ -79,13 +79,13 @@ public class SendEmail {
         }
     }
 
-    public void sendAccountStatusNotification(EmailDTO emailDTO, State status) {
+    public void sendAccountStatusNotification(EmailDTO emailDTO, State status, String message) {
         try {
             // Kiểm tra email hợp lệ
             validatedEmail(emailDTO);
 
             // Tạo và gửi email
-            String emailContent = getAccountApprovalNotification(status);
+            String emailContent = getAccountApprovalNotification(status, message);
             MimeMessage mimeMessage = createMimeMessage(emailDTO, emailContent);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
@@ -230,23 +230,23 @@ public class SendEmail {
         return getEmailBody(content);
     }
 
-    private String getAccountApprovalNotification(State state) {
+    private String getAccountApprovalNotification(State state, String message) {
         String title = "";
-        String message = "";
+        String text = "";
         if (state == State.APPROVED) {
             title = "Tài khoản của bạn đã được chấp nhận"; // 'Chấp nhận' hoặc 'Từ chối'
-            message = "Chúng tôi vui mừng thông báo tài khoản của bạn đã được chấp nhận. "
+            text = "Chúng tôi vui mừng thông báo tài khoản của bạn đã được chấp nhận. "
                     + "Bạn đã có thể đăng nhập vào hệ thống của chúng tôi.";
         }
         if (state == State.REJECTED) {
             title = "Tài khoản của bạn đã được bị từ chối"; // 'Chấp nhận' hoặc 'Từ chối'
-            message = "Rất tiếc, tài khoản của bạn đã bị từ chối. " + "Chúng tôi nghi ngờ thông tin đăng ký của bạn. "
-                    + "Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tài khoản khác. "
+            text = "Rất tiếc, tài khoản của bạn đã bị từ chối. " + "Chúng tôi nghi ngờ thông tin đăng ký của bạn. " + message
+                    + " Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tài khoản khác. "
                     + "Hoặc liên hệ với chúng tôi để được hướng dẫn.";
         }
         String content = "            <td class=\"content\">" + "                <h2>"
                 + title + "</h2>" + "                <p>"
-                + message + "</p>"
+                + text + "</p>"
                 + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
                 + "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>"
                 + "            </td>";

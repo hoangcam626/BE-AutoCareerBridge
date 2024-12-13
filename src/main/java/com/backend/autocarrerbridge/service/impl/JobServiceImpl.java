@@ -37,6 +37,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.Industry;
@@ -53,11 +54,10 @@ import com.backend.autocarrerbridge.service.JobService;
 import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.transaction.annotation.Transactional;
-
-
 
 @Service
 @RequiredArgsConstructor
@@ -115,7 +115,6 @@ public class JobServiceImpl implements JobService {
     /**
      * Lấy danh sách tất cả công việc
      */
-    @Override
     public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
         Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);
@@ -321,10 +320,11 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách công việc theo trạng thái với phân trang.
      */
     @Override
-    public Page<JobResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<JobResponse> getPagingByState(PageInfo req, Integer state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<Job> jobs = jobRepository.findAllByState(pageable, state, req.getKeyword());
-        return jobs.map(j -> modelMapper.map(j, JobResponse.class));
+        Page<JobResponse> res = jobs.map(j -> modelMapper.map(j, JobResponse.class));
+        return new PagingResponse<>(res);
     }
 
     @Override
