@@ -2,7 +2,7 @@ package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
 
-import org.springframework.data.domain.Page;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
@@ -31,5 +31,7 @@ public interface JobService {
 
     JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException;
 
-    Page<JobResponse> getPagingByState(PageInfo info, Integer state);
+    PagingResponse<JobResponse> getPagingByState(PageInfo info, Integer state);
+
+    ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;
 }

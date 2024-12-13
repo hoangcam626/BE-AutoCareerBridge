@@ -30,6 +30,7 @@ import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
 import com.backend.autocarrerbridge.service.IntermediaryService;
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -178,6 +179,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public void rejectedAccount(UserAccount req) {
         validateAccountForStateChange(req, State.REJECTED);
         req.setState(State.REJECTED);
+        req.setStatus(Status.INACTIVE);
         userAccountRepository.save(req);
     }
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")

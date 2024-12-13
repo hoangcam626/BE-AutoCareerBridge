@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.repository;
 
+import com.backend.autocarrerbridge.entity.Industry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,14 +20,15 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
      * Lấy danh sách công việc của doanh nghiệp
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
-            + "FROM Job job join job.business business where business.id =:businessId AND job.status = 1" +
+            + "FROM Job job join job.business business where business.id =:businessId " +
+            "AND job.status = 1" +
             "AND (:keyword IS NULL OR :keyword = '' " +
             "OR job.level like %:keyword% or job.title like %:keyword%)" +
             "ORDER BY job.createdAt DESC ")
     Page<JobResponse> getAllJobOfBusinessPaging(Integer businessId, @RequestParam("keyword") String keyword, Pageable pageable);
 
     /**
-     * Lấy tất cả công việc paging
+     * Lấy tất cả công việc
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
             + "FROM Job job where job.status = 1" +
@@ -44,13 +46,19 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             "WHERE j.statusBrowse = :state  " +
             "AND (:keyword IS NULL OR " +
             "   (LOWER(j.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "   OR (LOWER(j.business.name) LIKE LOWER(CONCAT('%', :keyword, '%')))))" +
+            "   OR (LOWER(j.business.name) LIKE LOWER(CONCAT('%', :keyword, '%'))))) " +
+            "AND j.status <> 0 " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN (j.title) = :keyword THEN 1 " +
             "       WHEN j.business.name = :keyword THEN 1" +
-            "       WHEN CONCAT(j.title, ' ', j.business.name, ' ') LIKE %:keyword% THEN 2 " +
-            "       ELSE 3 " +
-            "   END")
+            "       ELSE 2 " +
+            "   END," +
+            "   j.createdAt DESC ")
     Page<Job> findAllByState(Pageable pageable, Integer state, String keyword);
+
+    /**
+     * Tìm job qua ngành nghề
+     */
+    List<Job> findByIndustry(Industry industry);
 }

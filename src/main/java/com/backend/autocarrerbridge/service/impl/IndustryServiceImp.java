@@ -13,8 +13,10 @@ import com.backend.autocarrerbridge.dto.response.industry.CheckIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.BusinessIndustry;
+import com.backend.autocarrerbridge.entity.Job;
 import com.backend.autocarrerbridge.repository.BusinessIndustryRepository;
 import com.backend.autocarrerbridge.repository.BusinessRepository;
+import com.backend.autocarrerbridge.repository.JobRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +44,7 @@ public class IndustryServiceImp implements IndustryService {
     private final TokenService tokenService;
     private final BusinessRepository businessRepository;
     private final BusinessIndustryRepository businessIndustryRepository;
+    private final JobRepository jobRepository;
 
     /**
      * Lấy Business từ token
@@ -279,7 +282,16 @@ public class IndustryServiceImp implements IndustryService {
         if (industriesToDelete.isEmpty()) {
             throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
         }
+        // Kiểm tra xem có công việc nào đang sử dụng ngành nghề này không
+        for (BusinessIndustry businessIndustry : industriesToDelete) {
+            Industry industry = businessIndustry.getIndustry();
 
+            // Kiểm tra nếu industry đã được sử dụng trong Job
+            List<Job> jobs = jobRepository.findByIndustry(industry);
+            if (!jobs.isEmpty()) {
+                throw new AppException(ErrorCode.ERROR_CODE_INDUSTRY_IN_USE);
+            }
+        }
         // Xóa tất cả các ngành nghề tìm thấy
         businessIndustryRepository.deleteAll(industriesToDelete);
 
