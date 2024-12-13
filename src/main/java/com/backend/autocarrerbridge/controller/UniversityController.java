@@ -47,7 +47,7 @@ public class UniversityController {
         return ApiResponse.builder()
                 .code(SUCCESS)
                 .message(SEND_CODE)
-                .data(universityService.generaterCode(userUniversityRequest))
+                .data(universityService.generateCode(userUniversityRequest))
                 .build();
     }
     @PostMapping("/update/{id}")
