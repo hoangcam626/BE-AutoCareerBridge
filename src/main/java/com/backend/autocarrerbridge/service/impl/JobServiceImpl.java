@@ -25,7 +25,6 @@ import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
@@ -39,11 +38,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.converter.ConvertJob;
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.job.JobRequest;
-import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.entity.Industry;
@@ -121,9 +115,6 @@ public class JobServiceImpl implements JobService {
     /**
      * Lấy danh sách tất cả công việc
      */
-    @Override
-    public ApiResponse<Object> getAllJob(String keyword, Pageable pageable){
-        return ApiResponse.builder().data(jobRepository.getAllJob(keyword, pageable)).build();
     public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
         Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);

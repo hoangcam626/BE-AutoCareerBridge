@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import java.text.ParseException;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,8 +74,8 @@ public class AdminJobController {
      */
     @GetMapping("/approved-jobs")
     public ApiResponse<PagingResponse<JobResponse>> getApprovedJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                       @RequestParam(value = "keyword", required = false) String keyword) {
+                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
         var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED.getValue());
         return new ApiResponse<>(res);
     }
@@ -89,8 +90,8 @@ public class AdminJobController {
      */
     @GetMapping("/pending-jobs")
     public ApiResponse<PagingResponse<JobResponse>> getPendingJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                         @RequestParam(value = "keyword", required = false) String keyword) {
+                                                                   @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                   @RequestParam(value = "keyword", required = false) String keyword) {
         var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING.getValue());
         return new ApiResponse<>(res);
     }
@@ -105,8 +106,8 @@ public class AdminJobController {
      */
     @GetMapping("/rejected-jobs")
     public ApiResponse<PagingResponse<JobResponse>> getRejectedJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                          @RequestParam(value = "keyword", required = false) String keyword) {
+                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
         var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED.getValue());
         return new ApiResponse<>(res);
     }
@@ -121,8 +122,9 @@ public class AdminJobController {
      */
     @GetMapping("/all-jobs")
     public ApiResponse<Object> getAllJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                          @RequestParam(value = "keyword", required = false) String keyword) {
-        return jobService.getAllJob(keyword, PageRequest.of(pageNo, pageSize));
+                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                          @RequestParam(value = "keyword", required = false) String keyword) throws ParseException {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return jobService.getAllJob(pageNo, pageSize, keyword, pageable);
     }
 }
