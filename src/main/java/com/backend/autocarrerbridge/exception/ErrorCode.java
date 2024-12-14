@@ -136,7 +136,16 @@ import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MES
 import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.HAVE_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.ID_MAJOR_NOT_NULL_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_ADRESS_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_CODE_EXISTED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_EMAIL_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_EMAIL_REGEX_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_EXIST_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_GENDER_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_GENDER_REGEX_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_NAME_NOT_BANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_NAME_SIZE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_PHONE_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_ACCOUNT_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_REJECTED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_IS_NULL;
@@ -396,6 +405,15 @@ public enum ErrorCode {
 
     //Validation giáo vụ
     INSTRUCTIONS_NOT_EXIST(BAD_REQUEST,INSTRUCTIONAL_EXIST_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_CODE_EXISTED(BAD_REQUEST,INSTRUCTIONAL_CODE_EXISTED_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_NAME_NOT_BANK(BAD_REQUEST,INSTRUCTIONAL_NAME_NOT_BANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_NAME_SIZE(BAD_REQUEST,INSTRUCTIONAL_NAME_SIZE_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_GENDER_NOT_BLANK(BAD_REQUEST,INSTRUCTIONAL_GENDER_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_GENDER_REGEX(BAD_REQUEST,INSTRUCTIONAL_GENDER_REGEX_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_EMAIL_NOT_BLANK(BAD_REQUEST,INSTRUCTIONAL_EMAIL_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_EMAIL_REGEX_(BAD_REQUEST,INSTRUCTIONAL_EMAIL_REGEX_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_ADRESS_NOT_BLANK(BAD_REQUEST,INSTRUCTIONAL_ADRESS_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
+    INSTRUCTIONAL_PHONE_NOT_BLANK(BAD_REQUEST,INSTRUCTIONAL_PHONE_NOT_BLANK_MESSAGE,HttpStatus.BAD_REQUEST),
 
     // Các lỗi duyệt thông tin
     ERROR_JOB_ALREADY_REJECTED(BAD_REQUEST, JOB_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
