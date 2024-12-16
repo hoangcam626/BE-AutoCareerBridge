@@ -54,4 +54,6 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
             "       ELSE 3 " +
             "   END")
     Page<Business> findAllByState(Pageable pageable, Integer state, String keyword);
+
+
 }

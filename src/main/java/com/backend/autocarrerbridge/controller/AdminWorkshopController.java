@@ -66,7 +66,7 @@ public class AdminWorkshopController {
     public ApiResponse<Page<WorkShopResponse>> getApprovedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                     @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED.getValue());
+        var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
         return new ApiResponse<>(res);
     }
 
@@ -82,7 +82,7 @@ public class AdminWorkshopController {
     public ApiResponse<Page<WorkShopResponse>> getPendingWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING.getValue());
+        var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
         return new ApiResponse<>(res);
     }
 
@@ -98,7 +98,7 @@ public class AdminWorkshopController {
     public ApiResponse<Page<WorkShopResponse>> getRejectedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                     @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED.getValue());
+        var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);
         return new ApiResponse<>(res);
     }
 }

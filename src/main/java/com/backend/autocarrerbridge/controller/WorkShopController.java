@@ -80,6 +80,25 @@ public class WorkShopController {
     }
 
     /**
+     * Lấy danh sách các workshop theo trạng thái với phân trang.
+     *
+     * @param page Số trang cần lấy (mặc định là 0).
+     * @param size Số lượng workshop trên mỗi trang (mặc định là 5).
+     * @return ApiResponse chứa danh sách các workshop có trạng thái tương ứng.
+     */
+    @GetMapping("/province/{provinceId}")
+    public ApiResponse<Object> getAllWorkShopByLocation(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @PathVariable("provinceId") Integer provincesId) {
+
+        return ApiResponse.builder()
+                .data(workShopService.getAllWorkShopByLocation(PageRequest.of(page, size),provincesId))
+                .build();
+    }
+
+
+    /**
      * Lấy danh sách các workshop theo trường đại học với phân trang.
      *
      * @param page Số trang cần lấy (mặc định là 0).
@@ -107,7 +126,7 @@ public class WorkShopController {
      */
     @PutMapping("/id/{idWorkShop}")
     public ApiResponse<Object> updateWorkShop(
-            @PathVariable("idWorkShop") Integer idWorkShop, @ModelAttribute WorkShopRequest workShopRequest) {
+            @PathVariable("idWorkShop") Integer idWorkShop, @ModelAttribute @Valid WorkShopRequest workShopRequest) {
         return ApiResponse.builder()
                 .data(workShopService.updateWordShop(idWorkShop, workShopRequest))
                 .build();

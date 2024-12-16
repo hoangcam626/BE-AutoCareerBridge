@@ -1,7 +1,12 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_WORKSHOP_STATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_ALREADY_APPROVED;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_ALREADY_REJECTED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
+import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Constant.REJECTED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 
 import java.text.ParseException;
@@ -10,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
@@ -18,8 +25,12 @@ import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedRespon
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.service.LocationService;
+import com.backend.autocarrerbridge.service.NotificationService;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +61,8 @@ public class WorkShopServiceImpl implements WorkShopService {
     ImageService imageService;
     UniversityService universityService;
     LocationService locationService;
+    NotificationService notificationService;
+    SendEmail sendEmail;
     /**
      * Lấy danh sách tất cả các Workshop với phân trang.
      * @param pageable Thông tin phân trang
@@ -132,6 +145,19 @@ public class WorkShopServiceImpl implements WorkShopService {
     public List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword) {
         List<Workshop> list = workShopRepository
                 .getAllWorkshopByState(pageable, state, keyword)
+                .getContent();
+        if (list.isEmpty()) {
+            throw new AppException(ERROR_NO_CONTENT);
+        }
+        return list.stream()
+                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+                .toList();
+    }
+
+    @Override
+    public List<WorkShopResponse> getAllWorkShopByLocation(Pageable pageable, Integer provinceId) {
+        List<Workshop> list = workShopRepository
+                .getAllWorkShopByLocation(pageable, provinceId)
                 .getContent();
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
@@ -258,6 +284,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu ngày tháng không hợp lệ
      */
     public void validateWorkShop(WorkShopRequest workShopRequest) {
+
         // Kiểm tra ngày bắt đầu và kết thúc
         if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())) {
             throw new AppException(ERROR_WORK_SHOP_DATE);
@@ -304,13 +331,87 @@ public class WorkShopServiceImpl implements WorkShopService {
         return modelMapper.map(workshopById, WorkShopResponse.class);
     }
 
+    /**
+     * Phê duyệt một Workshop.
+     *
+     * @param req Dữ liệu yêu cầu phê duyệt Workshop.
+     * @return Phản hồi phê duyệt Workshop.
+     * @throws ParseException Nếu xảy ra lỗi định dạng dữ liệu.
+     */
     @Override
     public WorkshopApprovedResponse approved(WorkshopApprovedRequest req) throws ParseException {
-        return null;
+
+        Workshop workshop = findWorkshopById(req.getId());
+        validateWorkshopForStateChange(workshop, State.APPROVED);
+        workshop.setStatusBrowse(State.APPROVED);
+        String emailBusiness = workshop.getUniversity().getEmail();
+
+        EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_WORKSHOP, "");
+        sendEmail.sendApprovedWorkshopNotification(emailDTO,
+                workshop.getTitle());
+
+        String message = String.format("%s: %s", APPROVED_WORKSHOP, workshop.getTitle());
+        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+        return WorkshopApprovedResponse.of(Boolean.TRUE);
+    }
+    /**
+     * Kiểm tra tính hợp lệ của trạng thái Workshop khi chuyển đổi.
+     *
+     * @param req         Thông tin Workshop.
+     * @param targetState Trạng thái mục tiêu cần chuyển.
+     * @throws AppException Nếu trạng thái không hợp lệ hoặc không thể chuyển đổi.
+     */
+    private void validateWorkshopForStateChange(Workshop req, State targetState) {
+        // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
+        if (req.getStatusBrowse() == targetState) {
+            throw new AppException(targetState == State.APPROVED
+                    ? ERROR_WORKSHOP_ALREADY_APPROVED
+                    : ERROR_WORKSHOP_ALREADY_REJECTED);
+        }
+
+        // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)
+        if (req.getStatusBrowse() != State.PENDING) {
+            throw new AppException(ERROR_INVALID_WORKSHOP_STATE);
+        }
     }
 
+    /**
+     * Từ chối một Workshop.
+     *
+     * @param req Dữ liệu yêu cầu từ chối Workshop.
+     * @return Phản hồi từ chối Workshop.
+     * @throws ParseException Nếu xảy ra lỗi định dạng dữ liệu.
+     */
     @Override
     public WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException {
-        return null;
+
+        Workshop workshop = findWorkshopById(req.getId());
+        validateWorkshopForStateChange(workshop, State.REJECTED);
+        workshop.setStatusBrowse(State.REJECTED);
+        // Gửi thông báo email
+        String emailBusiness = workshop.getUniversity().getEmail();
+        EmailDTO emailDTO = new EmailDTO(emailBusiness, REJECTED_WORKSHOP, "");
+        sendEmail.sendRRejectedWorkshopNotification(emailDTO, workshop.getTitle(), req.getMessage());
+        // Gửi thông báo hệ thống
+        String message = String.format("%s: %s", REJECTED_WORKSHOP, workshop.getTitle());
+        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+        return WorkshopRejectedResponse.of(req.getMessage());
+    }
+
+    /**
+     * Lấy danh sách Workshop phân trang theo trạng thái.
+     *
+     * @param info  Thông tin phân trang.
+     * @param state Trạng thái của Workshop.
+     * @return Trang kết quả chứa danh sách Workshop.
+     */
+    @Override
+    public Page<WorkShopResponse> getPagingByState(PageInfo info, State state) {
+        Pageable pageable = PageRequest.of(info.getPageNo(), info.getPageSize());
+        Page<Workshop> workshops = workShopRepository.findAllByState(pageable, state, info.getKeyword());
+        if (workshops.isEmpty()) {
+            throw new AppException(ERROR_NO_CONTENT);
+        }
+        return workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
     }
 }

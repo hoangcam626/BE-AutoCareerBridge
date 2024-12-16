@@ -37,4 +37,5 @@ public interface BusinessService {
     EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest);
 
     Page<BusinessResponse> getPagingByState(PageInfo req, Integer state );
+
 }

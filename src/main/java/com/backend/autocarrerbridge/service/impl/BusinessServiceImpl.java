@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.util.Validation;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -47,6 +48,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FORMAT_PW;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
@@ -239,19 +241,26 @@ public class BusinessServiceImpl implements BusinessService {
         );
     }
 
+
     @Override
     public EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest) {
         checkValidateRegister(userBusinessRequest);
         return userAccountService.generateVerificationCode(userBusinessRequest.getEmail());
     }
     public void checkValidateRegister(UserBusinessRequest userBusinessRequest){
-        if (userBusinessRequest == null) {
+        if (Objects.isNull(userBusinessRequest)) {
             throw new  AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        if(!Validation.isValidPassword(userBusinessRequest.getPassword())){
+            throw  new AppException(ERROR_FORMAT_PW);
+        }
+        if(!Validation.isValidPassword(userBusinessRequest.getPassword())){
+            throw  new AppException(ERROR_FORMAT_PW);
         }
 
         // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
         Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
-        if (existingBusiness != null) {
+        if (!Objects.isNull(existingBusiness)) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
 
@@ -260,10 +269,9 @@ public class BusinessServiceImpl implements BusinessService {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
 
-        if (userBusinessRequest.getLicenseImage() == null
+        if (Objects.isNull(userBusinessRequest.getLicenseImage())
                 || userBusinessRequest.getLicenseImage().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_LICENSE);
         }
     }
-
 }

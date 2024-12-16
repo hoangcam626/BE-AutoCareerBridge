@@ -54,7 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public String generateEmployeeCode(String emailBusiness, int lastEmployeeId) {
         // Lấy hai chữ cái đầu tiên từ email (chữ thường, chuyển thành viết hoa)
-        String initials = emailBusiness.split("@")[0].substring(0, 3).toUpperCase();
+        String initials = emailBusiness.split("@")[0].substring(0, 2).toUpperCase();
 
         int nextId = lastEmployeeId + 1;
         // Tạo mã nhân viên theo định dạng + employeeId
@@ -126,7 +126,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         // Tạo tài khoản người dùng cho nhân viên
         UserAccount userAccount = UserAccount.builder()
                 .username(employee.getEmail()) // Sử dụng email của nhân viên làm tên đăng nhập
-                .password("1234546") // Mật khẩu mặc định (cần mã hóa trước khi lưu)
+                .password("Matkhau123!") // Mật khẩu mặc định (cần mã hóa trước khi lưu)
                 .role(roleService.findById(PredefinedRole.EMPLOYEE.getValue())) // Gán vai trò mặc định là EMPLOYEE
                 .state(State.APPROVED) // Trạng thái tài khoản là được phê duyệt
                 .build();

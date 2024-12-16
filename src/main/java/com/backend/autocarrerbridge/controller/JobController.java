@@ -5,6 +5,7 @@ import java.text.ParseException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -96,4 +97,71 @@ public class JobController {
     public ApiResponse<Object> inactiveJob(@RequestParam Integer jobId) throws ParseException {
         return jobService.inactiveJob(jobId);
     }
+
+    @GetMapping("/business-total-job")
+    public ApiResponse<Object> getBusinessTotalJob(@RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "10") int size)  {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ApiResponse.builder().build().setData(jobService.getBusinessJob(pageable));
+    }
+
+    @GetMapping("/region/{regionId}")
+    public ApiResponse<Object> getBusinessJobByRegion(@RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size, @PathVariable("regionId") Integer regionId)  {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ApiResponse.builder().build().setData(jobService.getJobBusinessByRegion(pageable,regionId));
+    }
+
+    @GetMapping("/district/{districtId}")
+    public ApiResponse<Object> getBusinessJobByDistrict(@RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size, @PathVariable("districtId") Integer districtId)  {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ApiResponse.builder().build().setData(jobService.getJobBusinessByDistrict(pageable,districtId));
+    }
+    @GetMapping("/province/{provinceId}")
+    public ApiResponse<Object> getBusinessJobByProvince(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10") int size, @PathVariable("provinceId") Integer provinceId)  {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ApiResponse.builder().build().setData(jobService.getJobBusinessByProvince(pageable,provinceId));
+    }
+    @GetMapping("/job-all")
+    public ApiResponse<Object> getBusinessJobAll(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10") int size)  {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ApiResponse.builder().build().setData(jobService.getAllJobBusiness(pageable));
+    }
+
+    @GetMapping("/industry/{industryCode}")
+    public ApiResponse<Object> getJobByIndustry(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size,
+                                                    @PathVariable("industryCode") Integer industryCode)  {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ApiResponse.builder().build().setData(jobService.getAllJobBusinessByIndustry(pageable,industryCode));
+    }
+
+    @GetMapping("/salary")
+    public ApiResponse<Object> getJobByIndustry(@RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size,
+                                                @RequestParam("minSalary") Long minSalary,
+                                                @RequestParam("maxSalary") Long maxSalary)  {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ApiResponse.builder().build().setData(jobService.getAllJobBusinessBySalary(pageable,minSalary,maxSalary));
+    }
+    @GetMapping("/total-job")
+    public ApiResponse<Object> getTotalJobByIndustry(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10") int size)  {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ApiResponse.builder().build().setData(jobService.getTotalJobByIndustry(pageable));
+    }
+
+
+
 }

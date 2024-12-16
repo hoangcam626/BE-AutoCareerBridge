@@ -3,10 +3,13 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FORMAT_PW;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.util.Validation;
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -28,11 +31,7 @@ import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
-import jakarta.transaction.Transactional;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
@@ -204,6 +203,9 @@ public class UniversityServiceImpl implements UniversityService {
         return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
     }
     public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
+        if(!Validation.isValidPassword(userUniversityRequest.getPassword())){
+            throw  new AppException(ERROR_FORMAT_PW);
+        }
         if (Objects.isNull(userUniversityRequest.getPassword())
                 || Objects.isNull(userUniversityRequest.getRePassword())
                 || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {

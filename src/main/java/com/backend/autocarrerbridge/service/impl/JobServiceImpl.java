@@ -16,8 +16,13 @@ import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
+import java.util.List;
+import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
@@ -32,6 +37,7 @@ import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -114,7 +120,7 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách tất cả công việc
      */
     @Override
-    public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable)  {
         Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);
         return ApiResponse.builder().data(pagingResponse).build();
@@ -303,6 +309,7 @@ public class JobServiceImpl implements JobService {
         return jobs.map(j -> modelMapper.map(j, JobResponse.class));
     }
 
+
     /**
      * Tìm bài đăng công việc theo ID.
      */
@@ -327,4 +334,70 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_INVALID_JOB_STATE);
         }
     }
+    @Override
+    public List<BusinessTotalResponse> getBusinessJob(Pageable pageable) {
+        return jobRepository.findAllBusinessWithTotalJob(pageable).getContent();
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse>getJobBusinessByRegion(Pageable pageable, Integer regionId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByRegion(pageable,regionId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        // Lấy danh sách Job từ repository
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getJobBusinessByProvince(Pageable pageable, Integer provinceId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByProvince(pageable,provinceId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        // Lấy danh sách Job từ repository
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getJobBusinessByDistrict(Pageable pageable, Integer districtId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByDistrict(pageable,districtId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusiness(Pageable pageable) {
+        Page<BusinessJobResponse> page = jobRepository.findAllJobBusiness(pageable);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusinessBySalary(Pageable pageable, Long minSalary, Long maxSalary) {
+        Page<BusinessJobResponse> page = jobRepository.findJobBySalary(pageable,minSalary,maxSalary);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusinessByIndustry(Pageable pageable, Integer industryCode) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByIndustry(pageable,industryCode);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public List<JobIndustryResponse> getTotalJobByIndustry(Pageable pageable) {
+        return jobRepository.findTotalJobByIndustry(pageable).getContent();
+    }
+
 }
