@@ -164,4 +164,9 @@ public class JobController {
 
 
 
+
+    @GetMapping("/check-inactive-permission")
+    public ApiResponse<Object> checkInactivePermission(@RequestParam Integer jobId) throws ParseException {
+        return jobService.checkDeletePermission(jobId);
+    }
 }

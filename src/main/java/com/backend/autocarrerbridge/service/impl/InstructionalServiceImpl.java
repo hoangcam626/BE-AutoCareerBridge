@@ -1,6 +1,8 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.repository.InstructionalRepository;
+
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.SUB;
 
@@ -24,13 +26,14 @@ import com.backend.autocarrerbridge.util.password.PasswordGenerator;
 import jakarta.transaction.Transactional;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -57,11 +60,13 @@ public class InstructionalServiceImpl implements InstructionalService {
   @Transactional
   @Override
   public InstructionalResponse createInstructional(InstructionalRequest request) {
+    if(instructionalRepository.findByInstructionalCode(request.getInstructionalCode())!=null) {
+      throw new AppException(ErrorCode.INSTRUCTIONAL_CODE_EXISTED);
+    }
+
     // Chuyển đổi request thành entity Instructional
     Instructional instructional = InstructionalConverter.toEntity(request);
-    instructional.setStatus(Status.ACTIVE);
-    instructional.setCreatedAt(LocalDateTime.now());
-    instructional.setUpdatedAt(LocalDateTime.now());
+
     try {
       // Lấy thông tin người dùng hiện tại từ JWT token
       String currentUser = tokenService.getClaim(tokenService.getJWT(), SUB);
@@ -104,7 +109,8 @@ public class InstructionalServiceImpl implements InstructionalService {
     instructionalConverter.updateEntityFormRequest(request, instructional);
     // Cập nhật ảnh
     if (request.getInstructionalImageId() != null && !request.getInstructionalImageId().isEmpty()) {
-      instructional.setInstructionalImageId(imageService.uploadFile(request.getInstructionalImageId()));
+      instructional.setInstructionalImageId(
+          imageService.uploadFile(request.getInstructionalImageId()));
     }
     // Cập nhật thông tin người dùng hiện tại vào các trường updatedBy và updatedAt
     try {
@@ -121,33 +127,59 @@ public class InstructionalServiceImpl implements InstructionalService {
   }
 
   /**
-   * Xóa một Instructional (Giáo vụ) theo ID bằng cách thay đổi trạng thái thành INACTIVE.
+   * Thiết lập trạng thái của một Instructional (Giáo vụ) thành INACTIVE.
    *
-   * @param id ID của Giáo vụ cần xóa.
+   * @param id ID của Giáo vụ cần thay đổi trạng thái.
    * @return Đối tượng InstructionalResponse chứa thông tin Giáo vụ đã cập nhật trạng thái.
    */
+  @Transactional
   @Override
-  public InstructionalResponse deleteInstructional(int id) {
+  public InstructionalResponse setInstructionalInactive(int id) {
     Instructional instructional = instructionalRepository.findById(id)
         .orElseThrow(() -> new AppException(ErrorCode.INSTRUCTIONS_NOT_EXIST));
     instructional.setStatus(Status.INACTIVE);
     instructional.setUpdatedAt(LocalDateTime.now());
-    // Lưu thay đ��i vào database
     instructionalRepository.save(instructional);
-    // Trả về phản hồi chứa thông tin của Instructional đã xóa
     return InstructionalConverter.toResponse(instructional);
   }
 
   /**
-   * Lấy danh sách tất cả các Instructional (Giáo vụ).
+   * Thiết lập trạng thái của một Instructional (Giáo vụ) thành ACTIVE.
    *
-   * @return Danh sách các InstructionalResponse chứa thông tin của tất cả Giáo vụ.
+   * @param id ID của Giáo vụ cần thay đổi trạng thái.
+   * @return Đối tượng InstructionalResponse chứa thông tin Giáo vụ đã cập nhật trạng thái.
    */
+  @Transactional
   @Override
-  public List<InstructionalResponse> getAllInstructional() {
-    List<Instructional> instructional = instructionalRepository.findAll();
-    instructional.sort(Comparator.comparingLong(Instructional::getId).reversed());
-    return instructional.stream().map(InstructionalConverter::toResponse)
+  public InstructionalResponse setInstructionalActive(int id) {
+    Instructional instructional = instructionalRepository.findById(id)
+        .orElseThrow(() -> new AppException(ErrorCode.INSTRUCTIONS_NOT_EXIST));
+    instructional.setStatus(Status.ACTIVE);
+    instructional.setUpdatedAt(LocalDateTime.now());
+    instructionalRepository.save(instructional);
+    return InstructionalConverter.toResponse(instructional);
+  }
+
+  /**
+   * Xóa một Instructional (Giáo vụ) theo ID bằng cách thay đổi trạng thái thành INACTIVE.
+   *
+   * @param ids ID của Giáo vụ cần xóa.
+   * @return Đối tượng InstructionalResponse chứa thông tin Giáo vụ đã cập nhật trạng thái.
+   */
+  @Transactional
+  @Override
+  public List<InstructionalResponse> deleteInstructional(List<Integer> ids) {
+    // Duyệt qua từng ID trong danh sách
+    List<Instructional> instructionalList = ids.stream().map(id -> {
+      Instructional instructional = instructionalRepository.findById(id)
+          .orElseThrow(() -> new AppException(ErrorCode.INSTRUCTIONS_NOT_EXIST));
+      // Lưu thay đổi vào database (thực hiện xoá)
+      instructionalRepository.delete(instructional);
+      return instructional;
+    }).toList();
+    // Trả về phản hồi chứa thông tin của Instructional đã xóa
+    return instructionalList.stream()
+        .map(InstructionalConverter::toResponse)
         .collect(Collectors.toList());
   }
 
@@ -157,11 +189,65 @@ public class InstructionalServiceImpl implements InstructionalService {
    * @param id ID của Giáo vụ cần lấy thông tin.
    * @return Danh sách chứa một InstructionalResponse với thông tin của Giáo vụ.
    */
+  @Transactional
   @Override
   public List<InstructionalResponse> getInstructionalById(int id) {
     Instructional instructional = instructionalRepository.findById(id)
         .orElseThrow(() -> new AppException(
             ErrorCode.INSTRUCTIONS_NOT_EXIST));
     return List.of(InstructionalConverter.toResponse(instructional));
+  }
+
+  /**
+   * Lấy danh sách tất cả các Instructional (Giáo vụ).
+   *
+   * @return Danh sách các InstructionalResponse chứa thông tin của tất cả Giáo vụ.
+   */
+  @Transactional
+  @Override
+  public PagingResponse<InstructionalResponse> getAllInstructional(int page, int size) {
+    Pageable pageable = PageRequest.of(page - 1, size);
+    Page<Instructional> instructionalPage = instructionalRepository.findAll(pageable);
+    Page<InstructionalResponse> instructionalResponsePage = instructionalPage.map(
+        InstructionalConverter::toResponse);
+    return new PagingResponse<>(instructionalResponsePage);
+  }
+
+  /**
+   * Phương thức này lấy danh sách các Giáo vụ đang hoạt động (Active) từ cơ sở dữ liệu với phân
+   * trang.
+   *
+   * @param page Chỉ số trang cần lấy (bắt đầu từ 0).
+   * @param size Số lượng phần tử trên mỗi trang.
+   * @return Danh sách các Giáo vụ đang hoạt động dưới dạng `Page<InstructionalResponse>`, chứa các
+   * phần tử được chuyển đổi từ `Instructional` và thông tin phân trang như tổng số phần tử, số
+   * trang.
+   */
+  @Override
+  public PagingResponse<InstructionalResponse> getALlInstructionalActive(int page, int size) {
+    Pageable pageable = PageRequest.of(page - 1, size);
+    Page<Instructional> instructionalPage = instructionalRepository.findAllActive(pageable);
+    Page<InstructionalResponse> instructionalResponsePage = instructionalPage.map(
+        InstructionalConverter::toResponse);
+    return new PagingResponse<>(instructionalResponsePage);
+  }
+
+  /**
+   * Phương thức này lấy danh sách các Giáo vụ không hoạt động (Inactive) từ cơ sở dữ liệu với phân
+   * trang.
+   *
+   * @param page Chỉ số trang cần lấy (bắt đầu từ 0).
+   * @param size Số lượng phần tử trên mỗi trang.
+   * @return Danh sách các Giáo vụ không hoạt động dưới dạng `Page<InstructionalResponse>`, chứa các
+   * phần tử được chuyển đổi từ `Instructional` và thông tin phân trang như tổng số phần tử, số
+   * trang.
+   */
+  @Override
+  public PagingResponse<InstructionalResponse> getALlInstructionalInactive(int page, int size) {
+    Pageable pageable = PageRequest.of(page - 1, size);
+    Page<Instructional> instructionalPage = instructionalRepository.findAllInactive(pageable);
+    Page<InstructionalResponse> instructionalResponsePage = instructionalPage.map(
+        InstructionalConverter::toResponse);
+    return new PagingResponse<>(instructionalResponsePage);
   }
 }

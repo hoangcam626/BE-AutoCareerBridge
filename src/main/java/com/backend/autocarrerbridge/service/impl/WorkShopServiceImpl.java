@@ -19,6 +19,7 @@ import com.backend.autocarrerbridge.dto.request.notification.NotificationSendReq
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
@@ -302,6 +303,7 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Cập nhật thông tin một Workshop theo ID.
+     *
      * @param id ID của Workshop cần xoá mềm
      * @return Thông tin phản hồi của Workshop đã xoá mềm
      * @throws AppException Nếu Workshop không tồn tại
@@ -316,8 +318,10 @@ public class WorkShopServiceImpl implements WorkShopService {
         workShopRepository.save(workshop);
         return modelMapper.map(workshop, WorkShopResponse.class);
     }
+
     /**
      * : Lấy  thông tin một Workshop theo ID.
+     *
      * @param id ID của Workshop
      * @return Thông tin phản hồi của Workshop
      * @throws AppException Nếu Workshop không tồn tại
@@ -354,26 +358,6 @@ public class WorkShopServiceImpl implements WorkShopService {
         notificationService.send(NotificationSendRequest.of(emailBusiness, message));
         return WorkshopApprovedResponse.of(Boolean.TRUE);
     }
-    /**
-     * Kiểm tra tính hợp lệ của trạng thái Workshop khi chuyển đổi.
-     *
-     * @param req         Thông tin Workshop.
-     * @param targetState Trạng thái mục tiêu cần chuyển.
-     * @throws AppException Nếu trạng thái không hợp lệ hoặc không thể chuyển đổi.
-     */
-    private void validateWorkshopForStateChange(Workshop req, State targetState) {
-        // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
-        if (req.getStatusBrowse() == targetState) {
-            throw new AppException(targetState == State.APPROVED
-                    ? ERROR_WORKSHOP_ALREADY_APPROVED
-                    : ERROR_WORKSHOP_ALREADY_REJECTED);
-        }
-
-        // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)
-        if (req.getStatusBrowse() != State.PENDING) {
-            throw new AppException(ERROR_INVALID_WORKSHOP_STATE);
-        }
-    }
 
     /**
      * Từ chối một Workshop.
@@ -406,12 +390,54 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Trang kết quả chứa danh sách Workshop.
      */
     @Override
-    public Page<WorkShopResponse> getPagingByState(PageInfo info, State state) {
+    public PagingResponse<WorkShopResponse> getPagingByState(PageInfo info, State state) {
         Pageable pageable = PageRequest.of(info.getPageNo(), info.getPageSize());
         Page<Workshop> workshops = workShopRepository.findAllByState(pageable, state, info.getKeyword());
-        if (workshops.isEmpty()) {
-            throw new AppException(ERROR_NO_CONTENT);
-        }
-        return workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
+        Page<WorkShopResponse> res = workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
+        return new PagingResponse<>(res);
     }
+
+    /**
+     * Kiểm tra tính hợp lệ của trạng thái Workshop khi chuyển đổi.
+     *
+     * @param req         Thông tin Workshop.
+     * @param targetState Trạng thái mục tiêu cần chuyển.
+     * @throws AppException Nếu trạng thái không hợp lệ hoặc không thể chuyển đổi.
+     */
+    private void validateWorkshopForStateChange(Workshop req, State targetState) {
+        // Kiểm tra nếu trạng thái hiện tại giống với trạng thái mục tiêu
+        if (req.getStatusBrowse() == targetState) {
+            throw new AppException(targetState == State.APPROVED
+                    ? ERROR_WORKSHOP_ALREADY_APPROVED
+                    : ERROR_WORKSHOP_ALREADY_REJECTED);
+        }
+
+        // Kiểm tra trạng thái không hợp lệ (chỉ cho phép thay đổi từ PENDING)
+        if (req.getStatusBrowse() != State.PENDING) {
+            throw new AppException(ERROR_INVALID_WORKSHOP_STATE);
+        }
+    }
+
+    /**
+     * Kiểm tra tính hợp lệ của Workshop.
+     *
+     * @param workShopRequest Thông tin Workshop cần kiểm tra
+     * @throws AppException Nếu ngày tháng không hợp lệ
+     */
+    public void validateWorkShop(WorkShopRequest workShopRequest) {
+        // Kiểm tra ngày bắt đầu và kết thúc
+        if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())) {
+            throw new AppException(ERROR_WORK_SHOP_DATE);
+        }
+
+        LocalDate startDate = workShopRequest.getStartDate().toLocalDate();
+        LocalDate endDate = workShopRequest.getEndDate().toLocalDate();
+        LocalDate expireDate = workShopRequest.getExpireDate(); // Đảm bảo rằng expireDate là LocalDate
+
+        // Kiểm tra ngày hết hạn
+        if (expireDate.isAfter(endDate) || expireDate.isBefore(startDate)) {
+            throw new AppException(ERROR_WORK_SHOP_DATE);
+        }
+    }
+
 }

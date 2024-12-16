@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.repository;
 
+import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,14 +22,13 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     /**
      * Tìm business qua username/email
      */
-    @Query("""
-                SELECT DISTINCT b\s
-                FROM Business b\s
-                LEFT JOIN b.userAccount u
-                LEFT JOIN Employee e ON e.business.id = b.id
-                LEFT JOIN e.userAccount eu
-                WHERE u.username = :username OR eu.username = :username
-           \s""")
+    @Query("SELECT DISTINCT b " +
+            "FROM Business b " +
+            "LEFT JOIN b.userAccount u " +
+            "LEFT JOIN Employee e ON e.business.id = b.id " +
+            "LEFT JOIN e.userAccount eu " +
+            "WHERE u.username = :username " +
+            "OR eu.username = :username")
     Business findByUsername(String username);
 
     /**
@@ -44,16 +44,31 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
             "FROM Business b " +
             "WHERE b.userAccount.state = :state " +
             "AND (:keyword IS NULL OR " +
+            "     LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "      OR LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "ORDER BY " +
+            "   CASE " +
+            "       WHEN LOWER(b.name) = LOWER(:keyword) THEN 1 " +
+            "       WHEN LOWER(b.email) = LOWER(:keyword) THEN 1 " +
+            "       ELSE 2 " +
+            "   END, " +
+            "   b.createdAt DESC ")
+    Page<Business> findAllByState(Pageable pageable, State state, String keyword);
+
+    /**
+     * Tìm kiếm các doanh nghiệp theo tạng thái và từ tìm kiếm
+     */
+    @Query("SELECT b " +
+            "FROM Business b " +
+            "WHERE (:keyword IS NULL OR " +
             "     (LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "      OR LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%')))) " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN LOWER(b.name) = LOWER(:keyword) THEN 1 " +
             "       WHEN LOWER(b.email) = LOWER(:keyword) THEN 1 " +
-            "       WHEN LOWER(CONCAT(b.name, ' ', b.email)) LIKE LOWER(CONCAT('%', :keyword, '%')) THEN 2 " +
-            "       ELSE 3 " +
-            "   END")
-    Page<Business> findAllByState(Pageable pageable, Integer state, String keyword);
-
-
+            "       ELSE 2 " +
+            "   END, " +
+            "   b.createdAt DESC ")
+    Page<Business> findAll(Pageable pageable, String keyword);
 }

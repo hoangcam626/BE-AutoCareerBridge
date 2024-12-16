@@ -92,6 +92,7 @@ public class Constant {
     public static final String DELETED = "Xóa thành công.";
     public static final String NO_EXIST_INDUSTRY = "Ngành không tồn tại";
     public static final String EXIST_INDUSTRY_OF_BUSINESS = "Doanh nghiệp đã có ngành nghề này";
+    public static final String EXIST_INDUSTRY_OF_JOB = "Ngành nghề đang được sử dụng";
 
     // Token - JWT
     public static final String JTI = "jti";
@@ -198,7 +199,8 @@ public class Constant {
     public static final String FILED_DB_NOT_UNIQUE_MESSAGE = "Trường trong database không duy nhất, hãy kiểm tra db";
 
     // Công việc đã đăng
-    public static final String NO_EDIT_JOB = "Bạn không có quyền chỉnh sửa job này";
+    public static final String NO_EDIT_JOB = "Bạn không có quyền chỉnh sửa công viêc này";
+    public static final String NO_INACTIVE_JOB = "Bạn không có quyền vô hiệu hóa công việc này";
     public static final String NO_EXIST_JOB = "Công việc không tồn tại";
     public static final String INACTIVE_JOB = "Vô hiệu hóa công việc thành công";
     public static final String ALREADY_INACTIVE = "Đã bị vô hiệu hóa trước đó";
@@ -222,4 +224,13 @@ public class Constant {
 
     //Giáo vụ
     public static final String INSTRUCTIONAL_EXIST_MESSAGE ="Giáo vụ không tồn tại";
+    public static final String INSTRUCTIONAL_CODE_EXISTED_MESSAGE ="Mã giáo vụ đã tồn tại";
+    public static final String INSTRUCTIONAL_NAME_NOT_BANK_MESSAGE ="Tên giáo vụ không được để trống!";
+    public static final String INSTRUCTIONAL_NAME_SIZE_MESSAGE ="Tên phải có độ dài từ 2 đến 100 ký tự!";
+    public static final String INSTRUCTIONAL_GENDER_NOT_BLANK_MESSAGE ="Giới tính không được để trống!";
+    public static final String INSTRUCTIONAL_GENDER_REGEX_MESSAGE ="Giới tính phải là Nam, Nữ hoặc Khác!";
+    public static final String INSTRUCTIONAL_EMAIL_NOT_BLANK_MESSAGE ="Email không được để trống!";
+    public static final String INSTRUCTIONAL_EMAIL_REGEX_MESSAGE ="Địa chỉ email không hợp lệ!";
+    public static final String INSTRUCTIONAL_ADRESS_NOT_BLANK_MESSAGE ="Địa chỉ không được để trống!";
+    public static final String INSTRUCTIONAL_PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống!";
 }

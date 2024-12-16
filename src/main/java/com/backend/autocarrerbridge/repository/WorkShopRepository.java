@@ -14,8 +14,10 @@ import com.backend.autocarrerbridge.util.enums.State;
 public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
 
     // Tìm kiếm trong tiêu đề workshop
-    @Query("SELECT ws FROM Workshop ws WHERE "
-            + "(:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    @Query("SELECT ws FROM Workshop ws " +
+            "WHERE (:keyword IS NULL " +
+            "OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND ws.status <> 0")
     Page<Workshop> getAllWorkShop(@Param("keyword") String keyword, Pageable pageable);
 
     // Tìm kiếm theo tiêu đề workshop của các trường đại học cụ thể
@@ -40,14 +42,15 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "FROM Workshop ws " +
             "WHERE ws.statusBrowse = :state  " +
             "AND (:keyword IS NULL OR " +
-            "   (ws.title LIKE LOWER(CONCAT('%', :keyword, '%'))) OR" +
-            "   (ws.university.name LIKE LOWER(CONCAT('%', :keyword, '%'))))" +
+            "   (ws.title LIKE LOWER(CONCAT('%', :keyword, '%'))) OR " +
+            "   (ws.university.name LIKE LOWER(CONCAT('%', :keyword, '%')))) " +
+            "AND ws.status <> 0 " +
             "ORDER BY " +
             "   CASE " +
             "       WHEN (ws.title) = :keyword THEN 1 " +
             "       WHEN ws.university.name = :keyword THEN 1" +
-            "       WHEN CONCAT(ws.title, ' ', ws.university.name, ' ') LIKE %:keyword% THEN 2 " +
-            "       ELSE 3 " +
-            "   END")
+            "       ELSE 2 " +
+            "   END," +
+            "   ws.createdAt DESC ")
     Page<Workshop> findAllByState(Pageable pageable, State state, String keyword);
 }
