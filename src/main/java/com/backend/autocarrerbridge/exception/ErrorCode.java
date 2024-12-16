@@ -103,7 +103,9 @@ import static com.backend.autocarrerbridge.util.Constant.REQUEST_ALREADY_ACCEPT;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_WORKSHOP_FAIL;
 import static com.backend.autocarrerbridge.util.Constant.SAVE_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_EXISTED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.SECTION_HAVE_ACTIVE_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_HAVE_MAJOR_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.SECTION_INACTIVE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SECTION_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SENDED_FORGOT_PASS;
 import static com.backend.autocarrerbridge.util.Constant.STATUS_SECTION_NOT_NULL_MESSAGE;
@@ -354,6 +356,7 @@ public enum ErrorCode {
     SECTION_NOT_FOUND(BAD_REQUEST, SECTION_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     SECTION_EXISTED(BAD_REQUEST, SECTION_EXISTED_MESSAGE, HttpStatus.BAD_REQUEST),
     SECTION_HAVE_MAJOR(BAD_REQUEST, SECTION_HAVE_MAJOR_MESSAGE, HttpStatus.BAD_REQUEST),
+    SECTION_HAVE_ACTIVE_MAJOR(BAD_REQUEST,SECTION_HAVE_ACTIVE_MAJOR_MESSAGE,HttpStatus.BAD_REQUEST),
     // validation major
     CODE_MAJOR_NOT_BLANK(BAD_REQUEST, CODE_MAJOR_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
     CODE_MAJOR_NOT_LOGGER(BAD_REQUEST, NAME_MAJOR_NOT_LOGGER_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -362,6 +365,7 @@ public enum ErrorCode {
     NUMBER_MIN_STUDENT_MAJOR(BAD_REQUEST, NUMBER_MIN_STUDENT_MAJOR_MESSAGE, HttpStatus.BAD_REQUEST),
     NUMBER_MAX_STUDENT_MAJOR(BAD_REQUEST, NUMBER_MAX_STUDENT_MAJOR_MESSAGE, HttpStatus.BAD_REQUEST),
     ID_MAJOR_NOT_NULL(BAD_REQUEST, ID_MAJOR_NOT_NULL_MESSAGE, HttpStatus.BAD_REQUEST),
+    SECTION_INACTIVE(BAD_REQUEST,SECTION_INACTIVE_MESSAGE,HttpStatus.BAD_REQUEST),
 
     // Các lỗi của job
     ERROR_NO_EDIT_JOB(BAD_REQUEST, NO_EDIT_JOB, HttpStatus.BAD_REQUEST),
