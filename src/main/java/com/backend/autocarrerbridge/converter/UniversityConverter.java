@@ -12,18 +12,7 @@ import com.backend.autocarrerbridge.service.impl.TokenServiceImpl;
 @Component
 public class UniversityConverter {
 
-    private static TokenServiceImpl tokenService;
-    private static ImageService imageService;
-
     private UniversityConverter() {}
-
-    // Constructor được sử dụng để inject TokenServiceImpl vào trong SectionConverter
-    @Autowired
-    public UniversityConverter(TokenServiceImpl tokenService, ImageService imageService) {
-        UniversityConverter.tokenService = tokenService;
-        UniversityConverter.imageService = imageService;
-    }
-
     public static UniversityResponse convertToResponse(University university) {
 
         if (university.getUserAccount() != null) {

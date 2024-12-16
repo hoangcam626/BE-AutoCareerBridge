@@ -1,6 +1,9 @@
 package com.backend.autocarrerbridge.dto.response.instructional;
 
+import com.backend.autocarrerbridge.dto.response.abstractaudit.AbstractAuditResponse;
+import com.backend.autocarrerbridge.entity.AbstractAudit;
 import com.backend.autocarrerbridge.util.enums.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -16,14 +19,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @Builder
-public class InstructionalResponse {
+public class InstructionalResponse extends AbstractAuditResponse {
 
   private Integer id;
 
   private String name;
 
   private String gender;
-
+  @JsonFormat(pattern = "dd/MM/yyyy") // Định dạng khi trả về dữ liệu
   private LocalDate dateOfBirth;
 
   private String email;
@@ -39,15 +42,5 @@ public class InstructionalResponse {
   private Integer universityId;
 
   private Integer userAccountId;
-
-  private Status status;
-
-  private LocalDateTime createdAt;
-
-  private LocalDateTime updatedAt;
-
-  private String createdBy;
-
-  private String updatedBy;
 
 }
