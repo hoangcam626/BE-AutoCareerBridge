@@ -74,7 +74,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
 
         checkValidateRegister(userBusinessRequest);
-        if(userBusinessRequest.getVerificationCode() == null){
+        if (userBusinessRequest.getVerificationCode() == null) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
         if (!Objects.equals(
@@ -258,34 +258,33 @@ public class BusinessServiceImpl implements BusinessService {
         return userAccountService.generateVerificationCode(userBusinessRequest.getEmail());
     }
 
+
+
     public void checkValidateRegister(UserBusinessRequest userBusinessRequest) {
-        if (userBusinessRequest == null) {
-            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
-    public void checkValidateRegister(UserBusinessRequest userBusinessRequest){
         if (Objects.isNull(userBusinessRequest)) {
-            throw new  AppException(ErrorCode.ERROR_NO_CONTENT);
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
-        if(!Validation.isValidPassword(userBusinessRequest.getPassword())){
-            throw  new AppException(ERROR_FORMAT_PW);
-        }
-        if(!Validation.isValidPassword(userBusinessRequest.getPassword())){
-            throw  new AppException(ERROR_FORMAT_PW);
-        }
+            if (!Validation.isValidPassword(userBusinessRequest.getPassword())) {
+                throw new AppException(ERROR_FORMAT_PW);
+            }
+            if (!Validation.isValidPassword(userBusinessRequest.getPassword())) {
+                throw new AppException(ERROR_FORMAT_PW);
+            }
 
-        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
-        Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
-        if (!Objects.isNull(existingBusiness)) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
+            // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
+            Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
+            if (!Objects.isNull(existingBusiness)) {
+                throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
+            }
 
-        // Xác thực mật khẩu
-        if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
-            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
-        }
+            // Xác thực mật khẩu
+            if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
+                throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
+            }
 
-        if (Objects.isNull(userBusinessRequest.getLicenseImage())
-                || userBusinessRequest.getLicenseImage().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_LICENSE);
+            if (Objects.isNull(userBusinessRequest.getLicenseImage())
+                    || userBusinessRequest.getLicenseImage().isEmpty()) {
+                throw new AppException(ErrorCode.ERROR_LICENSE);
+            }
         }
     }
-}

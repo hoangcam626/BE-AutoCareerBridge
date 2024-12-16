@@ -7,8 +7,7 @@ import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import org.springframework.data.domain.Page;
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
@@ -37,8 +36,6 @@ public interface JobService {
 
     JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException;
 
-    Page<JobResponse> getPagingByState(PageInfo info, Integer state);
-
     List<BusinessTotalResponse> getBusinessJob(Pageable pageable);
 
     PagingResponse<BusinessJobResponse> getJobBusinessByRegion(Pageable pageable, Integer regionId);
@@ -55,6 +52,7 @@ public interface JobService {
 
 
     List<JobIndustryResponse> getTotalJobByIndustry(Pageable pageable);
+
     PagingResponse<JobResponse> getPagingByState(PageInfo info, Integer state);
 
     ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;

@@ -15,6 +15,8 @@ import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.entity.Job;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Repository
 public interface JobRepository extends JpaRepository<Job, Integer> {
 
@@ -278,7 +280,7 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
 //""")
 //    Page<BusinessJobResponse> findJobByExperience(Pageable pageable,Integer start,Integer end);
 
-
+    List<Job> findByIndustry(Industry industry);
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse(i.id, i.name, count(jb.id)) " +
             "FROM Industry i LEFT JOIN Job jb ON i.id = jb.industry.id GROUP BY i.id, i.name ")
     Page<JobIndustryResponse> findTotalJobByIndustry(Pageable pageable);

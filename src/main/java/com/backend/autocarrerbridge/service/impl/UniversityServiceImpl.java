@@ -37,8 +37,7 @@ import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 
-import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
-import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
+
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -225,10 +224,6 @@ public class UniversityServiceImpl implements UniversityService {
         }
         if (Objects.isNull(userUniversityRequest.getPassword())
                 || Objects.isNull(userUniversityRequest.getRePassword())
-
-    public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
-        if (userUniversityRequest.getPassword() == null
-                || userUniversityRequest.getRePassword() == null
                 || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }

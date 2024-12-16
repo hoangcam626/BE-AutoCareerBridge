@@ -418,26 +418,6 @@ public class WorkShopServiceImpl implements WorkShopService {
         }
     }
 
-    /**
-     * Kiểm tra tính hợp lệ của Workshop.
-     *
-     * @param workShopRequest Thông tin Workshop cần kiểm tra
-     * @throws AppException Nếu ngày tháng không hợp lệ
-     */
-    public void validateWorkShop(WorkShopRequest workShopRequest) {
-        // Kiểm tra ngày bắt đầu và kết thúc
-        if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())) {
-            throw new AppException(ERROR_WORK_SHOP_DATE);
-        }
 
-        LocalDate startDate = workShopRequest.getStartDate().toLocalDate();
-        LocalDate endDate = workShopRequest.getEndDate().toLocalDate();
-        LocalDate expireDate = workShopRequest.getExpireDate(); // Đảm bảo rằng expireDate là LocalDate
-
-        // Kiểm tra ngày hết hạn
-        if (expireDate.isAfter(endDate) || expireDate.isBefore(startDate)) {
-            throw new AppException(ERROR_WORK_SHOP_DATE);
-        }
-    }
 
 }
