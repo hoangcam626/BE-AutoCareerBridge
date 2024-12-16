@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class NotificationDetailResponse {
+public class NotificationResponse {
+    private Integer id;
     private String message;
+    private Integer statusRead;
     private LocalDateTime createdAt;
     private String createdBy;
 }
