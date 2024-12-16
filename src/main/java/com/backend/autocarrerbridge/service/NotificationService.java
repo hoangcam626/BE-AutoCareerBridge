@@ -4,11 +4,13 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.response.notification.NotificationDetailResponse;
-import com.backend.autocarrerbridge.dto.response.notification.NotificationSendResponse;
+import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface NotificationService {
-    NotificationSendResponse send(NotificationSendRequest req) throws ParseException;
+    NotificationResponse send(NotificationSendRequest req) throws ParseException;
 
-    List<NotificationDetailResponse> getAllUserNotification() throws ParseException;
+    List<NotificationResponse> getAllUserNotification() throws ParseException;
+
+    SseEmitter createConnection() throws ParseException;
 }
