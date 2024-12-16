@@ -162,6 +162,7 @@ public class Constant {
     public static final String SECTION_NOT_FOUND_MESSAGE = "Không tìm thấy khoa.";
     public static final String SECTION_EXISTED_MESSAGE = "Tên khoa đã tồn tại .";
     public static final String SECTION_HAVE_MAJOR_MESSAGE = "Khoa có dữ liệu chuyên ngành không thể xóa.";
+    public static final String SECTION_HAVE_ACTIVE_MAJOR_MESSAGE = "Vẫn còn chuyên ngành hoạt động không thể thay đổi trạng thái ";
 
     // major
     public static final String NAME_MAJOR_NOT_BLANK_MESSAGE = "Tên ngành không được bỏ trống .";
