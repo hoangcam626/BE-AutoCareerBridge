@@ -20,6 +20,7 @@ import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
+import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -122,8 +123,6 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách tất cả công việc
      */
     public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
-    @Override
-    public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable)  {
         Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);
         return ApiResponse.builder().data(pagingResponse).build();
@@ -300,9 +299,9 @@ public class JobServiceImpl implements JobService {
         sendEmail.sendApprovedJobNotification(emailDTO,
                 job.getTitle());
 
-        String message = String.format("%s: %s", APPROVED_JOB, job.getTitle());
-        notificationService.send(NotificationSendRequest.of(emailEmployee, message));
-        return JobApprovedResponse.of(Boolean.TRUE);
+        String message = String.format("Tin tuyển dụng \"%s\" của bạn đã được phê duyệt", job.getTitle());
+        NotificationResponse notification = notificationService.send(NotificationSendRequest.of(emailEmployee, message));
+        return JobApprovedResponse.of(Boolean.TRUE, notification);
     }
 
     /**
@@ -313,15 +312,17 @@ public class JobServiceImpl implements JobService {
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.REJECTED);
         job.setStatusBrowse(State.REJECTED);
-        String emailEmployee = job.getEmployee().getEmail();
+
         // Gửi thông báo email
+        String emailEmployee = job.getEmployee().getEmail();
         EmailDTO emailDTO = new EmailDTO(emailEmployee, REJECTED_JOB, "");
         sendEmail.sendRRejectedJobNotification(emailDTO, job.getTitle(), req.getMessage());
-        // Gửi thông báo hệ thống
-        String message = String.format("%s: %s. Lý do: %s", REJECTED_JOB, job.getTitle(), req.getMessage());
-        notificationService.send(NotificationSendRequest.of(emailEmployee, message));
 
-        return JobRejectedResponse.of(req.getMessage());
+        // Gửi thông báo hệ thống
+        String message = String.format("Tin tuyển dụng \"%s\" của bạn đã bị từ chối. Lý do: %s", job.getTitle(), req.getMessage());
+        NotificationResponse notification = notificationService.send(NotificationSendRequest.of(emailEmployee, message));
+
+        return JobRejectedResponse.of(Boolean.TRUE, notification);
     }
 
     /**
@@ -342,7 +343,6 @@ public class JobServiceImpl implements JobService {
 
         return ApiResponse.builder().data(hasPermission).build();
     }
-
 
     /**
      * Tìm bài đăng công việc theo ID.

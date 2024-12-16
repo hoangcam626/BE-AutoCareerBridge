@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.dto.response.job;
 
+import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class JobRejectedResponse {
-    private String message;
+    private Boolean success;
+    private NotificationResponse notification;
 }
