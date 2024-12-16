@@ -171,6 +171,10 @@ public class MajorServiceImpl implements MajorService {
   public MajorRequest setMajorActive(int id) {
     Major major = majorRepository.findById(id)
         .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUNDED));
+    Section section = sectionRepository.findById(major.getId()).orElseThrow(() -> new AppException(ErrorCode.SECTION_NOT_FOUND));
+    if(section.getStatus()==Status.INACTIVE){
+      throw new AppException(ErrorCode.SECTION_INACTIVE);
+    }
     major.setStatus(Status.ACTIVE);
     major.setUpdatedAt(LocalDateTime.now());
     majorRepository.save(major);

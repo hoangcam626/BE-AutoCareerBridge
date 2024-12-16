@@ -172,6 +172,7 @@ public class Constant {
     public static final String NUMBER_MIN_STUDENT_MAJOR_MESSAGE = "Số sinh viên ít nhất là 50 .";
     public static final String NUMBER_MAX_STUDENT_MAJOR_MESSAGE = "Tối đa chỉ được 1.000 sinh viên .";
     public static final String ID_MAJOR_NOT_NULL_MESSAGE = " Không tìm thấy khoa .";
+    public static final String SECTION_INACTIVE_MESSAGE = "Khoa này hiện đang tạm ngưng";
 
     // Employee
     public static final String NAME_NOT_BLANK_MESSAGE = "Tên không được để trống";
