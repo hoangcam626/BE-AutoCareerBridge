@@ -53,13 +53,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     ImageService imageService;
 
     public String generateEmployeeCode(String emailBusiness, int lastEmployeeId) {
-        // Lấy hai chữ cái đầu tiên từ email (chữ thường, chuyển thành viết hoa)
-        String initials = emailBusiness.split("@")[0].substring(0, 2).toUpperCase();
+        // Lấy phần trước dấu @
+        String usernamePart = emailBusiness.split("@")[0];
+
+        // Đảm bảo usernamePart có ít nhất 3 ký tự
+        String initials = usernamePart.length() >= 3
+                ? usernamePart.substring(0, 3).toUpperCase()
+                : (usernamePart + "X").substring(0, 3).toUpperCase();
 
         int nextId = lastEmployeeId + 1;
         // Tạo mã nhân viên theo định dạng + employeeId
         return initials + String.format("%05d", nextId);
     }
+
 
     @Override
     public List<EmployeeResponse> getListEmployeee() throws ParseException {
