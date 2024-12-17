@@ -37,6 +37,8 @@ public class Constant {
     public static final String UNPROCESSABLE_ENTITY_MESSAGE = "Dữ liệu không thể xử lý";
     public static final String CONFLICT_MESSAGE = "Xung đột xảy ra";
     public static final String DESCRIPTION_MESSAGE = "Mô tả không được dài quá 255 kí tự ";
+    public static final String PREFIX_DATE = "Còn ";
+    public static final String POSTFIX_DATE = " Ngày";
 
     // Thông báo lỗi cụ thể
     public static final String ERROR_INVALID_EMAIL = "Email không hợp lệ.";
@@ -59,6 +61,7 @@ public class Constant {
     public static final String ERROR_APPROVED = "Người dùng đã được phê duyệt.";
     public static final String ERROR_NAME_EMPTY = "Tên không được để trống";
     public static final String ERROR_LIST_EMPTY_MESAGE = "Danh sách rỗng";
+    public static final String ERROR_PW_INCORRECT_FORMAT = "Mật khẩu phải có ít nhất 8 ký tự 1 chữ hoa và một số và ký tự đặc biệt ";
 
     // Lỗi liên quan đến hình ảnh
     public static final String EMPTY_FILE_MESSAGE = "Tệp rỗng.";
@@ -144,6 +147,7 @@ public class Constant {
     public static final String REGISTER_UNIVERSITY =
             "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
     public static final String TITLE_WORK_SHOP_MESSAGE = "Tiêu đề không để trống.";
+    public static final String TITLE_SIZE = "Tiêu đề quá dài.";
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";

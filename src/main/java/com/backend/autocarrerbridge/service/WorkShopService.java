@@ -25,6 +25,8 @@ public interface WorkShopService {
 
     List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword);
 
+    List<WorkShopResponse> getAllWorkShopByLocation(Pageable pageable, Integer provinceId);
+
     WorkShopResponse updateWordShop(Integer id, WorkShopRequest workShopRequest);
 
     WorkShopResponse removeWorkShop(Integer id);
@@ -36,4 +38,5 @@ public interface WorkShopService {
     WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException;
 
     PagingResponse<WorkShopResponse> getPagingByState(PageInfo info, State state);
+
 }

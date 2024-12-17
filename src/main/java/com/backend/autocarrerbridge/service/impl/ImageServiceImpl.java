@@ -56,6 +56,7 @@ public class ImageServiceImpl implements ImageService {
             "image/webp",
             "image/svg+xml"
     );
+
     /**
      * Lấy thông tin hình ảnh từ cơ sở dữ liệu theo ID.
      *

@@ -7,6 +7,7 @@ import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKS
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
@@ -87,9 +88,8 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
     @Override
     public String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest) {
         // Kiểm tra xem doanh nghiệp đã tham gia workshop chưa
-        if (workShopBussinessRepository.checkExistWorkShop(
-                        workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID())
-                != null) {
+        if (!Objects.isNull(workShopBussinessRepository.checkExistWorkShop(
+                        workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID()))) {
             throw new AppException(ERROR_FAIL_WORK_SHOP);
         }
 
@@ -99,7 +99,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
         Business business = businessService.getBusinessById(workShopBusinessRequest.getBusinessID());
 
         // Kiểm tra nếu workshop hoặc doanh nghiệp không tồn tại
-        if (workshop == null || business == null) {
+        if (Objects.isNull(business) || Objects.isNull(workshop)) {
             throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
 
@@ -131,7 +131,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
                 workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID());
 
         // Nếu không tìm thấy kết nối, ném ngoại lệ với mã lỗi NOT_FOUNDED.
-        if (workshopBusiness == null) {
+        if (Objects.isNull(workshopBusiness)) {
             throw new AppException(ErrorCode.NOT_FOUNDED);
         }
 
@@ -156,7 +156,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
                 workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID());
 
         // Nếu không tìm thấy kết nối, ném ngoại lệ với mã lỗi NOT_FOUNDED.
-        if (workshopBusiness == null) {
+        if (Objects.isNull(workshopBusiness)) {
             throw new AppException(ErrorCode.NOT_FOUNDED);
         }
 
