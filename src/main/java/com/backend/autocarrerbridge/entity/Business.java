@@ -53,7 +53,7 @@ public class Business extends AbstractAudit {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "business_image_id")

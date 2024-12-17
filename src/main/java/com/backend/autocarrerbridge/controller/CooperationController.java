@@ -5,6 +5,8 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 import java.text.ParseException;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -93,6 +95,9 @@ public class CooperationController {
                 .build();
     }
 
+    //phan trang request pending
+
+
     /**
      * API để lấy danh sách yêu cầu hợp tác đã được phê duyệt
      *
@@ -127,7 +132,27 @@ public class CooperationController {
      */
     @GetMapping("/approve-request/{buId}")
     ApiResponse<String> approveRequestCooperation(@PathVariable Integer buId) {
-        businessUniversityService.approveRequetCooperation(buId);
+        businessUniversityService.approveRequestCooperation(buId);
         return ApiResponse.<String>builder().data(SUCCESS_MESSAGE).build();
+    }
+
+    @GetMapping("/approve-request/{buId}")
+    ApiResponse<String> rejectRequestCooperation(@PathVariable Integer buId) {
+        businessUniversityService.rejectRequestCooperation(buId);
+        return ApiResponse.<String>builder().data(SUCCESS_MESSAGE).build();
+    }
+
+
+
+    //phan trang get list
+    @GetMapping("/get-all-cooperation-university")
+    public ApiResponse<Object> getAllCooperationPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword) throws ParseException {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ApiResponse.builder()
+                .data(businessUniversityService.gegetAllCooperationOfUniversityPage(keyword,pageable))
+                .build();
     }
 }

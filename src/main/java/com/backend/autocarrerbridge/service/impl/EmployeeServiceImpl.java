@@ -53,13 +53,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     ImageService imageService;
 
     public String generateEmployeeCode(String emailBusiness, int lastEmployeeId) {
-        // Lấy hai chữ cái đầu tiên từ email (chữ thường, chuyển thành viết hoa)
-        String initials = emailBusiness.split("@")[0].substring(0, 2).toUpperCase();
+        // Lấy phần trước dấu @
+        String usernamePart = emailBusiness.split("@")[0];
+
+        // Đảm bảo usernamePart có ít nhất 3 ký tự
+        String initials = usernamePart.length() >= 3
+                ? usernamePart.substring(0, 3).toUpperCase()
+                : (usernamePart + "X").substring(0, 3).toUpperCase();
 
         int nextId = lastEmployeeId + 1;
         // Tạo mã nhân viên theo định dạng + employeeId
         return initials + String.format("%05d", nextId);
     }
+
 
     @Override
     public List<EmployeeResponse> getListEmployeee() throws ParseException {
@@ -99,7 +105,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (Objects.nonNull(employeeRepository.findByUsername(employee.getEmail()))) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-
+        if(Objects.nonNull(employeeRepository.findByPhone(request.getPhone())))
+            throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
         try {
             // Lấy email doanh nghiệp từ token và gán doanh nghiệp cho nhân viên
             String emailBusiness = tokenService.getClaim(tokenService.getJWT(), SUB);
@@ -158,8 +165,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         // Tìm nhân viên theo ID, nếu không tồn tại thì ném ngoại lệ
         Employee employee =
                 employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        // Check phone
 
-        // Check ảnh nếu có thì xóa và cập nhật
         if (!Objects.isNull(request.getEmployeeImage())
                 && !request.getEmployeeImage().isEmpty()) {
             if (!Objects.isNull(employee.getEmployeeImageId())) imageService.delete(employee.getEmployeeImageId());
@@ -193,7 +200,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage(int page, int size, String keyword, Pageable pageable) {
+    public PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage( String keyword, Pageable pageable) {
         String emailAccountLogin;
         try {
             emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);

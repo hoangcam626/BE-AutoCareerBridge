@@ -23,5 +23,5 @@ public interface EmployeeService {
 
     void deleteEmployee(Integer id);
 
-    PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage(int page, int size, String keyword, Pageable pageable);
+    PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage( String keyword, Pageable pageable);
 }
