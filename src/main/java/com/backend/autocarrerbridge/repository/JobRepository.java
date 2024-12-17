@@ -211,10 +211,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
     FROM Job j\s
     JOIN FETCH Business b ON j.business.id = b.id\s
     JOIN FETCH Location l ON b.location.id = l.id\s
-    where j.industry.code =:industryCode
+    where j.industry.id =:industryId
     ORDER BY j.expireDate DESC
 """)
-    Page<BusinessJobResponse> findJobByIndustry(Pageable pageable,@Param("industryCode") Integer industryCode);
+    Page<BusinessJobResponse> findJobByIndustry(Pageable pageable,@Param("industryId") Integer industryId);
 
     @Query("""
     SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(

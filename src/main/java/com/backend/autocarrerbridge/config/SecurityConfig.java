@@ -65,6 +65,7 @@ public class SecurityConfig {
             "/api/job/district/*",
             "/api/job/province/*",
             "/api/job/industry/*",
+            "/api/job/job-all",
             "api/industry/get-all",
             "/api/job/salary",
             "/api/accounts/jwt-introspect",

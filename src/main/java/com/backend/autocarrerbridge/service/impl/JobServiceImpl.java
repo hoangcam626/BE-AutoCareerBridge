@@ -421,8 +421,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public PagingResponse<BusinessJobResponse> getAllJobBusinessByIndustry(Pageable pageable, Integer industryCode) {
-        Page<BusinessJobResponse> page = jobRepository.findJobByIndustry(pageable,industryCode);
+    public PagingResponse<BusinessJobResponse> getAllJobBusinessByIndustry(Pageable pageable, Integer industryId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByIndustry(pageable,industryId);
         if(Objects.isNull(page) || page.getContent().isEmpty()){
             throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
         }

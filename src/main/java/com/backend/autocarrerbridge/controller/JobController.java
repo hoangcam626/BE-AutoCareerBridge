@@ -136,13 +136,13 @@ public class JobController {
         return ApiResponse.builder().build().setData(jobService.getAllJobBusiness(pageable));
     }
 
-    @GetMapping("/industry/{industryCode}")
+    @GetMapping("/industry/{industryId}")
     public ApiResponse<Object> getJobByIndustry(@RequestParam(defaultValue = "0") int page,
                                                      @RequestParam(defaultValue = "10") int size,
-                                                    @PathVariable("industryCode") Integer industryCode)  {
+                                                    @PathVariable("industryId") Integer industryId)  {
         Pageable pageable = PageRequest.of(page, size);
 
-        return ApiResponse.builder().build().setData(jobService.getAllJobBusinessByIndustry(pageable,industryCode));
+        return ApiResponse.builder().build().setData(jobService.getAllJobBusinessByIndustry(pageable,industryId));
     }
 
     @GetMapping("/salary")
