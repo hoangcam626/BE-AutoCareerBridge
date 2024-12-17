@@ -41,4 +41,5 @@ public interface BusinessService {
 
     EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest);
 
+
 }

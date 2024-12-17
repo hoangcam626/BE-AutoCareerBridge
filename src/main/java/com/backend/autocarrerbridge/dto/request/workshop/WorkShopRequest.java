@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.dto.request.workshop;
 
 import static com.backend.autocarrerbridge.util.Constant.DES_WORK_SHOP_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.TITLE_SIZE;
 import static com.backend.autocarrerbridge.util.Constant.TITLE_WORK_SHOP_MESSAGE;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.autocarrerbridge.util.enums.State;
@@ -25,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class WorkShopRequest {
 
     private Integer id;
-
+    @Size(max = 128, message = TITLE_SIZE)
     @NotBlank(message = TITLE_WORK_SHOP_MESSAGE)
     private String title;
 

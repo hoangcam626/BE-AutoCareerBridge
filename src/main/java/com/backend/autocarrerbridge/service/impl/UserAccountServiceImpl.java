@@ -14,6 +14,7 @@ import static com.backend.autocarrerbridge.util.Constant.NOTIFICATION_WAIT;
 import static com.backend.autocarrerbridge.util.Constant.PREFIX_FG;
 import static com.backend.autocarrerbridge.util.Constant.PREFIX_NP;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.backend.autocarrerbridge.repository.UserAccountRepository;
@@ -30,6 +31,7 @@ import com.backend.autocarrerbridge.entity.SubAdmin;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.repository.EmployeeRepository;
 import com.backend.autocarrerbridge.service.IntermediaryService;
+import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.enums.Status;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,7 +46,7 @@ import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginRespons
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.UserAccountRepository;
+
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -71,6 +73,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     IntermediaryService intermediaryService;
     private final EmployeeRepository employeeRepository;
 
+
     /**
      * Xác thực người dùng dựa trên tên đăng nhập và mật khẩu.
      *
@@ -83,7 +86,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
         validateRequest(userAccountRequest);
         UserAccount user = userAccountRepository.findByUsername(userAccountRequest.getUsername());
-        if (user == null) {
+        if (Objects.isNull(user)) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
         validatePassword(userAccountRequest.getPassword(), user.getPassword());
@@ -159,6 +162,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         if(Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))){
             throw new AppException(ERROR_EMAIL_EXIST);
         }
+        if(!Validation.isValidPassword(userAccount.getPassword())){
+            throw  new AppException(ERROR_FORMAT_PW);
+        }
         UserAccount newAccount = UserAccount.builder()
                 .username(userAccount.getUsername())
                 .password(passwordEncoder.encode(userAccount.getPassword()))
@@ -194,8 +200,17 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public UserAccountLoginResponse updatePassword(PasswordChangeRequest userAccountResponseDTO) {
+        if(!Validation.isValidEmail(userAccountResponseDTO.getUsername())){
+            throw  new AppException(ERROR_EMAIL_INVALID);
+        }
+        if(!Validation.isValidPassword(userAccountResponseDTO.getNewPassword()) || !Validation.isValidPassword(userAccountResponseDTO.getNewPassword())){
+            throw  new AppException(ERROR_FORMAT_PW);
+        }
         UserAccount userAccount = userAccountRepository.findByUsername(userAccountResponseDTO.getUsername());
-        if (userAccountResponseDTO.getPassword() == null
+        if(Objects.isNull(userAccount)){
+            throw new AppException(ERROR_USER_NOT_FOUND);
+        }
+        if (Objects.isNull(userAccountResponseDTO.getPassword())
                 || userAccountResponseDTO.getPassword().isEmpty()) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
@@ -224,20 +239,20 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public EmailCode generateVerificationCode(String email) {
         UserAccount userAccount = userAccountRepository.findByUsername(email);
-        if (userAccount != null && userAccount.getState().equals(State.APPROVED)) {
+        if (!Objects.isNull(userAccount) && userAccount.getState().equals(State.APPROVED)) {
             throw new AppException(ErrorCode.ERROR_USER_APPROVED);
         }
         String code = generateCode(email);
         if (code.equals(codeExist)) {
-            return EmailCode.builder().email(email).verificationCode(NOTIFICATION_WAIT).build();
+            return EmailCode.builder().email(NOTIFICATION_WAIT).build();
         }
-        return EmailCode.builder().email(email).verificationCode(code).build();
+        return EmailCode.builder().email(email).build();
     }
 
     // Gen ra mã reset mật khẩu
     @Override
     public EmailCode generatePasswordResetCode(String email) {
-        if(userAccountRepository.findByUsername(email) == null){
+        if(Objects.isNull(userAccountRepository.findByUsername(email))){
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
         // Tạo mã reset mật khẩu cho email
@@ -249,20 +264,20 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
 
         // Trả về mã reset mật khẩu mới
-        return EmailCode.builder().email(email).verificationCode(code).build();
+        return EmailCode.builder().email(email).build();
     }
 
     // Thực hiện thay đổi mật khẩu khi quên mật khẩu
     @Override
     public String handleForgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         // Kiểm tra email có hợp lệ không
-        if (forgotPasswordRequest.getEmail() == null
+        if (Objects.isNull(forgotPasswordRequest.getEmail())
                 || forgotPasswordRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
         // Kiểm tra xem email có tồn tại trong hệ thống không
-        if (userAccountRepository.findByUsername(forgotPasswordRequest.getEmail()) == null) {
+        if (Objects.isNull(userAccountRepository.findByUsername(forgotPasswordRequest.getEmail()))) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
 
@@ -328,7 +343,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     // Tạo mã quên mật khẩu và gửi qua email
     public String generateCodeForgot(String emailSend) {
         // Kiểm tra xem mã quên mật khẩu đã tồn tại chưa
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(emailSend))) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(PREFIX_FG + emailSend))) {
             return codeExist;
         }
 

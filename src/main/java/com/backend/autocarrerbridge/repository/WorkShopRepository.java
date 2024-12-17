@@ -28,9 +28,9 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             Pageable pageable, @Param("universityId") Integer universityId, @Param("keyword") String keyword);
 
     // Tìm kiếm theo tiêu đề workshop theo địa điểm (không giới hạn bởi trường đại học)
-    @Query("SELECT ws FROM Workshop ws WHERE "
-            + "(:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
-    Page<Workshop> getAllWorkShopByLocation(Pageable pageable, @Param("keyword") String keyword);
+    @Query("SELECT ws FROM Workshop ws LEFT JOIN Location l ON ws.location.id = l.id WHERE l.province.id = :idProvinces")
+    Page<Workshop> getAllWorkShopByLocation(Pageable pageable, @Param("idProvinces") Integer idProvinces);
+
 
     // Tìm kiếm theo trạng thái duyệt (statusBrowse)
     @Query("SELECT ws FROM Workshop ws WHERE " + "(:approved IS NULL OR ws.statusBrowse = :approved) "
