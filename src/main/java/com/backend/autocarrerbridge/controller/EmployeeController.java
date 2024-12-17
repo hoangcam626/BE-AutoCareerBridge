@@ -100,11 +100,10 @@ public class EmployeeController {
 
     //phan trang get list
     @GetMapping("/get-all-employee-of-business")
-    public ApiResponse<Object> getIndustryOfBusiness(
+    public ApiResponse<Object> getEmployeePage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam String keyword)
-            throws ParseException {
+            @RequestParam String keyword) {
         Pageable pageable = PageRequest.of(page - 1, size);
         return ApiResponse.builder()
                 .data(employeeService.getAllEmployeeOfBusinessPage(keyword,pageable))

@@ -35,4 +35,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             + "OR e.name like %:keyword% or e.employeeCode like %:keyword% or e.email like %:keyword%)"
             + "ORDER BY e.employeeCode ASC ")
     Page<Employee> getEmployeeForPaging(String email, @Param("keyword") String keyword, Pageable pageable);
+
+    Employee findByPhone(String phone);
 }

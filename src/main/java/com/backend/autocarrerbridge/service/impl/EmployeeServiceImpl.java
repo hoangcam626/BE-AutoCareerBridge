@@ -99,7 +99,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (Objects.nonNull(employeeRepository.findByUsername(employee.getEmail()))) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-
+        if(Objects.nonNull(employeeRepository.findByPhone(request.getPhone())))
+            throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
         try {
             // Lấy email doanh nghiệp từ token và gán doanh nghiệp cho nhân viên
             String emailBusiness = tokenService.getClaim(tokenService.getJWT(), SUB);
@@ -158,8 +159,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         // Tìm nhân viên theo ID, nếu không tồn tại thì ném ngoại lệ
         Employee employee =
                 employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+        // Check phone
 
-        // Check ảnh nếu có thì xóa và cập nhật
         if (!Objects.isNull(request.getEmployeeImage())
                 && !request.getEmployeeImage().isEmpty()) {
             if (!Objects.isNull(employee.getEmployeeImageId())) imageService.delete(employee.getEmployeeImageId());
