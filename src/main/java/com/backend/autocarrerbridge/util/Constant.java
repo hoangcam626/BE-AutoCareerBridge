@@ -162,6 +162,7 @@ public class Constant {
     public static final String SECTION_NOT_FOUND_MESSAGE = "Không tìm thấy khoa.";
     public static final String SECTION_EXISTED_MESSAGE = "Tên khoa đã tồn tại .";
     public static final String SECTION_HAVE_MAJOR_MESSAGE = "Khoa có dữ liệu chuyên ngành không thể xóa.";
+    public static final String SECTION_HAVE_ACTIVE_MAJOR_MESSAGE = "Vẫn còn chuyên ngành hoạt động không thể thay đổi trạng thái ";
 
     // major
     public static final String NAME_MAJOR_NOT_BLANK_MESSAGE = "Tên ngành không được bỏ trống .";
@@ -171,6 +172,7 @@ public class Constant {
     public static final String NUMBER_MIN_STUDENT_MAJOR_MESSAGE = "Số sinh viên ít nhất là 50 .";
     public static final String NUMBER_MAX_STUDENT_MAJOR_MESSAGE = "Tối đa chỉ được 1.000 sinh viên .";
     public static final String ID_MAJOR_NOT_NULL_MESSAGE = " Không tìm thấy khoa .";
+    public static final String SECTION_INACTIVE_MESSAGE = "Khoa này hiện đang tạm ngưng";
 
     // Employee
     public static final String NAME_NOT_BLANK_MESSAGE = "Tên không được để trống";
@@ -220,4 +222,13 @@ public class Constant {
 
     //Giáo vụ
     public static final String INSTRUCTIONAL_EXIST_MESSAGE ="Giáo vụ không tồn tại";
+    public static final String INSTRUCTIONAL_CODE_EXISTED_MESSAGE ="Mã giáo vụ đã tồn tại";
+    public static final String INSTRUCTIONAL_NAME_NOT_BANK_MESSAGE ="Tên giáo vụ không được để trống!";
+    public static final String INSTRUCTIONAL_NAME_SIZE_MESSAGE ="Tên phải có độ dài từ 2 đến 100 ký tự!";
+    public static final String INSTRUCTIONAL_GENDER_NOT_BLANK_MESSAGE ="Giới tính không được để trống!";
+    public static final String INSTRUCTIONAL_GENDER_REGEX_MESSAGE ="Giới tính phải là Nam, Nữ hoặc Khác!";
+    public static final String INSTRUCTIONAL_EMAIL_NOT_BLANK_MESSAGE ="Email không được để trống!";
+    public static final String INSTRUCTIONAL_EMAIL_REGEX_MESSAGE ="Địa chỉ email không hợp lệ!";
+    public static final String INSTRUCTIONAL_ADRESS_NOT_BLANK_MESSAGE ="Địa chỉ không được để trống!";
+    public static final String INSTRUCTIONAL_PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống!";
 }
