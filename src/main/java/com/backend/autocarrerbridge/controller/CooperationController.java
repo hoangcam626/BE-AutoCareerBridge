@@ -5,12 +5,16 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRequest;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -127,16 +131,17 @@ public class CooperationController {
     /**
      * API để phê duyệt yêu cầu hợp tác của doanh nghiệp
      *
-     * @param buId ID của yêu cầu hợp tác
+     * &#064;ReqestBody  CooperationApproveRequest  của yêu cầu hợp tác
      * @return thông báo thành công
      */
-    @GetMapping("/approve-request/{buId}")
-    ApiResponse<String> approveRequestCooperation(@PathVariable Integer buId) {
-        businessUniversityService.approveRequestCooperation(buId);
-        return ApiResponse.<String>builder().data(SUCCESS_MESSAGE).build();
+    @GetMapping("/approve-request")
+    ApiResponse<CooperationApproveResponse> approveRequestCooperation(@Valid @RequestBody CooperationApproveRequest request) throws ParseException {
+        return ApiResponse.<CooperationApproveResponse>builder()
+                .data(businessUniversityService.approveRequestCooperation(request))
+                .build();
     }
 
-    @GetMapping("/approve-request/{buId}")
+    @GetMapping("/reject-request/{buId}")
     ApiResponse<String> rejectRequestCooperation(@PathVariable Integer buId) {
         businessUniversityService.rejectRequestCooperation(buId);
         return ApiResponse.<String>builder().data(SUCCESS_MESSAGE).build();

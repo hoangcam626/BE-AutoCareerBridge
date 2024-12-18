@@ -131,15 +131,14 @@ public class BusinessServiceImpl implements BusinessService {
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
-                .id(businessUpdate.getLocation().getId())
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
+        if(Objects.nonNull(businessUpdate.getLocation()))
+            locationRequest.setId(businessUpdate.getLocation().getId());
         Location location = locationService.saveLocation(locationRequest);
-
-        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
 
         // set ảnh cho business
         if(Objects.nonNull(request.getBusinessImage()))
@@ -147,7 +146,11 @@ public class BusinessServiceImpl implements BusinessService {
         if(Objects.nonNull(request.getLicenseImage()))
             businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
+        //Lưu location entity vào db
+        businessUpdate.setLocation(location);
         BusinessResponse businessResponse = businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+
+        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
         businessResponse.setLocation(locationResponse);
         return businessResponse; // Lưu và trả về DTO
     }

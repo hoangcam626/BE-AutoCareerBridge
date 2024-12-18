@@ -1,13 +1,21 @@
 package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+import static com.backend.autocarrerbridge.util.Constant.APPROVE_COOPERATION_MESSAGE;
 
+import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRequest;
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
+import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.service.TokenService;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -48,6 +56,8 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     BusinessUniversityRepository businessUniversityRepository; // Repository để thao tác với bảng BusinessUniversity
     SentRequestConverter sentRequestConverter; // Bộ chuyển đổi đối tượng SentRequest
     BusinessUniversityMapper businessUniversityMapper; // Mapper để chuyển đổi giữa các DTO và Entity
+    SendEmail sendEmail;
+    NotificationService notificationService;
 
     /**
      * Lấy thông tin doanh nghiệp dựa vào token
@@ -213,14 +223,33 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      * Phê duyệt yêu cầu hợp tác
      */
     @Override
-    public void approveRequestCooperation(Integer idBusinessUniversityApprove) {
+    public CooperationApproveResponse approveRequestCooperation(CooperationApproveRequest request) throws ParseException {
+
         BusinessUniversity businessUniversity =
-                businessUniversityRepository.findBusinessUniversityById(idBusinessUniversityApprove);
+                businessUniversityRepository.findBusinessUniversityById(request.getIdCooperation());
         if (Objects.isNull(businessUniversity)) { // Nếu không tìm thấy
             throw new AppException(ErrorCode.NOT_FOUNDED);
         }
-        businessUniversity.setStatusConnected(State.APPROVED); // Chuyển trạng thái sang phê duyệt
+        businessUniversity.setStatusConnected(State.APPROVED);// Chuyển trạng thái sang phê duyệt
         businessUniversityRepository.save(businessUniversity);
+
+        //Gửi thông báo mail đến business
+        String emailBusiness=businessUniversityRepository.getEmailBusinessFromIdCooperation(request.getIdCooperation());
+        String nameUniversity;
+        try {
+            nameUniversity=getUniversityFromToken().getName();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        String message= nameUniversity +APPROVE_COOPERATION_MESSAGE;
+        EmailDTO emailDTO = new EmailDTO(emailBusiness,message,"");
+        sendEmail.sendApprovedCooperationNotification(emailDTO,message,nameUniversity);
+
+        //Thông báo bên giao diện
+        NotificationResponse notificationResponse = notificationService.send(
+                NotificationSendRequest.of(emailBusiness,message)
+        );
+        return CooperationApproveResponse.of(Boolean.TRUE, notificationResponse);
     }
 
     @Override

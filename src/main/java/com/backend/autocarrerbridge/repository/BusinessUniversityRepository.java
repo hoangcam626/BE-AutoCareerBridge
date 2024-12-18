@@ -35,6 +35,9 @@ public interface BusinessUniversityRepository extends JpaRepository<BusinessUniv
 
     BusinessUniversity findBusinessUniversityById(Integer id);
 
+    @Query("select bu.business.email from BusinessUniversity bu where bu.id = :id and bu.status != 0")
+    String getEmailBusinessFromIdCooperation(Integer id);
+
     @Query("SELECT cooperation "
             + "FROM BusinessUniversity cooperation WHERE cooperation.university.email = :email "
             + "AND cooperation.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
