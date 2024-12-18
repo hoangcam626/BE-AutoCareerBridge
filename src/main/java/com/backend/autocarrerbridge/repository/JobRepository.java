@@ -41,7 +41,7 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
     @Query("SELECT j from Job j where j.id = :jobId")
     Job getJobDetail(Integer jobId);
 
-    @Query("SELECT j " +
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(j) " +
             "FROM Job j " +
             "WHERE j.statusBrowse = :state  " +
             "AND (:keyword IS NULL OR " +
@@ -55,7 +55,7 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             "       ELSE 2 " +
             "   END," +
             "   j.createdAt DESC ")
-    Page<Job> findAllByState(Pageable pageable, Integer state, String keyword);
+    Page<JobResponse> findAllByState(Pageable pageable, Integer state, String keyword);
 
     /**
      * Tìm job qua ngành nghề

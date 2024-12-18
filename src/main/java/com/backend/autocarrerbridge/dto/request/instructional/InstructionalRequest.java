@@ -1,6 +1,6 @@
 package com.backend.autocarrerbridge.dto.request.instructional;
 
-import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_ADRESS_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_ADDRESS_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_EMAIL_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_EMAIL_REGEX_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INSTRUCTIONAL_GENDER_NOT_BLANK_MESSAGE;
@@ -44,7 +44,7 @@ public class InstructionalRequest{
     @NotBlank(message = INSTRUCTIONAL_EMAIL_NOT_BLANK_MESSAGE)
     @Email(message = INSTRUCTIONAL_EMAIL_REGEX_MESSAGE)
     private String email;
-    @NotBlank(message = INSTRUCTIONAL_ADRESS_NOT_BLANK_MESSAGE)
+    @NotBlank(message = INSTRUCTIONAL_ADDRESS_NOT_BLANK_MESSAGE)
     private String address;
 
     private MultipartFile instructionalImageId;

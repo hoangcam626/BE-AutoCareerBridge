@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.entity;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +12,7 @@ import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +22,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "location")
 public class Location extends AbstractAudit {
@@ -47,21 +48,5 @@ public class Location extends AbstractAudit {
     @JoinColumn(name = "wards_code", nullable = false)
     private Ward ward;
 
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        Location location = (Location) object;
-        return Objects.equals(id, location.id)
-                && Objects.equals(description, location.description)
-                && Objects.equals(province, location.province)
-                && Objects.equals(district, location.district)
-                && Objects.equals(ward, location.ward);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id, description, province, district, ward);
-    }
 }

@@ -51,22 +51,23 @@ public class SecurityConfig {
     }
 
     private static final String[] AUTH_WHITELIST = {
-        "/api/business/register",
-        "/api/university/register",
-        "/api/accounts/refresh",
-        "/api/accounts/login",
-        "/api/accounts/verify",
+            "/api/business/register",
+            "/api/university/register",
+            "/api/accounts/refresh",
+            "/api/accounts/login",
+            "/api/accounts/verify",
             "/api/business/verify-business",
             "/api/university/verify-university",
-        "/api/accounts/forgot-code",
-        "/api/accounts/forgot-pass",
-        "/api/accounts/jwt-introspect",
-        "/api/v1/image/**",
-        "/v3/api-docs/**",
-        "/swagger-ui/**",
-        "/swagger-resources/**",
-        "/webjars/**",
-        "/api/administrative/**",
+            "/api/accounts/forgot-code",
+            "/api/accounts/forgot-pass",
+            "/api/accounts/jwt-introspect",
+            "/api/v1/image/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/webjars/**",
+            "/api/administrative/**",
+            "/api/notification/stream/*",
     };
 
     @Bean

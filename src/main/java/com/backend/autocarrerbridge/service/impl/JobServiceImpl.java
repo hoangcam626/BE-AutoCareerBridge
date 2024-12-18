@@ -21,6 +21,7 @@ import com.backend.autocarrerbridge.dto.response.notification.NotificationRespon
 import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
@@ -33,7 +34,6 @@ import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -73,7 +73,6 @@ public class JobServiceImpl implements JobService {
     private final NotificationService notificationService;
     private final ConvertJob convertJob;
     private final SendEmail sendEmail;
-    private final ModelMapper modelMapper;
 
     /**
      * Lấy Employee từ token
@@ -287,34 +286,48 @@ public class JobServiceImpl implements JobService {
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.APPROVED);
         job.setStatusBrowse(State.APPROVED);
-        String emailEmployee = job.getEmployee().getEmail();
+        jobRepository.save(job);
 
-        EmailDTO emailDTO = new EmailDTO(emailEmployee, APPROVED_JOB, "");
-        sendEmail.sendApprovedJobNotification(emailDTO,
+        String emailEmployee = job.getEmployee().getEmail();
+        String emailBusiness = job.getBusiness().getEmail();
+
+        EmailDTO emailEmployeeDTO = new EmailDTO(emailEmployee, APPROVED_JOB, "");
+        sendEmail.sendApprovedJobNotification(emailEmployeeDTO,
+                job.getTitle());
+        EmailDTO emailBusinessDTO = new EmailDTO(emailBusiness, APPROVED_JOB, "");
+        sendEmail.sendApprovedJobNotification(emailBusinessDTO,
                 job.getTitle());
 
+
         String message = String.format("Tin tuyển dụng \"%s\" của bạn đã được phê duyệt", job.getTitle());
-        NotificationResponse notification = notificationService.send(NotificationSendRequest.of(emailEmployee, message));
+        NotificationSendRequest sendReq =NotificationSendRequest.of(Arrays.asList(emailBusiness, emailEmployee), APPROVED_JOB, message);
+        NotificationResponse notification = notificationService.send(sendReq);
         return JobApprovedResponse.of(Boolean.TRUE, notification);
     }
 
     /**
-     * Phê duyệt bài đăng công việc.
+     * Từ chối bài đăng công việc.
      */
     @Override
     public JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException {
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.REJECTED);
         job.setStatusBrowse(State.REJECTED);
+        jobRepository.save(job);
 
         // Gửi thông báo email
         String emailEmployee = job.getEmployee().getEmail();
         EmailDTO emailDTO = new EmailDTO(emailEmployee, REJECTED_JOB, "");
         sendEmail.sendRRejectedJobNotification(emailDTO, job.getTitle(), req.getMessage());
 
+        String emailBusiness = job.getBusiness().getEmail();
+        EmailDTO emailBusinessDTO = new EmailDTO(emailBusiness, REJECTED_JOB, "");
+        sendEmail.sendRRejectedJobNotification(emailBusinessDTO, job.getTitle(), req.getMessage());
+
         // Gửi thông báo hệ thống
         String message = String.format("Tin tuyển dụng \"%s\" của bạn đã bị từ chối. Lý do: %s", job.getTitle(), req.getMessage());
-        NotificationResponse notification = notificationService.send(NotificationSendRequest.of(emailEmployee, message));
+        NotificationSendRequest sendReq  = NotificationSendRequest.of(Arrays.asList(emailBusiness, emailEmployee), REJECTED_JOB, message);
+        NotificationResponse notification = notificationService.send(sendReq);
 
         return JobRejectedResponse.of(Boolean.TRUE, notification);
     }
@@ -325,8 +338,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public PagingResponse<JobResponse> getPagingByState(PageInfo req, Integer state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<Job> jobs = jobRepository.findAllByState(pageable, state, req.getKeyword());
-        Page<JobResponse> res = jobs.map(j -> modelMapper.map(j, JobResponse.class));
+        Page<JobResponse> res = jobRepository.findAllByState(pageable, state, req.getKeyword());
         return new PagingResponse<>(res);
     }
 

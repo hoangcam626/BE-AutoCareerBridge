@@ -44,7 +44,6 @@ import com.backend.autocarrerbridge.dto.response.account.UserAccountLoginRespons
 import com.backend.autocarrerbridge.entity.UserAccount;
 import com.backend.autocarrerbridge.exception.AppException;
 import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.UserAccountRepository;
 import com.backend.autocarrerbridge.service.UserAccountService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -130,7 +129,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     /**
      * Lưu refresh token cho tài khoản người dùng.
      *
-     * @param id id của tài khoản người dùng.
+     * @param id           id của tài khoản người dùng.
      * @param refreshToken token cần lưu.
      * @throws RuntimeException nếu không tìm thấy tài khoản.
      */
@@ -156,7 +155,7 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public UserAccount registerUser(UserAccount userAccount) {
-        if(Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))){
+        if (Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))) {
             throw new AppException(ERROR_EMAIL_EXIST);
         }
         UserAccount newAccount = UserAccount.builder()
@@ -181,6 +180,11 @@ public class UserAccountServiceImpl implements UserAccountService {
         req.setState(State.REJECTED);
         req.setStatus(Status.INACTIVE);
         userAccountRepository.save(req);
+    }
+
+    @Override
+    public UserAccount getUserById(Integer id) {
+        return userAccountRepository.findById(id).orElseThrow(() -> new AppException(ERROR_USER_NOT_FOUND));
     }
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
@@ -237,7 +241,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     // Gen ra mã reset mật khẩu
     @Override
     public EmailCode generatePasswordResetCode(String email) {
-        if(userAccountRepository.findByUsername(email) == null){
+        if (userAccountRepository.findByUsername(email) == null) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
         // Tạo mã reset mật khẩu cho email

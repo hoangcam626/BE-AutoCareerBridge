@@ -9,14 +9,19 @@ import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
+@Getter
+@EqualsAndHashCode(callSuper = true)
+
 @Entity
-@Data
 @Table(name = "industry")
 public class Industry extends AbstractAudit {
 
@@ -30,17 +35,4 @@ public class Industry extends AbstractAudit {
 
     @Column(name = "code")
     private String code;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Industry industry = (Industry) o;
-        return id != null && id.equals(industry.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

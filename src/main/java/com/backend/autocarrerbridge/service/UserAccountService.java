@@ -28,5 +28,6 @@ public interface UserAccountService {
 
     void rejectedAccount(UserAccount userAccount);
 
+    UserAccount getUserById(Integer id);
 
 }
