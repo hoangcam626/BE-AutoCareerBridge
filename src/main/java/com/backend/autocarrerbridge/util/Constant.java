@@ -30,7 +30,8 @@ public class Constant {
     public static final String NOTIFICATION_WAIT = "Vui lòng chờ";
     public static final String SUCCESS_ACCEPT_MESSAGE = "Chấp nhận yêu cầu thành công!";
     public static final String REJECT_ACCEPT_MESSAGE = "Từ chối thành công!";
-
+    public static final String APPROVE_COOPERATION_MESSAGE= " đã chấp nhận yêu cầu hợp tác của bạn";
+    public static final String REJECT_COOPERATION_MESSAGE= "đã chấp nhận yêu cầu hợp tác của bạn";
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
     public static final String FORBIDDEN_MESSAGE = "Truy cập bị từ chối";
@@ -42,12 +43,13 @@ public class Constant {
 
     // Thông báo lỗi cụ thể
     public static final String ERROR_INVALID_EMAIL = "Email không hợp lệ.";
-    public static final String ERROR_INVALID_PHONE = "Email không hợp lệ.";
+    public static final String TOO_LONG_EMAIL_MESSAGE = "Email vượt quá 255 ký tự hoặc quá ngắn";
+    public static final String ERROR_INVALID_PHONE = "số điện thoại không hợp lệ.";
     public static final String ERROR_EXIST = "Email đã tồn tại.";
     public static final String ERROR_NOT_FOUND = "Không tìm thấy email.";
     public static final String ERROR_USER_EXIST = "Tên người dùng đã tồn tại.";
     public static final String PW_NOT_MATCH = "Mật khẩu không khớp.";
-    public static final String ERROR_INVALID_PHONE_NUMBER = "Số điện thoại không hợp lệ.";
+    public static final String ERROR_INVALID_PHONE_NUMBER = "Số điện thoại gồm 10 số và bắt đầu bằng +84 hoặc 0 theo sau là số từ 3-9.";
     public static final String USER_NOT_FOUND = "Không tìm thấy người dùng.";
     public static final String LICENSE_INVALID = "Giấy phép không hợp lệ.";
     public static final String ERROR_PW = "Mật khẩu không chính xác.";
@@ -183,8 +185,15 @@ public class Constant {
     public static final String GENDER_NOT_BLANK_MESSAGE = "Giới tính không được để trống";
     public static final String DOB_NOT_BLANK_MESSAGE = "Ngày sinh không được để trống";
     public static final String EMAIL_NOT_BLANK_MESSAGE = "Email Tên không được để trống";
+    public static final String EMAIL_INVALID_SPACE_MESSAGE = "Email không được bắt đầu bằng dấu cách";
     public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
     public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
+    public static final String TOO_LONG_NAME_MESSAGE = "Tên nhân viên không hợp lệ quá dài hoặc quá ngắn";
+    public static final String INVALID_NAME_MESSAGE = "Tên nhân viên không được bắt đầu bằng dấu cách";
+    public static final String TOO_LONG_ADDRESS_MESSAGE= "Địa chỉ vượt quá 255 ký tự";
+    public static final String ADDRESS_INVALID_SPACE_MESSAGE = "Địa chỉ không được bắt đầu bằng dấu cách";
+
+
 
     // Administrative
     public static final String DISTRICT_NOT_FOUND_MESSAGE = "Không tìm thấy Quận/Huyện";

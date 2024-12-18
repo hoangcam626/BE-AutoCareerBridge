@@ -28,10 +28,6 @@ public class BusinessUpdateRequest {
     @NotBlank(message = NAME_NOT_BLANK_MESSAGE)
     private String name;
 
-    @NotBlank(message = EMAIL_NOT_BLANK_MESSAGE)
-    @Email(message = EMAIL_INVALID_MESSAGE)
-    private String email;
-
     @NotBlank(message = TAX_CODE)
     private String taxCode;
 
