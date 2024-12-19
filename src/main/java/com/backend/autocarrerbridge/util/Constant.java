@@ -149,8 +149,11 @@ public class Constant {
     public static final String REGISTER_UNIVERSITY =
             "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
     public static final String TITLE_WORK_SHOP_MESSAGE = "Tiêu đề không để trống.";
-    public static final String TITLE_SIZE = "Tiêu đề quá dài.";
+
+    public static final String TITLE_SIZE_MAX = "Tiêu đề quá dài.";
+    public static final String TITLE_SIZE_MIN = "Tiêu đề quá ngắn.";
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
+    public static final String DATE_WORKSHOP_OUT_DATE = "Hội thảo đã kết thúc.";
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
     public static final String NAME_UNIVERSITY_NOT_BLANK_MESSAGE = "Tên trường đại học không được rỗng.";
@@ -158,7 +161,10 @@ public class Constant {
     public static final String WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE = "Website không được bỏ trống.";
     public static final String FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE = "Năm thành lập không được bỏ trống.";
     public static final String PHONE_UNIVERSITY_NOT_BLANK_MESSAGE = "Số điện thoại không được bỏ trống.";
-
+    public static final String ADDRESS_DESCRIPTION = "Địa chỉ chi tiết quá dài!";
+    public static final String NAME_REGISTER = "Tên đăng ký quá dài!";
+    public static final String PW_REGISTER = "Mật khẩu quá dài!";
+    public static final String TAX_CODE_REGISTER = "Mã số thuế không hợp lệ!";
     // section
     public static final String NAME_SECTION_NOT_BLANK_MESSAGE = "Tên khoa không được bỏ trống .";
     public static final String NAME_SECTION_NOT_LOGGER_MESSAGE = "Tên khoa không được dài quá 100 kí tự.";

@@ -51,35 +51,33 @@ public class SecurityConfig {
     }
 
     private static final String[] AUTH_WHITELIST = {
+            "/api/business/register",
+            "/api/university/register",
             "/api/accounts/refresh",
             "/api/accounts/login",
             "/api/accounts/verify",
-            "/api/accounts/jwt-introspect",
+            "/api/business/verify-business",
+            "/api/university/verify-university",
             "/api/accounts/forgot-code",
             "/api/accounts/forgot-pass",
-            "/api/administrative/**",
-            "/api/business/register",
-            "/api/business/verify-business",
             "/api/job/business-total-job",
-            "/api/job/district/*",
-            "/api/job/job-all",
-            "/api/job/industry/*",
-            "/api/job/province/*",
             "/api/job/region/*",
+            "/api/job/district/*",
+            "/api/job/province/*",
+            "/api/job/industry/*",
+            "api/business/feature-business",
+            "/api/job/job-all",
+            "api/industry/get-all",
             "/api/job/salary",
-            "/api/industry/get-all",
-            "/api/notification/stream/*",
-            "/api/university/register",
-            "/api/university/verify-university",
+            "/api/accounts/jwt-introspect",
             "/api/v1/image/**",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
             "/v3/api-docs/**",
-            "/webjars/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/webjars/**",
+            "/api/administrative/**"
     };
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtBlacklistFilter jwtBlacklistFilter)

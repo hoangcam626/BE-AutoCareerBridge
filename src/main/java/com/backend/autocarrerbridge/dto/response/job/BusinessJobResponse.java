@@ -25,7 +25,9 @@ public class BusinessJobResponse {
     String expireDate;
     String level;
     Integer salary;
+    String description;
     String workingTime;
+    String benefit;
     String requirement;
     State statusBrowse;
     Status status;
@@ -50,8 +52,10 @@ public class BusinessJobResponse {
             LocalDate expireDateInput,
             String level,
             Integer salary,
+            String description,
             String workingTime,
             String requirement,
+            String benefit,
             State statusBrowse,
             Status status,
             Integer imageBusinessId,
@@ -74,10 +78,12 @@ public class BusinessJobResponse {
         this.requirement = requirement;
         this.statusBrowse = statusBrowse;
         this.status = status;
+        this.benefit = benefit;
         this.imageBusinessId = imageBusinessId;
         this.address = address;
         this.province = province;
         this.district = district;
+        this.description = description;
         this.ward = ward;
         this.createAt = createAt;
         this.createBy = createBy;

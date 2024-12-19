@@ -7,12 +7,14 @@ import org.springframework.http.HttpStatus;
 import lombok.Getter;
 
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ADDRESS_DESCRIPTION;
 import static com.backend.autocarrerbridge.util.Constant.ADDRESS_INVALID_SPACE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CANCEL_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CODE_EXIT_SUB_ADMIN_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.DATE_WORKSHOP_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.EMAIL_INVALID_SPACE_MESSAGE;
@@ -77,6 +79,7 @@ import static com.backend.autocarrerbridge.util.Constant.MIN_LENGTH_PW_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_MAJOR_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_MAJOR_NOT_LOGGER_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.NAME_REGISTER;
 import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_SECTION_NOT_LOGGER_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_UNIVERSITY_NOT_BLANK_MESSAGE;
@@ -105,6 +108,7 @@ import static com.backend.autocarrerbridge.util.Constant.PHONE_UNIVERSITY_NOT_BL
 import static com.backend.autocarrerbridge.util.Constant.PROVINCE_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PROVINCE_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PW_NOT_MATCH;
+import static com.backend.autocarrerbridge.util.Constant.PW_REGISTER;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_ALREADY_ACCEPT;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_WORKSHOP_FAIL;
@@ -118,7 +122,10 @@ import static com.backend.autocarrerbridge.util.Constant.SENDED_FORGOT_PASS;
 import static com.backend.autocarrerbridge.util.Constant.STATUS_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import static com.backend.autocarrerbridge.util.Constant.TAX_CODE;
-import static com.backend.autocarrerbridge.util.Constant.TITLE_SIZE;
+import static com.backend.autocarrerbridge.util.Constant.TAX_CODE_REGISTER;
+
+import static com.backend.autocarrerbridge.util.Constant.TITLE_SIZE_MAX;
+import static com.backend.autocarrerbridge.util.Constant.TITLE_SIZE_MIN;
 import static com.backend.autocarrerbridge.util.Constant.TITLE_WORK_SHOP_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.TOO_LONG_ADDRESS_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.TOO_LONG_EMAIL_MESSAGE;
@@ -211,7 +218,12 @@ public enum ErrorCode {
     ERROR_TAX_CODE(BAD_REQUEST, TAX_CODE, HttpStatus.BAD_REQUEST),
     ERROR_ALREADY_ACCEPT(BAD_REQUEST, REQUEST_ALREADY_ACCEPT, HttpStatus.BAD_REQUEST),
     ERROR_FORMAT_PW(BAD_REQUEST, ERROR_PW_INCORRECT_FORMAT, HttpStatus.BAD_REQUEST),
-    ERROR_TITLE(BAD_REQUEST, TITLE_SIZE, HttpStatus.BAD_REQUEST),
+    ERROR_TITLE_MAX(BAD_REQUEST, TITLE_SIZE_MAX, HttpStatus.BAD_REQUEST),
+    ERROR_TITLE_MIN(BAD_REQUEST, TITLE_SIZE_MIN, HttpStatus.BAD_REQUEST),
+    ERROR_ADDRESS_MAX(BAD_REQUEST, ADDRESS_DESCRIPTION, HttpStatus.BAD_REQUEST),
+    ERROR_PW_REGISTER(BAD_REQUEST, PW_REGISTER, HttpStatus.BAD_REQUEST),
+    ERROR_NAME_REGISTER(BAD_REQUEST, NAME_REGISTER, HttpStatus.BAD_REQUEST),
+    ERROR_TAX_CODE_REGISTER(BAD_REQUEST, TAX_CODE_REGISTER, HttpStatus.BAD_REQUEST),
     /** Các lỗi liên quan đến mã khôi phục */
     ERROR_PW_EMPTY(BAD_REQUEST, ERROR_NOT_EMPTY_PW, HttpStatus.BAD_REQUEST),
     ERROR_FORGOT_CODE_REQUIRED(BAD_REQUEST, FORGOT_CODE_REQUIRED_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -222,7 +234,10 @@ public enum ErrorCode {
     ERROR_DATE_EMPTY(BAD_REQUEST, DATE_WORK_SHOP_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_FAIL_WORK_SHOP(BAD_REQUEST, REQUEST_WORKSHOP_FAIL, HttpStatus.BAD_REQUEST),
     ERROR_WORK_SHOP_DATE(BAD_REQUEST, DATE_WORKSHOP, HttpStatus.BAD_REQUEST),
+    ERROR_WORK_SHOP_DATE_OUT_DATE(BAD_REQUEST, DATE_WORKSHOP_OUT_DATE, HttpStatus.BAD_REQUEST),
     ERROR_FORGOT_EMAIL(BAD_REQUEST, SENDED_FORGOT_PASS, HttpStatus.BAD_REQUEST),
+    ERROR_LENGTH_PW(BAD_REQUEST, ERROR_INVALID_PHONE_NUMBER, HttpStatus.BAD_REQUEST),
+
 
     //    validate  Employee
     GENDER_NOT_BLANK(BAD_REQUEST, GENDER_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
