@@ -18,10 +18,16 @@ import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
+import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
+import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
@@ -35,6 +41,7 @@ import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -374,6 +381,72 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_INVALID_JOB_STATE);
         }
     }
+    @Override
+    public List<BusinessTotalResponse> getBusinessJob(Pageable pageable) {
+        return jobRepository.findAllBusinessWithTotalJob(pageable).getContent();
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse>getJobBusinessByRegion(Pageable pageable, Integer regionId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByRegion(pageable,regionId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        // Lấy danh sách Job từ repository
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getJobBusinessByProvince(Pageable pageable, Integer provinceId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByProvince(pageable,provinceId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        // Lấy danh sách Job từ repository
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getJobBusinessByDistrict(Pageable pageable, Integer districtId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByDistrict(pageable,districtId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusiness(Pageable pageable) {
+        Page<BusinessJobResponse> page = jobRepository.findAllJobBusiness(pageable);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusinessBySalary(Pageable pageable, Long minSalary, Long maxSalary) {
+        Page<BusinessJobResponse> page = jobRepository.findJobBySalary(pageable,minSalary,maxSalary);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusinessByIndustry(Pageable pageable, Integer industryId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByIndustry(pageable,industryId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public List<JobIndustryResponse> getTotalJobByIndustry(Pageable pageable) {
+        return jobRepository.findTotalJobByIndustry(pageable).getContent();
+    }
+
 
     /**
      * Kiểm tra xem người dùng có quyền vô hiệu hóa công việc này không

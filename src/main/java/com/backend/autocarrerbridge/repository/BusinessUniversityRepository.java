@@ -2,6 +2,9 @@ package com.backend.autocarrerbridge.repository;
 
 import java.util.List;
 
+import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -31,4 +34,40 @@ public interface BusinessUniversityRepository extends JpaRepository<BusinessUniv
     List<BusinessUniversity> getBusinessUniversityReject(Integer id);
 
     BusinessUniversity findBusinessUniversityById(Integer id);
+
+    @Query("select bu.business.email from BusinessUniversity bu where bu.id = :id and bu.status != 0")
+    String getEmailBusinessFromIdCooperation(Integer id);
+
+    @Query("SELECT cooperation "
+            + "FROM BusinessUniversity cooperation WHERE cooperation.university.email = :email "
+            + "AND cooperation.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR cooperation.business.name like %:keyword% or cooperation.business.email like %:keyword%)"
+            + "ORDER BY cooperation.createdAt ASC ")
+    Page<BusinessUniversity> getCooperationForPaging(String email, @Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT cooperation "
+            + "FROM BusinessUniversity cooperation WHERE cooperation.university.email = :email "
+            + "AND cooperation.statusConnected = com.backend.autocarrerbridge.util.enums.State.PENDING "
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR cooperation.business.name like %:keyword% or cooperation.business.email like %:keyword%)"
+            + "ORDER BY cooperation.createdAt ASC ")
+    Page<BusinessUniversity> getCooperationPendingForPaging(String email, @Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT cooperation "
+            + "FROM BusinessUniversity cooperation WHERE cooperation.university.email = :email "
+            + "AND cooperation.statusConnected = com.backend.autocarrerbridge.util.enums.State.APPROVED "
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR cooperation.business.name like %:keyword% or cooperation.business.email like %:keyword%)"
+            + "ORDER BY cooperation.createdAt ASC ")
+    Page<BusinessUniversity> getCooperationApproveForPaging(String email, @Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT cooperation "
+            + "FROM BusinessUniversity cooperation WHERE cooperation.university.email = :email "
+            + "AND cooperation.statusConnected = com.backend.autocarrerbridge.util.enums.State.REJECTED "
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR cooperation.business.name like %:keyword% or cooperation.business.email like %:keyword%)"
+            + "ORDER BY cooperation.createdAt ASC ")
+    Page<BusinessUniversity> getCooperationRejectForPaging(String email, @Param("keyword") String keyword, Pageable pageable);
+
 }

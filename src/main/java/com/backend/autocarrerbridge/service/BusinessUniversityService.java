@@ -4,7 +4,11 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRequest;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import org.springframework.data.domain.Pageable;
 
 
 public interface BusinessUniversityService {
@@ -22,7 +26,15 @@ public interface BusinessUniversityService {
 
     List<CooperationUniversityResponse> getAllCooperationOfUniversityReject() throws ParseException;
 
-    void approveRequetCooperation(Integer idBusinesUniversity);
+    CooperationApproveResponse approveRequestCooperation(CooperationApproveRequest request) throws ParseException;
+    void rejectRequestCooperation(Integer idBusinessUniversityReject);
 
 
+    PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, Pageable pageable) throws ParseException;
+
+    PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityPendingPage( String keyword, Pageable pageable) throws ParseException;
+
+    PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityApprovePage( String keyword, Pageable pageable) throws ParseException;
+
+    PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityRejectPage( String keyword, Pageable pageable) throws ParseException;
 }

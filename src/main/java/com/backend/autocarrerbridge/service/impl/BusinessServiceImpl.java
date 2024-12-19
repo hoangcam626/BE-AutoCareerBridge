@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -47,6 +48,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FORMAT_PW;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
@@ -71,7 +74,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
 
         checkValidateRegister(userBusinessRequest);
-        if(userBusinessRequest.getVerificationCode() == null){
+        if (userBusinessRequest.getVerificationCode() == null) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
         if (!Objects.equals(
@@ -125,29 +128,29 @@ public class BusinessServiceImpl implements BusinessService {
         Business businessUpdate =
                 businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
 
-        // Kiểm tra email mới có trùng với doanh nghiệp khác không
-        if (!businessUpdate.getEmail().equals(request.getEmail())) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
-                .id(businessUpdate.getLocation().getId())
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
+        if(Objects.nonNull(businessUpdate.getLocation()))
+            locationRequest.setId(businessUpdate.getLocation().getId());
         Location location = locationService.saveLocation(locationRequest);
 
-        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
-
         // set ảnh cho business
-        businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
-        businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
+        if(Objects.nonNull(request.getBusinessImage()))
+            businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
+        if(Objects.nonNull(request.getLicenseImage()))
+            businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
+        //Lưu location entity vào db
+        businessUpdate.setLocation(location);
         BusinessResponse businessResponse = businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+
+        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
         businessResponse.setLocation(locationResponse);
         return businessResponse; // Lưu và trả về DTO
     }
@@ -248,32 +251,40 @@ public class BusinessServiceImpl implements BusinessService {
         return new PagingResponse<>(res);
     }
 
+
     @Override
     public EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest) {
         checkValidateRegister(userBusinessRequest);
         return userAccountService.generateVerificationCode(userBusinessRequest.getEmail());
     }
 
+
+
     public void checkValidateRegister(UserBusinessRequest userBusinessRequest) {
-        if (userBusinessRequest == null) {
+        if (Objects.isNull(userBusinessRequest)) {
             throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
+            if (!Validation.isValidPassword(userBusinessRequest.getPassword())) {
+                throw new AppException(ERROR_FORMAT_PW);
+            }
+            if (!Validation.isValidPassword(userBusinessRequest.getPassword())) {
+                throw new AppException(ERROR_FORMAT_PW);
+            }
 
-        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
-        Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
-        if (existingBusiness != null) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
+            // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
+            Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
+            if (!Objects.isNull(existingBusiness)) {
+                throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
+            }
 
-        // Xác thực mật khẩu
-        if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
-            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
-        }
+            // Xác thực mật khẩu
+            if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
+                throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
+            }
 
-        if (userBusinessRequest.getLicenseImage() == null
-                || userBusinessRequest.getLicenseImage().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_LICENSE);
+            if (Objects.isNull(userBusinessRequest.getLicenseImage())
+                    || userBusinessRequest.getLicenseImage().isEmpty()) {
+                throw new AppException(ErrorCode.ERROR_LICENSE);
+            }
         }
     }
-
-}

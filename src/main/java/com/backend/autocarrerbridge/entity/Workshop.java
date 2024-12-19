@@ -41,11 +41,11 @@ public class Workshop extends AbstractAudit {
     @Column(name = "workshop_image_id")
     private Integer workshopImageId;
 
-    @Column(name = "title")
+    @Column(name = "title" ,length = 128)
     private String title;
 
     @Lob
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "expire_date")

@@ -107,6 +107,20 @@ public class SendEmail {
         }
     }
 
+    public void sendApprovedCooperationNotification(EmailDTO emailDTO, String titleCooperation, String nameUniversity) {
+        try {
+            // Kiểm tra email hợp lệ
+            validatedEmail(emailDTO);
+
+            // Tạo và gửi email
+            String emailContent = getCooperationApprovalNotification(titleCooperation, nameUniversity);
+            MimeMessage mimeMessage = createMimeMessage(emailDTO, emailContent);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            logger.error(ERROR_EMAIL_NOT_FOUND.getMessage(), e.getMessage(), e);
+        }
+    }
+
     public void sendRRejectedJobNotification(EmailDTO emailDTO, String titleJob, String message) {
         try {
             // Kiểm tra email hợp lệ
@@ -259,6 +273,18 @@ public class SendEmail {
                 + titleJob + " của bạn đã được chấp nhận.</h2>"
                 + "                <p>Chúng tôi vui mừng thông báo tin tuyển dụng của bạn đã được chấp nhận. "
                 + "                Bạn đã có thể theo dõi tuyển dụng của bạn trong hệ thống của chúng tôi.</p>"
+                + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
+                + "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>"
+                + "            </td>";
+
+        return getEmailBody(content);
+    }
+
+    private String getCooperationApprovalNotification(String titleCooperation, String namUniversity) {
+        String content = "            <td class=\"content\">" + "                <h2>Thông báo hợp tác: "
+                + titleCooperation + " </h2>"
+                + "                <p>Chúng tôi vui mừng thông báo yêu cầu hợp tác của bạn đã được chấp nhận. "
+                + "                Bạn đã có thể theo dõi thông tin của trường đại học "+namUniversity+" trong hệ thống của chúng tôi.</p>"
                 + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
                 + "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>"
                 + "            </td>";
