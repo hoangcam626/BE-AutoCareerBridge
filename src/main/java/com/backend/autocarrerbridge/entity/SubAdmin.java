@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.entity;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +12,7 @@ import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +22,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "sub_admin")
 public class SubAdmin extends AbstractAudit {
@@ -55,27 +56,4 @@ public class SubAdmin extends AbstractAudit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        SubAdmin subAdmin = (SubAdmin) object;
-        return Objects.equals(id, subAdmin.id)
-                && Objects.equals(subAdminCode, subAdmin.subAdminCode)
-                && Objects.equals(name, subAdmin.name)
-                && Objects.equals(gender, subAdmin.gender)
-                && Objects.equals(email, subAdmin.email)
-                && Objects.equals(phone, subAdmin.phone)
-                && Objects.equals(address, subAdmin.address)
-                && Objects.equals(subAdminImageId, subAdmin.subAdminImageId)
-                && Objects.equals(userAccount, subAdmin.userAccount);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                super.hashCode(), id, subAdminCode, name, gender, email, phone, address, subAdminImageId, userAccount);
-    }
 }

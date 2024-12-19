@@ -3,10 +3,9 @@ package com.backend.autocarrerbridge.controller;
 import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
 import static com.backend.autocarrerbridge.util.Constant.SEND_CODE;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
-
 import java.util.List;
-
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
@@ -109,5 +109,11 @@ public class BusinessController {
     ApiResponse<String> deleteBusiness(@PathVariable Integer businessId) {
         businessService.deleteBusiness(businessId);
         return ApiResponse.<String>builder().data(Constant.SUCCESS_MESSAGE).build();
+    }
+    @GetMapping("/feature-business")
+    ApiResponse<Object> getTopFeatureBusiness(@RequestParam(required = false) Integer industryId) {
+       return ApiResponse.builder()
+               .data(businessService.getFeatureBusiness(industryId, PageRequest.of(0,9)))
+               .build();
     }
 }

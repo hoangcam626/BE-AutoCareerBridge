@@ -159,7 +159,7 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public UserAccount registerUser(UserAccount userAccount) {
-        if(Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))){
+        if(!Objects.isNull(userAccountRepository.findByUsername(userAccount.getUsername()))){
             throw new AppException(ERROR_EMAIL_EXIST);
         }
         if(!Validation.isValidPassword(userAccount.getPassword())){
@@ -187,6 +187,11 @@ public class UserAccountServiceImpl implements UserAccountService {
         req.setState(State.REJECTED);
         req.setStatus(Status.INACTIVE);
         userAccountRepository.save(req);
+    }
+
+    @Override
+    public UserAccount getUserById(Integer id) {
+        return userAccountRepository.findById(id).orElseThrow(() -> new AppException(ERROR_USER_NOT_FOUND));
     }
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
