@@ -23,16 +23,22 @@ public interface UserNotificationRepository extends JpaRepository<UserNotificati
      */
     @Query("SELECT un " +
             "FROM UserNotification un " +
-            "WHERE un.userAccount = :username " +
+            "WHERE un.userAccount.username = :username " +
             "AND un.statusRead = 0")
-    List<UserNotification> findAllNoRead(String username);
+    List<UserNotification> findAllUnread(String username);
+
+    @Query("SELECT count(un.id) " +
+            "FROM UserNotification un " +
+            "WHERE un.userAccount.username = :username " +
+            "AND un.statusRead = 0")
+    Long countUnread(String username);
 
     /**
      * Tìm tất cả thông báo của người dùng cụ thể
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.notification.UserNotificationResponse(un) " +
             "FROM UserNotification  un " +
-            "WHERE un.userAccount = :username " +
+            "WHERE un.userAccount.username = :username " +
             "ORDER BY un.createdAt desc ")
     Page<UserNotificationResponse> findAllByUserAccountId(String username, Pageable pageable);
 }

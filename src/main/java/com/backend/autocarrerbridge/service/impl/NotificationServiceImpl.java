@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.backend.autocarrerbridge.dto.response.notification.UnReadAmountResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,9 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.request.notification.UserNotificationMaskReadRequest;
+import com.backend.autocarrerbridge.dto.request.notification.UserNotificationMarkReadRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
-import com.backend.autocarrerbridge.dto.response.notification.UserNotificationMaskReadResponse;
+import com.backend.autocarrerbridge.dto.response.notification.UserNotificationMarkReadResponse;
 import com.backend.autocarrerbridge.dto.response.notification.UserNotificationResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
@@ -123,14 +124,14 @@ public class NotificationServiceImpl implements NotificationService {
      * @return đối tượng chứa trạng thái thành công
      */
     @Override
-    public UserNotificationMaskReadResponse maskReadNotification(UserNotificationMaskReadRequest req) {
+    public UserNotificationMarkReadResponse markReadNotification(UserNotificationMarkReadRequest req) {
         UserNotification userNotification = getById(req.getId());
         if (userNotification.getStatusRead() == StatusRead.UNREAD) {
             throw new AppException(ERROR_NOTIFICATION_ALREADY_READ);
         }
         userNotification.setStatusRead(StatusRead.READ);
         userNotificationRepository.save(userNotification);
-        return UserNotificationMaskReadResponse.of(Boolean.TRUE);
+        return UserNotificationMarkReadResponse.of(Boolean.TRUE);
     }
 
     /**
@@ -139,12 +140,21 @@ public class NotificationServiceImpl implements NotificationService {
      * @throws ParseException đánh dấu lỗi cho sự kiện lấy tên người dùng từ token
      */
     @Override
-    public UserNotificationMaskReadResponse maskReadAllNotification() throws ParseException {
+    public UserNotificationMarkReadResponse markReadAllNotification() throws ParseException {
         String usernameLogin = getUserNameLogin();
-        List<UserNotification> unreadList = userNotificationRepository.findAllNoRead(usernameLogin);
+        List<UserNotification> unreadList = userNotificationRepository.findAllUnread(usernameLogin);
         unreadList.forEach(userNotification -> userNotification.setStatusRead(StatusRead.READ));
         userNotificationRepository.saveAll(unreadList);
-        return UserNotificationMaskReadResponse.of(Boolean.TRUE);
+        return UserNotificationMarkReadResponse.of(Boolean.TRUE);
+    }
+
+    /**
+     * Lấy số lượng thông báo chưa đọc
+     */
+    @Override
+    public UnReadAmountResponse countUserNotificationUnread() throws ParseException {
+        Long unreadAmount = userNotificationRepository.countUnread(getUserNameLogin());
+        return UnReadAmountResponse.of(unreadAmount);
     }
 
     /**

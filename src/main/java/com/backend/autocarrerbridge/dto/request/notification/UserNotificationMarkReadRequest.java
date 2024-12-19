@@ -10,7 +10,7 @@ import static com.backend.autocarrerbridge.util.Constant.NO_CONTENT_MESSAGE;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class UserNotificationMaskReadRequest {
+public class UserNotificationMarkReadRequest {
     @NotNull(message = NO_CONTENT_MESSAGE)
     private Integer id;
 }

@@ -2,10 +2,11 @@ package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
 
-import com.backend.autocarrerbridge.dto.request.notification.UserNotificationMaskReadRequest;
+import com.backend.autocarrerbridge.dto.request.notification.UserNotificationMarkReadRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
-import com.backend.autocarrerbridge.dto.response.notification.UserNotificationMaskReadResponse;
+import com.backend.autocarrerbridge.dto.response.notification.UnReadAmountResponse;
+import com.backend.autocarrerbridge.dto.response.notification.UserNotificationMarkReadResponse;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
 import com.backend.autocarrerbridge.dto.response.notification.UserNotificationResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
@@ -18,7 +19,9 @@ public interface NotificationService {
 
     PagingResponse<UserNotificationResponse> getAllUserNotificationPaging(PageInfo req) throws ParseException;
 
-    UserNotificationMaskReadResponse maskReadNotification(UserNotificationMaskReadRequest req) throws ParseException;
+    UserNotificationMarkReadResponse markReadNotification(UserNotificationMarkReadRequest req) throws ParseException;
 
-    UserNotificationMaskReadResponse maskReadAllNotification() throws ParseException;
+    UserNotificationMarkReadResponse markReadAllNotification() throws ParseException;
+
+    UnReadAmountResponse countUserNotificationUnread() throws ParseException;
 }

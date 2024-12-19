@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.controller;
 
 import java.text.ParseException;
 
+import com.backend.autocarrerbridge.dto.response.notification.UnReadAmountResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.notification.UserNotificationMaskReadRequest;
+import com.backend.autocarrerbridge.dto.request.notification.UserNotificationMarkReadRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
-import com.backend.autocarrerbridge.dto.response.notification.UserNotificationMaskReadResponse;
+import com.backend.autocarrerbridge.dto.response.notification.UserNotificationMarkReadResponse;
 import com.backend.autocarrerbridge.dto.response.notification.UserNotificationResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
@@ -47,9 +48,9 @@ public class NotificationController {
      * @return trạng thái thành công việc đánh dấu thông báo đã đọc.
      * @throws ParseException đánh dấu lỗi của việc lấy tên người dùng từ token
      */
-    @PostMapping("/mask-read")
-    public ApiResponse<UserNotificationMaskReadResponse> maskRead(@Valid @ModelAttribute UserNotificationMaskReadRequest req) throws ParseException {
-        var res = notificationService.maskReadNotification(req);
+    @PostMapping("/mark-read")
+    public ApiResponse<UserNotificationMarkReadResponse> markRead(@Valid @ModelAttribute UserNotificationMarkReadRequest req) throws ParseException {
+        var res = notificationService.markReadNotification(req);
         return new ApiResponse<>(res);
     }
 
@@ -59,9 +60,9 @@ public class NotificationController {
      * @return trạng thái thành công.
      * @throws ParseException đánh dấu lỗi của việc lấy tên người dùng từ token
      */
-    @PostMapping("/mask-real-all")
-    public ApiResponse<UserNotificationMaskReadResponse> maskRealAll() throws ParseException {
-        var res = notificationService.maskReadAllNotification();
+    @PostMapping("/mark-read-all")
+    public ApiResponse<UserNotificationMarkReadResponse> markRealAll() throws ParseException {
+        var res = notificationService.markReadAllNotification();
         return new ApiResponse<>(res);
     }
 
@@ -80,4 +81,14 @@ public class NotificationController {
         return new ApiResponse<>(res);
     }
 
+    /**
+     * Lấy số lượng thông báo chưa đọc của người dùng
+     * @return số lượng thông báo chưa đọc
+     * @throws ParseException đánh dấu lỗi của việc lấy tên người dùng từ token
+     */
+    @GetMapping("/count-unread")
+    public ApiResponse<UnReadAmountResponse> countUnread() throws ParseException {
+        var res = notificationService.countUserNotificationUnread();
+        return new ApiResponse<>(res);
+    }
 }
