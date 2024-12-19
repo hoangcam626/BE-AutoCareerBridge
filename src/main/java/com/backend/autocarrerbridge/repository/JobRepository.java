@@ -75,8 +75,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.expireDate,\s
         j.level,\s
         j.salary,\s
+        j.jobDescription,
         j.workingTime,\s
          j.requirement,
+           j.benefit,
         j.statusBrowse,\s
         j.status,\s
         j.business.businessImageId,
@@ -105,8 +107,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.expireDate,\s
         j.level,\s
         j.salary,\s
+         j.jobDescription,
         j.workingTime,\s
          j.requirement,
+           j.benefit,
         j.statusBrowse,\s
         j.status,\s
         j.business.businessImageId,
@@ -135,8 +139,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.expireDate,\s
         j.level,\s
         j.salary,\s
+         j.jobDescription,
         j.workingTime,\s
         j.requirement,
+          j.benefit,
         j.statusBrowse,\s
         j.status,\s
         j.business.businessImageId,
@@ -165,8 +171,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.expireDate,\s
         j.level,\s
         j.salary,\s
+         j.jobDescription,
         j.workingTime,\s
           j.requirement,
+            j.benefit,
         j.statusBrowse,\s
         j.status,\s
         j.business.businessImageId,
@@ -194,8 +202,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.expireDate,\s
         j.level,\s
         j.salary,\s
+         j.jobDescription,
         j.workingTime,\s
           j.requirement,
+            j.benefit,
         j.statusBrowse,\s
         j.status,\s
         j.business.businessImageId,
@@ -224,8 +234,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.expireDate,
         j.level,
         j.salary,
+         j.jobDescription,
         j.workingTime,
         j.requirement,
+        j.benefit,
         j.statusBrowse,
         j.status,
         j.business.businessImageId,

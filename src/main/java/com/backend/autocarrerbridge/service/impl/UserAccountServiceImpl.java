@@ -159,7 +159,7 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public UserAccount registerUser(UserAccount userAccount) {
-        if(Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))){
+        if(!Objects.isNull(userAccountRepository.findByUsername(userAccount.getUsername()))){
             throw new AppException(ERROR_EMAIL_EXIST);
         }
         if(!Validation.isValidPassword(userAccount.getPassword())){

@@ -162,11 +162,9 @@ public class JobController {
         return ApiResponse.builder().build().setData(jobService.getTotalJobByIndustry(pageable));
     }
 
-
-
-
     @GetMapping("/check-inactive-permission")
     public ApiResponse<Object> checkInactivePermission(@RequestParam Integer jobId) throws ParseException {
         return jobService.checkDeletePermission(jobId);
     }
+
 }

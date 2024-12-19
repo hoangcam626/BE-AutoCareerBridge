@@ -65,6 +65,7 @@ public class SecurityConfig {
             "/api/job/district/*",
             "/api/job/province/*",
             "/api/job/industry/*",
+            "api/business/feature-business",
             "/api/job/job-all",
             "api/industry/get-all",
             "/api/job/salary",

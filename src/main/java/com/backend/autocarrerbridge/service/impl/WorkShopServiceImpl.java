@@ -5,12 +5,14 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_ALREADY_APPROVED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_ALREADY_REJECTED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -285,7 +287,10 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu ngày tháng không hợp lệ
      */
     public void validateWorkShop(WorkShopRequest workShopRequest) {
-
+        LocalDateTime localDateTime = LocalDateTime.now();
+        if(workShopRequest.getStartDate().isBefore(localDateTime)){
+            throw new AppException(ERROR_WORK_SHOP_DATE_OUT_DATE);
+        }
         // Kiểm tra ngày bắt đầu và kết thúc
         if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())) {
             throw new AppException(ERROR_WORK_SHOP_DATE);
