@@ -2,9 +2,11 @@ package com.backend.autocarrerbridge.dto.response.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor(staticName = "of")
-public class NotificationSendResponse {
-    private Integer id;
+@NoArgsConstructor
+public class UnReadAmountResponse {
+    private Long amount;
 }

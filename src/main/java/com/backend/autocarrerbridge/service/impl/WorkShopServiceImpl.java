@@ -13,6 +13,7 @@ import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,8 +65,9 @@ public class WorkShopServiceImpl implements WorkShopService {
     ImageService imageService;
     UniversityService universityService;
     LocationService locationService;
-    NotificationService notificationService;
     SendEmail sendEmail;
+    NotificationService notificationService;
+
     /**
      * Lấy danh sách tất cả các Workshop với phân trang.
      * @param pageable Thông tin phân trang
@@ -123,7 +125,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         locationRequest.setProvinceId(workShopRequest.getIdProvince());
         locationRequest.setWardId(workShopRequest.getIdWard());
         locationRequest.setDescription(workShopRequest.getAddressDescription());
-        Location location =  locationService.saveLocation(locationRequest);
+        Location location = locationService.saveLocation(locationRequest);
         University university = universityService.findById(workShopRequest.getUniversityId()); // Tìm trường đại học
         if (Objects.isNull(university)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu trường không tồn tại
@@ -199,7 +201,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(workShopRequest, workshop);
         workshop.setLocation(location);
-        if(newImageId != null) {
+        if (newImageId != null) {
             workshop.setWorkshopImageId(newImageId);
             deleteOldImageIfExists(oldImageId, newImageId);
         }
@@ -280,7 +282,6 @@ public class WorkShopServiceImpl implements WorkShopService {
         }
     }
 
-
     /**
      * Kiểm tra tính hợp lệ của Workshop.
      * @param workShopRequest Thông tin Workshop cần kiểm tra
@@ -353,6 +354,8 @@ public class WorkShopServiceImpl implements WorkShopService {
         Workshop workshop = findWorkshopById(req.getId());
         validateWorkshopForStateChange(workshop, State.APPROVED);
         workshop.setStatusBrowse(State.APPROVED);
+        workShopRepository.save(workshop);
+
         String emailBusiness = workshop.getUniversity().getEmail();
 
         EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_WORKSHOP, "");
@@ -360,7 +363,7 @@ public class WorkShopServiceImpl implements WorkShopService {
                 workshop.getTitle());
 
         String message = String.format("%s: %s", APPROVED_WORKSHOP, workshop.getTitle());
-        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+        notificationService.send(NotificationSendRequest.of(Collections.singletonList(emailBusiness), APPROVED_WORKSHOP, message));
         return WorkshopApprovedResponse.of(Boolean.TRUE);
     }
 
@@ -377,13 +380,16 @@ public class WorkShopServiceImpl implements WorkShopService {
         Workshop workshop = findWorkshopById(req.getId());
         validateWorkshopForStateChange(workshop, State.REJECTED);
         workshop.setStatusBrowse(State.REJECTED);
+        workShopRepository.save(workshop);
+
         // Gửi thông báo email
-        String emailBusiness = workshop.getUniversity().getEmail();
-        EmailDTO emailDTO = new EmailDTO(emailBusiness, REJECTED_WORKSHOP, "");
+        String emailUniversity = workshop.getUniversity().getEmail();
+        EmailDTO emailDTO = new EmailDTO(emailUniversity, REJECTED_WORKSHOP, "");
         sendEmail.sendRRejectedWorkshopNotification(emailDTO, workshop.getTitle(), req.getMessage());
+
         // Gửi thông báo hệ thống
         String message = String.format("%s: %s", REJECTED_WORKSHOP, workshop.getTitle());
-        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+        notificationService.send(NotificationSendRequest.of(Collections.singletonList(emailUniversity), REJECTED_WORKSHOP, message));
         return WorkshopRejectedResponse.of(req.getMessage());
     }
 
@@ -422,7 +428,4 @@ public class WorkShopServiceImpl implements WorkShopService {
             throw new AppException(ERROR_INVALID_WORKSHOP_STATE);
         }
     }
-
-
-
 }

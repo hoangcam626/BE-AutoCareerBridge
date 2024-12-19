@@ -107,6 +107,20 @@ public class SendEmail {
         }
     }
 
+    public void sendApprovedCooperationNotification(EmailDTO emailDTO, String titleCooperation, String nameUniversity) {
+        try {
+            // Kiểm tra email hợp lệ
+            validatedEmail(emailDTO);
+
+            // Tạo và gửi email
+            String emailContent = getCooperationApprovalNotification(titleCooperation, nameUniversity);
+            MimeMessage mimeMessage = createMimeMessage(emailDTO, emailContent);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            logger.error(ERROR_EMAIL_NOT_FOUND.getMessage(), e.getMessage(), e);
+        }
+    }
+
     public void sendRRejectedJobNotification(EmailDTO emailDTO, String titleJob, String message) {
         try {
             // Kiểm tra email hợp lệ
@@ -234,12 +248,12 @@ public class SendEmail {
         String title = "";
         String text = "";
         if (state == State.APPROVED) {
-            title = "Tài khoản của bạn đã được chấp nhận"; // 'Chấp nhận' hoặc 'Từ chối'
+            title = "Tài khoản của bạn đã được chấp nhận."; // 'Chấp nhận' hoặc 'Từ chối'
             text = "Chúng tôi vui mừng thông báo tài khoản của bạn đã được chấp nhận. "
                     + "Bạn đã có thể đăng nhập vào hệ thống của chúng tôi.";
         }
         if (state == State.REJECTED) {
-            title = "Tài khoản của bạn đã được bị từ chối"; // 'Chấp nhận' hoặc 'Từ chối'
+            title = "Tài khoản của bạn đã được bị từ chối."; // 'Chấp nhận' hoặc 'Từ chối'
             text = "Rất tiếc, tài khoản của bạn đã bị từ chối. " + "Chúng tôi nghi ngờ thông tin đăng ký của bạn. " + message
                     + " Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tài khoản khác. "
                     + "Hoặc liên hệ với chúng tôi để được hướng dẫn.";
@@ -256,7 +270,7 @@ public class SendEmail {
 
     private String getJobApprovalNotification(String titleJob) {
         String content = "            <td class=\"content\">" + "                <h2>Tin tuyển dụng "
-                + titleJob + " của bạn đã được chấp nhận</h2>"
+                + titleJob + " của bạn đã được chấp nhận.</h2>"
                 + "                <p>Chúng tôi vui mừng thông báo tin tuyển dụng của bạn đã được chấp nhận. "
                 + "                Bạn đã có thể theo dõi tuyển dụng của bạn trong hệ thống của chúng tôi.</p>"
                 + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
@@ -266,12 +280,24 @@ public class SendEmail {
         return getEmailBody(content);
     }
 
+    private String getCooperationApprovalNotification(String titleCooperation, String namUniversity) {
+        String content = "            <td class=\"content\">" + "                <h2>Thông báo hợp tác: "
+                + titleCooperation + " </h2>"
+                + "                <p>Chúng tôi vui mừng thông báo yêu cầu hợp tác của bạn đã được chấp nhận. "
+                + "                Bạn đã có thể theo dõi thông tin của trường đại học "+namUniversity+" trong hệ thống của chúng tôi.</p>"
+                + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
+                + "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>"
+                + "            </td>";
+
+        return getEmailBody(content);
+    }
+
     private String getJobRejectedNotification(String titleJob, String message) {
         String content = "            <td class=\"content\">" + "                <h2>Tin tuyển dụng "
-                + titleJob + " của bạn đã được chấp nhận</h2>"
+                + titleJob + " của bạn đã bị từ chối phê duyệt.</h2>"
                 + "                <p>Rất tiếc, tài khoản của bạn đã bị từ chối. Chúng tôi nghi ngờ thông tin đăng ký của bạn."
                 + "                <p>Lý do từ chối của chúng tôi: "
-                + message + "</p>"
+                + message + "./p>"
                 + "                <p>Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tin tuyển dụng khác."
                 + "                Hoặc liên hệ với chúng tôi để được hướng dẫn.<p>"
                 + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
@@ -282,7 +308,7 @@ public class SendEmail {
 
     private String getWorkshopApprovalNotification(String titleWorkshop) {
         String content = "            <td class=\"content\">" + "                <h2>Workshop "
-                + titleWorkshop + " của bạn đã được chấp nhận</h2>"
+                + titleWorkshop + " của bạn đã được chấp nhận.</h2>"
                 + "                <p>Chúng tôi vui mừng thông báo workshop của bạn đã được chấp nhận. "
                 + "                Bạn đã có thể theo dõi workshop của bạn trong hệ thống của chúng tôi.</p>"
                 + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
@@ -294,10 +320,10 @@ public class SendEmail {
 
     private String getWorkshopRejectedNotification(String titleWorkshop, String message) {
         String content = "            <td class=\"content\">" + "                <h2>Workshop "
-                + titleWorkshop + " của bạn đã được chấp nhận</h2>"
+                + titleWorkshop + " của bạn đã bị từ chối phê duyệt.</h2>"
                 + "                <p>Rất tiếc, tài khoản của bạn đã bị từ chối. Chúng tôi nghi ngờ thông tin đăng ký của bạn."
                 + "                <p>Lý do từ chối của chúng tôi: "
-                + message + "</p>"
+                + message + ".</p>"
                 + "                <p>Nếu muốn tiếp tục hãy kiểm tra lại thông tin và đăng ký lại tin workshop khác."
                 + "                Hoặc liên hệ với chúng tôi để được hướng dẫn.<p>"
                 + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"

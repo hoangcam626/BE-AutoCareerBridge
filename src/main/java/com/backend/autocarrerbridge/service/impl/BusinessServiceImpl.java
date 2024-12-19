@@ -129,29 +129,29 @@ public class BusinessServiceImpl implements BusinessService {
         Business businessUpdate =
                 businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
 
-        // Kiểm tra email mới có trùng với doanh nghiệp khác không
-        if (!businessUpdate.getEmail().equals(request.getEmail())) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
-                .id(businessUpdate.getLocation().getId())
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
+        if(Objects.nonNull(businessUpdate.getLocation()))
+            locationRequest.setId(businessUpdate.getLocation().getId());
         Location location = locationService.saveLocation(locationRequest);
 
-        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
-
         // set ảnh cho business
-        businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
-        businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
+        if(Objects.nonNull(request.getBusinessImage()))
+            businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
+        if(Objects.nonNull(request.getLicenseImage()))
+            businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
+        //Lưu location entity vào db
+        businessUpdate.setLocation(location);
         BusinessResponse businessResponse = businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+
+        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
         businessResponse.setLocation(locationResponse);
         return businessResponse; // Lưu và trả về DTO
     }
