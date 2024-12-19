@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NotificationResponse {
     private Integer id;
+    private String title;
     private String message;
-    private Integer statusRead;
     private LocalDateTime createdAt;
     private String createdBy;
 }

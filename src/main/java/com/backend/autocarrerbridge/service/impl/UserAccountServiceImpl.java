@@ -188,6 +188,11 @@ public class UserAccountServiceImpl implements UserAccountService {
         req.setStatus(Status.INACTIVE);
         userAccountRepository.save(req);
     }
+
+    @Override
+    public UserAccount getUserById(Integer id) {
+        return userAccountRepository.findById(id).orElseThrow(() -> new AppException(ERROR_USER_NOT_FOUND));
+    }
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
     //   @PreAuthorize("hasAuthority('SCOPE_Admin')")
 
