@@ -134,8 +134,8 @@ public class CooperationController {
      * &#064;ReqestBody  CooperationApproveRequest  của yêu cầu hợp tác
      * @return thông báo thành công
      */
-    @GetMapping("/approve-request")
-    ApiResponse<CooperationApproveResponse> approveRequestCooperation(@Valid @RequestBody CooperationApproveRequest request) throws ParseException {
+    @PostMapping("/approve-request")
+    ApiResponse<CooperationApproveResponse> approveRequestCooperation(@RequestBody CooperationApproveRequest request) throws ParseException {
         return ApiResponse.<CooperationApproveResponse>builder()
                 .data(businessUniversityService.approveRequestCooperation(request))
                 .build();

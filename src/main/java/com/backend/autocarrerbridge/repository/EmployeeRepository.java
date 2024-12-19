@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.repository;
 
 import java.util.List;
 
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,11 +31,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     @Query("SELECT e "
             + "FROM Employee e WHERE e.business.email = :email "
-            + "AND e.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
             + "AND (:keyword IS NULL OR :keyword = '' "
             + "OR e.name like %:keyword% or e.employeeCode like %:keyword% or e.email like %:keyword%)"
-            + "ORDER BY e.employeeCode ASC ")
-    Page<Employee> getEmployeeForPaging(String email, @Param("keyword") String keyword, Pageable pageable);
+            + "AND (:status IS NULL OR e.status = :status) "
+            + "ORDER BY e.employeeCode DESC ")
+    Page<Employee>  getEmployeeForPaging(String email,
+                                        @Param("keyword") String keyword,
+                                        @Param("status") Status status,
+                                        Pageable pageable
+    );
 
     Employee findByPhone(String phone);
 }

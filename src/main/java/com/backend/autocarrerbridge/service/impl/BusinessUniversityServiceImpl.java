@@ -243,6 +243,7 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
         }
         String message= nameUniversity +APPROVE_COOPERATION_MESSAGE;
         EmailDTO emailDTO = new EmailDTO(emailBusiness,message,"");
+//        CompletableFuture.runAsync(() -> sendEmail.sendAccount(emailDTO,password));
         sendEmail.sendApprovedCooperationNotification(emailDTO,message,nameUniversity);
 
         //Thông báo bên giao diện
