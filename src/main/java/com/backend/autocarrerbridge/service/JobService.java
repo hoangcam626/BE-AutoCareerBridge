@@ -4,6 +4,11 @@ import java.text.ParseException;
 
 import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.Page;
+import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
@@ -32,6 +37,24 @@ public interface JobService {
 
     JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException;
 
-    Page<JobResponse> getPagingByState(PageInfo info, Integer state);
+    List<BusinessTotalResponse> getBusinessJob(Pageable pageable);
+
+    PagingResponse<BusinessJobResponse> getJobBusinessByRegion(Pageable pageable, Integer regionId);
+
+    PagingResponse<BusinessJobResponse> getJobBusinessByProvince(Pageable pageable,Integer provinceId);
+
+    PagingResponse<BusinessJobResponse> getJobBusinessByDistrict(Pageable pageable, Integer districtId);
+
+    PagingResponse<BusinessJobResponse> getAllJobBusiness(Pageable pageable);
+
+    PagingResponse<BusinessJobResponse> getAllJobBusinessBySalary(Pageable pageable,Long minSalary,Long maxSalary);
+
+    PagingResponse<BusinessJobResponse> getAllJobBusinessByIndustry(Pageable pageable,Integer industryId);
+
+
+    List<JobIndustryResponse> getTotalJobByIndustry(Pageable pageable);
+
+    PagingResponse<JobResponse> getPagingByState(PageInfo info, Integer state);
+
     ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;
 }

@@ -3,10 +3,15 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FORMAT_PW;
+
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.util.Validation;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -17,25 +22,22 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.converter.UniversityConverter;
+import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
 import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
 import com.backend.autocarrerbridge.service.ImageService;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
-import jakarta.transaction.Transactional;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
 
-import com.backend.autocarrerbridge.dto.request.account.UserUniversityRequest;
-import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
+
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.UserAccount;
@@ -114,7 +116,7 @@ public class UniversityServiceImpl implements UniversityService {
 
         // Email để thông báo tài khoản đã được phê duyệt.
         EmailDTO emailDTO = new EmailDTO(university.getEmail(), APPROVED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED, "");
 
         return UniversityApprovedResponse.of(Boolean.TRUE);
     }
@@ -138,7 +140,7 @@ public class UniversityServiceImpl implements UniversityService {
 
         // Gửi email để thông báo tài khoản đã bị từ chối.
         EmailDTO emailDTO = new EmailDTO(university.getEmail(), REJECTED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED, req.getMessage());
 
         return UniversityRejectedResponse.of(Boolean.TRUE);
     }
@@ -147,14 +149,14 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public UniversityResponse update(int id, UniversityRequest universityRequest) {
         University university = universityRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
         university.setName(universityRequest.getName());
         university.setWebsite(universityRequest.getWebsite());
         university.setFoundedYear(universityRequest.getFoundedYear());
         university.setPhone(universityRequest.getPhone());
         university.setDescription(universityRequest.getDescription());
 
-        if (universityRequest.getLogoImageId() != null && !universityRequest.getLogoImageId().isEmpty()) {
+        if (!Objects.isNull(universityRequest.getLogoImageId()) && !universityRequest.getLogoImageId().isEmpty()) {
             // Tải lên ảnh mới và lưu ID của ảnh
             university.setLogoImageId(imageService.uploadFile(universityRequest.getLogoImageId()));
         }
@@ -166,7 +168,7 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public List<UniversityResponse> getById(int id) {
         University university = universityRepository.findById(id)
-            .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.ERROR_UNIVERSITY_NOT_FOUND));
         return List.of(UniversityConverter.convertToResponse(university));
     }
 
@@ -192,20 +194,36 @@ public class UniversityServiceImpl implements UniversityService {
      * Lấy danh sách các trường đại học phân trang theo trạng thái.
      */
     @Override
-    public Page<UniversityResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<UniversityResponse> getPagingByState(PageInfo req, Integer state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<University> universities= universityRepository.findAllByState(pageable, state, req.getKeyword());
-        return universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        Page<University> universities = universityRepository.findAllByState(pageable, state, req.getKeyword());
+        Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        return new PagingResponse<>(res);
+    }
+
+
+    /**
+     * Lấy danh sách tất cả các trường đại học gồm phân trang và tìm kiếm.
+     */
+    @Override
+    public PagingResponse<UniversityResponse> getAllUniversities(PageInfo req) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        Page<University> universities = universityRepository.findAll(pageable, req.getKeyword());
+        Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        return new PagingResponse<>(res);
     }
 
     @Override
-    public EmailCode generaterCode(UserUniversityRequest userUniversityRequest) {
+    public EmailCode generateCode(UserUniversityRequest userUniversityRequest) {
         checkValidateUniversity(userUniversityRequest);
         return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
     }
-    public void checkValidateUniversity(UserUniversityRequest userUniversityRequest){
-        if (userUniversityRequest.getPassword() == null
-                || userUniversityRequest.getRePassword() == null
+    public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
+        if(!Validation.isValidPassword(userUniversityRequest.getPassword())){
+            throw  new AppException(ERROR_FORMAT_PW);
+        }
+        if (Objects.isNull(userUniversityRequest.getPassword())
+                || Objects.isNull(userUniversityRequest.getRePassword())
                 || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
@@ -214,17 +232,17 @@ public class UniversityServiceImpl implements UniversityService {
             throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
         }
 
-        if (userUniversityRequest.getEmail() == null
+        if (Objects.isNull(userUniversityRequest.getEmail())
                 || userUniversityRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-        if (userUniversityRequest.getName() == null
+
+        if (Objects.isNull(userUniversityRequest.getName())
                 || userUniversityRequest.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
-        // Kiểm tra xem email đã được đăng ký trước đó hay chưa
-        if (userAccountService.getUserByUsername(userUniversityRequest.getEmail()) != null) {
+        if (!Objects.isNull(userAccountService.getUserByUsername(userUniversityRequest.getEmail()))) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
     }

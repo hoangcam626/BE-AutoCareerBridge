@@ -3,6 +3,9 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness;
+import com.backend.autocarrerbridge.util.Validation;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -47,10 +50,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FORMAT_PW;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
-
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
-
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -73,7 +75,7 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessRegisterResponse registerBusiness(UserBusinessRequest userBusinessRequest) {
 
         checkValidateRegister(userBusinessRequest);
-        if(userBusinessRequest.getVerificationCode() == null){
+        if (userBusinessRequest.getVerificationCode() == null) {
             throw new AppException(ErrorCode.ERROR_VERIFY_CODE);
         }
         if (!Objects.equals(
@@ -127,29 +129,29 @@ public class BusinessServiceImpl implements BusinessService {
         Business businessUpdate =
                 businessRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_NOT_FOUND_BUSINESS));
 
-        // Kiểm tra email mới có trùng với doanh nghiệp khác không
-        if (!businessUpdate.getEmail().equals(request.getEmail())) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-
         // Cập nhật thông tin doanh nghiệp từ request
         businessMapper.updateBusiness(businessUpdate, request);
         LocationRequest locationRequest = LocationRequest.builder()
-                .id(businessUpdate.getLocation().getId())
                 .description(request.getDescriptionLocation())
                 .provinceId(request.getProvinceId())
                 .districtId(request.getDistrictId())
                 .wardId(request.getWardId())
                 .build();
+        if(Objects.nonNull(businessUpdate.getLocation()))
+            locationRequest.setId(businessUpdate.getLocation().getId());
         Location location = locationService.saveLocation(locationRequest);
 
-        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
-
         // set ảnh cho business
-        businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
-        businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
+        if(Objects.nonNull(request.getBusinessImage()))
+            businessUpdate.setBusinessImageId(imageService.uploadFile(request.getBusinessImage()));
+        if(Objects.nonNull(request.getLicenseImage()))
+            businessUpdate.setLicenseImageId(imageService.uploadFile(request.getLicenseImage()));
 
+        //Lưu location entity vào db
+        businessUpdate.setLocation(location);
         BusinessResponse businessResponse = businessMapper.toBusinessResponse(businessRepository.save(businessUpdate));
+
+        LocationResponse locationResponse = locationMapper.toLocationResponse(location);
         businessResponse.setLocation(locationResponse);
         return businessResponse; // Lưu và trả về DTO
     }
@@ -190,7 +192,7 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức chấp nhận tài khoản doanh nghiệp
      */
     @Override
-    public BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req){
+    public BusinessApprovedResponse approvedAccount(BusinessApprovedRequest req) {
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -199,7 +201,7 @@ public class BusinessServiceImpl implements BusinessService {
 
         // Email để thông báo tài khoản đã được phê duyệt.
         EmailDTO emailDTO = new EmailDTO(business.getEmail(), APPROVED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.APPROVED, "");
 
         return BusinessApprovedResponse.of(Boolean.TRUE);
     }
@@ -208,7 +210,7 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức từ chối tài khoản doanh nghiệp.
      */
     @Override
-    public BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req){
+    public BusinessRejectedResponse rejectedAccount(BusinessRejectedRequest req) {
         Business business = getBusinessById(req.getId());
         UserAccount userAccount = business.getUserAccount();
 
@@ -221,7 +223,7 @@ public class BusinessServiceImpl implements BusinessService {
 
         // Gửi email để thông báo tài khoản đã bị từ chối.
         EmailDTO emailDTO = new EmailDTO(business.getEmail(), REJECTED_ACCOUNT, "");
-        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED);
+        sendEmail.sendAccountStatusNotification(emailDTO, State.REJECTED, req.getMessage());
 
         return BusinessRejectedResponse.of(Boolean.TRUE);
     }
@@ -230,40 +232,64 @@ public class BusinessServiceImpl implements BusinessService {
      * Phương thức lấy danh sách các doanh nghiệp theo trạng thái và keyword tìm kiếm
      */
     @Override
-    public Page<BusinessResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<BusinessResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         Page<Business> businesses = businessRepository.findAllByState(pageable, state, req.getKeyword());
-
-        return businesses.map(b ->
-                modelMapper.map(b, BusinessResponse.class)
-        );
+        Page<BusinessResponse> res = businesses.map(b ->
+                modelMapper.map(b, BusinessResponse.class));
+        return new PagingResponse<>(res);
     }
+
+    /**
+     * Phương thức lấy danh sách tất cả các doanh nghiệp và tìm kiếm
+     */
+    @Override
+    public PagingResponse<BusinessResponse> getAllBusinesses(PageInfo req) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        Page<Business> businesses = businessRepository.findAll(pageable, req.getKeyword());
+        Page<BusinessResponse> res = businesses.map(b ->
+                modelMapper.map(b, BusinessResponse.class));
+        return new PagingResponse<>(res);
+    }
+
 
     @Override
     public EmailCode generateEmailCode(UserBusinessRequest userBusinessRequest) {
         checkValidateRegister(userBusinessRequest);
         return userAccountService.generateVerificationCode(userBusinessRequest.getEmail());
     }
-    public void checkValidateRegister(UserBusinessRequest userBusinessRequest){
-        if (userBusinessRequest == null) {
-            throw new  AppException(ErrorCode.ERROR_NO_CONTENT);
-        }
 
-        // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
-        Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
-        if (existingBusiness != null) {
-            throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
-        }
-
-        // Xác thực mật khẩu
-        if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
-            throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
-        }
-
-        if (userBusinessRequest.getLicenseImage() == null
-                || userBusinessRequest.getLicenseImage().isEmpty()) {
-            throw new AppException(ErrorCode.ERROR_LICENSE);
-        }
+    @Override
+    public List<IntroduceBusiness> getFeatureBusiness(Integer industryId,Pageable page) {
+        return businessRepository.getBusinessFeaturedByIndustry(industryId,page);
     }
 
-}
+
+    public void checkValidateRegister(UserBusinessRequest userBusinessRequest) {
+        if (Objects.isNull(userBusinessRequest)) {
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+            if (!Validation.isValidPassword(userBusinessRequest.getPassword())) {
+                throw new AppException(ERROR_FORMAT_PW);
+            }
+            if (!Validation.isValidPassword(userBusinessRequest.getPassword())) {
+                throw new AppException(ERROR_FORMAT_PW);
+            }
+
+            // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
+            Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
+            if (!Objects.isNull(existingBusiness)) {
+                throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
+            }
+
+            // Xác thực mật khẩu
+            if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
+                throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
+            }
+
+            if (Objects.isNull(userBusinessRequest.getLicenseImage())
+                    || userBusinessRequest.getLicenseImage().isEmpty()) {
+                throw new AppException(ErrorCode.ERROR_LICENSE);
+            }
+        }
+    }

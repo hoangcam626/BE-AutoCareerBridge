@@ -1,7 +1,5 @@
 package com.backend.autocarrerbridge.entity;
 
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +9,7 @@ import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,31 +21,17 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "notification")
+@EqualsAndHashCode(callSuper = true)
 public class Notification extends AbstractAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "message")
     private String message;
 
-    @Column(name = "status_read")
-    private Integer statusRead;
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        Notification that = (Notification) object;
-        return Objects.equals(id, that.id)
-                && Objects.equals(message, that.message)
-                && Objects.equals(statusRead, that.statusRead);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id, message, statusRead);
-    }
 }

@@ -1,7 +1,7 @@
 package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
-import java.util.List;
+
 
 import com.backend.autocarrerbridge.dto.request.industry.DeleteIndustryRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,4 +34,6 @@ public interface IndustryService {
     ApiResponse<Object> inactiveIndustryOfBusiness(DeleteIndustryRequest deleteIndustryRequest) throws ParseException;
 
     ApiResponse<Object> checkIndustryExist(Integer industryId) throws ParseException;
+
+
 }

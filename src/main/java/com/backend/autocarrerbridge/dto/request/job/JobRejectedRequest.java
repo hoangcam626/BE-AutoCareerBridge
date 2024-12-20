@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class JobRejectedRequest {
-
     @NotNull(message = NO_CONTENT_MESSAGE)
     private Integer id;
 

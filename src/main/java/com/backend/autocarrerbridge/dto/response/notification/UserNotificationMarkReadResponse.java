@@ -2,9 +2,11 @@ package com.backend.autocarrerbridge.dto.response.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class NotificationSendResponse {
-    private Integer id;
+public class UserNotificationMarkReadResponse {
+    private Boolean success;
 }

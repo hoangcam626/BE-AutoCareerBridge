@@ -14,4 +14,5 @@ import lombok.NoArgsConstructor;
 public class UniversityRejectedRequest {
     @NotNull(message = NO_CONTENT_MESSAGE)
     private Integer id;
+    private String message;
 }
