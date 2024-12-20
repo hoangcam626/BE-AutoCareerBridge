@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.repository;
 
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.response.industry.IndustryJobCountDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,4 +45,15 @@ public interface IndustryRepository extends JpaRepository<Industry, Integer> {
 
     @Query("SELECT industry FROM Industry industry where industry.id= :id")
     Industry getIndustriesById(Integer id);
+
+    /**
+     * Thống kê ngành được sử dụng nhiều nhất của doanh nghiệp
+     */
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustryJobCountDTO(bi.name, COUNT(j)) " +
+            "FROM Job j " +
+            "JOIN j.industry bi " +
+            "WHERE j.business.id = :businessId AND j.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE " +
+            "GROUP BY bi.name " +
+            "ORDER BY COUNT(j) DESC")
+    List<IndustryJobCountDTO> findMostUsedIndustryByBusiness(Integer businessId);
 }

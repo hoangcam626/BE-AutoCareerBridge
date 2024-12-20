@@ -153,4 +153,15 @@ public class IndustryController {
     public ApiResponse<Object> checkIndustry(@RequestParam Integer industryId) throws ParseException {
         return industryService.checkIndustryExist(industryId);
     }
+
+    /**
+     * API thống kê ngành nghề được sử dụng nhiều
+     *
+     * @apiNote được sử dụng để truy vấn ngành nghề từ cơ sở dữ liệu.
+     */
+    @GetMapping("/get-used-industry")
+    public ApiResponse<Object> getUsedIndustry() throws ParseException {
+        return industryService.getMostUsedIndustry();
+    }
+
 }

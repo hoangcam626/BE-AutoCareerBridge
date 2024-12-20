@@ -35,5 +35,6 @@ public interface IndustryService {
 
     ApiResponse<Object> checkIndustryExist(Integer industryId) throws ParseException;
 
+    ApiResponse<Object> getMostUsedIndustry() throws ParseException;
 
 }

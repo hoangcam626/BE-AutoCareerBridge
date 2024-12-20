@@ -5,6 +5,7 @@ import com.backend.autocarrerbridge.dto.request.industry.DeleteIndustryRequest;
 import com.backend.autocarrerbridge.dto.request.industry.IndustryRequest;
 import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import com.backend.autocarrerbridge.dto.response.industry.CheckIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.industry.IndustryJobCountDTO;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.entity.Business;
@@ -338,5 +339,12 @@ public class IndustryServiceImp implements IndustryService {
         boolean exists = businessIndustryRepository.existsByIndustry_IdAndBusiness_Id(getBusinessViaToken().getId(), industryId);
         return ApiResponse.builder()
                 .data(new CheckIndustryResponse(exists)).build();
+    }
+
+    @Override
+    public ApiResponse<Object> getMostUsedIndustry() throws ParseException {
+        List<IndustryJobCountDTO> list = industryRepository.findMostUsedIndustryByBusiness(getBusinessViaToken().getId());
+        return ApiResponse.builder()
+                .data(list).build();
     }
 }
