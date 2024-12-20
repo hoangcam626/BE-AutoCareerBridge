@@ -38,12 +38,11 @@ public class IndustryController {
      */
     @GetMapping("/get-all-paging")
     public ApiResponse<Object> getAllIndustryPaging(
-            @RequestParam(defaultValue = "0") int first,
-            @RequestParam(defaultValue = "10") int rows,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String code) {
-        return industryService.getAllIndustryPaging(first, rows, page, name, code);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return industryService.getAllIndustryPaging(keyword, pageable);
     }
 
     /**
@@ -72,8 +71,8 @@ public class IndustryController {
      * @apiNote được sử dụng để cập nhật một ngành nghề mới vào cơ sở dữ liệu.
      */
     @PutMapping("/update")
-    public ApiResponse<Object> updateIndustry(@RequestBody IndustryRequest industryRequest) throws ParseException {
-        return industryService.updateIndustry(industryRequest);
+    public ApiResponse<Object> updateIndustry(@RequestParam Integer id, @RequestBody IndustryRequest industryRequest) throws ParseException {
+        return industryService.updateIndustry(id,industryRequest);
     }
 
     /**
@@ -108,7 +107,7 @@ public class IndustryController {
             @RequestParam String keyword)
             throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return industryService.getIndustryOfBusiness(page, size, keyword, pageable);
+        return industryService.getIndustryOfBusiness(keyword, pageable);
     }
 
     /**
@@ -127,10 +126,19 @@ public class IndustryController {
      * @apiNote được sử dụng xem chi tiết ngành nghề của doanh nghiệp.
      */
     @GetMapping("/get-detail")
-    public ApiResponse<Object> getIndustry(@RequestParam(value = "id") Integer id) throws ParseException {
-        return industryService.getIndustryDetail(id);
+    public ApiResponse<Object> getIndustryDetailOfBusiness(@RequestParam(value = "id") Integer id) throws ParseException {
+        return industryService.getIndustryDetailOfBusiness(id);
     }
 
+    /**
+     * API Xem chi tiết ngành nghề .
+     *
+     * @apiNote được sử dụng xem chi tiết ngành nghề của doanh nghiệp.
+     */
+    @GetMapping("/get-detail-admin")
+    public ApiResponse<Object> getIndustryDetail(@RequestParam(value = "id") Integer id) throws ParseException {
+        return industryService.getIndustryDetail(id);
+    }
     /**
      * API Xóa ngành nghề khỏi doanh nghiệp.
      *
