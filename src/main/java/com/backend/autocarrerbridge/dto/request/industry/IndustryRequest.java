@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IndustryRequest {
-    private Integer id;
     private String name;
     private String code;
     private Status status;
