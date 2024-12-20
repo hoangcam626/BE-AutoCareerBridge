@@ -31,7 +31,7 @@ public class Constant {
     public static final String SUCCESS_ACCEPT_MESSAGE = "Chấp nhận yêu cầu thành công!";
     public static final String REJECT_ACCEPT_MESSAGE = "Từ chối thành công!";
     public static final String APPROVE_COOPERATION_MESSAGE= " đã chấp nhận yêu cầu hợp tác của bạn";
-    public static final String REJECT_COOPERATION_MESSAGE= "đã chấp nhận yêu cầu hợp tác của bạn";
+    public static final String REJECT_COOPERATION_MESSAGE= "đã từ chối yêu cầu hợp tác của bạn";
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
     public static final String FORBIDDEN_MESSAGE = "Truy cập bị từ chối";
@@ -254,4 +254,12 @@ public class Constant {
     // Thông báo
     public static final String NOTIFICATION_NOT_FOUND_MESSAGE = "Thông báo không tồn tại";
     public static final String NOTIFICATION_ALREADY_READ_MESSAGE = "Thông báo đã được đánh dấu đã đọc.";
+
+    // validate
+    public static final String TEXT_REGEX="^(\\b\\w+\\b(\\s+|$)){1,200}$\n";
+    public static final String NAME_REGEX= "^\\S.*$";
+    public static final String EMAIL_REGEX= "^(?!\\s)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public static final String PHONE_REGEX= "^(\\+84|0)[0-9]\\d{8}$";
+    // Thông báo validate
+    public static final String CONTENT_TOO_LONG_MESSAGE = "Nội dung quá 200 từ";
 }

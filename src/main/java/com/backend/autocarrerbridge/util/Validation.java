@@ -10,6 +10,8 @@ public class Validation {
     private static final String PHONE_REGEX = "^\\d{10}$"; // Số điện thoại là 10 chữ số
     private static final String TAX_CODE_REGEX = "^\\d{10}$"; // Mã số thuế là 10 chữ số
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{8,}$";
+
+
     // Kiểm tra xem chuỗi có phải là email hợp lệ không
     public static boolean isValidEmail(String email) {
         return email != null && EMAIL_PATTERN.matcher(email).matches();

@@ -1,17 +1,19 @@
 package com.backend.autocarrerbridge.controller;
 
-import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
+
 
 import java.text.ParseException;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRequest;
+import com.backend.autocarrerbridge.dto.request.cooperation.CooperationRejectRequest;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
-import jakarta.validation.Valid;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationRejectResponse;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -130,7 +132,6 @@ public class CooperationController {
 
     /**
      * API để phê duyệt yêu cầu hợp tác của doanh nghiệp
-     *
      * &#064;ReqestBody  CooperationApproveRequest  của yêu cầu hợp tác
      * @return thông báo thành công
      */
@@ -141,10 +142,11 @@ public class CooperationController {
                 .build();
     }
 
-    @GetMapping("/reject-request/{buId}")
-    ApiResponse<String> rejectRequestCooperation(@PathVariable Integer buId) {
-        businessUniversityService.rejectRequestCooperation(buId);
-        return ApiResponse.<String>builder().data(SUCCESS_MESSAGE).build();
+    @PostMapping("/reject-request")
+    ApiResponse<CooperationRejectResponse> rejectRequestCooperation(@RequestBody CooperationRejectRequest request) throws ParseException {
+        return ApiResponse.<CooperationRejectResponse>builder()
+                .data( businessUniversityService.rejectRequestCooperation(request))
+                .build();
     }
 
 
