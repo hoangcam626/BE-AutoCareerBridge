@@ -125,6 +125,6 @@ public class AdminJobController {
                                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                           @RequestParam(value = "keyword", required = false) String keyword) throws ParseException {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return jobService.getAllJob(pageNo, pageSize, keyword, pageable);
+        return jobService.getAllJob(keyword, pageable);
     }
 }

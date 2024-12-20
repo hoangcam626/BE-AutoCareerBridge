@@ -95,6 +95,8 @@ public class Constant {
     public static final String NO_EXIST_INDUSTRY = "Ngành không tồn tại";
     public static final String EXIST_INDUSTRY_OF_BUSINESS = "Doanh nghiệp đã có ngành nghề này";
     public static final String EXIST_INDUSTRY_OF_JOB = "Ngành nghề đang được sử dụng";
+    public static final String INDUSTRY_IN_USE = "Xóa thành công ";
+    public static final String INDUSTRY_IN_USE_ALL = "Ngành nghề đang được sử dụng, không thể xóa";
 
     // Token - JWT
     public static final String JTI = "jti";
@@ -224,6 +226,11 @@ public class Constant {
     public static final String JOB_ALREADY_APPROVED_MESSAGE = "Tin tuyển dụng đã được chấp nhận.";
     public static final String JOB_ALREADY_REJECTED_MESSAGE = "Tin tuyển dụng đã bị từ chối.";
     public static final String INVALID_JOB_STATE_MESSAGE = "Trạng thái tin tuyển dụng không hợp lệ.";
+    public static final String INVALID_TITLE = "Tiêu đề không được để trống";
+    public static final String INVALID_TITLE_OUT = "Tiêu đề  không được vượt quá 250 ký tự";
+    public static final String INVALID_SALARY = "Lương phải là số dương";
+    public static final String INVALID_EXPIRED_DATE = "Ngày hết hạn không được để trống";
+    public static final String INVALID_EXPIRED_DATE_FUTRURE = "Ngày hết hạn phải là ngày trong tương lai";
 
     // Workshop
     public static final String NO_EXIST_WORKSHOP = "Công việc không tồn tại";
