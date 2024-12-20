@@ -1,14 +1,15 @@
 package com.backend.autocarrerbridge.repository;
 
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.entity.Industry;
+import com.backend.autocarrerbridge.entity.Job;
+import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
-import com.backend.autocarrerbridge.entity.Job;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -20,21 +21,27 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
      * Lấy danh sách công việc của doanh nghiệp
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
-            + "FROM Job job join job.business business where business.id =:businessId " +
-            "AND job.status = 1" +
-            "AND (:keyword IS NULL OR :keyword = '' " +
-            "OR job.level like %:keyword% or job.title like %:keyword%)" +
-            "ORDER BY job.createdAt DESC ")
-    Page<JobResponse> getAllJobOfBusinessPaging(Integer businessId, @RequestParam("keyword") String keyword, Pageable pageable);
+            + "FROM Job job join job.business business where business.id =:businessId "
+            + "AND job.status = 1"
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR job.level like %:keyword% or job.title like %:keyword%)"
+            + "AND (:statusBrowse IS NULL OR job.statusBrowse = :statusBrowse) "
+            + "AND (:industryId IS NULL OR job.industry.id = :industryId) "
+            + "ORDER BY job.createdAt DESC ")
+    Page<JobResponse> getAllJobOfBusinessPaging(Integer businessId,
+                                                @Param("keyword") String keyword,
+                                                @Param("statusBrowse") State statusBrowse,
+                                                @Param("industryId") Integer  industryId,
+                                                Pageable pageable);
 
     /**
      * Lấy tất cả công việc paging
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
-            + "FROM Job job where job.status = 1" +
-            "AND (:keyword IS NULL OR :keyword = '' " +
-            "OR job.level like %:keyword% or job.title like %:keyword%)" +
-            "ORDER BY job.createdAt DESC ")
+            + "FROM Job job where job.status = 1"
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR job.level like %:keyword% or job.title like %:keyword%)"
+            + "ORDER BY job.createdAt DESC ")
     Page<JobResponse> getAllJob(@RequestParam("keyword") String keyword, Pageable pageable);
 
 
@@ -59,6 +66,7 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
     /**
      * Tìm job qua ngành nghề
      */
-    List<Job> findByIndustry(Industry industry);
+    @Query("SELECT job FROM Job job WHERE job.industry = :industry AND job.status = 1")
+    List<Job> getJobByIndustry(Industry industry);
 
 }

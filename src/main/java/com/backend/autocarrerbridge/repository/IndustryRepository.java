@@ -23,9 +23,10 @@ public interface IndustryRepository extends JpaRepository<Industry, Integer> {
      * Phân trang danh sách các ngành
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustryResponse(industry) "
-            + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE")
-    Page<IndustryResponse> getAllIndustryActivePag(
-            @Param("name") String name, @Param("code") String code, Pageable pageable);
+            + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
+            + "AND (:keyword IS NULL OR :keyword = ''OR industry.name like %:keyword% or industry.code like %:keyword%) " +
+            "ORDER BY industry.createdAt DESC")
+    Page<IndustryResponse> getAllIndustryActivePag(@Param("keyword") String keyword, Pageable pageable);
 
     /**
      * Kiểm tra tên ngành đã tồn tại?

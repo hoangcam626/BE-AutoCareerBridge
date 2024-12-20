@@ -90,6 +90,8 @@ public class Constant {
     public static final String NO_EXIST_INDUSTRY = "Ngành không tồn tại";
     public static final String EXIST_INDUSTRY_OF_BUSINESS = "Doanh nghiệp đã có ngành nghề này";
     public static final String EXIST_INDUSTRY_OF_JOB = "Ngành nghề đang được sử dụng";
+    public static final String INDUSTRY_IN_USE = "Xóa thành công ";
+    public static final String INDUSTRY_IN_USE_ALL = "Ngành nghề đang được sử dụng, không thể xóa";
 
     // Token - JWT
     public static final String JTI = "jti";

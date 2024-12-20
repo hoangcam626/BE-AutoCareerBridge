@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
 
+import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,7 +18,7 @@ import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 public interface JobService {
     ApiResponse<Object> getAllJob(String keyword, Pageable pageable) throws ParseException;
 
-    ApiResponse<Object> getAllJobOfBusinessPaging(String keyword, Pageable pageable) throws ParseException;
+    ApiResponse<Object> getAllJobOfBusinessPaging(String keyword, State statusBrowse, Integer industryId, Pageable pageable) throws ParseException;
 
     ApiResponse<Object> createJob(JobRequest jobRequest) throws ParseException;
 

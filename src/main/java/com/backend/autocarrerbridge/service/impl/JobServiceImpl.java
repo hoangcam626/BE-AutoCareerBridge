@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
+
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
@@ -18,6 +19,7 @@ import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.service.NotificationService;
+
 import java.text.ParseException;
 import java.time.LocalDate;
 
@@ -57,7 +59,6 @@ import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.transaction.annotation.Transactional;
-
 
 
 @Service
@@ -113,6 +114,7 @@ public class JobServiceImpl implements JobService {
         // Lấy username từ token
         return tokenService.getClaim(token, "sub");
     }
+
     /**
      * Lấy danh sách tất cả công việc
      */
@@ -127,9 +129,12 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách công việc mà doanh nghiệp đã đăng
      */
     @Override
-    public ApiResponse<Object> getAllJobOfBusinessPaging(String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getAllJobOfBusinessPaging(
+            String keyword, State statusBrowse, Integer industryId, Pageable pageable) throws ParseException {
         // Lấy danh sách công việc của doanh nghiệp
-        Page<JobResponse> jobs = jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), keyword, pageable);
+        Page<JobResponse> jobs =
+                jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), keyword,
+                        statusBrowse, industryId, pageable);
 
         // Kiểm tra và cập nhật trạng thái nếu expireDate quá ngày hôm nay
         LocalDate today = LocalDate.now();
