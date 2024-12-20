@@ -2,6 +2,52 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRequest;
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
+import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.Employee;
+import com.backend.autocarrerbridge.entity.Industry;
+import com.backend.autocarrerbridge.entity.Job;
+import com.backend.autocarrerbridge.entity.UserAccount;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.repository.BusinessRepository;
+import com.backend.autocarrerbridge.repository.EmployeeRepository;
+import com.backend.autocarrerbridge.repository.IndustryRepository;
+import com.backend.autocarrerbridge.repository.JobRepository;
+import com.backend.autocarrerbridge.repository.UserAccountRepository;
+import com.backend.autocarrerbridge.service.JobService;
+import com.backend.autocarrerbridge.service.NotificationService;
+import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.util.Validation;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
+import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
@@ -17,59 +63,6 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
-import com.backend.autocarrerbridge.dto.request.page.PageInfo;
-import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
-import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
-import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
-import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
-import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
-import com.backend.autocarrerbridge.service.NotificationService;
-
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
-import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
-import com.backend.autocarrerbridge.dto.request.job.JobRequest;
-import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.util.Validation;
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.SendEmail;
-import org.springframework.data.domain.Page;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.Employee;
-import com.backend.autocarrerbridge.entity.Industry;
-import com.backend.autocarrerbridge.entity.Job;
-import com.backend.autocarrerbridge.entity.UserAccount;
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.BusinessRepository;
-import com.backend.autocarrerbridge.repository.EmployeeRepository;
-import com.backend.autocarrerbridge.repository.IndustryRepository;
-import com.backend.autocarrerbridge.repository.JobRepository;
-import com.backend.autocarrerbridge.repository.UserAccountRepository;
-import com.backend.autocarrerbridge.service.JobService;
-import com.backend.autocarrerbridge.service.TokenService;
-import com.backend.autocarrerbridge.util.enums.State;
-import com.backend.autocarrerbridge.util.enums.Status;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -83,7 +76,6 @@ public class JobServiceImpl implements JobService {
     private final NotificationService notificationService;
     private final ConvertJob convertJob;
     private final SendEmail sendEmail;
-    private final ModelMapper modelMapper;
 
     /**
      * Lấy Employee từ token
@@ -128,7 +120,7 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách tất cả công việc
      */
     @Override
-    public ApiResponse<Object> getAllJob(String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getAllJob(String keyword, Pageable pageable){
         Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);
         return ApiResponse.builder().data(pagingResponse).build();
