@@ -275,7 +275,6 @@ public class BusinessServiceImpl implements BusinessService {
             if (!Validation.isValidPassword(userBusinessRequest.getPassword())) {
                 throw new AppException(ERROR_FORMAT_PW);
             }
-
             // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
             Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
             if (!Objects.isNull(existingBusiness)) {

@@ -3,7 +3,6 @@ package com.backend.autocarrerbridge.dto.response.university;
 import java.time.LocalDateTime;
 
 import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
-import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;

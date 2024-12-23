@@ -81,6 +81,7 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     SELECT new com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness(
         b.id, 
         b.name, 
+        bi.industry.id,
         bi.industry.name,
         COUNT(j), 
         b.businessImageId
@@ -89,7 +90,7 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     JOIN BusinessIndustry bi ON b.id = bi.business.id
     LEFT JOIN Job j ON j.business.id = b.id
     WHERE bi.industry.id = :industryId OR :industryId IS NULL
-    GROUP BY b.id, b.name, bi.industry.name, b.businessImageId
+    GROUP BY b.id, b.name, bi.industry.name, b.businessImageId,bi.industry.id
     ORDER BY COUNT(j) DESC
 """)
     List<IntroduceBusiness> getBusinessFeaturedByIndustry(@Param("industryId") Integer industryId, Pageable pageable);
