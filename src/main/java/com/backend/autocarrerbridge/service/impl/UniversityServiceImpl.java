@@ -10,6 +10,7 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.university.UniversityTotalResponse;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
@@ -218,6 +219,12 @@ public class UniversityServiceImpl implements UniversityService {
         checkValidateUniversity(userUniversityRequest);
         return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
     }
+
+    @Override
+    public List<UniversityTotalResponse> getAllTotalUniversity() {
+        return universityRepository.getUniversityTotal();
+    }
+
     public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
         if(!Validation.isValidPassword(userUniversityRequest.getPassword())){
             throw  new AppException(ERROR_FORMAT_PW);

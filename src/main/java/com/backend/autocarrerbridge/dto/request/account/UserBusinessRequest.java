@@ -32,7 +32,7 @@ public class UserBusinessRequest {
     @NotBlank(message = ERROR_NAME_EMPTY)
     String name;
 
-    @Size(max = 32,message = TAX_CODE_REGISTER)
+    @Size(max = 10,message = TAX_CODE_REGISTER)
     @NotBlank(message = TAX_CODE)
     String taxCode;
 
