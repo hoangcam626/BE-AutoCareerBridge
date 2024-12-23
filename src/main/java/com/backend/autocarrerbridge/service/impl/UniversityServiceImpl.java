@@ -194,9 +194,10 @@ public class UniversityServiceImpl implements UniversityService {
      * Lấy danh sách các trường đại học phân trang theo trạng thái.
      */
     @Override
-    public PagingResponse<UniversityResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<UniversityResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<University> universities = universityRepository.findAllByState(pageable, state, req.getKeyword());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<University> universities = universityRepository.findAllByState(pageable, state, keyword);
         Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
         return new PagingResponse<>(res);
     }
@@ -208,7 +209,8 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public PagingResponse<UniversityResponse> getAllUniversities(PageInfo req) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<University> universities = universityRepository.findAll(pageable, req.getKeyword());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<University> universities = universityRepository.findAll(pageable, keyword);
         Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
         return new PagingResponse<>(res);
     }

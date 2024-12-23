@@ -21,7 +21,6 @@ import com.backend.autocarrerbridge.dto.response.notification.NotificationRespon
 import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
-import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -38,6 +37,7 @@ import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.data.domain.Page;
@@ -343,9 +343,10 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách công việc theo trạng thái với phân trang.
      */
     @Override
-    public PagingResponse<JobResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<JobResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<JobResponse> res = jobRepository.findAllByState(pageable, state, req.getKeyword());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<JobResponse> res = jobRepository.findAllByState(pageable, state, keyword);
         return new PagingResponse<>(res);
     }
 

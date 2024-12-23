@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,7 +89,7 @@ public class AdminUniversityController {
     public ApiResponse<PagingResponse<UniversityResponse>> getApprovedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                          @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED.getValue());
+        var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
         return new ApiResponse<>(res);
     }
 
@@ -104,7 +105,7 @@ public class AdminUniversityController {
     public ApiResponse<PagingResponse<UniversityResponse>> getPendingUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                         @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING.getValue());
+        var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
         return new ApiResponse<>(res);
     }
 
@@ -120,7 +121,7 @@ public class AdminUniversityController {
     public ApiResponse<PagingResponse<UniversityResponse>> getRejectedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                          @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED.getValue());
+        var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);
         return new ApiResponse<>(res);
     }
 }

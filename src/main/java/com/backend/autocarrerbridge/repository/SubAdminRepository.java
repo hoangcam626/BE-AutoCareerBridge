@@ -24,17 +24,11 @@ public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
     @Query(value = "SELECT sa " +
             "FROM SubAdmin sa " +
             "WHERE (:keyword IS NULL OR " +
-            "       LOWER(sa.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "       LOWER(sa.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "       LOWER(sa.subAdminCode) LIKE LOWER(CONCAT('%', :keyword, '%')))" +
+            "       LOWER(sa.name) LIKE :keyword ESCAPE '\\' OR " +
+            "       LOWER(sa.email) LIKE :keyword ESCAPE '\\' OR " +
+            "       LOWER(sa.subAdminCode) LIKE :keyword ESCAPE '\\')" +
             "AND sa.status <> 0 " +
-            "ORDER BY " +
-            "   CASE " +
-            "       WHEN sa.name = :keyword THEN 1 " +
-            "       WHEN sa.subAdminCode = :keyword THEN 1" +
-            "       WHEN sa.email = :keyword THEN 1" +
-            "       ELSE 2 " +
-            "   END")
+            "ORDER BY sa.updatedAt DESC ")
     Page<SubAdmin> findAllPageable(Pageable pageable, String keyword);
 
     @Query("select sa from SubAdmin sa where sa.status <> 0")

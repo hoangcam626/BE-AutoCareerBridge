@@ -4,6 +4,7 @@ import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.entity.Industry;
+import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,17 +50,11 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             "FROM Job j " +
             "WHERE j.statusBrowse = :state  " +
             "AND (:keyword IS NULL OR " +
-            "   (LOWER(j.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "   OR (LOWER(j.business.name) LIKE LOWER(CONCAT('%', :keyword, '%'))))) " +
+            "   (LOWER(j.title) LIKE :keyword ESCAPE '\\' " +
+            "   OR (LOWER(j.business.name) LIKE :keyword ESCAPE '\\'))) " +
             "AND j.status <> 0 " +
-            "ORDER BY " +
-            "   CASE " +
-            "       WHEN (j.title) = :keyword THEN 1 " +
-            "       WHEN j.business.name = :keyword THEN 1" +
-            "       ELSE 2 " +
-            "   END," +
-            "   j.createdAt DESC ")
-    Page<JobResponse> findAllByState(Pageable pageable, Integer state, String keyword);
+            "ORDER BY j.createdAt DESC ")
+    Page<JobResponse> findAllByState(Pageable pageable, State state, String keyword);
 
 
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse(b.id, b.name, count(j)) " +

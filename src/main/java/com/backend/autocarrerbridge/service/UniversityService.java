@@ -14,6 +14,7 @@ import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedRe
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.util.email.EmailCode;
+import com.backend.autocarrerbridge.util.enums.State;
 
 public interface UniversityService {
     UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest);
@@ -32,7 +33,7 @@ public interface UniversityService {
 
     List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName);
 
-    PagingResponse<UniversityResponse> getPagingByState(PageInfo req, Integer state);
+    PagingResponse<UniversityResponse> getPagingByState(PageInfo req, State state);
 
     PagingResponse<UniversityResponse> getAllUniversities(PageInfo req);
 

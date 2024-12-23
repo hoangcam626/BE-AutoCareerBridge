@@ -202,7 +202,8 @@ public class SubAdminServiceImpl implements SubAdminService {
     @Override
     public Page<SubAdminSelfResponse> pageSubAdmins(PageInfo req) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable, req.getKeyword());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable, keyword);
         return subAdmins.map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class));
     }
 

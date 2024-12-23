@@ -76,7 +76,7 @@ public class AdminJobController {
     public ApiResponse<PagingResponse<JobResponse>> getApprovedJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                     @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED.getValue());
+        var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
         return new ApiResponse<>(res);
     }
 
@@ -92,7 +92,7 @@ public class AdminJobController {
     public ApiResponse<PagingResponse<JobResponse>> getPendingJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING.getValue());
+        var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
         return new ApiResponse<>(res);
     }
 
@@ -108,7 +108,7 @@ public class AdminJobController {
     public ApiResponse<PagingResponse<JobResponse>> getRejectedJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                     @RequestParam(value = "keyword", required = false) String keyword) {
-        var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED.getValue());
+        var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);
         return new ApiResponse<>(res);
     }
 

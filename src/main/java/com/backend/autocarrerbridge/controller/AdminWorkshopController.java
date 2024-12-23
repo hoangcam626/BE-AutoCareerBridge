@@ -62,7 +62,7 @@ public class AdminWorkshopController {
         return new ApiResponse<>(res);
     }
 
-    @GetMapping("/approved-workshops")
+    @GetMapping("/get-approved-workshops")
     public ApiResponse<PagingResponse<WorkShopResponse>> getApprovedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                            @RequestParam(value = "keyword", required = false) String keyword) {
@@ -78,7 +78,7 @@ public class AdminWorkshopController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách hội thảo đang chờ phê duyệt.
      */
-    @GetMapping("/pending-workshops")
+    @GetMapping("/get-pending-workshops")
     public ApiResponse<PagingResponse<WorkShopResponse>> getPendingWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
@@ -94,7 +94,7 @@ public class AdminWorkshopController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách hội thảo đã bị từ chối.
      */
-    @GetMapping("/rejected-workshops")
+    @GetMapping("/get-rejected-workshops")
     public ApiResponse<PagingResponse<WorkShopResponse>> getRejectedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                     @RequestParam(value = "keyword", required = false) String keyword) {

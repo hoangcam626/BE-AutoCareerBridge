@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.repository;
 
 import java.util.List;
 
+import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,28 +30,16 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
             "FROM University u " +
             "WHERE u.userAccount.state = :state  " +
             "AND (:keyword IS NULL OR " +
-            "     LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "     LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "ORDER BY " +
-            "   CASE " +
-            "       WHEN u.name = :keyword THEN 1 " +
-            "       WHEN u.email = :keyword THEN 1" +
-            "       ELSE 2 " +
-            "   END, " +
-            "   u.createdAt DESC ")
-    Page<University> findAllByState(Pageable pageable, Integer state, String keyword);
+            "     LOWER(u.name) LIKE :keyword ESCAPE '\\' OR " +
+            "     LOWER(u.email) LIKE :keyword ESCAPE '\\' ) " +
+            "ORDER BY u.createdAt DESC ")
+    Page<University> findAllByState(Pageable pageable, State state, String keyword);
 
     @Query("SELECT u " +
             "FROM University u " +
-            "WHERE (:keyword IS NULL OR " +
-            "     LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "     LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "ORDER BY " +
-            "   CASE " +
-            "       WHEN u.name = :keyword THEN 1 " +
-            "       WHEN u.email = :keyword THEN 1" +
-            "       ELSE 2 " +
-            "   END," +
-            "   u.createdAt DESC ")
+            "WHERE :keyword IS NULL OR " +
+            "     LOWER(u.name) LIKE :keyword ESCAPE '\\' OR " +
+            "     LOWER(u.email) LIKE :keyword ESCAPE '\\' " +
+            "ORDER BY u.createdAt DESC ")
     Page<University> findAll(Pageable pageable, String keyword);
 }

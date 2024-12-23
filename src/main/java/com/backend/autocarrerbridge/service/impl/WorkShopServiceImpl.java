@@ -28,6 +28,7 @@ import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedRespon
 import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.NotificationService;
+import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.modelmapper.ModelMapper;
@@ -398,7 +399,8 @@ public class WorkShopServiceImpl implements WorkShopService {
     @Override
     public PagingResponse<WorkShopResponse> getPagingByState(PageInfo info, State state) {
         Pageable pageable = PageRequest.of(info.getPageNo(), info.getPageSize());
-        Page<Workshop> workshops = workShopRepository.findAllByState(pageable, state, info.getKeyword());
+        String keyword = Validation.escapeKeywordForQuery(info.getKeyword());
+        Page<Workshop> workshops = workShopRepository.findAllByState(pageable, state, keyword) ;
         Page<WorkShopResponse> res = workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
         return new PagingResponse<>(res);
     }
