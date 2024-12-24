@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,9 @@ public interface EmployeeService {
 
     EmployeeResponse updateEmployee(Integer id, EmployeeRequest request);
 
+    void restoreEmployee(Integer id) throws ParseException;
+
     void deleteEmployee(Integer id);
 
-    PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage(int page, int size, String keyword, Pageable pageable);
+    PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage(String keyword, Status status, Pageable pageable);
 }

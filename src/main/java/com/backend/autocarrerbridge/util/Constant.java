@@ -30,22 +30,26 @@ public class Constant {
     public static final String NOTIFICATION_WAIT = "Vui lòng chờ";
     public static final String SUCCESS_ACCEPT_MESSAGE = "Chấp nhận yêu cầu thành công!";
     public static final String REJECT_ACCEPT_MESSAGE = "Từ chối thành công!";
-
+    public static final String APPROVE_COOPERATION_MESSAGE= " đã chấp nhận yêu cầu hợp tác của bạn";
+    public static final String REJECT_COOPERATION_MESSAGE= "đã từ chối yêu cầu hợp tác của bạn";
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
     public static final String FORBIDDEN_MESSAGE = "Truy cập bị từ chối";
     public static final String UNPROCESSABLE_ENTITY_MESSAGE = "Dữ liệu không thể xử lý";
     public static final String CONFLICT_MESSAGE = "Xung đột xảy ra";
     public static final String DESCRIPTION_MESSAGE = "Mô tả không được dài quá 255 kí tự ";
+    public static final String PREFIX_DATE = "Còn ";
+    public static final String POSTFIX_DATE = " Ngày";
 
     // Thông báo lỗi cụ thể
     public static final String ERROR_INVALID_EMAIL = "Email không hợp lệ.";
-    public static final String ERROR_INVALID_PHONE = "Email không hợp lệ.";
+    public static final String TOO_LONG_EMAIL_MESSAGE = "Email vượt quá 255 ký tự hoặc quá ngắn";
+    public static final String ERROR_INVALID_PHONE = "số điện thoại không hợp lệ.";
     public static final String ERROR_EXIST = "Email đã tồn tại.";
     public static final String ERROR_NOT_FOUND = "Không tìm thấy email.";
     public static final String ERROR_USER_EXIST = "Tên người dùng đã tồn tại.";
     public static final String PW_NOT_MATCH = "Mật khẩu không khớp.";
-    public static final String ERROR_INVALID_PHONE_NUMBER = "Số điện thoại không hợp lệ.";
+    public static final String ERROR_INVALID_PHONE_NUMBER = "Số điện thoại gồm 10 số và bắt đầu bằng +84 hoặc 0 theo sau là số từ 3-9.";
     public static final String USER_NOT_FOUND = "Không tìm thấy người dùng.";
     public static final String LICENSE_INVALID = "Giấy phép không hợp lệ.";
     public static final String ERROR_PW = "Mật khẩu không chính xác.";
@@ -59,6 +63,7 @@ public class Constant {
     public static final String ERROR_APPROVED = "Người dùng đã được phê duyệt.";
     public static final String ERROR_NAME_EMPTY = "Tên không được để trống";
     public static final String ERROR_LIST_EMPTY_MESAGE = "Danh sách rỗng";
+    public static final String ERROR_PW_INCORRECT_FORMAT = "Mật khẩu phải có ít nhất 8 ký tự 1 chữ hoa và một số và ký tự đặc biệt ";
 
     // Lỗi liên quan đến hình ảnh
     public static final String EMPTY_FILE_MESSAGE = "Tệp rỗng.";
@@ -90,6 +95,8 @@ public class Constant {
     public static final String NO_EXIST_INDUSTRY = "Ngành không tồn tại";
     public static final String EXIST_INDUSTRY_OF_BUSINESS = "Doanh nghiệp đã có ngành nghề này";
     public static final String EXIST_INDUSTRY_OF_JOB = "Ngành nghề đang được sử dụng";
+    public static final String INDUSTRY_IN_USE = "Xóa thành công ";
+    public static final String INDUSTRY_IN_USE_ALL = "Ngành nghề đang được sử dụng, không thể xóa";
 
     // Token - JWT
     public static final String JTI = "jti";
@@ -140,11 +147,17 @@ public class Constant {
             "Yêu cầu tham gia hội thảo thành công, Vui lòng đợi để chờ duyệt.";
     public static final String REQUEST_WORKSHOP_FAIL = "Doanh nghiệp đã yêu cầu tham gia vui lòng đợi!.";
     public static final String REQUEST_ALREADY_ACCEPT = "Doanh nghiệp đã được duyệt!.";
+    public static final String REQUEST_TAX_CODE_ALREADY = "Mã số thuế đã tòn tại!.";
     // Trường đại học
     public static final String REGISTER_UNIVERSITY =
             "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
     public static final String TITLE_WORK_SHOP_MESSAGE = "Tiêu đề không để trống.";
+
+    public static final String LOCK_SIGN_IN = "Tài khoản đã bị khóa tạm thời đăng nhập sai quá nhiều lần.";
+    public static final String TITLE_SIZE_MAX = "Tiêu đề quá dài.";
+    public static final String TITLE_SIZE_MIN = "Tiêu đề quá ngắn.";
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
+    public static final String DATE_WORKSHOP_OUT_DATE = "Hội thảo đã kết thúc.";
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
     public static final String NAME_UNIVERSITY_NOT_BLANK_MESSAGE = "Tên trường đại học không được rỗng.";
@@ -152,7 +165,10 @@ public class Constant {
     public static final String WEBSITE_UNIVERSITY_NOT_BLANK_MESSAGE = "Website không được bỏ trống.";
     public static final String FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE = "Năm thành lập không được bỏ trống.";
     public static final String PHONE_UNIVERSITY_NOT_BLANK_MESSAGE = "Số điện thoại không được bỏ trống.";
-
+    public static final String ADDRESS_DESCRIPTION = "Địa chỉ chi tiết quá dài!";
+    public static final String NAME_REGISTER = "Tên đăng ký quá dài!";
+    public static final String PW_REGISTER = "Mật khẩu quá dài!";
+    public static final String TAX_CODE_REGISTER = "Mã số thuế không hợp lệ!";
     // section
     public static final String NAME_SECTION_NOT_BLANK_MESSAGE = "Tên khoa không được bỏ trống .";
     public static final String NAME_SECTION_NOT_LOGGER_MESSAGE = "Tên khoa không được dài quá 100 kí tự.";
@@ -179,8 +195,15 @@ public class Constant {
     public static final String GENDER_NOT_BLANK_MESSAGE = "Giới tính không được để trống";
     public static final String DOB_NOT_BLANK_MESSAGE = "Ngày sinh không được để trống";
     public static final String EMAIL_NOT_BLANK_MESSAGE = "Email Tên không được để trống";
+    public static final String EMAIL_INVALID_SPACE_MESSAGE = "Email không được bắt đầu bằng dấu cách";
     public static final String PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống";
     public static final String CODE_EMPLOYEE_NOT_BLANK_MESSAGE = "Mã nhân viên không được để trống";
+    public static final String TOO_LONG_NAME_MESSAGE = "Tên nhân viên không hợp lệ quá dài hoặc quá ngắn";
+    public static final String INVALID_NAME_MESSAGE = "Tên nhân viên không được bắt đầu bằng dấu cách";
+    public static final String TOO_LONG_ADDRESS_MESSAGE= "Địa chỉ vượt quá 255 ký tự";
+    public static final String ADDRESS_INVALID_SPACE_MESSAGE = "Địa chỉ không được bắt đầu bằng dấu cách";
+
+
 
     // Administrative
     public static final String DISTRICT_NOT_FOUND_MESSAGE = "Không tìm thấy Quận/Huyện";
@@ -205,6 +228,11 @@ public class Constant {
     public static final String JOB_ALREADY_APPROVED_MESSAGE = "Tin tuyển dụng đã được chấp nhận.";
     public static final String JOB_ALREADY_REJECTED_MESSAGE = "Tin tuyển dụng đã bị từ chối.";
     public static final String INVALID_JOB_STATE_MESSAGE = "Trạng thái tin tuyển dụng không hợp lệ.";
+    public static final String INVALID_TITLE = "Tiêu đề không được để trống";
+    public static final String INVALID_TITLE_OUT = "Tiêu đề  không được vượt quá 250 ký tự";
+    public static final String INVALID_SALARY = "Lương phải là số dương";
+    public static final String INVALID_EXPIRED_DATE = "Ngày hết hạn không được để trống";
+    public static final String INVALID_EXPIRED_DATE_FUTRURE = "Ngày hết hạn phải là ngày trong tương lai";
 
     // Workshop
     public static final String NO_EXIST_WORKSHOP = "Công việc không tồn tại";
@@ -229,6 +257,18 @@ public class Constant {
     public static final String INSTRUCTIONAL_GENDER_REGEX_MESSAGE ="Giới tính phải là Nam, Nữ hoặc Khác!";
     public static final String INSTRUCTIONAL_EMAIL_NOT_BLANK_MESSAGE ="Email không được để trống!";
     public static final String INSTRUCTIONAL_EMAIL_REGEX_MESSAGE ="Địa chỉ email không hợp lệ!";
-    public static final String INSTRUCTIONAL_ADRESS_NOT_BLANK_MESSAGE ="Địa chỉ không được để trống!";
+    public static final String INSTRUCTIONAL_ADDRESS_NOT_BLANK_MESSAGE ="Địa chỉ không được để trống!";
     public static final String INSTRUCTIONAL_PHONE_NOT_BLANK_MESSAGE = "Số điện thoại không được để trống!";
+
+    // Thông báo
+    public static final String NOTIFICATION_NOT_FOUND_MESSAGE = "Thông báo không tồn tại";
+    public static final String NOTIFICATION_ALREADY_READ_MESSAGE = "Thông báo đã được đánh dấu đã đọc.";
+
+    // validate
+    public static final String TEXT_REGEX="^(\\b\\w+\\b(\\s+|$)){1,200}$\n";
+    public static final String NAME_REGEX= "^\\S.*$";
+    public static final String EMAIL_REGEX= "^(?!\\s)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public static final String PHONE_REGEX= "^(\\+84|0)[0-9]\\d{8}$";
+    // Thông báo validate
+    public static final String CONTENT_TOO_LONG_MESSAGE = "Nội dung quá 200 từ";
 }

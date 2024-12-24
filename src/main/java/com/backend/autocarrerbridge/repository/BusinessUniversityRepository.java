@@ -2,6 +2,10 @@ package com.backend.autocarrerbridge.repository;
 
 import java.util.List;
 
+import com.backend.autocarrerbridge.util.enums.State;
+import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -31,4 +35,21 @@ public interface BusinessUniversityRepository extends JpaRepository<BusinessUniv
     List<BusinessUniversity> getBusinessUniversityReject(Integer id);
 
     BusinessUniversity findBusinessUniversityById(Integer id);
+
+    @Query("select bu.business.email from BusinessUniversity bu where bu.id = :id and bu.status != 0")
+    String getEmailBusinessFromIdCooperation(Integer id);
+
+    @Query("SELECT cooperation "
+            + "FROM BusinessUniversity cooperation WHERE cooperation.university.email = :email "
+            + "AND cooperation.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR cooperation.business.name like %:keyword% or cooperation.business.email like %:keyword%)"
+            + "AND (:statusConnected IS NULL OR cooperation.statusConnected = :statusConnected) "
+            + "ORDER BY cooperation.createdAt DESC ")
+    Page<BusinessUniversity> getCooperationForPaging(String email,
+                                                     @Param("keyword") String keyword,
+                                                     @Param("status") State statusConnected,
+                                                     Pageable pageable
+    );
+
 }

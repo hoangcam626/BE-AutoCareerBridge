@@ -5,17 +5,19 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_ALREADY_APPROVED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_ALREADY_REJECTED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Validation.sanitizeKeyword;
+import static com.backend.autocarrerbridge.util.enums.State.APPROVED;
 import static com.backend.autocarrerbridge.util.enums.State.PENDING;
+import static com.backend.autocarrerbridge.util.enums.Status.ACTIVE;
 
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
@@ -25,6 +27,7 @@ import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
@@ -71,7 +74,6 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Lấy danh sách tất cả các Workshop với phân trang.
-     *
      * @param pageable Thông tin phân trang
      * @return Danh sách các Workshop phản hồi
      */
@@ -86,8 +88,7 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Lấy danh sách Workshop của một trường đại học cụ thể với phân trang.
-     *
-     * @param pageable     Thông tin phân trang
+     * @param pageable Thông tin phân trang
      * @param universityId ID của trường đại học
      * @return Danh sách các Workshop của trường đại học
      * @throws AppException Nếu không có nội dung
@@ -113,7 +114,6 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Tạo một Workshop mới.
-     *
      * @param workShopRequest Thông tin Workshop cần tạo
      * @return Thông tin phản hồi của Workshop vừa tạo
      * @throws AppException Nếu có lỗi về trạng thái hoặc trường đại học không tồn tại
@@ -122,7 +122,7 @@ public class WorkShopServiceImpl implements WorkShopService {
     public WorkShopResponse createWorkShop(WorkShopRequest workShopRequest) {
         validateWorkShop(workShopRequest); // Kiểm tra tính hợp lệ của Workshop
         Integer imageId = imageService.uploadFile(workShopRequest.getImageWorkshop()); // Tải ảnh lên
-        workShopRequest.setStatus(Status.ACTIVE); // Đặt trạng thái ACTIVE
+        workShopRequest.setStatus(ACTIVE); // Đặt trạng thái ACTIVE
         workShopRequest.setStatusBrowse(PENDING); // Đặt trạng thái duyệt là PENDING
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setDistrictId(workShopRequest.getIdDistrict());
@@ -131,7 +131,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         locationRequest.setDescription(workShopRequest.getAddressDescription());
         Location location = locationService.saveLocation(locationRequest);
         University university = universityService.findById(workShopRequest.getUniversityId()); // Tìm trường đại học
-        if (Objects.equals(university,null)) {
+        if (Objects.isNull(university)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu trường không tồn tại
         }
 
@@ -145,9 +145,8 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     /**
      * Lấy danh sách Workshop đã được phê duyệt theo trạng thái cụ thể với phân trang.
-     *
      * @param pageable Thông tin phân trang
-     * @param state    Trạng thái cần lọc
+     * @param state Trạng thái cần lọc
      * @return Danh sách Workshop đã được phê duyệt
      * @throws AppException Nếu không có nội dung
      */
@@ -164,10 +163,22 @@ public class WorkShopServiceImpl implements WorkShopService {
                 .toList();
     }
 
+    @Override
+    public List<WorkShopResponse> getAllWorkShopByLocation(Pageable pageable, Integer provinceId) {
+        List<Workshop> list = workShopRepository
+                .getAllWorkShopByLocation(pageable, provinceId)
+                .getContent();
+        if (list.isEmpty()) {
+            throw new AppException(ERROR_NO_CONTENT);
+        }
+        return list.stream()
+                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+                .toList();
+    }
+
     /**
      * Cập nhật thông tin một Workshop theo ID.
-     *
-     * @param id              ID của Workshop cần cập nhật
+     * @param id ID của Workshop cần cập nhật
      * @param workShopRequest Thông tin Workshop mới
      * @return Thông tin phản hồi của Workshop đã cập nhật
      * @throws AppException Nếu Workshop không tồn tại hoặc các ngày không hợp lệ
@@ -213,6 +224,7 @@ public class WorkShopServiceImpl implements WorkShopService {
     }
 
 
+
     private Location updateLocationIfNeeded(Workshop workshop, WorkShopRequest workShopRequest) {
         LocationRequest locationRequest = new LocationRequest();
         boolean isUpdated = false;
@@ -221,7 +233,8 @@ public class WorkShopServiceImpl implements WorkShopService {
         if (!Objects.equals(workshop.getLocation().getDistrict().getId(), workShopRequest.getIdDistrict())) {
             locationRequest.setDistrictId(workShopRequest.getIdDistrict());
             isUpdated = true;
-        } else {
+        }
+        else{
             locationRequest.setDistrictId(workshop.getLocation().getDistrict().getId());
         }
 
@@ -229,7 +242,8 @@ public class WorkShopServiceImpl implements WorkShopService {
         if (!Objects.equals(workshop.getLocation().getProvince().getId(), workShopRequest.getIdProvince())) {
             locationRequest.setProvinceId(workShopRequest.getIdProvince());
             isUpdated = true;
-        } else {
+        }
+        else{
             locationRequest.setProvinceId(workshop.getLocation().getProvince().getId());
         }
 
@@ -237,13 +251,15 @@ public class WorkShopServiceImpl implements WorkShopService {
         if (!Objects.equals(workshop.getLocation().getWard().getId(), workShopRequest.getIdWard())) {
             locationRequest.setWardId(workShopRequest.getIdWard());
             isUpdated = true;
-        } else {
+        }
+        else{
             locationRequest.setWardId(workshop.getLocation().getWard().getId());
         }
         if (!Objects.equals(workshop.getLocation().getDescription(), workShopRequest.getAddressDescription())) {
             locationRequest.setDescription(workShopRequest.getAddressDescription());
             isUpdated = true;
-        } else {
+        }
+        else{
             locationRequest.setDescription(workshop.getLocation().getDescription());
         }
 
@@ -258,7 +274,7 @@ public class WorkShopServiceImpl implements WorkShopService {
 
 
     private Integer updateWorkshopImage(WorkShopRequest workShopRequest) {
-        if (workShopRequest.getImageWorkshop() != null) {
+        if (!Objects.isNull(workShopRequest.getImageWorkshop())) {
             return imageService.uploadFile(workShopRequest.getImageWorkshop());
         }
         return null;
@@ -271,6 +287,31 @@ public class WorkShopServiceImpl implements WorkShopService {
     }
 
     /**
+     * Kiểm tra tính hợp lệ của Workshop.
+     * @param workShopRequest Thông tin Workshop cần kiểm tra
+     * @throws AppException Nếu ngày tháng không hợp lệ
+     */
+    public void validateWorkShop(WorkShopRequest workShopRequest) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        if(workShopRequest.getStartDate().isBefore(localDateTime)){
+            throw new AppException(ERROR_WORK_SHOP_DATE_OUT_DATE);
+        }
+        // Kiểm tra ngày bắt đầu và kết thúc
+        if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())) {
+            throw new AppException(ERROR_WORK_SHOP_DATE);
+        }
+
+        LocalDate startDate = workShopRequest.getStartDate().toLocalDate();
+        LocalDate endDate = workShopRequest.getEndDate().toLocalDate();
+        LocalDate expireDate = workShopRequest.getExpireDate(); // Đảm bảo rằng expireDate là LocalDate
+
+        // Kiểm tra ngày hết hạn
+        if (expireDate.isAfter(endDate) || expireDate.isBefore(startDate)) {
+            throw new AppException(ERROR_WORK_SHOP_DATE);
+        }
+    }
+
+    /**
      * Cập nhật thông tin một Workshop theo ID.
      *
      * @param id ID của Workshop cần xoá mềm
@@ -279,7 +320,10 @@ public class WorkShopServiceImpl implements WorkShopService {
      */
     @Override
     public WorkShopResponse removeWorkShop(Integer id) {
-        Workshop workshop = findWorkshopById(id);
+        Workshop workshop = workShopRepository.findById(id).orElse(null);
+        if (Objects.isNull(workshop)) {
+            throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu Workshop không tồn tại
+        }
         workshop.setStatus(Status.INACTIVE);
         workShopRepository.save(workshop);
         return modelMapper.map(workshop, WorkShopResponse.class);
@@ -294,7 +338,10 @@ public class WorkShopServiceImpl implements WorkShopService {
      */
     @Override
     public WorkShopResponse getWorkShopById(Integer id) {
-        Workshop workshopById = findWorkshopById(id);
+        Workshop workshopById = workShopRepository.findById(id).orElse(null);
+        if (Objects.isNull(workshopById)) {
+            throw new AppException(ERROR_NO_CONTENT);
+        }
         return modelMapper.map(workshopById, WorkShopResponse.class);
     }
 
@@ -311,6 +358,8 @@ public class WorkShopServiceImpl implements WorkShopService {
         Workshop workshop = findWorkshopById(req.getId());
         validateWorkshopForStateChange(workshop, State.APPROVED);
         workshop.setStatusBrowse(State.APPROVED);
+        workShopRepository.save(workshop);
+
         String emailBusiness = workshop.getUniversity().getEmail();
 
         EmailDTO emailDTO = new EmailDTO(emailBusiness, APPROVED_WORKSHOP, "");
@@ -318,7 +367,7 @@ public class WorkShopServiceImpl implements WorkShopService {
                 workshop.getTitle());
 
         String message = String.format("%s: %s", APPROVED_WORKSHOP, workshop.getTitle());
-        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+        notificationService.send(NotificationSendRequest.of(Collections.singletonList(emailBusiness), APPROVED_WORKSHOP, message));
         return WorkshopApprovedResponse.of(Boolean.TRUE);
     }
 
@@ -335,13 +384,16 @@ public class WorkShopServiceImpl implements WorkShopService {
         Workshop workshop = findWorkshopById(req.getId());
         validateWorkshopForStateChange(workshop, State.REJECTED);
         workshop.setStatusBrowse(State.REJECTED);
+        workShopRepository.save(workshop);
+
         // Gửi thông báo email
-        String emailBusiness = workshop.getUniversity().getEmail();
-        EmailDTO emailDTO = new EmailDTO(emailBusiness, REJECTED_WORKSHOP, "");
+        String emailUniversity = workshop.getUniversity().getEmail();
+        EmailDTO emailDTO = new EmailDTO(emailUniversity, REJECTED_WORKSHOP, "");
         sendEmail.sendRRejectedWorkshopNotification(emailDTO, workshop.getTitle(), req.getMessage());
+
         // Gửi thông báo hệ thống
         String message = String.format("%s: %s", REJECTED_WORKSHOP, workshop.getTitle());
-        notificationService.send(NotificationSendRequest.of(emailBusiness, message));
+        notificationService.send(NotificationSendRequest.of(Collections.singletonList(emailUniversity), REJECTED_WORKSHOP, message));
         return WorkshopRejectedResponse.of(req.getMessage());
     }
 
@@ -359,6 +411,37 @@ public class WorkShopServiceImpl implements WorkShopService {
         Page<WorkShopResponse> res = workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
         return new PagingResponse<>(res);
     }
+
+    @Override
+    public PagingResponse<WorkShopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate, LocalDate endDate, Integer provinceId,Integer universityId, String keyword) {
+        // Chuyển đổi LocalDate thành LocalDateTime
+        LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;
+        LocalDateTime endDateTime = (endDate != null) ? endDate.atTime(23, 59, 59) : null;
+
+        String sanitizedKeyword = sanitizeKeyword(keyword);
+        Page<WorkShopPortalResponse> workshops = workShopRepository.getAllWorkshopApprovedAndLocation(
+                pageable,
+                APPROVED,
+                provinceId,
+                startDateTime,
+                endDateTime,
+                universityId,
+                ACTIVE,
+                sanitizedKeyword
+        );
+
+        return new PagingResponse<>(workshops);
+    }
+
+    @Override
+    public WorkShopPortalResponse getWorkShopPortalById(Integer workShopId) {
+        WorkShopPortalResponse workShopPortalResponse = workShopRepository.getWorkShopDetailsById(workShopId);
+        if(Objects.isNull(workShopPortalResponse)){
+            throw new AppException(ERROR_NO_CONTENT);
+        }
+        return workShopPortalResponse;
+    }
+
 
     /**
      * Kiểm tra tính hợp lệ của trạng thái Workshop khi chuyển đổi.
@@ -380,33 +463,8 @@ public class WorkShopServiceImpl implements WorkShopService {
             throw new AppException(ERROR_INVALID_WORKSHOP_STATE);
         }
     }
-
-    /**
-     * Kiểm tra tính hợp lệ của Workshop.
-     *
-     * @param workShopRequest Thông tin Workshop cần kiểm tra
-     * @throws AppException Nếu ngày tháng không hợp lệ
-     */
-    public void validateWorkShop(WorkShopRequest workShopRequest) {
-        // Kiểm tra ngày bắt đầu và kết thúc
-        if (workShopRequest.getStartDate().isAfter(workShopRequest.getEndDate())) {
-            throw new AppException(ERROR_WORK_SHOP_DATE);
-        }
-
-        LocalDate startDate = workShopRequest.getStartDate().toLocalDate();
-        LocalDate endDate = workShopRequest.getEndDate().toLocalDate();
-        LocalDate expireDate = workShopRequest.getExpireDate(); // Đảm bảo rằng expireDate là LocalDate
-
-        // Kiểm tra ngày hết hạn
-        if (expireDate.isAfter(endDate) || expireDate.isBefore(startDate)) {
-            throw new AppException(ERROR_WORK_SHOP_DATE);
-        }
-    }
-
     @Override
     public long countWorkShop() {
         return workShopRepository.count();
     }
-
-
 }

@@ -2,6 +2,53 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
+import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
+import com.backend.autocarrerbridge.dto.request.job.JobRequest;
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
+import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.entity.Business;
+import com.backend.autocarrerbridge.entity.Employee;
+import com.backend.autocarrerbridge.entity.Industry;
+import com.backend.autocarrerbridge.entity.Job;
+import com.backend.autocarrerbridge.entity.UserAccount;
+import com.backend.autocarrerbridge.exception.AppException;
+import com.backend.autocarrerbridge.exception.ErrorCode;
+import com.backend.autocarrerbridge.repository.BusinessRepository;
+import com.backend.autocarrerbridge.repository.EmployeeRepository;
+import com.backend.autocarrerbridge.repository.IndustryRepository;
+import com.backend.autocarrerbridge.repository.JobRepository;
+import com.backend.autocarrerbridge.repository.UserAccountRepository;
+import com.backend.autocarrerbridge.service.JobService;
+import com.backend.autocarrerbridge.service.NotificationService;
+import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.util.Validation;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
+import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
@@ -16,49 +63,6 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_JOB;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
-import com.backend.autocarrerbridge.dto.request.page.PageInfo;
-import com.backend.autocarrerbridge.service.NotificationService;
-import java.text.ParseException;
-import java.time.LocalDate;
-
-import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
-import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
-import com.backend.autocarrerbridge.dto.request.job.JobRequest;
-import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
-import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobDetailResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.SendEmail;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import com.backend.autocarrerbridge.entity.Business;
-import com.backend.autocarrerbridge.entity.Employee;
-import com.backend.autocarrerbridge.entity.Industry;
-import com.backend.autocarrerbridge.entity.Job;
-import com.backend.autocarrerbridge.entity.UserAccount;
-import com.backend.autocarrerbridge.exception.AppException;
-import com.backend.autocarrerbridge.exception.ErrorCode;
-import com.backend.autocarrerbridge.repository.BusinessRepository;
-import com.backend.autocarrerbridge.repository.EmployeeRepository;
-import com.backend.autocarrerbridge.repository.IndustryRepository;
-import com.backend.autocarrerbridge.repository.JobRepository;
-import com.backend.autocarrerbridge.repository.UserAccountRepository;
-import com.backend.autocarrerbridge.service.JobService;
-import com.backend.autocarrerbridge.service.TokenService;
-import com.backend.autocarrerbridge.util.enums.State;
-import com.backend.autocarrerbridge.util.enums.Status;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -72,7 +76,6 @@ public class JobServiceImpl implements JobService {
     private final NotificationService notificationService;
     private final ConvertJob convertJob;
     private final SendEmail sendEmail;
-    private final ModelMapper modelMapper;
 
     /**
      * Lấy Employee từ token
@@ -112,10 +115,12 @@ public class JobServiceImpl implements JobService {
         // Lấy username từ token
         return tokenService.getClaim(token, "sub");
     }
+
     /**
      * Lấy danh sách tất cả công việc
      */
-    public ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException {
+    @Override
+    public ApiResponse<Object> getAllJob(String keyword, Pageable pageable){
         Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);
         return ApiResponse.builder().data(pagingResponse).build();
@@ -125,9 +130,12 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách công việc mà doanh nghiệp đã đăng
      */
     @Override
-    public ApiResponse<Object> getAllJobOfBusinessPaging(int page, int size, String keyword, Pageable pageable) throws ParseException {
+    public ApiResponse<Object> getAllJobOfBusinessPaging(
+            String keyword, State statusBrowse, Integer industryId, Pageable pageable) throws ParseException {
         // Lấy danh sách công việc của doanh nghiệp
-        Page<JobResponse> jobs = jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), keyword, pageable);
+        Page<JobResponse> jobs =
+                jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), keyword,
+                        statusBrowse, industryId, pageable);
 
         // Kiểm tra và cập nhật trạng thái nếu expireDate quá ngày hôm nay
         LocalDate today = LocalDate.now();
@@ -184,6 +192,9 @@ public class JobServiceImpl implements JobService {
         String token = tokenService.getJWT();
         // Lấy username từ token
         String usernameToken = tokenService.getClaim(token, "sub");
+        Validation.validateTitle(jobRequest.getTitle());
+        Validation.validateSalary(jobRequest.getSalary());
+        Validation.validateExpireDate(jobRequest.getExpireDate());
         UserAccount userAccount = userAccountRepository.findByUsername(usernameToken);
         if (userAccount == null) {
             throw new AppException(ERROR_ACCOUNT_IS_NULL);
@@ -224,6 +235,9 @@ public class JobServiceImpl implements JobService {
      */
     @Override
     public ApiResponse<Object> updateJob(Integer jobId, JobRequest jobRequest) throws ParseException {
+        Validation.validateTitle(jobRequest.getTitle());
+        Validation.validateSalary(jobRequest.getSalary());
+        Validation.validateExpireDate(jobRequest.getExpireDate());
         // Tìm job theo ID
         Job job = findById(jobId);
         // Kiểm tra tên người tạo và tên đăng nhập của người đăng nhập
@@ -286,34 +300,50 @@ public class JobServiceImpl implements JobService {
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.APPROVED);
         job.setStatusBrowse(State.APPROVED);
-        String emailEmployee = job.getEmployee().getEmail();
+        jobRepository.save(job);
 
-        EmailDTO emailDTO = new EmailDTO(emailEmployee, APPROVED_JOB, "");
-        sendEmail.sendApprovedJobNotification(emailDTO,
+        String emailEmployee = job.getEmployee().getEmail();
+        String emailBusiness = job.getBusiness().getEmail();
+
+        EmailDTO emailEmployeeDTO = new EmailDTO(emailEmployee, APPROVED_JOB, "");
+        sendEmail.sendApprovedJobNotification(emailEmployeeDTO,
+                job.getTitle());
+        EmailDTO emailBusinessDTO = new EmailDTO(emailBusiness, APPROVED_JOB, "");
+        sendEmail.sendApprovedJobNotification(emailBusinessDTO,
                 job.getTitle());
 
-        String message = String.format("%s: %s", APPROVED_JOB, job.getTitle());
-        notificationService.send(NotificationSendRequest.of(emailEmployee, message));
-        return JobApprovedResponse.of(Boolean.TRUE);
+
+        String message = String.format("Tin tuyển dụng \"%s\" của bạn đã được phê duyệt", job.getTitle());
+        NotificationSendRequest sendReq =NotificationSendRequest.of(Arrays.asList(emailBusiness, emailEmployee), APPROVED_JOB, message);
+        NotificationResponse notification = notificationService.send(sendReq);
+        return JobApprovedResponse.of(Boolean.TRUE, notification);
     }
 
     /**
-     * Phê duyệt bài đăng công việc.
+     * Từ chối bài đăng công việc.
      */
     @Override
     public JobRejectedResponse rejected(JobRejectedRequest req) throws ParseException {
         Job job = findById(req.getId());
         validateJobForStateChange(job, State.REJECTED);
         job.setStatusBrowse(State.REJECTED);
-        String emailEmployee = job.getEmployee().getEmail();
+        jobRepository.save(job);
+
         // Gửi thông báo email
+        String emailEmployee = job.getEmployee().getEmail();
         EmailDTO emailDTO = new EmailDTO(emailEmployee, REJECTED_JOB, "");
         sendEmail.sendRRejectedJobNotification(emailDTO, job.getTitle(), req.getMessage());
-        // Gửi thông báo hệ thống
-        String message = String.format("%s: %s. Lý do: %s", REJECTED_JOB, job.getTitle(), req.getMessage());
-        notificationService.send(NotificationSendRequest.of(emailEmployee, message));
 
-        return JobRejectedResponse.of(req.getMessage());
+        String emailBusiness = job.getBusiness().getEmail();
+        EmailDTO emailBusinessDTO = new EmailDTO(emailBusiness, REJECTED_JOB, "");
+        sendEmail.sendRRejectedJobNotification(emailBusinessDTO, job.getTitle(), req.getMessage());
+
+        // Gửi thông báo hệ thống
+        String message = String.format("Tin tuyển dụng \"%s\" của bạn đã bị từ chối. Lý do: %s", job.getTitle(), req.getMessage());
+        NotificationSendRequest sendReq  = NotificationSendRequest.of(Arrays.asList(emailBusiness, emailEmployee), REJECTED_JOB, message);
+        NotificationResponse notification = notificationService.send(sendReq);
+
+        return JobRejectedResponse.of(Boolean.TRUE, notification);
     }
 
     /**
@@ -322,8 +352,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public PagingResponse<JobResponse> getPagingByState(PageInfo req, Integer state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<Job> jobs = jobRepository.findAllByState(pageable, state, req.getKeyword());
-        Page<JobResponse> res = jobs.map(j -> modelMapper.map(j, JobResponse.class));
+        Page<JobResponse> res = jobRepository.findAllByState(pageable, state, req.getKeyword());
         return new PagingResponse<>(res);
     }
 
@@ -359,6 +388,72 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_INVALID_JOB_STATE);
         }
     }
+    @Override
+    public List<BusinessTotalResponse> getBusinessJob(Pageable pageable) {
+        return jobRepository.findAllBusinessWithTotalJob(pageable).getContent();
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse>getJobBusinessByRegion(Pageable pageable, Integer regionId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByRegion(pageable,regionId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        // Lấy danh sách Job từ repository
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getJobBusinessByProvince(Pageable pageable, Integer provinceId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByProvince(pageable,provinceId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        // Lấy danh sách Job từ repository
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getJobBusinessByDistrict(Pageable pageable, Integer districtId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByDistrict(pageable,districtId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusiness(Pageable pageable) {
+        Page<BusinessJobResponse> page = jobRepository.findAllJobBusiness(pageable);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusinessBySalary(Pageable pageable, Long minSalary, Long maxSalary) {
+        Page<BusinessJobResponse> page = jobRepository.findJobBySalary(pageable,minSalary,maxSalary);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public PagingResponse<BusinessJobResponse> getAllJobBusinessByIndustry(Pageable pageable, Integer industryId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByIndustry(pageable,industryId);
+        if(Objects.isNull(page) || page.getContent().isEmpty()){
+            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(page);
+    }
+
+    @Override
+    public List<JobIndustryResponse> getTotalJobByIndustry(Pageable pageable) {
+        return jobRepository.findTotalJobByIndustry(pageable).getContent();
+    }
+
 
     /**
      * Kiểm tra xem người dùng có quyền vô hiệu hóa công việc này không

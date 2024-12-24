@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.dto.response.university;
 import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import java.time.LocalDateTime;
 
+import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
 import com.backend.autocarrerbridge.util.enums.Status;
 
 import lombok.AccessLevel;
@@ -34,4 +35,5 @@ public class UniversityResponse {
   String createdBy;
   String updatedBy;
   Integer userAccountId;
+  UserAccountResponse userAccount;
 }

@@ -76,4 +76,12 @@ public class UniversityController {
                 .data(universityService.findUniversityByNameOrLocation(address, universityName))
                 .build();
     }
+    @GetMapping("/get-total")
+    public ApiResponse<Object> findTotalUniversity() {
+        return ApiResponse.builder()
+                .code(SUCCESS)
+                .message(SUCCESS_MESSAGE)
+                .data(universityService.getAllTotalUniversity())
+                .build();
+    }
 }

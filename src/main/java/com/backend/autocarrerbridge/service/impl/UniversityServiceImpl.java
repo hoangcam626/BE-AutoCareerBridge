@@ -9,10 +9,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FORMAT_PW;
+
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.university.UniversityTotalResponse;
+import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
 
@@ -37,6 +41,8 @@ import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
+
+
 
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
@@ -158,7 +164,7 @@ public class UniversityServiceImpl implements UniversityService {
         university.setPhone(universityRequest.getPhone());
         university.setDescription(universityRequest.getDescription());
 
-        if (universityRequest.getLogoImageId() != null && !universityRequest.getLogoImageId().isEmpty()) {
+        if (!Objects.isNull(universityRequest.getLogoImageId()) && !universityRequest.getLogoImageId().isEmpty()) {
             // Tải lên ảnh mới và lưu ID của ảnh
             university.setLogoImageId(imageService.uploadFile(universityRequest.getLogoImageId()));
         }
@@ -230,9 +236,17 @@ public class UniversityServiceImpl implements UniversityService {
         return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
     }
 
+    @Override
+    public List<UniversityTotalResponse> getAllTotalUniversity() {
+        return universityRepository.getUniversityTotal();
+    }
+
     public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
-        if (userUniversityRequest.getPassword() == null
-                || userUniversityRequest.getRePassword() == null
+        if(!Validation.isValidPassword(userUniversityRequest.getPassword())){
+            throw  new AppException(ERROR_FORMAT_PW);
+        }
+        if (Objects.isNull(userUniversityRequest.getPassword())
+                || Objects.isNull(userUniversityRequest.getRePassword())
                 || !userUniversityRequest.getPassword().equals(userUniversityRequest.getRePassword())) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
         }
@@ -241,17 +255,17 @@ public class UniversityServiceImpl implements UniversityService {
             throw new AppException(ErrorCode.ERROR_PHONE_EXIST);
         }
 
-        if (userUniversityRequest.getEmail() == null
+        if (Objects.isNull(userUniversityRequest.getEmail())
                 || userUniversityRequest.getEmail().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
-        if (userUniversityRequest.getName() == null
+
+        if (Objects.isNull(userUniversityRequest.getName())
                 || userUniversityRequest.getName().isEmpty()) {
             throw new AppException(ErrorCode.ERROR_USER_NOT_FOUND);
         }
 
-        // Kiểm tra xem email đã được đăng ký trước đó hay chưa
-        if (userAccountService.getUserByUsername(userUniversityRequest.getEmail()) != null) {
+        if (!Objects.isNull(userAccountService.getUserByUsername(userUniversityRequest.getEmail()))) {
             throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
         }
     }
