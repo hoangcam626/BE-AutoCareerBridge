@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.controller;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,6 +23,8 @@ import com.backend.autocarrerbridge.service.WorkShopService;
 import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("api/work-shop")
@@ -200,5 +203,27 @@ public class WorkShopController {
         return ApiResponse.builder()
                 .data(workShopBusinessService.rejectBusiness(workShopBusinessRequest))
                 .build();
+    }
+    @GetMapping("/display")
+    public ApiResponse<Object> getWorkShopApprovedAndLocation(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "7") Integer size,
+            @RequestParam(value = "startDate" ,required = false ) LocalDate startDate,
+            @RequestParam(value = "endDate",required = false) LocalDate endDate,
+            @RequestParam(value = "provinceId", required = false) Integer provinceId,
+            @RequestParam(value = "universityId", required = false) Integer universityId,
+            @RequestParam(required = false)String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.builder()
+                .data(workShopService.getAllWorkShopApprovedAndLocation(pageable,startDate,endDate,provinceId,universityId,keyword)).build();
+    }
+
+    @GetMapping("display/{workShopId}")
+    public ApiResponse<Object> getWorkShopPortalById(@PathVariable("workShopId") Integer workShopId){
+        return ApiResponse.builder().data(workShopService.getWorkShopPortalById(workShopId)).build();
+    }
+    @GetMapping("status")
+    public ApiResponse<Object> getWorkShopStatus(@RequestParam Integer workShopId,@RequestParam Integer businessId){
+        return ApiResponse.builder().data(workShopBusinessService.getWorkShopStatusBusiness(workShopId,businessId)).build();
     }
 }
