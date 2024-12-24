@@ -147,11 +147,13 @@ public class Constant {
             "Yêu cầu tham gia hội thảo thành công, Vui lòng đợi để chờ duyệt.";
     public static final String REQUEST_WORKSHOP_FAIL = "Doanh nghiệp đã yêu cầu tham gia vui lòng đợi!.";
     public static final String REQUEST_ALREADY_ACCEPT = "Doanh nghiệp đã được duyệt!.";
+    public static final String REQUEST_TAX_CODE_ALREADY = "Mã số thuế đã tòn tại!.";
     // Trường đại học
     public static final String REGISTER_UNIVERSITY =
             "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
     public static final String TITLE_WORK_SHOP_MESSAGE = "Tiêu đề không để trống.";
 
+    public static final String LOCK_SIGN_IN = "Tài khoản đã bị khóa tạm thời đăng nhập sai quá nhiều lần.";
     public static final String TITLE_SIZE_MAX = "Tiêu đề quá dài.";
     public static final String TITLE_SIZE_MIN = "Tiêu đề quá ngắn.";
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";

@@ -70,4 +70,44 @@ public class Validation {
             throw new AppException(ERROR_EXPIRED_DATE_FUTRURE);
         }
     }
+    public static String sanitizeKeyword(String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return "";
+        }
+
+        // Thoát các ký tự đặc biệt trong SQL LIKE
+        keyword = keyword.replaceAll("([%_])", "\\\\$1");  // Thoát '%' và '_'
+        keyword = keyword.replaceAll("([;'])", "\\\\$1");  // Thoát ';' và '\''
+        keyword = keyword.replaceAll("\"", "\\\\\"");     // Thoát dấu nháy kép "
+        keyword = keyword.replaceAll("--", "\\\\--");      // Thoát chuỗi '--'
+        keyword = keyword.replaceAll("/\\*|\\*/", "");     // Loại bỏ phần chú thích /* */
+
+        // Loại bỏ các từ khóa nguy hiểm trong SQL
+        String[] sqlKeywords = {
+                "SELECT", "INSERT", "UPDATE", "DELETE", "DROP", "TRUNCATE",
+                "EXEC", "EXECUTE", "UNION", "ALL", "CREATE", "ALTER", "RENAME",
+                "REPLACE", "SHUTDOWN", "GRANT", "REVOKE", "MERGE", "CALL",
+                "SET", "DECLARE", "FETCH", "OPEN", "CLOSE"
+        };
+
+        for (String sqlKeyword : sqlKeywords) {
+            keyword = keyword.replaceAll("(?i)\\b" + sqlKeyword + "\\b", ""); // Xóa từ khóa (không phân biệt hoa thường)
+        }
+
+        // Loại bỏ các ký tự điều khiển không hợp lệ
+        keyword = keyword.replaceAll("[\\x00\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f]", ""); // Ký tự điều khiển
+
+        // Thoát ký tự nguy hiểm để ngăn chặn việc kết thúc chuỗi SQL
+        keyword = keyword.replaceAll("(['\"\\\\])", "\\\\$1");
+
+        // Loại bỏ các mẫu tấn công phổ biến
+        keyword = keyword.replaceAll("(?i)or\\s+1=1", ""); // Tấn công OR 1=1
+        keyword = keyword.replaceAll("(?i)and\\s+1=1", ""); // Tấn công AND 1=1
+        keyword = keyword.replaceAll("(?i)union\\s+select", ""); // Tấn công UNION SELECT
+        keyword = keyword.replaceAll("(?i)information_schema", ""); // Truy vấn metadata
+
+        return keyword.trim();
+    }
+
+
 }

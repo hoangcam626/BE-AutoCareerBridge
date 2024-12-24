@@ -9,13 +9,14 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.response.workshop.StateWorkShopBusinessResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessReponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Workshop;
@@ -52,7 +53,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
      * @param state - Trạng thái kết nối.
      * @return - Thông tin về workshop và danh sách các doanh nghiệp tham gia.
      */
-    public WorkShopBusinessReponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
+    public WorkShopBusinessResponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
         if (state != State.PENDING && state != State.APPROVED && state != State.REJECTED) {
             throw new AppException(ERROR_NO_CONTENT);
         }
@@ -73,11 +74,11 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
                 .toList();
 
         // Tạo và trả về response chứa thông tin workshop và danh sách doanh nghiệp
-        WorkShopBusinessReponse workShopBusinessReponse = new WorkShopBusinessReponse();
-        workShopBusinessReponse.setWorkshop(workShopResponse);
-        workShopBusinessReponse.setBusinessList(businessResponses);
+        WorkShopBusinessResponse workShopBusinessResponse = new WorkShopBusinessResponse();
+        workShopBusinessResponse.setWorkshop(workShopResponse);
+        workShopBusinessResponse.setBusinessList(businessResponses);
 
-        return workShopBusinessReponse;
+        return workShopBusinessResponse;
     }
 
     /**
@@ -173,5 +174,18 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
 
         // Trả về thông báo thành công sau khi cập nhật trạng thái.
         return REJECT_ACCEPT_MESSAGE;
+    }
+
+    @Override
+    public StateWorkShopBusinessResponse getWorkShopStatusBusiness(Integer workshopId, Integer businessId) {
+      WorkshopBusiness workshopBusiness =  workShopBussinessRepository.checkExistWorkShop(workshopId,businessId);
+      if(Objects.isNull(workshopBusiness)){
+          throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+      }
+      StateWorkShopBusinessResponse workShopBusinessResponse = new StateWorkShopBusinessResponse();
+      workShopBusinessResponse.setWorkshopId(workshopBusiness.getWorkshop().getId());
+      workShopBusinessResponse.setBusinessId(workshopBusiness.getBusiness().getId());
+      workShopBusinessResponse.setStatusConnected(workshopBusiness.getStatusConnected());
+      return workShopBusinessResponse;
     }
 }
