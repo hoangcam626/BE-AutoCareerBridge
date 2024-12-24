@@ -10,6 +10,8 @@ import com.backend.autocarrerbridge.dto.request.cooperation.CooperationRejectReq
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationRejectResponse;
 
+import com.backend.autocarrerbridge.util.enums.State;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -156,10 +158,12 @@ public class CooperationController {
     public ApiResponse<Object> getAllCooperationPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam String keyword) throws ParseException {
+            @RequestParam String keyword,
+            @RequestParam(required = false) State statusConnected
+            ) throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
         return ApiResponse.builder()
-                .data(businessUniversityService.gegetAllCooperationOfUniversityPage(keyword,pageable))
+                .data(businessUniversityService.gegetAllCooperationOfUniversityPage(keyword, statusConnected, pageable))
                 .build();
     }
 }

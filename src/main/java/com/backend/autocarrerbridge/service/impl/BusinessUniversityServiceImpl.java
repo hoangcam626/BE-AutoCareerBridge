@@ -289,42 +289,13 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     }
 
     @Override
-    public PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, Pageable pageable) throws ParseException {
+    public PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, State statusConnected, Pageable pageable) throws ParseException {
         String emailLogin = getUniversityFromToken().getEmail();
         //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keyword, pageable);
+        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keyword, statusConnected, pageable);
         //Chuyển đổi danh sách từ entity sang respone
         Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
         return new PagingResponse<>(list);
     }
 
-    @Override
-    public PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityPendingPage(String keyword, Pageable pageable) throws ParseException {
-        String emailLogin = getUniversityFromToken().getEmail();
-        //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationPendingForPaging(emailLogin, keyword, pageable);
-        //Chuyển đổi danh sách từ entity sang respone
-        Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
-        return new PagingResponse<>(list);
-    }
-
-    @Override
-    public PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityApprovePage(String keyword, Pageable pageable) throws ParseException {
-        String emailLogin = getUniversityFromToken().getEmail();
-        //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationApproveForPaging(emailLogin, keyword, pageable);
-        //Chuyển đổi danh sách từ entity sang respone
-        Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
-        return new PagingResponse<>(list);
-    }
-
-    @Override
-    public PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityRejectPage(String keyword, Pageable pageable) throws ParseException {
-        String emailLogin = getUniversityFromToken().getEmail();
-        //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationRejectForPaging(emailLogin, keyword, pageable);
-        //Chuyển đổi danh sách từ entity sang respone
-        Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
-        return new PagingResponse<>(list);
-    }
 }

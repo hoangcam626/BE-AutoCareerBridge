@@ -34,7 +34,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             + "AND (:keyword IS NULL OR :keyword = '' "
             + "OR e.name like %:keyword% or e.employeeCode like %:keyword% or e.email like %:keyword%)"
             + "AND (:status IS NULL OR e.status = :status) "
-            + "ORDER BY e.employeeCode DESC ")
+            + "ORDER BY e.updatedAt DESC ")
     Page<Employee>  getEmployeeForPaging(String email,
                                         @Param("keyword") String keyword,
                                         @Param("status") Status status,

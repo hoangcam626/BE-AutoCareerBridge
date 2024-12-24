@@ -10,6 +10,8 @@ import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveR
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationRejectResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Pageable;
 
 
@@ -32,11 +34,6 @@ public interface BusinessUniversityService {
     CooperationRejectResponse rejectRequestCooperation(CooperationRejectRequest request) throws ParseException;
 
 
-    PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, Pageable pageable) throws ParseException;
+    PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, State statusConnected, Pageable pageable) throws ParseException;
 
-    PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityPendingPage( String keyword, Pageable pageable) throws ParseException;
-
-    PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityApprovePage( String keyword, Pageable pageable) throws ParseException;
-
-    PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityRejectPage( String keyword, Pageable pageable) throws ParseException;
 }
