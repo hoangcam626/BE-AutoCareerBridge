@@ -11,8 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.backend.autocarrerbridge.util.Constant.EMAIL_INVALID_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.EMAIL_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.PHONE_NOT_BLANK_MESSAGE;

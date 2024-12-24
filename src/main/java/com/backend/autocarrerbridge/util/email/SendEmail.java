@@ -121,6 +121,20 @@ public class SendEmail {
         }
     }
 
+    public void sendRejectCooperationNotification(EmailDTO emailDTO, String titleCooperation, String website, String message) {
+        try {
+            // Kiểm tra email hợp lệ
+            validatedEmail(emailDTO);
+
+            // Tạo và gửi email
+            String emailContent = getCooperationRejectNotification(titleCooperation, website, message);
+            MimeMessage mimeMessage = createMimeMessage(emailDTO, emailContent);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            logger.error(ERROR_EMAIL_NOT_FOUND.getMessage(), e.getMessage(), e);
+        }
+    }
+
     public void sendRRejectedJobNotification(EmailDTO emailDTO, String titleJob, String message) {
         try {
             // Kiểm tra email hợp lệ
@@ -287,6 +301,20 @@ public class SendEmail {
                 + "                Bạn đã có thể theo dõi thông tin của trường đại học "+namUniversity+" trong hệ thống của chúng tôi.</p>"
                 + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
                 + "                <p>Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.</p>"
+                + "            </td>";
+
+        return getEmailBody(content);
+    }
+
+    private String getCooperationRejectNotification(String titleJob, String website, String message) {
+        String content = "            <td class=\"content\">" + "                <h2>Thông báo hợp tác: "
+                + titleJob + " .</h2>"
+                + "                <p>Rất tiếc, doanh nghiệp của bạn chưa phù hợp với các tiêu chí hiện tại của trường."
+                + "                <p>Lý do từ chối của chúng tôi: "
+                + message + "./p>"
+                + "                <p>Chúng tôi sẽ lưu lại hồ sơ của doanh nghiệp bạn và sẽ liên hệ lại với bạn ngay khi có những thay đổi mới."
+                + "                Hoặc doanh nghiệp của bạn có thể theo dõi chúng tôi qua trang web " + website +".<p>"
+                + "                <p>Chúng tôi sẽ liên lạc với bạn nếu có bất kỳ cập nhật nào tiếp theo.</p>"
                 + "            </td>";
 
         return getEmailBody(content);

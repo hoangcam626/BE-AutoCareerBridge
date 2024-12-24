@@ -22,6 +22,8 @@ public class Validation {
     private static final String NUMBER_REGEX = "\\d+"; // Kiểm tra chỉ là số
 
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{8,}$";
+
+
     // Kiểm tra xem chuỗi có phải là email hợp lệ không
     public static boolean isValidEmail(String email) {
         return email != null && EMAIL_PATTERN.matcher(email).matches();
