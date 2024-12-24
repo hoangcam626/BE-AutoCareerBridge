@@ -7,6 +7,7 @@ import com.backend.autocarrerbridge.dto.response.instructional.InstructionalResp
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -88,4 +89,15 @@ public class SectionController {
         .setData(setInactiveSection);
     return ResponseEntity.ok(response);
   }
+
+  @GetMapping("/count-total")
+  public long countSection() {
+    return sectionService.countSection();
+  }
+
+  @GetMapping("/count-majors")
+  public Map<String, Long> countMajorsInSections() {
+    return sectionService.countMajorsInSections();
+  }
+
 }

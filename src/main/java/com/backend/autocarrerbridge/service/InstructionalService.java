@@ -25,5 +25,5 @@ public interface InstructionalService {
 
   PagingResponse<InstructionalResponse> getALlInstructionalInactive(int page, int size);
 
-
+ long countInstructional();
 }

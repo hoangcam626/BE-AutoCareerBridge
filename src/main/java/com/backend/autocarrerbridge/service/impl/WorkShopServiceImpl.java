@@ -32,7 +32,6 @@ import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResp
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.entity.Location;
-import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -463,5 +462,9 @@ public class WorkShopServiceImpl implements WorkShopService {
         if (req.getStatusBrowse() != State.PENDING) {
             throw new AppException(ERROR_INVALID_WORKSHOP_STATE);
         }
+    }
+    @Override
+    public long countWorkShop() {
+        return workShopRepository.count();
     }
 }

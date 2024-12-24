@@ -1,5 +1,10 @@
 package com.backend.autocarrerbridge.service.impl;
 
+import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
+
+import com.backend.autocarrerbridge.entity.Location;
+import com.backend.autocarrerbridge.mapper.LocationMapper;
+import com.backend.autocarrerbridge.service.LocationService;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -66,6 +71,8 @@ public class UniversityServiceImpl implements UniversityService {
     RedisTemplate<String, String> redisTemplate;
     SendEmail sendEmail;
     ImageService imageService;
+    LocationService locationService;
+
 
     @Override
     public UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest) {
@@ -161,6 +168,15 @@ public class UniversityServiceImpl implements UniversityService {
             // Tải lên ảnh mới và lưu ID của ảnh
             university.setLogoImageId(imageService.uploadFile(universityRequest.getLogoImageId()));
         }
+        LocationRequest locationRequest = LocationRequest.builder()
+            .provinceId(universityRequest.getProvinceId())
+            .districtId(universityRequest.getDistrictId())
+            .wardId(universityRequest.getWardId())
+            .build();
+        // Save Location and retrieve Location entity
+        Location location = locationService.saveLocation(locationRequest);
+        university.setLocation(location);
+        // Set the location for the university
         universityRepository.save(university);
         return UniversityConverter.convertToResponse(university);
 

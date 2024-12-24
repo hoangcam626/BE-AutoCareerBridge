@@ -18,4 +18,6 @@ public interface SectionRepository extends JpaRepository<Section, Integer> {
 
     Optional<Section> findById(int id);
 
+    @Query("SELECT s.name, COUNT(m) FROM Section s JOIN s.majors m GROUP BY s.name")
+    List<Object[]> countMajorsInSection();
 }
