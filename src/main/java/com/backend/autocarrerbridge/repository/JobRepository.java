@@ -1,20 +1,19 @@
 package com.backend.autocarrerbridge.repository;
 
+import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.job.AdminJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.entity.Job;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
-import com.backend.autocarrerbridge.entity.Job;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -26,21 +25,23 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
      * Lấy danh sách công việc của doanh nghiệp
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
-            + "FROM Job job join job.business business where business.id =:businessId " +
-            "AND job.status = 1" +
-            "AND (:keyword IS NULL OR :keyword = '' " +
-            "OR job.level like %:keyword% or job.title like %:keyword%)" +
-            "ORDER BY job.createdAt DESC ")
-    Page<JobResponse> getAllJobOfBusinessPaging(Integer businessId, @RequestParam("keyword") String keyword, Pageable pageable);
-
+            + "FROM Job job join job.business business where business.id =:businessId "
+            + "AND job.status = 1"
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR job.level like %:keyword% or job.title like %:keyword%)"
+            + "AND (:statusBrowse IS NULL OR job.statusBrowse = :statusBrowse) "
+            + "AND (:industryId IS NULL OR job.industry.id = :industryId) "
+            + "ORDER BY job.createdAt DESC ")
+    Page<JobResponse> getAllJobOfBusinessPaging(Integer businessId, @Param("industryId") Integer  industryId,
+                                                Pageable pageable);
     /**
-     * Lấy tất cả công việc
+     * Lấy tất cả công việc paging
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
-            + "FROM Job job where job.status = 1" +
-            "AND (:keyword IS NULL OR :keyword = '' " +
-            "OR job.level like %:keyword% or job.title like %:keyword%)" +
-            "ORDER BY job.createdAt DESC ")
+            + "FROM Job job where job.status = 1"
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR job.level like %:keyword% or job.title like %:keyword%)"
+            + "ORDER BY job.createdAt DESC ")
     Page<JobResponse> getAllJob(@RequestParam("keyword") String keyword, Pageable pageable);
 
 
@@ -72,187 +73,204 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
     Page<BusinessTotalResponse> findAllBusinessWithTotalJob(Pageable pageable);
 
     @Query("""
-                SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
-                     j.business.name,\s
-                    j.id,\s
-                    j.title,\s
-                    j.expireDate,\s
-                    j.level,\s
-                    j.salary,\s
-                    j.workingTime,\s
-                     j.requirement,
-                    j.statusBrowse,\s
-                    j.status,\s
-                    j.business.businessImageId,
-                    l.description,\s
-                    l.province.fullName,\s
-                    l.district.fullName,\s
-                    l.ward.fullName,\s
-                    j.createdAt,\s
-                    j.createdBy,\s
-                    j.updatedAt,\s
-                    j.updatedBy
-                )\s
-                FROM Job j\s
-                JOIN FETCH Business b ON j.business.id = b.id\s
-                JOIN FETCH Location l ON b.location.id = l.id\s
-                WHERE l.district.id =:districtId\s
-            """)
+    SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
+         j.business.name,\s
+        j.id,\s
+        j.title,\s
+        j.expireDate,\s
+        j.level,\s
+        j.salary,\s
+        j.jobDescription,
+        j.workingTime,\s
+         j.requirement,
+           j.benefit,
+        j.statusBrowse,\s
+        j.status,\s
+        j.business.businessImageId,
+        l.description,\s
+        l.province.fullName,\s
+        l.district.fullName,\s
+        l.ward.fullName,\s
+        j.createdAt,\s
+        j.createdBy,\s
+        j.updatedAt,\s
+        j.updatedBy
+    )\s
+    FROM Job j\s
+    JOIN FETCH Business b ON j.business.id = b.id\s
+    JOIN FETCH Location l ON b.location.id = l.id\s
+    WHERE l.district.id =:districtId\s
+""")
     Page<BusinessJobResponse> findJobByDistrict(Pageable pageable, @Param("districtId") Integer districtId);
 
 
     @Query("""
-                SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
-                    j.business.name,\s
-                    j.id,\s
-                    j.title,\s
-                    j.expireDate,\s
-                    j.level,\s
-                    j.salary,\s
-                    j.workingTime,\s
-                     j.requirement,
-                    j.statusBrowse,\s
-                    j.status,\s
-                    j.business.businessImageId,
-                    l.description,\s
-                    l.province.fullName,\s
-                    l.district.fullName,\s
-                    l.ward.fullName,\s
-                    j.createdAt,\s
-                    j.createdBy,\s
-                    j.updatedAt,\s
-                    j.updatedBy
-                )\s
-                FROM Job j\s
-                JOIN FETCH Business b ON j.business.id = b.id\s
-                JOIN FETCH Location l ON b.location.id = l.id\s
-                WHERE l.province.id = :provinceId\s
-            """)
+    SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
+        j.business.name,\s
+        j.id,\s
+        j.title,\s
+        j.expireDate,\s
+        j.level,\s
+        j.salary,\s
+         j.jobDescription,
+        j.workingTime,\s
+         j.requirement,
+           j.benefit,
+        j.statusBrowse,\s
+        j.status,\s
+        j.business.businessImageId,
+        l.description,\s
+        l.province.fullName,\s
+        l.district.fullName,\s
+        l.ward.fullName,\s
+        j.createdAt,\s
+        j.createdBy,\s
+        j.updatedAt,\s
+        j.updatedBy
+    )\s
+    FROM Job j\s
+    JOIN FETCH Business b ON j.business.id = b.id\s
+    JOIN FETCH Location l ON b.location.id = l.id\s
+    WHERE l.province.id = :provinceId\s
+""")
     Page<BusinessJobResponse> findJobByProvince(Pageable pageable, @Param("provinceId") Integer provinceId);
 
 
     @Query("""
-                SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
-                     j.business.name,\s
-                    j.id,\s
-                    j.title,\s
-                    j.expireDate,\s
-                    j.level,\s
-                    j.salary,\s
-                    j.workingTime,\s
-                    j.requirement,
-                    j.statusBrowse,\s
-                    j.status,\s
-                    j.business.businessImageId,
-                    l.description,\s
-                    l.province.fullName,\s
-                    l.district.fullName,\s
-                    l.ward.fullName,\s
-                    j.createdAt,\s
-                    j.createdBy,\s
-                    j.updatedAt,\s
-                    j.updatedBy
-                )\s
-                FROM Job j\s
-                JOIN FETCH Business b ON j.business.id = b.id\s
-                JOIN FETCH Location l ON b.location.id = l.id\s
-                WHERE l.province.administrativeRegion.id = :regionId
-                ORDER BY j.expireDate DESC
-            """)
+    SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
+         j.business.name,\s
+        j.id,\s
+        j.title,\s
+        j.expireDate,\s
+        j.level,\s
+        j.salary,\s
+         j.jobDescription,
+        j.workingTime,\s
+        j.requirement,
+          j.benefit,
+        j.statusBrowse,\s
+        j.status,\s
+        j.business.businessImageId,
+        l.description,\s
+        l.province.fullName,\s
+        l.district.fullName,\s
+        l.ward.fullName,\s
+        j.createdAt,\s
+        j.createdBy,\s
+        j.updatedAt,\s
+        j.updatedBy
+    )\s
+    FROM Job j\s
+    JOIN FETCH Business b ON j.business.id = b.id\s
+    JOIN FETCH Location l ON b.location.id = l.id\s
+    WHERE l.province.administrativeRegion.id = :regionId
+    ORDER BY j.expireDate DESC
+""")
     Page<BusinessJobResponse> findJobByRegion(Pageable pageable, @Param("regionId") Integer regionId);
 
     @Query("""
-                SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
-                     j.business.name,\s
-                    j.id,\s
-                    j.title,\s
-                    j.expireDate,\s
-                    j.level,\s
-                    j.salary,\s
-                    j.workingTime,\s
-                      j.requirement,
-                    j.statusBrowse,\s
-                    j.status,\s
-                    j.business.businessImageId,
-                    l.description,\s
-                    l.province.fullName,\s
-                    l.district.fullName,\s
-                    l.ward.fullName,\s
-                    j.createdAt,\s
-                    j.createdBy,\s
-                    j.updatedAt,\s
-                    j.updatedBy
-                )\s
-                FROM Job j\s
-                JOIN FETCH Business b ON j.business.id = b.id\s
-                JOIN FETCH Location l ON b.location.id = l.id\s
-                ORDER BY j.expireDate DESC
-            """)
+    SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
+         j.business.name,\s
+        j.id,\s
+        j.title,\s
+        j.expireDate,\s
+        j.level,\s
+        j.salary,\s
+         j.jobDescription,
+        j.workingTime,\s
+          j.requirement,
+            j.benefit,
+        j.statusBrowse,\s
+        j.status,\s
+        j.business.businessImageId,
+        l.description,\s
+        l.province.fullName,\s
+        l.district.fullName,\s
+        l.ward.fullName,\s
+        j.createdAt,\s
+        j.createdBy,\s
+        j.updatedAt,\s
+        j.updatedBy
+    )\s
+    FROM Job j\s
+    JOIN FETCH Business b ON j.business.id = b.id\s
+    JOIN FETCH Location l ON b.location.id = l.id\s
+    ORDER BY j.expireDate DESC
+""")
     Page<BusinessJobResponse> findAllJobBusiness(Pageable pageable);
 
     @Query("""
-                SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
-                     j.business.name,\s
-                    j.id,\s
-                    j.title,\s
-                    j.expireDate,\s
-                    j.level,\s
-                    j.salary,\s
-                    j.workingTime,\s
-                      j.requirement,
-                    j.statusBrowse,\s
-                    j.status,\s
-                    j.business.businessImageId,
-                    l.description,\s
-                    l.province.fullName,\s
-                    l.district.fullName,\s
-                    l.ward.fullName,\s
-                    j.createdAt,\s
-                    j.createdBy,\s
-                    j.updatedAt,\s
-                    j.updatedBy
-                )\s
-                FROM Job j\s
-                JOIN FETCH Business b ON j.business.id = b.id\s
-                JOIN FETCH Location l ON b.location.id = l.id\s
-                where j.industry.id =:industryId
-                ORDER BY j.expireDate DESC
-            """)
-    Page<BusinessJobResponse> findJobByIndustry(Pageable pageable, @Param("industryId") Integer industryId);
+    SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
+         j.business.name,\s
+        j.id,\s
+        j.title,\s
+        j.expireDate,\s
+        j.level,\s
+        j.salary,\s
+         j.jobDescription,
+        j.workingTime,\s
+          j.requirement,
+            j.benefit,
+        j.statusBrowse,\s
+        j.status,\s
+        j.business.businessImageId,
+        l.description,\s
+        l.province.fullName,\s
+        l.district.fullName,\s
+        l.ward.fullName,\s
+        j.createdAt,\s
+        j.createdBy,\s
+        j.updatedAt,\s
+        j.updatedBy
+    )\s
+    FROM Job j\s
+    JOIN FETCH Business b ON j.business.id = b.id\s
+    JOIN FETCH Location l ON b.location.id = l.id\s
+    where j.industry.id =:industryId
+    ORDER BY j.expireDate DESC
+""")
+    Page<BusinessJobResponse> findJobByIndustry(Pageable pageable,@Param("industryId") Integer industryId);
 
     @Query("""
-                SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
-                    j.business.name,
-                    j.id,
-                    j.title,
-                    j.expireDate,
-                    j.level,
-                    j.salary,
-                    j.workingTime,
-                    j.requirement,
-                    j.statusBrowse,
-                    j.status,
-                    j.business.businessImageId,
-                    l.description,
-                    l.province.fullName,
-                    l.district.fullName,
-                    l.ward.fullName,
-                    j.createdAt,
-                    j.createdBy,
-                    j.updatedAt,
-                    j.updatedBy
-                )
-                FROM Job j
-                JOIN FETCH Business b ON j.business.id = b.id
-                JOIN FETCH Location l ON b.location.id = l.id
-                WHERE (:minSalary IS NULL OR j.salary >= :minSalary)
-                AND (:maxSalary IS NULL OR j.salary <= :maxSalary)
-                ORDER BY j.expireDate DESC
-            """)
+    SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
+        j.business.name,
+        j.id,
+        j.title,
+        j.expireDate,
+        j.level,
+        j.salary,
+         j.jobDescription,
+        j.workingTime,
+        j.requirement,
+        j.benefit,
+        j.statusBrowse,
+        j.status,
+        j.business.businessImageId,
+        l.description,
+        l.province.fullName,
+        l.district.fullName,
+        l.ward.fullName,
+        j.createdAt,
+        j.createdBy,
+        j.updatedAt,
+        j.updatedBy
+    )
+    FROM Job j
+    JOIN FETCH Business b ON j.business.id = b.id
+    JOIN FETCH Location l ON b.location.id = l.id
+    WHERE (:minSalary IS NULL OR j.salary >= :minSalary)
+    AND (:maxSalary IS NULL OR j.salary <= :maxSalary)
+    ORDER BY j.expireDate DESC
+""")
     Page<BusinessJobResponse> findJobBySalary(Pageable pageable,
                                               @Param("minSalary") Long minSalary,
                                               @Param("maxSalary") Long maxSalary);
 
+    /**
+     * Tìm job qua ngành nghề
+     */
+    @Query("SELECT job FROM Job job WHERE job.industry = :industry AND job.status = 1")
+    List<Job> getJobByIndustry(Industry industry);
 
 //    @Query("""
 //    SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse(
@@ -283,8 +301,6 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
 //    ORDER BY j.expireDate DESC
 //""")
 //    Page<BusinessJobResponse> findJobByExperience(Pageable pageable,Integer start,Integer end);
-
-    List<Job> findByIndustry(Industry industry);
 
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse(i.id, i.name, count(jb.id)) " +
             "FROM Industry i LEFT JOIN Job jb ON i.id = jb.industry.id GROUP BY i.id, i.name ")

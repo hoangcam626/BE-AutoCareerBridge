@@ -52,7 +52,7 @@ public class UniversityController {
     }
     @PostMapping("/update/{id}")
     public ApiResponse<Object> updateUniversity(
-            @PathVariable("id") int id, @ModelAttribute UniversityRequest universityRequest) {
+          @Valid  @PathVariable("id") int id, @ModelAttribute UniversityRequest universityRequest) {
         UniversityResponse updateUniversity = universityService.update(id, universityRequest);
         return new ApiResponse<>().setData(updateUniversity);
     }
@@ -74,6 +74,14 @@ public class UniversityController {
                 .code(SUCCESS)
                 .message(SUCCESS_MESSAGE)
                 .data(universityService.findUniversityByNameOrLocation(address, universityName))
+                .build();
+    }
+    @GetMapping("/get-total")
+    public ApiResponse<Object> findTotalUniversity() {
+        return ApiResponse.builder()
+                .code(SUCCESS)
+                .message(SUCCESS_MESSAGE)
+                .data(universityService.getAllTotalUniversity())
                 .build();
     }
 }

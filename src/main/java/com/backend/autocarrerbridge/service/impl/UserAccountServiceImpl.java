@@ -68,6 +68,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     PasswordEncoder passwordEncoder;
     SendEmail sendEmail;
     RedisTemplate<String, String> redisTemplate;
+    RedisTemplate<String, Integer> redisLockUserTemplate;
     String codeExist = "Exist";
     Integer codeTime = 60;
     IntermediaryService intermediaryService;
@@ -89,7 +90,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (Objects.isNull(user)) {
             throw new AppException(ERROR_USER_NOT_FOUND);
         }
-        validatePassword(userAccountRequest.getPassword(), user.getPassword());
+        validatePassword(userAccountRequest,userAccountRequest.getPassword(), user.getPassword());
+
         validateUserState(user.getState());
 
         // Chuyển thông tin từ user -> response
@@ -159,7 +161,7 @@ public class UserAccountServiceImpl implements UserAccountService {
      */
     @Override
     public UserAccount registerUser(UserAccount userAccount) {
-        if(Boolean.TRUE.equals(userAccountRepository.existsByUsername(userAccount.getUsername()))){
+        if(!Objects.isNull(userAccountRepository.findByUsername(userAccount.getUsername()))){
             throw new AppException(ERROR_EMAIL_EXIST);
         }
         if(!Validation.isValidPassword(userAccount.getPassword())){
@@ -391,11 +393,23 @@ public class UserAccountServiceImpl implements UserAccountService {
         }
     }
 
-    private void validatePassword(String inputPassword, String storedPassword) {
+    private void validatePassword(UserAccountRequest userAccountRequest, String inputPassword, String storedPassword) {
         if (!passwordEncoder.matches(inputPassword, storedPassword)) {
+            Integer failCount = redisLockUserTemplate.opsForValue().get(userAccountRequest.getUsername());
+            if (failCount == null) {
+                redisLockUserTemplate.opsForValue().set(userAccountRequest.getUsername(), 1, 60, TimeUnit.MINUTES);
+            } else {
+                redisLockUserTemplate.opsForValue().set(userAccountRequest.getUsername(), failCount + 1, 60, TimeUnit.MINUTES);
+            }
+
+            if (failCount != null && failCount >= 5) {
+                throw new AppException(ErrorCode.LOCK_ERROR);
+            }
+
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }
     }
+
 
     private void validateUserState(State state) {
         if (state.equals(State.PENDING)) {

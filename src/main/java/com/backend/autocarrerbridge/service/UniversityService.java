@@ -13,6 +13,7 @@ import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedRe
 import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityTotalResponse;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.enums.State;
@@ -41,4 +42,6 @@ public interface UniversityService {
     EmailCode generateCode(UserUniversityRequest userUniversityRequest);
 
     AdminUniversityResponse detail(Integer id);
+
+    List<UniversityTotalResponse> getAllTotalUniversity();
 }

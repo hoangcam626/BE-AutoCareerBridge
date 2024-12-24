@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
@@ -260,6 +261,10 @@ public class BusinessServiceImpl implements BusinessService {
         return userAccountService.generateVerificationCode(userBusinessRequest.getEmail());
     }
 
+    @Override
+    public List<IntroduceBusiness> getFeatureBusiness(Integer industryId,Pageable page) {
+        return businessRepository.getBusinessFeaturedByIndustry(industryId,page);
+    }
 
 
     public void checkValidateRegister(UserBusinessRequest userBusinessRequest) {
@@ -272,7 +277,6 @@ public class BusinessServiceImpl implements BusinessService {
             if (!Validation.isValidPassword(userBusinessRequest.getPassword())) {
                 throw new AppException(ERROR_FORMAT_PW);
             }
-
             // Kiểm tra xem email doanh nghiệp đã tồn tại chưa
             Business existingBusiness = businessRepository.findByEmail(userBusinessRequest.getEmail());
             if (!Objects.isNull(existingBusiness)) {

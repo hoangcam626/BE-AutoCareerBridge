@@ -2,10 +2,13 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.*;
 import static com.backend.autocarrerbridge.util.Constant.APPROVE_COOPERATION_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.REJECT_COOPERATION_MESSAGE;
 
 import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRequest;
+import com.backend.autocarrerbridge.dto.request.cooperation.CooperationRejectRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationRejectResponse;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
@@ -47,8 +50,8 @@ import lombok.experimental.FieldDefaults;
 @Service
 @RequiredArgsConstructor // Tự động tạo constructor cho các trường được đánh dấu final
 @FieldDefaults(
-        level = AccessLevel.PRIVATE,
-        makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
+    level = AccessLevel.PRIVATE,
+    makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
 public class BusinessUniversityServiceImpl implements BusinessUniversityService {
 
     // Khai báo các thành phần cần thiết trong service
@@ -245,6 +248,7 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
         }
         String message = nameUniversity + APPROVE_COOPERATION_MESSAGE;
         EmailDTO emailDTO = new EmailDTO(emailBusiness, message, "");
+//        CompletableFuture.runAsync(() -> sendEmail.sendAccount(emailDTO,password));
         sendEmail.sendApprovedCooperationNotification(emailDTO, message, nameUniversity);
 
         //Thông báo bên giao diện
@@ -255,53 +259,48 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     }
 
     @Override
-    public void rejectRequestCooperation(Integer idBusinesUniversityReject) {
+    public CooperationRejectResponse rejectRequestCooperation(CooperationRejectRequest request) throws ParseException {
         BusinessUniversity businessUniversity =
-                businessUniversityRepository.findBusinessUniversityById(idBusinesUniversityReject);
+                businessUniversityRepository.findBusinessUniversityById(request.getIdCooperation());
         if (Objects.isNull(businessUniversity)) { // Nếu không tìm thấy
             throw new AppException(ErrorCode.NOT_FOUNDED);
         }
         businessUniversity.setStatusConnected(State.REJECTED); // Chuyển trạng thái sang phê duyệt
         businessUniversityRepository.save(businessUniversity); // Chuyển trạng thái sang từ chối
+
+        //Gửi thông báo mail đến business
+        String emailBusiness = businessUniversityRepository.getEmailBusinessFromIdCooperation(request.getIdCooperation());
+        University university;
+        try {
+            university = getUniversityFromToken();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        String tileReject = university.getName() + REJECT_COOPERATION_MESSAGE;
+        EmailDTO emailDTO = new EmailDTO(emailBusiness, tileReject, "");
+//        CompletableFuture.runAsync(() -> sendEmail.sendAccount(emailDTO,password));
+        sendEmail.sendRejectCooperationNotification(emailDTO, tileReject, university.getWebsite(), request.getMessage());
+
+        //Thông báo bên giao diện
+        NotificationResponse notificationResponse = notificationService.send(
+                NotificationSendRequest.of(Collections.singletonList(emailBusiness), "Hợp tác đã bị từ chối", tileReject)
+        );
+        return CooperationRejectResponse.of(Boolean.TRUE, notificationResponse);
     }
 
     @Override
-    public PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, Pageable pageable) throws ParseException {
+    public PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, State statusConnected, Pageable pageable) throws ParseException {
         String emailLogin = getUniversityFromToken().getEmail();
         //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keyword, pageable);
+        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keyword, statusConnected, pageable);
         //Chuyển đổi danh sách từ entity sang respone
         Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
         return new PagingResponse<>(list);
     }
 
-    @Override
-    public PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityPendingPage(String keyword, Pageable pageable) throws ParseException {
-        String emailLogin = getUniversityFromToken().getEmail();
-        //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationPendingForPaging(emailLogin, keyword, pageable);
-        //Chuyển đổi danh sách từ entity sang respone
-        Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
-        return new PagingResponse<>(list);
-    }
 
-    @Override
-    public PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityApprovePage(String keyword, Pageable pageable) throws ParseException {
-        String emailLogin = getUniversityFromToken().getEmail();
-        //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationApproveForPaging(emailLogin, keyword, pageable);
-        //Chuyển đổi danh sách từ entity sang respone
-        Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
-        return new PagingResponse<>(list);
-    }
-
-    @Override
-    public PagingResponse<CooperationUniversityResponse> getAllCooperationOfUniversityRejectPage(String keyword, Pageable pageable) throws ParseException {
-        String emailLogin = getUniversityFromToken().getEmail();
-        //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationRejectForPaging(emailLogin, keyword, pageable);
-        //Chuyển đổi danh sách từ entity sang respone
-        Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
-        return new PagingResponse<>(list);
-    }
+  @Override
+  public long countBussinessUniversity() {
+    return businessUniversityRepository.count();
+  }
 }

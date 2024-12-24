@@ -52,6 +52,9 @@ public abstract class AbstractAudit implements Serializable {
         if (this.status == null) {
             this.status = Status.ACTIVE; // Chỉ gán khi status chưa được gán
         }
+//        if(this.updatedAt == null){
+//            this.updatedAt = LocalDateTime.now();
+//        }
     }
 
     @PreUpdate

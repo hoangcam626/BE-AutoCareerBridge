@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.repository;
 
+import com.backend.autocarrerbridge.entity.Workshop;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,9 @@ public interface WorkShopBusinessRepository extends JpaRepository<WorkshopBusine
     @Query("select ws from WorkshopBusiness ws where ws.workshop.id =:workshopId and ws.business.id =:businessId")
     WorkshopBusiness checkExistWorkShop(
             @Param("workshopId") Integer workshopId, @Param("businessId") Integer businessId);
+
+    long countByWorkshopAndStatusConnected(Workshop workshop, State statusConnected);
+
+
+//    countByWorkshopAndStatusConnected
 }

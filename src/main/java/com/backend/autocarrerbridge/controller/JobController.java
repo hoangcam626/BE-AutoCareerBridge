@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.controller;
 
 import java.text.ParseException;
 
+import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +41,7 @@ public class JobController {
                                          @RequestParam(defaultValue = "10") int size,
                                          @RequestParam String keyword) throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return jobService.getAllJob(page, size, keyword, pageable);
+        return jobService.getAllJob(keyword, pageable);
     }
 
     /**
@@ -51,10 +52,12 @@ public class JobController {
      */
     @GetMapping("/get-all-job-of-business-paging")
     public ApiResponse<Object> getAllJobOfBusinessPaging(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size,
-                                         @RequestParam String keyword) throws ParseException {
+                                                         @RequestParam(defaultValue = "10") int size,
+                                                         @RequestParam String keyword,
+                                                         @RequestParam(required = false) State statusBrowse ,
+                                                         @RequestParam(required = false) Integer industryId) throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
-        return jobService.getAllJobOfBusinessPaging(page, size, keyword, pageable);
+        return jobService.getAllJobOfBusinessPaging(keyword, statusBrowse, industryId, pageable);
     }
 
     /**
@@ -156,17 +159,15 @@ public class JobController {
     }
     @GetMapping("/total-job")
     public ApiResponse<Object> getTotalJobByIndustry(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size)  {
+                                                        @RequestParam(defaultValue = "50") int size)  {
         Pageable pageable = PageRequest.of(page, size);
 
         return ApiResponse.builder().build().setData(jobService.getTotalJobByIndustry(pageable));
     }
 
-
-
-
     @GetMapping("/check-inactive-permission")
     public ApiResponse<Object> checkInactivePermission(@RequestParam Integer jobId) throws ParseException {
         return jobService.checkDeletePermission(jobId);
     }
+
 }

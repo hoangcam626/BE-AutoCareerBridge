@@ -21,9 +21,9 @@ import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 
 public interface JobService {
-    ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException;
+    ApiResponse<Object> getAllJob(String keyword, Pageable pageable) throws ParseException;
 
-    ApiResponse<Object> getAllJobOfBusinessPaging(int page, int size, String keyword, Pageable pageable) throws ParseException;
+    ApiResponse<Object> getAllJobOfBusinessPaging(String keyword, State statusBrowse, Integer industryId, Pageable pageable) throws ParseException;
 
     ApiResponse<Object> createJob(JobRequest jobRequest) throws ParseException;
 
