@@ -187,6 +187,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public void restoreEmployee(Integer id) throws ParseException {
+        Employee employee=employeeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ERROR_USER_NOT_FOUND));
+
+        // Lấy email doanh nghiệp từ token và gán doanh nghiệp cho nhân viên
+        String emailBusiness = tokenService.getClaim(tokenService.getJWT(), SUB);
+        employee.setUpdatedBy(emailBusiness);
+
+        //cập nhât trạng thái của nhân viên
+        employee.setStatus(Status.ACTIVE);
+        //cập nhật trạng thái tài khoản hệ thống của nhân viên
+        employee.getUserAccount().setStatus(Status.ACTIVE);
+        employeeRepository.save(employee);
+    }
+
+    @Override
     @Transactional
     public void deleteEmployee(Integer id) {
         // Tìm nhân viên theo ID, nếu không tồn tại thì ném ngoại lệ
@@ -195,12 +210,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         // Cập nhật trạng thái của nhân viên thành INACTIVE
         employee.setStatus(Status.INACTIVE);
+        employee.getUserAccount().setStatus(Status.INACTIVE);
         employeeRepository.save(employee); // Lưu thay đổi vào cơ sở dữ liệu
         employeeRepository.flush(); // Đồng bộ dữ liệu với cơ sở dữ liệu
     }
 
     @Override
-    public PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage( String keyword, Pageable pageable) {
+    public PagingResponse<EmployeeResponse> getAllEmployeeOfBusinessPage( String keyword, Status status, Pageable pageable) {
         String emailAccountLogin;
         try {
             emailAccountLogin = tokenService.getClaim(tokenService.getJWT(), SUB);
@@ -208,7 +224,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
         // Lấy dữ liệu phân trang từ repository
-        var employees = employeeRepository.getEmployeeForPaging(emailAccountLogin, keyword, pageable);
+        var employees = employeeRepository.getEmployeeForPaging(emailAccountLogin, keyword, status,pageable);
 
         // Chuyển đổi danh sách các employee sang Page<EmployeeResponse>
         Page<EmployeeResponse> list = employees.map(employee -> {

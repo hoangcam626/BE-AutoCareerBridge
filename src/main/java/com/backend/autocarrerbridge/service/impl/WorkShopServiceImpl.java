@@ -8,7 +8,10 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_D
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Validation.sanitizeKeyword;
+import static com.backend.autocarrerbridge.util.enums.State.APPROVED;
 import static com.backend.autocarrerbridge.util.enums.State.PENDING;
+import static com.backend.autocarrerbridge.util.enums.Status.ACTIVE;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -24,10 +27,12 @@ import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.entity.Location;
+import com.backend.autocarrerbridge.exception.ErrorCode;
 import com.backend.autocarrerbridge.service.LocationService;
 import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
@@ -118,7 +123,7 @@ public class WorkShopServiceImpl implements WorkShopService {
     public WorkShopResponse createWorkShop(WorkShopRequest workShopRequest) {
         validateWorkShop(workShopRequest); // Kiểm tra tính hợp lệ của Workshop
         Integer imageId = imageService.uploadFile(workShopRequest.getImageWorkshop()); // Tải ảnh lên
-        workShopRequest.setStatus(Status.ACTIVE); // Đặt trạng thái ACTIVE
+        workShopRequest.setStatus(ACTIVE); // Đặt trạng thái ACTIVE
         workShopRequest.setStatusBrowse(PENDING); // Đặt trạng thái duyệt là PENDING
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setDistrictId(workShopRequest.getIdDistrict());
@@ -407,6 +412,37 @@ public class WorkShopServiceImpl implements WorkShopService {
         Page<WorkShopResponse> res = workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
         return new PagingResponse<>(res);
     }
+
+    @Override
+    public PagingResponse<WorkShopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate, LocalDate endDate, Integer provinceId,Integer universityId, String keyword) {
+        // Chuyển đổi LocalDate thành LocalDateTime
+        LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;
+        LocalDateTime endDateTime = (endDate != null) ? endDate.atTime(23, 59, 59) : null;
+
+        String sanitizedKeyword = sanitizeKeyword(keyword);
+        Page<WorkShopPortalResponse> workshops = workShopRepository.getAllWorkshopApprovedAndLocation(
+                pageable,
+                APPROVED,
+                provinceId,
+                startDateTime,
+                endDateTime,
+                universityId,
+                ACTIVE,
+                sanitizedKeyword
+        );
+
+        return new PagingResponse<>(workshops);
+    }
+
+    @Override
+    public WorkShopPortalResponse getWorkShopPortalById(Integer workShopId) {
+        WorkShopPortalResponse workShopPortalResponse = workShopRepository.getWorkShopDetailsById(workShopId);
+        if(Objects.isNull(workShopPortalResponse)){
+            throw new AppException(ERROR_NO_CONTENT);
+        }
+        return workShopPortalResponse;
+    }
+
 
     /**
      * Kiểm tra tính hợp lệ của trạng thái Workshop khi chuyển đổi.

@@ -31,7 +31,7 @@ public class Constant {
     public static final String SUCCESS_ACCEPT_MESSAGE = "Chấp nhận yêu cầu thành công!";
     public static final String REJECT_ACCEPT_MESSAGE = "Từ chối thành công!";
     public static final String APPROVE_COOPERATION_MESSAGE= " đã chấp nhận yêu cầu hợp tác của bạn";
-    public static final String REJECT_COOPERATION_MESSAGE= "đã chấp nhận yêu cầu hợp tác của bạn";
+    public static final String REJECT_COOPERATION_MESSAGE= "đã từ chối yêu cầu hợp tác của bạn";
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
     public static final String FORBIDDEN_MESSAGE = "Truy cập bị từ chối";
@@ -147,11 +147,13 @@ public class Constant {
             "Yêu cầu tham gia hội thảo thành công, Vui lòng đợi để chờ duyệt.";
     public static final String REQUEST_WORKSHOP_FAIL = "Doanh nghiệp đã yêu cầu tham gia vui lòng đợi!.";
     public static final String REQUEST_ALREADY_ACCEPT = "Doanh nghiệp đã được duyệt!.";
+    public static final String REQUEST_TAX_CODE_ALREADY = "Mã số thuế đã tòn tại!.";
     // Trường đại học
     public static final String REGISTER_UNIVERSITY =
             "Đăng ký tài khoản trường đại học thành công, vui lòng đợi hệ thống duyệt";
     public static final String TITLE_WORK_SHOP_MESSAGE = "Tiêu đề không để trống.";
 
+    public static final String LOCK_SIGN_IN = "Tài khoản đã bị khóa tạm thời đăng nhập sai quá nhiều lần.";
     public static final String TITLE_SIZE_MAX = "Tiêu đề quá dài.";
     public static final String TITLE_SIZE_MIN = "Tiêu đề quá ngắn.";
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
@@ -261,4 +263,12 @@ public class Constant {
     // Thông báo
     public static final String NOTIFICATION_NOT_FOUND_MESSAGE = "Thông báo không tồn tại";
     public static final String NOTIFICATION_ALREADY_READ_MESSAGE = "Thông báo đã được đánh dấu đã đọc.";
+
+    // validate
+    public static final String TEXT_REGEX="^(\\b\\w+\\b(\\s+|$)){1,200}$\n";
+    public static final String NAME_REGEX= "^\\S.*$";
+    public static final String EMAIL_REGEX= "^(?!\\s)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    public static final String PHONE_REGEX= "^(\\+84|0)[0-9]\\d{8}$";
+    // Thông báo validate
+    public static final String CONTENT_TOO_LONG_MESSAGE = "Nội dung quá 200 từ";
 }

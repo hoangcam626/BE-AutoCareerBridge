@@ -160,7 +160,7 @@ public class JobController {
     }
     @GetMapping("/total-job")
     public ApiResponse<Object> getTotalJobByIndustry(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size)  {
+                                                        @RequestParam(defaultValue = "50") int size)  {
         Pageable pageable = PageRequest.of(page, size);
 
         return ApiResponse.builder().build().setData(jobService.getTotalJobByIndustry(pageable));

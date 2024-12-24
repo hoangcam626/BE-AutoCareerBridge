@@ -14,6 +14,7 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CANCEL_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CODE_EXIT_SUB_ADMIN_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.CONTENT_TOO_LONG_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DATE_WORKSHOP_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
@@ -81,6 +82,7 @@ import static com.backend.autocarrerbridge.util.Constant.JOB_ALREADY_REJECTED_ME
 import static com.backend.autocarrerbridge.util.Constant.LICENSE_INVALID;
 import static com.backend.autocarrerbridge.util.Constant.LIMIT_SIZE_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.LOCATION_NOT_FOUND_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.LOCK_SIGN_IN;
 import static com.backend.autocarrerbridge.util.Constant.MIN_LENGTH_PW_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_MAJOR_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NAME_MAJOR_NOT_LOGGER_MESSAGE;
@@ -243,7 +245,7 @@ public enum ErrorCode {
     ERROR_WORK_SHOP_DATE_OUT_DATE(BAD_REQUEST, DATE_WORKSHOP_OUT_DATE, HttpStatus.BAD_REQUEST),
     ERROR_FORGOT_EMAIL(BAD_REQUEST, SENDED_FORGOT_PASS, HttpStatus.BAD_REQUEST),
     ERROR_LENGTH_PW(BAD_REQUEST, ERROR_INVALID_PHONE_NUMBER, HttpStatus.BAD_REQUEST),
-
+    LOCK_ERROR(BAD_REQUEST,LOCK_SIGN_IN, HttpStatus.BAD_REQUEST),
 
     //    validate  Employee
     GENDER_NOT_BLANK(BAD_REQUEST, GENDER_NOT_BLANK_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -349,6 +351,7 @@ public enum ErrorCode {
     // Các lỗi thông báo
     ERROR_NOTIFICATION_NOT_FOUND(BAD_REQUEST, NOTIFICATION_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NOTIFICATION_ALREADY_READ(BAD_REQUEST, NOTIFICATION_ALREADY_READ_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_CONTENT_TOO_LONG(BAD_REQUEST,CONTENT_TOO_LONG_MESSAGE, HttpStatus.BAD_REQUEST),
 
     ;
 
