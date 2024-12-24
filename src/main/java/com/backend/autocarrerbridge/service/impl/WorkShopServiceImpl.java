@@ -11,7 +11,11 @@ import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
@@ -398,5 +402,11 @@ public class WorkShopServiceImpl implements WorkShopService {
             throw new AppException(ERROR_WORK_SHOP_DATE);
         }
     }
+
+    @Override
+    public long countWorkShop() {
+        return workShopRepository.count();
+    }
+
 
 }

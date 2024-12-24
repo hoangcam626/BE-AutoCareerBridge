@@ -24,5 +24,5 @@ public interface BusinessUniversityService {
 
     void approveRequetCooperation(Integer idBusinesUniversity);
 
-
+    long countBussinessUniversity();
 }

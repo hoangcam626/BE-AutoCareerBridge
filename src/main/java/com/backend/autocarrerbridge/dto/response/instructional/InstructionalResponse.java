@@ -26,7 +26,7 @@ public class InstructionalResponse extends AbstractAuditResponse {
   private String name;
 
   private String gender;
-  @JsonFormat(pattern = "dd/MM/yyyy") // Định dạng khi trả về dữ liệu
+
   private LocalDate dateOfBirth;
 
   private String email;

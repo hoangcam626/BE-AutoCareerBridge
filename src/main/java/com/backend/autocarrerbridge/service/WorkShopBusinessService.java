@@ -1,5 +1,7 @@
 package com.backend.autocarrerbridge.service;
 
+import java.util.List;
+import java.util.Map;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
@@ -14,4 +16,6 @@ public interface WorkShopBusinessService {
     String acceptBusiness(WorkShopBusinessRequest workShopBusinessRequest);
 
     String rejectBusiness(WorkShopBusinessRequest workShopBusinessRequest);
+
+    List<Map<String,Object>> countWorkShopAndStatusConnected();
 }

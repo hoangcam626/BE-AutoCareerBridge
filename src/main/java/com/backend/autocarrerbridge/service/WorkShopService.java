@@ -1,10 +1,12 @@
 package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import java.util.Map;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
@@ -36,4 +38,6 @@ public interface WorkShopService {
     WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException;
 
     PagingResponse<WorkShopResponse> getPagingByState(PageInfo info, State state);
+    long countWorkShop();
+
 }

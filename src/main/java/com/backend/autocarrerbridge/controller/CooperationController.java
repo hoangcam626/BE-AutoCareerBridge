@@ -130,4 +130,8 @@ public class CooperationController {
         businessUniversityService.approveRequetCooperation(buId);
         return ApiResponse.<String>builder().data(SUCCESS_MESSAGE).build();
     }
+    @GetMapping("/count-total")
+    public long countCooperation(){
+        return businessUniversityService.countBussinessUniversity();
+    }
 }

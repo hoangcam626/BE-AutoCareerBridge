@@ -52,7 +52,7 @@ public class UniversityController {
     }
     @PostMapping("/update/{id}")
     public ApiResponse<Object> updateUniversity(
-            @PathVariable("id") int id, @ModelAttribute UniversityRequest universityRequest) {
+          @Valid  @PathVariable("id") int id, @ModelAttribute UniversityRequest universityRequest) {
         UniversityResponse updateUniversity = universityService.update(id, universityRequest);
         return new ApiResponse<>().setData(updateUniversity);
     }
