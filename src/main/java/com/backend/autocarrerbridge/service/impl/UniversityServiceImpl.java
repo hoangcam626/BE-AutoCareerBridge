@@ -10,6 +10,7 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.university.AdminUniversityResponse;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.transaction.Transactional;
@@ -194,11 +195,11 @@ public class UniversityServiceImpl implements UniversityService {
      * Lấy danh sách các trường đại học phân trang theo trạng thái.
      */
     @Override
-    public PagingResponse<UniversityResponse> getPagingByState(PageInfo req, State state) {
+    public PagingResponse<AdminUniversityResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
         Page<University> universities = universityRepository.findAllByState(pageable, state, keyword);
-        Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        Page<AdminUniversityResponse> res = universities.map(u -> modelMapper.map(u, AdminUniversityResponse.class));
         return new PagingResponse<>(res);
     }
 
@@ -207,11 +208,11 @@ public class UniversityServiceImpl implements UniversityService {
      * Lấy danh sách tất cả các trường đại học gồm phân trang và tìm kiếm.
      */
     @Override
-    public PagingResponse<UniversityResponse> getAllUniversities(PageInfo req) {
+    public PagingResponse<AdminUniversityResponse> getAllUniversities(PageInfo req) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
         Page<University> universities = universityRepository.findAll(pageable, keyword);
-        Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        Page<AdminUniversityResponse> res = universities.map(u -> modelMapper.map(u, AdminUniversityResponse.class));
         return new PagingResponse<>(res);
     }
 
@@ -220,6 +221,13 @@ public class UniversityServiceImpl implements UniversityService {
         checkValidateUniversity(userUniversityRequest);
         return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
     }
+
+    @Override
+    public AdminUniversityResponse detail(Integer id) {
+        University university = findById(id);
+        return modelMapper.map(university, AdminUniversityResponse.class);
+    }
+
     public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
         if(!Validation.isValidPassword(userUniversityRequest.getPassword())){
             throw  new AppException(ERROR_FORMAT_PW);

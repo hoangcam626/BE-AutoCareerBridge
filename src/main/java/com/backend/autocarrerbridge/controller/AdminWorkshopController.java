@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.AdminWorkshopResponse;
 import jakarta.validation.Valid;
 
 import java.text.ParseException;
@@ -17,7 +18,6 @@ import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.service.WorkShopService;
@@ -38,6 +38,11 @@ import lombok.RequiredArgsConstructor;
 public class AdminWorkshopController {
     private final WorkShopService workShopService;
 
+    @GetMapping("/detail-workshop")
+    public ApiResponse<AdminWorkshopResponse> getDetail(@RequestParam("id") Integer id) {
+        var res = workShopService.detail(id);
+        return new ApiResponse<>(res);
+    }
     /**
      * API phê duyệt hội thảo.
      *
@@ -62,10 +67,34 @@ public class AdminWorkshopController {
         return new ApiResponse<>(res);
     }
 
+    /**
+     * API lấy tất cả danh sách hội thảo với thông tin phân trang.
+     *
+     * @param pageNo   Số trang cần lấy, mặc định là 0.
+     * @param pageSize Số lượng bản ghi trên mỗi trang, mặc định là 10.
+     * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
+     * @return ApiResponse chứa danh sách hội thảo đang chờ phê duyệt.
+     */
+    @GetMapping("/get-all-workshops")
+    public ApiResponse<PagingResponse<AdminWorkshopResponse>> getAllWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                              @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                              @RequestParam(value = "keyword", required = false) String keyword) {
+        var res = workShopService.getPagingWorkshop(PageInfo.of(pageNo, pageSize, keyword));
+        return new ApiResponse<>(res);
+    }
+
+    /**
+     * API lấy danh sách hội thảo đã phê duyệt với thông tin phân trang.
+     *
+     * @param pageNo   Số trang cần lấy, mặc định là 0.
+     * @param pageSize Số lượng bản ghi trên mỗi trang, mặc định là 10.
+     * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
+     * @return ApiResponse chứa danh sách hội thảo đang chờ phê duyệt.
+     */
     @GetMapping("/get-approved-workshops")
-    public ApiResponse<PagingResponse<WorkShopResponse>> getApprovedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                           @RequestParam(value = "keyword", required = false) String keyword) {
+    public ApiResponse<PagingResponse<AdminWorkshopResponse>> getApprovedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                                   @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                                   @RequestParam(value = "keyword", required = false) String keyword) {
         var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
         return new ApiResponse<>(res);
     }
@@ -79,7 +108,7 @@ public class AdminWorkshopController {
      * @return ApiResponse chứa danh sách hội thảo đang chờ phê duyệt.
      */
     @GetMapping("/get-pending-workshops")
-    public ApiResponse<PagingResponse<WorkShopResponse>> getPendingWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    public ApiResponse<PagingResponse<AdminWorkshopResponse>> getPendingWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
         var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
@@ -95,7 +124,7 @@ public class AdminWorkshopController {
      * @return ApiResponse chứa danh sách hội thảo đã bị từ chối.
      */
     @GetMapping("/get-rejected-workshops")
-    public ApiResponse<PagingResponse<WorkShopResponse>> getRejectedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    public ApiResponse<PagingResponse<AdminWorkshopResponse>> getRejectedWorkshops(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                     @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                     @RequestParam(value = "keyword", required = false) String keyword) {
         var res = workShopService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);

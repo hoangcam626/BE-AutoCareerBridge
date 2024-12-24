@@ -8,6 +8,7 @@ import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedReq
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.dto.response.university.AdminUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
@@ -33,10 +34,11 @@ public interface UniversityService {
 
     List<UniversityResponse> findUniversityByNameOrLocation(String address, String universityName);
 
-    PagingResponse<UniversityResponse> getPagingByState(PageInfo req, State state);
+    PagingResponse<AdminUniversityResponse> getPagingByState(PageInfo req, State state);
 
-    PagingResponse<UniversityResponse> getAllUniversities(PageInfo req);
+    PagingResponse<AdminUniversityResponse> getAllUniversities(PageInfo req);
 
     EmailCode generateCode(UserUniversityRequest userUniversityRequest);
 
+    AdminUniversityResponse detail(Integer id);
 }

@@ -36,4 +36,7 @@ public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
 
     @Query("select sa from SubAdmin sa where sa.email = :email AND sa.status <> 0")
     SubAdmin findByEmail(String email);
+
+    @Query("SELECT MAX(sa.id) AS latestId FROM SubAdmin sa")
+    Integer latestId();
 }

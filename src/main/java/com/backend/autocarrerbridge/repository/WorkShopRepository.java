@@ -40,12 +40,12 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
 
     @Query("SELECT ws " +
             "FROM Workshop ws " +
-            "WHERE (:state IS NULL OR ws.statusBrowse = :state) " +
+            "WHERE ws.statusBrowse = :state " +
             "AND (:keyword IS NULL OR " +
             "   ws.title LIKE :keyword ESCAPE '\\' OR " +
             "   ws.university.name LIKE :keyword ESCAPE '\\') " +
             "AND ws.status <> 0 " +
-            "ORDER BY ws.createdAt DESC ")
+            "ORDER BY ws.updatedAt DESC ")
     Page<Workshop> findAllByState(Pageable pageable, State state, String keyword);
 
     @Query("SELECT ws " +
@@ -54,6 +54,6 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "   ws.title LIKE :keyword ESCAPE '\\' OR " +
             "   ws.university.name LIKE :keyword ESCAPE '\\') " +
             "AND ws.status <> 0 " +
-            "ORDER BY ws.createdAt DESC ")
+            "ORDER BY ws.updatedAt DESC ")
     Page<Workshop> findAll(Pageable pageable, String keyword);
 }

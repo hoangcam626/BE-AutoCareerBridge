@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.dto.request.page;
 
-import com.backend.autocarrerbridge.util.enums.State;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

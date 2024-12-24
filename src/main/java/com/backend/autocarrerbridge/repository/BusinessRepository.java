@@ -46,7 +46,7 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
             "AND :keyword IS NULL OR " +
             "     LOWER(b.name) LIKE :keyword ESCAPE '\\' " +
             "      OR LOWER(b.email) LIKE :keyword ESCAPE '\\' " +
-            "ORDER BY b.createdAt DESC ")
+            "ORDER BY b.updatedAt DESC ")
     Page<Business> findAllByState(Pageable pageable, State state, String keyword);
 
     /**
@@ -57,6 +57,6 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
             "WHERE :keyword IS NULL OR " +
             "     LOWER(b.name) LIKE :keyword ESCAPE '\\' " +
             "      OR LOWER(b.email) LIKE :keyword ESCAPE '\\' " +
-            "ORDER BY b.createdAt DESC ")
+            "ORDER BY b.updatedAt DESC ")
     Page<Business> findAll(Pageable pageable, String keyword);
 }

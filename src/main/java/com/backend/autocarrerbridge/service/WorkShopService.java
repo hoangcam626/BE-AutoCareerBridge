@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.AdminWorkshopResponse;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
@@ -37,6 +38,9 @@ public interface WorkShopService {
 
     WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException;
 
-    PagingResponse<WorkShopResponse> getPagingByState(PageInfo info, State state);
+    PagingResponse<AdminWorkshopResponse> getPagingByState(PageInfo info, State state);
 
+    PagingResponse<AdminWorkshopResponse> getPagingWorkshop(PageInfo req);
+
+    AdminWorkshopResponse detail(Integer id);
 }

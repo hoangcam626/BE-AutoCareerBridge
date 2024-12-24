@@ -22,6 +22,7 @@ import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.AdminWorkshopResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
@@ -397,12 +398,27 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Trang kết quả chứa danh sách Workshop.
      */
     @Override
-    public PagingResponse<WorkShopResponse> getPagingByState(PageInfo info, State state) {
+    public PagingResponse<AdminWorkshopResponse> getPagingByState(PageInfo info, State state) {
         Pageable pageable = PageRequest.of(info.getPageNo(), info.getPageSize());
         String keyword = Validation.escapeKeywordForQuery(info.getKeyword());
         Page<Workshop> workshops = workShopRepository.findAllByState(pageable, state, keyword) ;
-        Page<WorkShopResponse> res = workshops.map(w -> modelMapper.map(w, WorkShopResponse.class));
+        Page<AdminWorkshopResponse> res = workshops.map(w -> modelMapper.map(w, AdminWorkshopResponse.class));
         return new PagingResponse<>(res);
+    }
+
+    @Override
+    public PagingResponse<AdminWorkshopResponse> getPagingWorkshop(PageInfo req) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<Workshop> workshops = workShopRepository.findAll(pageable, keyword) ;
+        Page<AdminWorkshopResponse> res = workshops.map(w -> modelMapper.map(w, AdminWorkshopResponse.class));
+        return new PagingResponse<>(res);
+    }
+
+    @Override
+    public AdminWorkshopResponse detail(Integer id) {
+        Workshop workshop = findWorkshopById(id);
+        return modelMapper.map(workshop, AdminWorkshopResponse.class);
     }
 
     /**

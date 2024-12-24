@@ -32,7 +32,7 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
             "AND (:keyword IS NULL OR " +
             "     LOWER(u.name) LIKE :keyword ESCAPE '\\' OR " +
             "     LOWER(u.email) LIKE :keyword ESCAPE '\\' ) " +
-            "ORDER BY u.createdAt DESC ")
+            "ORDER BY u.updatedAt DESC ")
     Page<University> findAllByState(Pageable pageable, State state, String keyword);
 
     @Query("SELECT u " +
@@ -40,6 +40,6 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
             "WHERE :keyword IS NULL OR " +
             "     LOWER(u.name) LIKE :keyword ESCAPE '\\' OR " +
             "     LOWER(u.email) LIKE :keyword ESCAPE '\\' " +
-            "ORDER BY u.createdAt DESC ")
+            "ORDER BY u.updatedAt DESC ")
     Page<University> findAll(Pageable pageable, String keyword);
 }

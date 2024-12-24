@@ -1,12 +1,9 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import jakarta.validation.Valid;
 
 import java.text.ParseException;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +16,10 @@ import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.dto.response.job.AdminJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.service.JobService;
 import com.backend.autocarrerbridge.util.enums.State;
 
@@ -72,10 +70,10 @@ public class AdminJobController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách tin tuyển dụng đã được phê duyệt.
      */
-    @GetMapping("/approved-jobs")
-    public ApiResponse<PagingResponse<JobResponse>> getApprovedJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
+    @GetMapping("/get-approved-jobs")
+    public ApiResponse<PagingResponse<AdminJobResponse>> getApprovedJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                         @RequestParam(value = "keyword", required = false) String keyword) {
         var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
         return new ApiResponse<>(res);
     }
@@ -88,10 +86,10 @@ public class AdminJobController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách tin tuyển dụng đang chờ phê duyệt.
      */
-    @GetMapping("/pending-jobs")
-    public ApiResponse<PagingResponse<JobResponse>> getPendingJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                   @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                                   @RequestParam(value = "keyword", required = false) String keyword) {
+    @GetMapping("/get-pending-jobs")
+    public ApiResponse<PagingResponse<AdminJobResponse>> getPendingJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                        @RequestParam(value = "keyword", required = false) String keyword) {
         var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
         return new ApiResponse<>(res);
     }
@@ -104,10 +102,10 @@ public class AdminJobController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách tin tuyển dụng đã bị từ chối.
      */
-    @GetMapping("/rejected-jobs")
-    public ApiResponse<PagingResponse<JobResponse>> getRejectedJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                                    @RequestParam(value = "keyword", required = false) String keyword) {
+    @GetMapping("/get-rejected-jobs")
+    public ApiResponse<PagingResponse<AdminJobResponse>> getRejectedJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                         @RequestParam(value = "keyword", required = false) String keyword) {
         var res = jobService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);
         return new ApiResponse<>(res);
     }
@@ -120,11 +118,11 @@ public class AdminJobController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách tin tuyển dụng.
      */
-    @GetMapping("/all-jobs")
-    public ApiResponse<Object> getAllJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                          @RequestParam(value = "keyword", required = false) String keyword) throws ParseException {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return jobService.getAllJob(pageNo, pageSize, keyword, pageable);
+    @GetMapping("/get-all-jobs")
+    public ApiResponse<PagingResponse<AdminJobResponse>> getAllJobs(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                    @RequestParam(value = "keyword", required = false) String keyword){
+        var res = jobService.getAllJobs(PageInfo.of(pageNo, pageSize, keyword));
+        return new ApiResponse<>(res);
     }
 }

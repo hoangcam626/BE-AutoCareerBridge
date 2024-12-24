@@ -1,11 +1,10 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.dto.response.university.AdminUniversityResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +15,9 @@ import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
-import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.service.UniversityService;
 import com.backend.autocarrerbridge.util.enums.State;
 
@@ -69,10 +68,10 @@ public class AdminUniversityController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách trường đại học đã được phê duyệt.
      */
-    @GetMapping("/all-universities")
-    public ApiResponse<PagingResponse<UniversityResponse>> getAllUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-                                                          @RequestParam(value = "keyword", required = false) String keyword) {
+    @GetMapping("/get-all-universities")
+    public ApiResponse<PagingResponse<AdminUniversityResponse>> getAllUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                                                   @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                                                   @RequestParam(value = "keyword", required = false) String keyword) {
         var res = universityService.getAllUniversities(PageInfo.of(pageNo, pageSize, keyword));
         return new ApiResponse<>(res);
     }
@@ -85,8 +84,8 @@ public class AdminUniversityController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách trường đại học đã được phê duyệt.
      */
-    @GetMapping("/approved-universities")
-    public ApiResponse<PagingResponse<UniversityResponse>> getApprovedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    @GetMapping("/get-approved-universities")
+    public ApiResponse<PagingResponse<AdminUniversityResponse>> getApprovedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                          @RequestParam(value = "keyword", required = false) String keyword) {
         var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
@@ -101,8 +100,8 @@ public class AdminUniversityController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách trường đại học đang chờ phê duyệt.
      */
-    @GetMapping("/pending-universities")
-    public ApiResponse<PagingResponse<UniversityResponse>> getPendingUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    @GetMapping("/get-pending-universities")
+    public ApiResponse<PagingResponse<AdminUniversityResponse>> getPendingUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                         @RequestParam(value = "keyword", required = false) String keyword) {
         var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
@@ -117,11 +116,17 @@ public class AdminUniversityController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách trường đại học đã bị từ chối.
      */
-    @GetMapping("/rejected-universities")
-    public ApiResponse<PagingResponse<UniversityResponse>> getRejectedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+    @GetMapping("/get-rejected-universities")
+    public ApiResponse<PagingResponse<AdminUniversityResponse>> getRejectedUniversities(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
                                                                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
                                                                          @RequestParam(value = "keyword", required = false) String keyword) {
         var res = universityService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);
+        return new ApiResponse<>(res);
+    }
+
+    @GetMapping("/get-detail-university")
+    public ApiResponse<AdminUniversityResponse> getUniversity(@RequestParam(value = "id", required = true) Integer id) {
+        var res = universityService.detail(id);
         return new ApiResponse<>(res);
     }
 }

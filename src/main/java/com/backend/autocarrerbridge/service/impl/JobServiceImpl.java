@@ -3,7 +3,6 @@ package com.backend.autocarrerbridge.service.impl;
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_JOB_STATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_APPROVED;
@@ -17,6 +16,7 @@ import static com.backend.autocarrerbridge.util.Constant.INACTIVE_JOB;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_JOB;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.job.AdminJobResponse;
 import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
 import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
@@ -166,19 +166,8 @@ public class JobServiceImpl implements JobService {
         if (job == null) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
-        // Lấy thông tin industry qua job
-        Industry industry = industryRepository.getIndustriesById(job.getIndustry().getId());
-        if (industry == null) {
-            throw new AppException(ERROR_EXIST_INDUSTRY);
-        }
-
-        // Lấy thông tin employee qua job
-        Employee employee = employeeRepository.getEmployeeById(job.getEmployee().getId());
-        if (employee == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
-        }
         // Trả về jobDetailResponse
-        JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, industry, getBusinessViaToken(), employee);
+        JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, job.getIndustry(), job.getBusiness(), job.getEmployee());
         return ApiResponse.builder().data(jobDetailResponse).build();
     }
 
@@ -343,10 +332,21 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách công việc theo trạng thái với phân trang.
      */
     @Override
-    public PagingResponse<JobResponse> getPagingByState(PageInfo req, State state) {
+    public PagingResponse<AdminJobResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
         String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
-        Page<JobResponse> res = jobRepository.findAllByState(pageable, state, keyword);
+        Page<AdminJobResponse> res = jobRepository.findAllByState(pageable, state, keyword);
+        return new PagingResponse<>(res);
+    }
+
+    /**
+     * Lấy danh sách công việc với phân trang.
+     */
+    @Override
+    public PagingResponse<AdminJobResponse> getAllJobs(PageInfo req) {
+        Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<AdminJobResponse> res = jobRepository.findAll(pageable, keyword);
         return new PagingResponse<>(res);
     }
 

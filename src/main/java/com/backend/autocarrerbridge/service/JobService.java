@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.job.AdminJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
@@ -18,7 +19,6 @@ import com.backend.autocarrerbridge.dto.request.job.JobRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 
 public interface JobService {
     ApiResponse<Object> getAllJob(int page, int size, String keyword, Pageable pageable) throws ParseException;
@@ -54,7 +54,9 @@ public interface JobService {
 
     List<JobIndustryResponse> getTotalJobByIndustry(Pageable pageable);
 
-    PagingResponse<JobResponse> getPagingByState(PageInfo info, State state);
+    PagingResponse<AdminJobResponse> getPagingByState(PageInfo info, State state);
 
     ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;
+
+    PagingResponse<AdminJobResponse> getAllJobs(PageInfo req);
 }
