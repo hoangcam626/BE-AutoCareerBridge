@@ -7,6 +7,7 @@ import java.util.List;
 
 import jakarta.transaction.Transactional;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -175,5 +176,24 @@ public class MajorServiceImpl implements MajorService {
     major.setUpdatedAt(LocalDateTime.now());
     majorRepository.save(major);
     return MajorConverter.convertToDTO(major);
+  }
+
+  @Override
+  public long countMajor() {
+    return majorRepository.count();
+  }
+
+  @Override
+  public int getTotalNumberStudents() {
+    return majorRepository.getTotalStudent();
+  }
+
+  @Override
+  public Map<String, Integer> getNumberStudentsInMajor() {
+    List<Object[]> results = majorRepository.countStudentInMajor();
+    return results.stream().collect(Collectors.toMap(
+        result -> (String) result[0],
+        result -> (int) result[1]
+    ));
   }
 }

@@ -3,7 +3,6 @@ package com.backend.autocarrerbridge.service;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
-
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse;
@@ -40,6 +39,8 @@ public interface WorkShopService {
     WorkshopRejectedResponse rejected(WorkshopRejectedRequest req) throws ParseException;
 
     PagingResponse<WorkShopResponse> getPagingByState(PageInfo info, State state);
+    long countWorkShop();
+
 
 
     PagingResponse<WorkShopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate,LocalDate endDate, Integer provinceId,Integer universityId, String keyword);

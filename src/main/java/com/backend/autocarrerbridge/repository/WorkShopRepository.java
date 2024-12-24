@@ -36,11 +36,11 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
     Page<Workshop> getAllWorkShopByLocation(Pageable pageable, @Param("idProvinces") Integer idProvinces);
 
 
-    // Tìm kiếm theo trạng thái duyệt (statusBrowse)
-    @Query("SELECT ws FROM Workshop ws WHERE " + "(:approved IS NULL OR ws.statusBrowse = :approved) "
-            + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
-    Page<Workshop> getAllWorkshopByState(
-            Pageable pageable, @Param("approved") State approved, @Param("keyword") String keyword);
+  // Tìm kiếm theo trạng thái duyệt (statusBrowse)
+  @Query("SELECT ws FROM Workshop ws WHERE " + "(:approved IS NULL OR ws.statusBrowse = :approved) "
+      + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+  Page<Workshop> getAllWorkshopByState(
+      Pageable pageable, @Param("approved") State approved, @Param("keyword") String keyword);
 
     @Query("SELECT ws " +
             "FROM Workshop ws " +

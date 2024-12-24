@@ -53,11 +53,10 @@ public class InstructionalController {
    * @return Đối tượng ApiResponse với thông tin của Instructional đã được cập nhật.
    */
   @PostMapping("/update/{id}")
-  public ApiResponse<Object> updateInstructional(@PathVariable("id") int id,
-      @ModelAttribute InstructionalRequest request) {
-    InstructionalResponse updatedInstructional = instructionalService.updateInstructional(id,
-        request);
-    return new ApiResponse<>().setData(updatedInstructional);
+  public ResponseEntity<ApiResponse<Object>> updateInstructional(@PathVariable("id") int id, @ModelAttribute InstructionalRequest request) {
+    InstructionalResponse updatedInstructional = instructionalService.updateInstructional(id, request);
+    ApiResponse<Object> response = new ApiResponse<>().setCode(SUCCESS).setMessage(SUCCESS_MESSAGE).setData(updatedInstructional);
+    return ResponseEntity.ok(response);
   }
   /**
    * Xóa một Instructional (Giáo vụ) theo ID.
@@ -150,5 +149,10 @@ public class InstructionalController {
     ApiResponse<Object> response = new ApiResponse<>().setCode(SUCCESS).setMessage(SUCCESS_MESSAGE)
         .setData(instructionalPage);
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("count-total")
+  public long countInstructionals() {
+    return instructionalService.countInstructional();
   }
 }
