@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.controller;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.PageRequest;
@@ -86,6 +87,14 @@ public class EmployeeController {
                 .build();
     }
 
+    @PostMapping("/restore/{employeeId}")
+    ApiResponse<String> restoreEmployee(@PathVariable Integer employeeId) throws ParseException {
+        employeeService.restoreEmployee(employeeId);
+        return ApiResponse.<String>builder()
+                .data(Constant.SUCCESS_MESSAGE)
+                .build();
+    }
+
     /**
      * API xóa nhân viên.
      * @apiNote Sử dụng để xóa một nhân viên khỏi hệ thống theo mã nhân viên.
@@ -103,10 +112,12 @@ public class EmployeeController {
     public ApiResponse<Object> getEmployeePage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam String keyword) {
+            @RequestParam String keyword,
+            @RequestParam(required = false) Status status
+    ) {
         Pageable pageable = PageRequest.of(page - 1, size);
         return ApiResponse.builder()
-                .data(employeeService.getAllEmployeeOfBusinessPage(keyword,pageable))
+                .data(employeeService.getAllEmployeeOfBusinessPage(keyword, status, pageable))
                 .build();
     }
 }
