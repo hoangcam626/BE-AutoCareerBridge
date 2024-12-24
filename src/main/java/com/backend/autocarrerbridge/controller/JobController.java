@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 
 import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.PageRequest;
@@ -168,6 +169,15 @@ public class JobController {
     @GetMapping("/check-inactive-permission")
     public ApiResponse<Object> checkInactivePermission(@RequestParam Integer jobId) throws ParseException {
         return jobService.checkDeletePermission(jobId);
+    }
+
+    @GetMapping("/count-by-date")
+    public ApiResponse<Object> countJobsByBusiness(
+            @RequestParam("startDate") String startDateStr,
+            @RequestParam("endDate") String endDateStr) throws ParseException {
+        LocalDate startDate = LocalDate.parse(startDateStr);
+        LocalDate endDate = LocalDate.parse(endDateStr);
+        return jobService.countJobsByDateRange(startDate, endDate);
     }
 
 }

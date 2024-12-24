@@ -167,19 +167,8 @@ public class JobServiceImpl implements JobService {
         if (job == null) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
-        // Lấy thông tin industry qua job
-        Industry industry = industryRepository.getIndustriesById(job.getIndustry().getId());
-        if (industry == null) {
-            throw new AppException(ERROR_EXIST_INDUSTRY);
-        }
-
-        // Lấy thông tin employee qua job
-        Employee employee = employeeRepository.getEmployeeById(job.getEmployee().getId());
-        if (employee == null) {
-            throw new AppException(ERROR_CODE_NOT_FOUND);
-        }
         // Trả về jobDetailResponse
-        JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, industry, getBusinessViaToken(), employee);
+        JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, job.getIndustry(), job.getBusiness(), job.getEmployee());
         return ApiResponse.builder().data(jobDetailResponse).build();
     }
 
@@ -362,6 +351,11 @@ public class JobServiceImpl implements JobService {
         boolean hasPermission = checkInactive(jobId);
 
         return ApiResponse.builder().data(hasPermission).build();
+    }
+
+    @Override
+    public ApiResponse<Object> countJobsByDateRange(LocalDate startDate, LocalDate endDate) throws ParseException {
+        return ApiResponse.builder().data(jobRepository.countJobsByBusinessAndDateRange(getBusinessViaToken().getId(), startDate, endDate)).build();
     }
 
     /**

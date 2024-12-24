@@ -16,6 +16,7 @@ import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.Pageable;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface JobService {
@@ -55,4 +56,5 @@ public interface JobService {
     PagingResponse<JobResponse> getPagingByState(PageInfo info, Integer state);
 
     ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;
+    ApiResponse<Object> countJobsByDateRange(LocalDate startDate, LocalDate endDate) throws ParseException;
 }

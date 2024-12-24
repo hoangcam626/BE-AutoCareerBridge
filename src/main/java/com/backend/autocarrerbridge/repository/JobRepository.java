@@ -15,6 +15,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -307,4 +308,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             "FROM Industry i LEFT JOIN Job jb ON i.id = jb.industry.id GROUP BY i.id, i.name ")
     Page<JobIndustryResponse> findTotalJobByIndustry(Pageable pageable);
 
+    @Query("SELECT COUNT(j) FROM Job j WHERE j.business.id = :businessId AND j.expireDate BETWEEN :startDate AND :endDate")
+    long countJobsByBusinessAndDateRange(
+            @Param("businessId") Integer businessId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }
