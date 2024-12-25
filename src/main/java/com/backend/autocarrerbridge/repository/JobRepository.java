@@ -16,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -83,7 +84,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
         j.jobDescription,
         j.workingTime,\s
          j.requirement,
@@ -115,7 +117,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,\s
          j.requirement,
@@ -147,7 +150,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,\s
         j.requirement,
@@ -179,7 +183,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,\s
           j.requirement,
@@ -210,7 +215,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,\s
           j.requirement,
@@ -242,7 +248,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,
         j.expireDate,
         j.level,
-        j.salary,
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,
         j.requirement,
@@ -262,8 +269,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
     FROM Job j
     JOIN FETCH Business b ON j.business.id = b.id
     JOIN FETCH Location l ON b.location.id = l.id
-    WHERE (:minSalary IS NULL OR j.salary >= :minSalary)
-    AND (:maxSalary IS NULL OR j.salary <= :maxSalary)
+    WHERE (:minSalary IS NULL OR j.fromSalary >= :minSalary)
+    AND (:maxSalary IS NULL OR j.toSalary <= :maxSalary)
     ORDER BY j.expireDate DESC
 """)
     Page<BusinessJobResponse> findJobBySalary(Pageable pageable,
@@ -310,4 +317,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             "FROM Industry i LEFT JOIN Job jb ON i.id = jb.industry.id GROUP BY i.id, i.name ")
     Page<JobIndustryResponse> findTotalJobByIndustry(Pageable pageable);
 
+    @Query("SELECT COUNT(j) FROM Job j WHERE j.business.id = :businessId AND j.expireDate BETWEEN :startDate AND :endDate")
+    long countJobsByBusinessAndDateRange(
+            @Param("businessId") Integer businessId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }

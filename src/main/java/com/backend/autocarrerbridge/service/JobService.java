@@ -20,6 +20,9 @@ import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
 
+import java.time.LocalDate;
+
+
 public interface JobService {
     ApiResponse<Object> getAllJob(String keyword, Pageable pageable) throws ParseException;
 
@@ -59,4 +62,5 @@ public interface JobService {
     ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;
 
     PagingResponse<AdminJobResponse> getAllJobs(PageInfo req);
+    ApiResponse<Object> countJobsByDateRange(LocalDate startDate, LocalDate endDate) throws ParseException;
 }

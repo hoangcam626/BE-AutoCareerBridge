@@ -164,4 +164,14 @@ public class IndustryController {
         return industryService.getMostUsedIndustry();
     }
 
+    /**
+     * API thống kê mức lương trung bình của từng ngành nghề
+     *
+     * @apiNote được sử dụng để truy vấn ngành nghề từ cơ sở dữ liệu.
+     */
+    @GetMapping("/get-average-salary")
+    public ApiResponse<Object> getAverageSalaryByIndustry() throws ParseException {
+        return industryService.getAverageSalaryByIndustry();
+    }
+
 }
