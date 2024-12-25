@@ -7,6 +7,7 @@ import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import com.backend.autocarrerbridge.dto.response.industry.CheckIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryJobCountDTO;
 import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
+import com.backend.autocarrerbridge.dto.response.industry.IndustrySalaryDTO;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.BusinessIndustry;
@@ -341,9 +342,18 @@ public class IndustryServiceImp implements IndustryService {
                 .data(new CheckIndustryResponse(exists)).build();
     }
 
+    /**Thông kê ngành được sử dụng nhiều nhất*/
     @Override
     public ApiResponse<Object> getMostUsedIndustry() throws ParseException {
         List<IndustryJobCountDTO> list = industryRepository.findMostUsedIndustryByBusiness(getBusinessViaToken().getId());
+        return ApiResponse.builder()
+                .data(list).build();
+    }
+
+    /**Thông kê mức lương trung bình của từng ngành*/
+    @Override
+    public ApiResponse<Object> getAverageSalaryByIndustry() throws ParseException {
+        List<IndustrySalaryDTO> list = industryRepository.getAverageSalaryByIndustry(getBusinessViaToken().getId());
         return ApiResponse.builder()
                 .data(list).build();
     }

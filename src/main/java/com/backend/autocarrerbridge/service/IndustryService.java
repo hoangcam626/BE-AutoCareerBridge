@@ -37,4 +37,6 @@ public interface IndustryService {
 
     ApiResponse<Object> getMostUsedIndustry() throws ParseException;
 
+    ApiResponse<Object> getAverageSalaryByIndustry() throws ParseException;
+
 }
