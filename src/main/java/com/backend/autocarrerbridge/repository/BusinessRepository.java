@@ -17,6 +17,8 @@ import java.util.List;
 public interface BusinessRepository extends JpaRepository<Business, Integer> {
     Business findByEmail(String email);
 
+    Business findByTaxCode(String taxCode);
+
     /**
      * Lấy thông tin business qua employeeId
      */

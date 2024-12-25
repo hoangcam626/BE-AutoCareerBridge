@@ -89,4 +89,13 @@ public class LocationServiceIpml implements LocationService {
         return locationRepository.save(location);
     }
 
+    @Override
+    public Location saveLocationLogin(LocationRequest locationRequest) {
+        Location location = new Location();
+        location.setProvince(provinceService.findProvinceById(locationRequest.getProvinceId()));
+        location.setDistrict(districtService.findDistrictById(locationRequest.getDistrictId()));
+        location.setWard(wardService.findWardById(locationRequest.getWardId()));
+        return locationRepository.save(location);
+    }
+
 }

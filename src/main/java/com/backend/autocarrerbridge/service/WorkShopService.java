@@ -7,6 +7,7 @@ import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.AdminWorkshopResponse;
+import com.backend.autocarrerbridge.entity.Workshop;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
@@ -50,4 +51,6 @@ public interface WorkShopService {
     PagingResponse<AdminWorkshopResponse> getPagingWorkshop(PageInfo req);
 
     AdminWorkshopResponse detail(Integer id);
+
+    List<Workshop> findAll();
 }

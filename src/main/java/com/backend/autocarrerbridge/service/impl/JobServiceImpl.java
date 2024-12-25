@@ -67,6 +67,8 @@ import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FROM_SALARY_TO;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -165,7 +167,7 @@ public class JobServiceImpl implements JobService {
      * Xem chi tiết công việc
      */
     @Override
-    public ApiResponse<Object> getJobDetail(Integer jobId) throws ParseException {
+    public ApiResponse<Object> getJobDetail(Integer jobId){
         // Lấy thông tin chi tiết công việc
         Job job = jobRepository.getJobDetail(jobId);
         if (job == null) {
@@ -186,8 +188,15 @@ public class JobServiceImpl implements JobService {
         // Lấy username từ token
         String usernameToken = tokenService.getClaim(token, "sub");
         Validation.validateTitle(jobRequest.getTitle());
-        Validation.validateSalary(jobRequest.getSalary());
+        Validation.validateSalary(jobRequest.getFromSalary());
+        Validation.validateSalary(jobRequest.getToSalary());
+
+        if (jobRequest.getFromSalary() > jobRequest.getToSalary()) {
+            throw new AppException(ERROR_FROM_SALARY_TO);
+        }
+
         Validation.validateExpireDate(jobRequest.getExpireDate());
+
         UserAccount userAccount = userAccountRepository.findByUsername(usernameToken);
         if (userAccount == null) {
             throw new AppException(ERROR_ACCOUNT_IS_NULL);
@@ -207,7 +216,6 @@ public class JobServiceImpl implements JobService {
                 .jobDescription(jobRequest.getJobDescription())
                 .expireDate(jobRequest.getExpireDate())
                 .level(jobRequest.getLevel())
-                .salary(jobRequest.getSalary())
                 .requirement(jobRequest.getRequirement())
                 .benefit(jobRequest.getBenefit())
                 .workingTime(jobRequest.getWorkingTime())
@@ -216,6 +224,13 @@ public class JobServiceImpl implements JobService {
                 .employee(getEmployeeViaToken())
                 .statusBrowse(State.PENDING)
                 .build();
+        job.setFromSalary(jobRequest.getFromSalary());
+        job.setToSalary(jobRequest.getToSalary());
+        job.setRankOfJob(jobRequest.getRank());
+        job.setQuantity(jobRequest.getQuantity());
+        job.setGender(jobRequest.getGender());
+        job.setSalaryType(jobRequest.getSalaryType());
+        job.setWorkForm(jobRequest.getWorkForm());
         job.setStatus(Status.ACTIVE);
         job.setCreatedBy(usernameToken);
         jobRepository.save(job);
@@ -229,7 +244,8 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> updateJob(Integer jobId, JobRequest jobRequest) throws ParseException {
         Validation.validateTitle(jobRequest.getTitle());
-        Validation.validateSalary(jobRequest.getSalary());
+        Validation.validateSalary(jobRequest.getFromSalary());
+        Validation.validateSalary(jobRequest.getToSalary());
         Validation.validateExpireDate(jobRequest.getExpireDate());
         // Tìm job theo ID
         Job job = findById(jobId);
@@ -249,7 +265,13 @@ public class JobServiceImpl implements JobService {
         job.setJobDescription(jobRequest.getJobDescription());
         job.setExpireDate(jobRequest.getExpireDate());
         job.setLevel(jobRequest.getLevel());
-        job.setSalary(jobRequest.getSalary());
+        job.setSalaryType(jobRequest.getSalaryType());
+        job.setFromSalary(jobRequest.getFromSalary());
+        job.setToSalary(jobRequest.getToSalary());
+        job.setRankOfJob(jobRequest.getRank());
+        job.setQuantity(jobRequest.getQuantity());
+        job.setGender(jobRequest.getGender());
+        job.setWorkForm(jobRequest.getWorkForm());
         job.setRequirement(jobRequest.getRequirement());
         job.setBenefit(jobRequest.getBenefit());
         job.setWorkingTime(jobRequest.getWorkingTime());
@@ -367,6 +389,11 @@ public class JobServiceImpl implements JobService {
         boolean hasPermission = checkInactive(jobId);
 
         return ApiResponse.builder().data(hasPermission).build();
+    }
+
+    @Override
+    public ApiResponse<Object> countJobsByDateRange(LocalDate startDate, LocalDate endDate) throws ParseException {
+        return ApiResponse.builder().data(jobRepository.countJobsByBusinessAndDateRange(getBusinessViaToken().getId(), startDate, endDate)).build();
     }
 
     /**

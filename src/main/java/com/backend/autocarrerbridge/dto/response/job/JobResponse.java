@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.backend.autocarrerbridge.entity.Job;
 import com.backend.autocarrerbridge.entity.Location;
+import com.backend.autocarrerbridge.util.enums.SalaryType;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 
@@ -23,11 +24,16 @@ public class JobResponse {
     String title;
     LocalDate expireDate;
     String level;
-    Integer salary;
+    Integer fromSalary;
+    Integer toSalary;
+    String rank;
+    Integer quantity;
+    String workForm;
+    SalaryType salaryType;
+    String gender;
     String workingTime;
     State statusBrowse;
     Status status;
-    Location workLocation;
     LocalDateTime createAt;
     String createBy;
     LocalDateTime updateAt;
@@ -39,11 +45,16 @@ public class JobResponse {
         this.title = job.getTitle();
         this.expireDate = job.getExpireDate();
         this.level = job.getLevel();
-        this.salary = job.getSalary();
+        this.fromSalary = job.getFromSalary();
+        this.toSalary = job.getToSalary();
+        this.rank = job.getRankOfJob();
+        this.quantity = job.getQuantity();
+        this.workForm = job.getWorkForm();
+        this.salaryType = job.getSalaryType();
+        this.gender = job.getGender();
         this.workingTime = job.getWorkingTime();
         this.statusBrowse = job.getStatusBrowse();
         this.status = job.getStatus();
-        this.workLocation = job.getBusiness().getLocation();
         this.createAt = job.getCreatedAt();
         this.createBy = job.getCreatedBy();
         this.updateAt = job.getUpdatedAt();

@@ -394,18 +394,17 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     private void validatePassword(UserAccountRequest userAccountRequest, String inputPassword, String storedPassword) {
+        Integer failCount = redisLockUserTemplate.opsForValue().get(userAccountRequest.getUsername());
+        if (failCount == null) {
+            redisLockUserTemplate.opsForValue().set(userAccountRequest.getUsername(), 1, 60, TimeUnit.MINUTES);
+        } else {
+            redisLockUserTemplate.opsForValue().set(userAccountRequest.getUsername(), failCount + 1, 60, TimeUnit.MINUTES);
+        }
+
+        if (failCount != null && failCount >= 5) {
+            throw new AppException(ErrorCode.LOCK_ERROR);
+        }
         if (!passwordEncoder.matches(inputPassword, storedPassword)) {
-            Integer failCount = redisLockUserTemplate.opsForValue().get(userAccountRequest.getUsername());
-            if (failCount == null) {
-                redisLockUserTemplate.opsForValue().set(userAccountRequest.getUsername(), 1, 60, TimeUnit.MINUTES);
-            } else {
-                redisLockUserTemplate.opsForValue().set(userAccountRequest.getUsername(), failCount + 1, 60, TimeUnit.MINUTES);
-            }
-
-            if (failCount != null && failCount >= 5) {
-                throw new AppException(ErrorCode.LOCK_ERROR);
-            }
-
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
         }
     }
