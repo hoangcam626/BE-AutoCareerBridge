@@ -24,6 +24,7 @@ public class Validation {
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{8,}$";
 
 
+
     // Kiểm tra xem chuỗi có phải là email hợp lệ không
     public static boolean isValidEmail(String email) {
         return email != null && EMAIL_PATTERN.matcher(email).matches();
@@ -32,6 +33,7 @@ public class Validation {
     public static boolean isValidPhoneNumber(String phoneNumber) {
         return phoneNumber != null && Pattern.matches(PHONE_REGEX, phoneNumber);
     }
+
     public static boolean isValidPassword(String password) {
         return password != null && Pattern.matches(PASSWORD_PATTERN, password);
     }
@@ -109,5 +111,12 @@ public class Validation {
         return keyword.trim();
     }
 
-
+    public static String escapeKeywordForQuery(String keyword) {
+        if (keyword==null || keyword.isEmpty()) return null;
+        keyword = keyword.trim().toLowerCase()
+                .replace("\\", "\\\\")
+                .replace("_", "\\_")
+                .replace("%", '\\'+ "%");
+        return "%" + keyword + "%";
+    }
 }

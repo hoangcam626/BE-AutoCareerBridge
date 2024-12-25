@@ -10,6 +10,7 @@ public class Constant {
 
     // Khác
     public static final Integer TIME_TO_LIVE = 1440;
+    public static final String PREFIX_SUB_ADMIN_CODE = "ADMIN";
 
     // Phân quyền
     public static final String DESCRIPTION_ADMIN = "Quản trị viên";

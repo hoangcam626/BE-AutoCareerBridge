@@ -3,7 +3,6 @@ package com.backend.autocarrerbridge.service.impl;
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 
 import com.backend.autocarrerbridge.entity.Location;
-import com.backend.autocarrerbridge.mapper.LocationMapper;
 import com.backend.autocarrerbridge.service.LocationService;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +14,7 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_ACCOUNT;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_ACCOUNT;
 
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
+import com.backend.autocarrerbridge.dto.response.university.AdminUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityTotalResponse;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
@@ -41,8 +41,6 @@ import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.Status;
-
-
 
 import com.backend.autocarrerbridge.entity.Role;
 import com.backend.autocarrerbridge.entity.University;
@@ -72,7 +70,6 @@ public class UniversityServiceImpl implements UniversityService {
     SendEmail sendEmail;
     ImageService imageService;
     LocationService locationService;
-
 
     @Override
     public UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest) {
@@ -211,10 +208,11 @@ public class UniversityServiceImpl implements UniversityService {
      * Lấy danh sách các trường đại học phân trang theo trạng thái.
      */
     @Override
-    public PagingResponse<UniversityResponse> getPagingByState(PageInfo req, Integer state) {
+    public PagingResponse<AdminUniversityResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<University> universities = universityRepository.findAllByState(pageable, state, req.getKeyword());
-        Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<University> universities = universityRepository.findAllByState(pageable, state, keyword);
+        Page<AdminUniversityResponse> res = universities.map(u -> modelMapper.map(u, AdminUniversityResponse.class));
         return new PagingResponse<>(res);
     }
 
@@ -223,10 +221,11 @@ public class UniversityServiceImpl implements UniversityService {
      * Lấy danh sách tất cả các trường đại học gồm phân trang và tìm kiếm.
      */
     @Override
-    public PagingResponse<UniversityResponse> getAllUniversities(PageInfo req) {
+    public PagingResponse<AdminUniversityResponse> getAllUniversities(PageInfo req) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<University> universities = universityRepository.findAll(pageable, req.getKeyword());
-        Page<UniversityResponse> res = universities.map(u -> modelMapper.map(u, UniversityResponse.class));
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<University> universities = universityRepository.findAll(pageable, keyword);
+        Page<AdminUniversityResponse> res = universities.map(u -> modelMapper.map(u, AdminUniversityResponse.class));
         return new PagingResponse<>(res);
     }
 
@@ -234,6 +233,12 @@ public class UniversityServiceImpl implements UniversityService {
     public EmailCode generateCode(UserUniversityRequest userUniversityRequest) {
         checkValidateUniversity(userUniversityRequest);
         return userAccountService.generateVerificationCode(userUniversityRequest.getEmail());
+    }
+
+    @Override
+    public AdminUniversityResponse detail(Integer id) {
+        University university = findById(id);
+        return modelMapper.map(university, AdminUniversityResponse.class);
     }
 
     @Override
