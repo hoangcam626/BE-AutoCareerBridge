@@ -24,6 +24,7 @@ import com.backend.autocarrerbridge.util.enums.State;
 
 import lombok.RequiredArgsConstructor;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 
 @RestController
@@ -186,7 +187,7 @@ public class WorkShopController {
      * @return - Response chứa thông báo kết quả yêu cầu tham gia.
      */
     @PostMapping("/accept-request")
-    public ApiResponse<Object> acceptRequestWorkShop(@RequestBody WorkShopBusinessRequest workShopBusinessRequest) {
+    public ApiResponse<Object> acceptRequestWorkShop(@RequestBody WorkShopBusinessRequest workShopBusinessRequest) throws ParseException {
         // Gửi yêu cầu tham gia workshop và trả về thông báo kết quả
         return ApiResponse.builder()
                 .data(workShopBusinessService.acceptBusiness(workShopBusinessRequest))
@@ -198,7 +199,7 @@ public class WorkShopController {
      * @return - Response chứa thông báo kết quả yêu cầu tham gia.
      */
     @PostMapping("/reject-request")
-    public ApiResponse<Object> rejectRequestWorkShop(@RequestBody WorkShopBusinessRequest workShopBusinessRequest) {
+    public ApiResponse<Object> rejectRequestWorkShop(@RequestBody WorkShopBusinessRequest workShopBusinessRequest) throws ParseException {
         // Gửi yêu cầu tham gia workshop và trả về thông báo kết quả
         return ApiResponse.builder()
                 .data(workShopBusinessService.rejectBusiness(workShopBusinessRequest))

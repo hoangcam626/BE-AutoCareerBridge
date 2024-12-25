@@ -27,9 +27,10 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
     // Tìm kiếm theo tiêu đề workshop của các trường đại học cụ thể
     @Query("SELECT ws FROM Workshop ws WHERE ws.status != 0 AND"
             + "(:universityId IS NULL OR ws.university.id = :universityId) "
-            + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+            + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) order by  ws.updatedAt DESC")
     Page<Workshop> getAllWorkShopByUniversity(
             Pageable pageable, @Param("universityId") Integer universityId, @Param("keyword") String keyword);
+
 
     // Tìm kiếm theo tiêu đề workshop theo địa điểm (không giới hạn bởi trường đại học)
     @Query("SELECT ws FROM Workshop ws LEFT JOIN Location l ON ws.location.id = l.id WHERE l.province.id = :idProvinces")
@@ -72,7 +73,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "ws.location.province.name, " +
             "ws.location.district.fullName, " +
             "ws.location.ward.fullName, " +
-            "count(DISTINCT wsb.id)," +
+            "SUM(CASE WHEN wsb.statusConnected = :approved THEN 1 ELSE 0 END)," +
             "ws.createdAt, " +
             "ws.updatedAt " +
             ") " +
@@ -113,7 +114,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "ws.location.province.name, " +
             "ws.location.district.fullName, " +
             "ws.location.ward.fullName, " +
-            "count(DISTINCT wsb.id)," +
+            "SUM(CASE WHEN wsb.statusConnected = :state THEN 1 ELSE 0 END)," +
             "ws.createdAt, " +
             "ws.updatedAt " +
             ") " +
@@ -123,7 +124,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "GROUP BY ws.id, ws.university.name, ws.title, ws.description, ws.startDate, ws.endDate, " +
             "ws.expireDate, ws.workshopImageId, ws.location.description, ws.location.province.name, " +
             "ws.location.district.name, ws.location.ward.name  ")
-    WorkShopPortalResponse getWorkShopDetailsById(@Param("workShopId") Integer workShopId);
+    WorkShopPortalResponse getWorkShopDetailsById(@Param("workShopId") Integer workShopId,@Param("state") State state);
 
 
 

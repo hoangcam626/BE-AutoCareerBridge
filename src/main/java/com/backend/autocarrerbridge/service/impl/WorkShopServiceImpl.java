@@ -41,6 +41,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
@@ -94,6 +95,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Danh sách các Workshop của trường đại học
      * @throws AppException Nếu không có nội dung
      */
+    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
     public WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
         Page<Workshop> list = workShopRepository
@@ -119,6 +121,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Thông tin phản hồi của Workshop vừa tạo
      * @throws AppException Nếu có lỗi về trạng thái hoặc trường đại học không tồn tại
      */
+    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
     public WorkShopResponse createWorkShop(WorkShopRequest workShopRequest) {
         validateWorkShop(workShopRequest); // Kiểm tra tính hợp lệ của Workshop
@@ -184,6 +187,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Thông tin phản hồi của Workshop đã cập nhật
      * @throws AppException Nếu Workshop không tồn tại hoặc các ngày không hợp lệ
      */
+    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
     public WorkShopResponse updateWordShop(Integer id, WorkShopRequest workShopRequest) {
         // Kiểm tra tính hợp lệ của yêu cầu cập nhật Workshop
@@ -210,6 +214,7 @@ public class WorkShopServiceImpl implements WorkShopService {
             workshop.setWorkshopImageId(newImageId);
             deleteOldImageIfExists(oldImageId, newImageId);
         }
+        workshop.setStatusBrowse(PENDING);
         // Lưu Workshop đã cập nhật vào cơ sở dữ liệu
         Workshop savedWorkShop = workShopRepository.save(workshop);
 
@@ -294,7 +299,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      */
     public void validateWorkShop(WorkShopRequest workShopRequest) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        if(workShopRequest.getStartDate().isBefore(localDateTime)){
+        if(workShopRequest.getEndDate().isBefore(localDateTime)){
             throw new AppException(ERROR_WORK_SHOP_DATE_OUT_DATE);
         }
         // Kiểm tra ngày bắt đầu và kết thúc
@@ -436,7 +441,7 @@ public class WorkShopServiceImpl implements WorkShopService {
 
     @Override
     public WorkShopPortalResponse getWorkShopPortalById(Integer workShopId) {
-        WorkShopPortalResponse workShopPortalResponse = workShopRepository.getWorkShopDetailsById(workShopId);
+        WorkShopPortalResponse workShopPortalResponse = workShopRepository.getWorkShopDetailsById(workShopId,APPROVED);
         if(Objects.isNull(workShopPortalResponse)){
             throw new AppException(ERROR_NO_CONTENT);
         }

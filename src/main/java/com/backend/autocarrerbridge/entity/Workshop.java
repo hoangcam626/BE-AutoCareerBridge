@@ -59,7 +59,7 @@ public class Workshop extends AbstractAudit {
 
     @Column(name = "end_date")
     private LocalDateTime endDate;
-
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "university_id", nullable = false)
     private University university;

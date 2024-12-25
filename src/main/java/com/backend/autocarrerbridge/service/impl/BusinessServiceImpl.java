@@ -85,7 +85,7 @@ public class BusinessServiceImpl implements BusinessService {
         }
         Integer licenseImageId;
         try {
-            licenseImageId = imageService.uploadFile(userBusinessRequest.getLicenseImage());
+            licenseImageId = imageService.uploadFile(userBusinessRequest.getLogoImage());
             if (licenseImageId == null) {
                 throw new AppException(ErrorCode.ERROR_LICENSE);
             }
@@ -99,11 +99,19 @@ public class BusinessServiceImpl implements BusinessService {
         userAccount.setUsername(userBusinessRequest.getEmail());
         userAccount.setState(State.PENDING);
         UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
-
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setWardId(userBusinessRequest.getWardId());
+        locationRequest.setProvinceId(userBusinessRequest.getProvinceId());
+        locationRequest.setDistrictId(userBusinessRequest.getDistrictId());
+        Location location = locationService.saveLocationLogin(locationRequest);
         // Tạo và lưu Business
+        if(Objects.isNull(location)){
+            throw new AppException(ErrorCode.ERROR_LOCATION_NOT_FOUND);
+        }
         Business business = modelMapper.map(userBusinessRequest, Business.class);
-        business.setLicenseImageId(licenseImageId);
+        business.setBusinessImageId(licenseImageId);
         business.setUserAccount(savedUserAccount);
+        business.setLocation(location);
 
         try {
             Business savedBusiness = businessRepository.save(business);
@@ -280,14 +288,16 @@ public class BusinessServiceImpl implements BusinessService {
             if (!Objects.isNull(existingBusiness)) {
                 throw new AppException(ErrorCode.ERROR_EMAIL_EXIST);
             }
-
+        if (!Objects.isNull(businessRepository.findByTaxCode(userBusinessRequest.getTaxCode()))) {
+            throw new AppException(ErrorCode.ERROR_TAX_EXIST);
+        }
             // Xác thực mật khẩu
             if (!userBusinessRequest.getPassword().equals(userBusinessRequest.getRePassword())) {
                 throw new AppException(ErrorCode.ERROR_PASSWORD_NOT_MATCH);
             }
 
-            if (Objects.isNull(userBusinessRequest.getLicenseImage())
-                    || userBusinessRequest.getLicenseImage().isEmpty()) {
+            if (Objects.isNull(userBusinessRequest.getLogoImage())
+                    || userBusinessRequest.getLogoImage().isEmpty()) {
                 throw new AppException(ErrorCode.ERROR_LICENSE);
             }
         }
