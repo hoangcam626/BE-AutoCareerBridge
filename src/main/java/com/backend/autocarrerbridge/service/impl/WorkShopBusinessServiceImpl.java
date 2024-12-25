@@ -11,12 +11,17 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
 
 import java.text.ParseException;
 import java.util.Collections;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessResponse;
+import com.backend.autocarrerbridge.repository.WorkShopRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.workshop.StateWorkShopBusinessResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
+import java.util.Map;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -191,14 +196,35 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
 
     @Override
     public StateWorkShopBusinessResponse getWorkShopStatusBusiness(Integer workshopId, Integer businessId) {
-      WorkshopBusiness workshopBusiness =  workShopBussinessRepository.checkExistWorkShop(workshopId,businessId);
-      if(Objects.isNull(workshopBusiness)){
-          throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
-      }
-      StateWorkShopBusinessResponse workShopBusinessResponse = new StateWorkShopBusinessResponse();
-      workShopBusinessResponse.setWorkshopId(workshopBusiness.getWorkshop().getId());
-      workShopBusinessResponse.setBusinessId(workshopBusiness.getBusiness().getId());
-      workShopBusinessResponse.setStatusConnected(workshopBusiness.getStatusConnected());
-      return workShopBusinessResponse;
+        WorkshopBusiness workshopBusiness =  workShopBussinessRepository.checkExistWorkShop(workshopId,businessId);
+        if(Objects.isNull(workshopBusiness)){
+            throw new AppException(ErrorCode.ERROR_CODE_NOT_FOUND);
+        }
+        StateWorkShopBusinessResponse workShopBusinessResponse = new StateWorkShopBusinessResponse();
+        workShopBusinessResponse.setWorkshopId(workshopBusiness.getWorkshop().getId());
+        workShopBusinessResponse.setBusinessId(workshopBusiness.getBusiness().getId());
+        workShopBusinessResponse.setStatusConnected(workshopBusiness.getStatusConnected());
+        return workShopBusinessResponse;
     }
+  @Override
+  public List<Map<String, Object>> countWorkShopAndStatusConnected() {
+      List<Workshop> workshops = workShopRepository.findAll();
+      List<Map<String, Object>> result = new ArrayList<>();
+      for (Workshop workshop : workshops) {
+          long approveCompanies = workShopBussinessRepository.countByWorkshopAndStatusConnected(
+              workshop, State.APPROVED);
+          long pendingCompanies = workShopBussinessRepository.countByWorkshopAndStatusConnected(
+              workshop,
+              State.PENDING);
+          Map<String, Object> details = new HashMap<>();
+          details.put("name", workshop.getTitle());
+          details.put("approved", approveCompanies);
+          details.put("pending", pendingCompanies);
+
+          result.add(details);
+
+      }
+      return result;
+  }
+
 }

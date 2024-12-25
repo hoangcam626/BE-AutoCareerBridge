@@ -6,6 +6,7 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,4 +86,17 @@ public class MajorController {
     return ResponseEntity.ok(response);
   }
 
+  @GetMapping("count-total")
+  public long countMajor() {
+    return majorService.countMajor();
+  }
+
+  @GetMapping("count-total-student")
+  public int countStudent() {
+    return majorService.getTotalNumberStudents();
+  }
+  @GetMapping("/count-student")
+  public Map<String, Integer> countStudentInMajor(){
+    return majorService.getNumberStudentsInMajor();
+  }
 }

@@ -36,7 +36,7 @@ public abstract class AbstractAudit implements Serializable {
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", insertable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @CreatedBy
@@ -44,7 +44,7 @@ public abstract class AbstractAudit implements Serializable {
     private String createdBy;
 
     @LastModifiedBy
-    @Column(name = "updated_by", insertable = false)
+    @Column(name = "updated_by")
     private String updatedBy;
 
     @PrePersist
@@ -52,6 +52,9 @@ public abstract class AbstractAudit implements Serializable {
         if (this.status == null) {
             this.status = Status.ACTIVE; // Chỉ gán khi status chưa được gán
         }
+//        if(this.updatedAt == null){
+//            this.updatedAt = LocalDateTime.now();
+//        }
     }
 
     @PreUpdate

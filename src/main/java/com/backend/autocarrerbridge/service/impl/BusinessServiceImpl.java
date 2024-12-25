@@ -242,7 +242,8 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public PagingResponse<BusinessResponse> getPagingByState(PageInfo req, State state) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<Business> businesses = businessRepository.findAllByState(pageable, state, req.getKeyword());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<Business> businesses = businessRepository.findAllByState(pageable, state, keyword  );
         Page<BusinessResponse> res = businesses.map(b ->
                 modelMapper.map(b, BusinessResponse.class));
         return new PagingResponse<>(res);
@@ -254,7 +255,8 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public PagingResponse<BusinessResponse> getAllBusinesses(PageInfo req) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<Business> businesses = businessRepository.findAll(pageable, req.getKeyword());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<Business> businesses = businessRepository.findAll(pageable, keyword);
         Page<BusinessResponse> res = businesses.map(b ->
                 modelMapper.map(b, BusinessResponse.class));
         return new PagingResponse<>(res);

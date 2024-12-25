@@ -15,6 +15,7 @@ import static com.backend.autocarrerbridge.util.Constant.APPROVED_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CANCEL_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CODE_EXIT_SUB_ADMIN_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.CONTENT_TOO_LONG_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DATE_WORKSHOP_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
@@ -353,6 +354,7 @@ public enum ErrorCode {
     // Các lỗi thông báo
     ERROR_NOTIFICATION_NOT_FOUND(BAD_REQUEST, NOTIFICATION_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_NOTIFICATION_ALREADY_READ(BAD_REQUEST, NOTIFICATION_ALREADY_READ_MESSAGE, HttpStatus.BAD_REQUEST),
+    ERROR_CONTENT_TOO_LONG(BAD_REQUEST,CONTENT_TOO_LONG_MESSAGE, HttpStatus.BAD_REQUEST),
 
     ;
 

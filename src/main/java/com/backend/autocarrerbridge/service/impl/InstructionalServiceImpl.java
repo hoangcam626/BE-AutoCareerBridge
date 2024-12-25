@@ -27,6 +27,7 @@ import jakarta.transaction.Transactional;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.AccessLevel;
@@ -89,7 +90,8 @@ public class InstructionalServiceImpl implements InstructionalService {
     instructional = instructionalRepository.save(instructional);
     // Gửi email thông báo tài khoản
     EmailDTO emailDTO = new EmailDTO(instructional.getEmail(), ACCOUNT, "");
-    sendEmail.sendAccount(emailDTO, password);
+    CompletableFuture.runAsync(() -> sendEmail.sendAccount(emailDTO,password));
+//    sendEmail.sendAccount(emailDTO, password);
     // Trả về phản hồi sau khi tạo thành công
     return InstructionalConverter.toResponse(instructional);
   }
@@ -249,5 +251,10 @@ public class InstructionalServiceImpl implements InstructionalService {
     Page<InstructionalResponse> instructionalResponsePage = instructionalPage.map(
         InstructionalConverter::toResponse);
     return new PagingResponse<>(instructionalResponsePage);
+  }
+
+  @Override
+  public long countInstructional() {
+    return instructionalRepository.count();
   }
 }

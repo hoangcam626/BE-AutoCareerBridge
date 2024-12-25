@@ -37,27 +37,30 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
     Page<Workshop> getAllWorkShopByLocation(Pageable pageable, @Param("idProvinces") Integer idProvinces);
 
 
-    // Tìm kiếm theo trạng thái duyệt (statusBrowse)
-    @Query("SELECT ws FROM Workshop ws WHERE " + "(:approved IS NULL OR ws.statusBrowse = :approved) "
-            + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
-    Page<Workshop> getAllWorkshopByState(
-            Pageable pageable, @Param("approved") State approved, @Param("keyword") String keyword);
+  // Tìm kiếm theo trạng thái duyệt (statusBrowse)
+  @Query("SELECT ws FROM Workshop ws WHERE " + "(:approved IS NULL OR ws.statusBrowse = :approved) "
+      + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+  Page<Workshop> getAllWorkshopByState(
+      Pageable pageable, @Param("approved") State approved, @Param("keyword") String keyword);
 
     @Query("SELECT ws " +
             "FROM Workshop ws " +
-            "WHERE ws.statusBrowse = :state  " +
+            "WHERE ws.statusBrowse = :state " +
             "AND (:keyword IS NULL OR " +
-            "   (ws.title LIKE LOWER(CONCAT('%', :keyword, '%'))) OR " +
-            "   (ws.university.name LIKE LOWER(CONCAT('%', :keyword, '%')))) " +
+            "   ws.title LIKE :keyword ESCAPE '\\' OR " +
+            "   ws.university.name LIKE :keyword ESCAPE '\\') " +
             "AND ws.status <> 0 " +
-            "ORDER BY " +
-            "   CASE " +
-            "       WHEN (ws.title) = :keyword THEN 1 " +
-            "       WHEN ws.university.name = :keyword THEN 1" +
-            "       ELSE 2 " +
-            "   END," +
-            "   ws.createdAt DESC ")
+            "ORDER BY ws.updatedAt DESC ")
     Page<Workshop> findAllByState(Pageable pageable, State state, String keyword);
+
+    @Query("SELECT ws " +
+            "FROM Workshop ws " +
+            "WHERE (:keyword IS NULL OR " +
+            "   ws.title LIKE :keyword ESCAPE '\\' OR " +
+            "   ws.university.name LIKE :keyword ESCAPE '\\') " +
+            "AND ws.status <> 0 " +
+            "ORDER BY ws.updatedAt DESC ")
+    Page<Workshop> findAll(Pageable pageable, String keyword);
 
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse(" +
             "ws.id, " +
