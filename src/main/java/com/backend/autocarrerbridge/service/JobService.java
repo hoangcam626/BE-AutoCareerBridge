@@ -1,23 +1,27 @@
 package com.backend.autocarrerbridge.service;
 
+import java.text.ParseException;
+import java.util.List;
+
+import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.job.AdminJobResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
+import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+
+import com.backend.autocarrerbridge.util.enums.State;
+import org.springframework.data.domain.Pageable;
+
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.job.JobApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.job.JobRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
-import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
-import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
-import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.job.JobRejectedResponse;
-import com.backend.autocarrerbridge.dto.response.job.JobResponse;
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.util.enums.State;
-import org.springframework.data.domain.Pageable;
 
-import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.List;
+
 
 public interface JobService {
     ApiResponse<Object> getAllJob(String keyword, Pageable pageable) throws ParseException;
@@ -53,8 +57,10 @@ public interface JobService {
 
     List<JobIndustryResponse> getTotalJobByIndustry(Pageable pageable);
 
-    PagingResponse<JobResponse> getPagingByState(PageInfo info, Integer state);
+    PagingResponse<AdminJobResponse> getPagingByState(PageInfo info, State state);
 
     ApiResponse<Object> checkDeletePermission(Integer jobId) throws ParseException;
+
+    PagingResponse<AdminJobResponse> getAllJobs(PageInfo req);
     ApiResponse<Object> countJobsByDateRange(LocalDate startDate, LocalDate endDate) throws ParseException;
 }

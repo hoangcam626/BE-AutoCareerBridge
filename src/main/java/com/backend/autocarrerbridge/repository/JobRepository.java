@@ -2,11 +2,12 @@ package com.backend.autocarrerbridge.repository;
 
 import com.backend.autocarrerbridge.dto.response.job.JobResponse;
 import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
+import com.backend.autocarrerbridge.dto.response.job.AdminJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.entity.Industry;
-import com.backend.autocarrerbridge.entity.Job;
 import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.entity.Job;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -52,22 +53,24 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
     @Query("SELECT j from Job j where j.id = :jobId")
     Job getJobDetail(Integer jobId);
 
-    @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(j) " +
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.AdminJobResponse(j.id, j.title, j.business.name, j.createdAt, j.industry.name, j.statusBrowse, j.expireDate) " +
             "FROM Job j " +
             "WHERE j.statusBrowse = :state  " +
             "AND (:keyword IS NULL OR " +
-            "   (LOWER(j.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "   OR (LOWER(j.business.name) LIKE LOWER(CONCAT('%', :keyword, '%'))))) " +
+            "   (LOWER(j.title) LIKE :keyword ESCAPE '\\' " +
+            "   OR (LOWER(j.business.name) LIKE :keyword ESCAPE '\\'))) " +
             "AND j.status <> 0 " +
-            "ORDER BY " +
-            "   CASE " +
-            "       WHEN (j.title) = :keyword THEN 1 " +
-            "       WHEN j.business.name = :keyword THEN 1" +
-            "       ELSE 2 " +
-            "   END," +
-            "   j.createdAt DESC ")
-    Page<JobResponse> findAllByState(Pageable pageable, Integer state, String keyword);
+            "ORDER BY j.updatedAt DESC ")
+    Page<AdminJobResponse> findAllByState(Pageable pageable, State state, String keyword);
 
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.AdminJobResponse(j.id, j.title, j.business.name, j.createdAt, j.industry.name, j.statusBrowse, j.expireDate) " +
+            "FROM Job j " +
+            "WHERE (:keyword IS NULL OR " +
+            "   (LOWER(j.title) LIKE :keyword ESCAPE '\\' " +
+            "   OR (LOWER(j.business.name) LIKE :keyword ESCAPE '\\'))) " +
+            "AND j.status <> 0 " +
+            "ORDER BY j.updatedAt DESC ")
+    Page<AdminJobResponse> findAll(Pageable pageable, String keyword);
 
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse(b.id, b.name, count(j)) " +
             "FROM Job j JOIN Business b ON j.business.id = b.id " +

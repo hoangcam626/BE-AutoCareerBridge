@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.major.MajorRequest;
+import java.util.Map;
 
 public interface MajorService {
 
@@ -20,4 +21,9 @@ public interface MajorService {
 
   MajorRequest setMajorActive(int id);
 
+  long countMajor();
+
+  int getTotalNumberStudents();
+
+  Map<String, Integer> getNumberStudentsInMajor();
 }

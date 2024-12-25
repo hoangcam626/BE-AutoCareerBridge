@@ -9,6 +9,7 @@ import java.util.List;
 
 import jakarta.transaction.Transactional;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -185,5 +186,19 @@ public class SectionServiceImpl implements SectionService {
     section.setUpdatedAt(LocalDateTime.now());
     sectionRepository.save(section);
     return SectionConverter.convertToResponse(section);
+  }
+
+  @Override
+  public long countSection() {
+    return sectionRepository.count();
+  }
+
+  @Override
+  public Map<String, Long> countMajorsInSections() {
+    List<Object[]> results = sectionRepository.countMajorsInSection();
+    return results.stream()
+        .collect(Collectors.toMap(
+            result -> (String) result[0],
+            result -> (Long) result[1]));
   }
 }

@@ -4,6 +4,7 @@ package com.backend.autocarrerbridge.service;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
+import java.util.Map;
 
 public interface SectionService {
 
@@ -20,4 +21,8 @@ public interface SectionService {
   SectionRequest setSectionInactive(int id);
 
   SectionRequest setSectionActive(int id);
+
+  long countSection();
+
+  Map<String, Long> countMajorsInSections();
 }

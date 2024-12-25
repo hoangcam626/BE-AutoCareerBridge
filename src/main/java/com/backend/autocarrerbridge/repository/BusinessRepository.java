@@ -17,6 +17,8 @@ import java.util.List;
 public interface BusinessRepository extends JpaRepository<Business, Integer> {
     Business findByEmail(String email);
 
+    Business findByTaxCode(String taxCode);
+
     /**
      * Lấy thông tin business qua employeeId
      */
@@ -46,17 +48,11 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
      */
     @Query("SELECT b " +
             "FROM Business b " +
-            "WHERE b.userAccount.state = :state " +
-            "AND (:keyword IS NULL OR " +
-            "     LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "      OR LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "ORDER BY " +
-            "   CASE " +
-            "       WHEN LOWER(b.name) = LOWER(:keyword) THEN 1 " +
-            "       WHEN LOWER(b.email) = LOWER(:keyword) THEN 1 " +
-            "       ELSE 2 " +
-            "   END, " +
-            "   b.createdAt DESC ")
+            "WHERE (:state IS NULL OR b.userAccount.state = :state) " +
+            "AND :keyword IS NULL OR " +
+            "     LOWER(b.name) LIKE :keyword ESCAPE '\\' " +
+            "      OR LOWER(b.email) LIKE :keyword ESCAPE '\\' " +
+            "ORDER BY b.updatedAt DESC ")
     Page<Business> findAllByState(Pageable pageable, State state, String keyword);
 
     /**
@@ -64,16 +60,10 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
      */
     @Query("SELECT b " +
             "FROM Business b " +
-            "WHERE (:keyword IS NULL OR " +
-            "     (LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "      OR LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%')))) " +
-            "ORDER BY " +
-            "   CASE " +
-            "       WHEN LOWER(b.name) = LOWER(:keyword) THEN 1 " +
-            "       WHEN LOWER(b.email) = LOWER(:keyword) THEN 1 " +
-            "       ELSE 2 " +
-            "   END, " +
-            "   b.createdAt DESC ")
+            "WHERE :keyword IS NULL OR " +
+            "     LOWER(b.name) LIKE :keyword ESCAPE '\\' " +
+            "      OR LOWER(b.email) LIKE :keyword ESCAPE '\\' " +
+            "ORDER BY b.updatedAt DESC ")
     Page<Business> findAll(Pageable pageable, String keyword);
 
 

@@ -42,6 +42,8 @@ public class InstructionalConverter {
     instructional.setName(request.getName());
     instructional.setGender(request.getGender());
     instructional.setEmail(request.getEmail());
+    instructional.setAddress(request.getAddress());
+    instructional.setDateOfBirth(request.getDateOfBirth());
     instructional.setInstructionalCode(request.getInstructionalCode());
     instructional.setPhone(request.getPhone());
     instructional.setUniversity(University.builder().id(request.getUniversityId()).build());
@@ -105,8 +107,8 @@ public class InstructionalConverter {
     instructional.setName(request.getName());
     instructional.setGender(request.getGender());
     instructional.setDateOfBirth(request.getDateOfBirth());
-    instructional.setAddress(request.getAddress());
     instructional.setInstructionalCode(request.getInstructionalCode());
+    instructional.setAddress(request.getAddress());
     instructional.setPhone(request.getPhone());
     instructional.setUniversity(University.builder().id(request.getUniversityId()).build());
   }

@@ -50,8 +50,8 @@ import lombok.experimental.FieldDefaults;
 @Service
 @RequiredArgsConstructor // Tự động tạo constructor cho các trường được đánh dấu final
 @FieldDefaults(
-        level = AccessLevel.PRIVATE,
-        makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
+    level = AccessLevel.PRIVATE,
+    makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
 public class BusinessUniversityServiceImpl implements BusinessUniversityService {
 
     // Khai báo các thành phần cần thiết trong service
@@ -298,4 +298,9 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
         return new PagingResponse<>(list);
     }
 
+
+  @Override
+  public long countBussinessUniversity() {
+    return businessUniversityRepository.count();
+  }
 }

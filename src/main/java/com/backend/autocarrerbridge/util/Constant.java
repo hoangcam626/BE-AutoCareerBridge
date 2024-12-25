@@ -10,6 +10,7 @@ public class Constant {
 
     // Khác
     public static final Integer TIME_TO_LIVE = 1440;
+    public static final String PREFIX_SUB_ADMIN_CODE = "ADMIN";
 
     // Phân quyền
     public static final String DESCRIPTION_ADMIN = "Quản trị viên";
@@ -46,6 +47,7 @@ public class Constant {
     public static final String TOO_LONG_EMAIL_MESSAGE = "Email vượt quá 255 ký tự hoặc quá ngắn";
     public static final String ERROR_INVALID_PHONE = "số điện thoại không hợp lệ.";
     public static final String ERROR_EXIST = "Email đã tồn tại.";
+    public static final String ERROR_TAX_CODE_EXIST = "Mã số thuế đã tồn tại";
     public static final String ERROR_NOT_FOUND = "Không tìm thấy email.";
     public static final String ERROR_USER_EXIST = "Tên người dùng đã tồn tại.";
     public static final String PW_NOT_MATCH = "Mật khẩu không khớp.";
@@ -124,6 +126,8 @@ public class Constant {
     public static final String REJECTED_ACCOUNT = "Tài khoản của bạn đã bị từ chối.";
     public static final String APPROVED_WORKSHOP = "Tin hội thảo của bạn đã được phê duyệt.";
     public static final String REJECTED_WORKSHOP = "Tin hội thảo của bạn đã bị từ chối phê duyệt.";
+    public static final String APPROVED_BUSINESS_WORKSHOP = "Yêu cầu tham gia hội thảo của bạn đã được phê duyệt.";
+    public static final String REJECT_BUSINESS_WORKSHOP = "Yêu cầu tham gia hội thảo của bạn đã bị từ chối.";
     public static final String APPROVED_JOB = "Tin tuyển dụng của bạn đã được phê duyệt.";
     public static final String REJECTED_JOB = "Tin tuyển dụng của bạn đã bị từ chối phê duyệt.";
 
@@ -133,6 +137,7 @@ public class Constant {
     public static final String FORGOT_CODE_REQUIRED_MESSAGE = "Mã khôi phục không được để trống.";
     public static final String FORGOT_CODE_INVALID_MESSAGE = "Mã khôi phục không hợp lệ.";
     public static final String FORGOT_CODE_EMPTY_MESSAGE = "Mã khôi phục không để trống.";
+    public static final String ADDRESS_NOT_FOUND = "Địa chỉ không được để trống .";
     public static final String ACCOUNT_ALREADY_APPROVED_MESSAGE = "Tài khoản đã được chấp nhận.";
     public static final String ACCOUNT_ALREADY_REJECTED_MESSAGE = "Tài khoản đã bị từ chối.";
     public static final String INVALID_ACCOUNT_STATE_MESSAGE = "Trạng thái tài khoản không hợp lệ.";
@@ -157,7 +162,7 @@ public class Constant {
     public static final String TITLE_SIZE_MAX = "Tiêu đề quá dài.";
     public static final String TITLE_SIZE_MIN = "Tiêu đề quá ngắn.";
     public static final String DATE_WORKSHOP = "Ngày bắt đầu không thể lớn hơn ngày kết thúc hoặc ngược lại.";
-    public static final String DATE_WORKSHOP_OUT_DATE = "Hội thảo đã kết thúc.";
+    public static final String DATE_WORKSHOP_OUT_DATE = "Hội thảo đã hết hạn.";
     public static final String DES_WORK_SHOP_MESSAGE = "Nội dung không thể rỗng.";
     public static final String DATE_WORK_SHOP_MESSAGE = "Ngày không được bỏ trống.";
     public static final String NAME_UNIVERSITY_NOT_BLANK_MESSAGE = "Tên trường đại học không được rỗng.";
