@@ -6,4 +6,5 @@ import com.backend.autocarrerbridge.entity.Location;
 public interface LocationService {
 
     Location saveLocation(LocationRequest locationRequest);
+    Location saveLocationLogin(LocationRequest locationRequest);
 }
