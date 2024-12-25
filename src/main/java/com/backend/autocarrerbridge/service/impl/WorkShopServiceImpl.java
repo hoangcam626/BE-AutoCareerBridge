@@ -436,6 +436,11 @@ public class WorkShopServiceImpl implements WorkShopService {
     }
 
     @Override
+    public List<Workshop> findAll() {
+        return workShopRepository.findAll();
+    }
+
+    @Override
     public PagingResponse<WorkShopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate, LocalDate endDate, Integer provinceId,Integer universityId, String keyword) {
         // Chuyển đổi LocalDate thành LocalDateTime
         LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;

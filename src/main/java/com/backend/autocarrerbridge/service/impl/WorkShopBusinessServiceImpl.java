@@ -3,16 +3,13 @@ package com.backend.autocarrerbridge.service.impl;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_BUSINESS_WORKSHOP;
-import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECT_ACCEPT_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.REJECT_BUSINESS_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
-
 import java.text.ParseException;
 import java.util.Collections;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessResponse;
-import com.backend.autocarrerbridge.repository.WorkShopRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Workshop;
@@ -208,7 +204,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
     }
   @Override
   public List<Map<String, Object>> countWorkShopAndStatusConnected() {
-      List<Workshop> workshops = workShopRepository.findAll();
+      List<Workshop> workshops = workShopService.findAll();
       List<Map<String, Object>> result = new ArrayList<>();
       for (Workshop workshop : workshops) {
           long approveCompanies = workShopBussinessRepository.countByWorkshopAndStatusConnected(
