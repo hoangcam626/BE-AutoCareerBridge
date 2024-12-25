@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.dto.request.account;
 
+import static com.backend.autocarrerbridge.util.Constant.ADDRESS_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.EMAIL_REQUIRED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.EMPTY_FILE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_NAME_EMPTY;
@@ -32,7 +33,7 @@ public class UserBusinessRequest {
     @NotBlank(message = ERROR_NAME_EMPTY)
     String name;
 
-    @Size(max = 10,message = TAX_CODE_REGISTER)
+    @Size(max = 13,min = 10,message = TAX_CODE_REGISTER)
     @NotBlank(message = TAX_CODE)
     String taxCode;
 
@@ -46,9 +47,14 @@ public class UserBusinessRequest {
 
     @NotBlank(message = ERROR_NOT_EMPTY_PW)
     String rePassword;
-
+    @NotNull(message = ADDRESS_NOT_FOUND)
+    private Integer provinceId;
+    @NotNull(message = ADDRESS_NOT_FOUND)
+    private Integer districtId;
+    @NotNull(message = ADDRESS_NOT_FOUND)
+    private Integer wardId;
     @NotNull(message = EMPTY_FILE_MESSAGE)
-    MultipartFile licenseImage;
+    MultipartFile logoImage;
 
     @NotBlank(message = FORGOT_CODE_EMPTY_MESSAGE)
     String verificationCode;

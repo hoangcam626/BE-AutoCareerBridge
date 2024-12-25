@@ -2,21 +2,26 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
+import static com.backend.autocarrerbridge.util.Constant.APPROVED_BUSINESS_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECT_ACCEPT_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.REJECT_BUSINESS_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
-
+import java.text.ParseException;
+import java.util.Collections;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessResponse;
-import com.backend.autocarrerbridge.repository.WorkShopRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.workshop.StateWorkShopBusinessResponse;
+import com.backend.autocarrerbridge.service.NotificationService;
 import java.util.Map;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
@@ -44,13 +49,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
 
-  // Các đối tượng repository và service cần thiết để thực hiện các chức năng
-  private final WorkShopBusinessRepository workShopBussinessRepository;
-  private final WorkShopService workShopService;
-  private final ModelMapper modelMapper;
-  private final BusinessService businessService;
-  private final WorkShopRepository workShopRepository;
-
+    // Các đối tượng repository và service cần thiết để thực hiện các chức năng
+    private final WorkShopBusinessRepository workShopBussinessRepository;
+    private final WorkShopService workShopService;
+    private final ModelMapper modelMapper;
+    private final BusinessService businessService;
+    private final NotificationService notificationService;
     /**
      * Lấy tất cả các doanh nghiệp tham gia một workshop cụ thể.
      * @param workshopId - ID của workshop.
@@ -58,6 +62,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
      * @param state - Trạng thái kết nối.
      * @return - Thông tin về workshop và danh sách các doanh nghiệp tham gia.
      */
+    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     public WorkShopBusinessResponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
         if (state != State.PENDING && state != State.APPROVED && state != State.REJECTED) {
             throw new AppException(ERROR_NO_CONTENT);
@@ -91,6 +96,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
      * @param workShopBusinessRequest - Thông tin yêu cầu tham gia workshop của doanh nghiệp.
      * @return - Thông báo kết quả yêu cầu tham gia.
      */
+    @PreAuthorize("hasAuthority('SCOPE_BUSINESS')")
     @Override
     public String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest) {
         // Kiểm tra xem doanh nghiệp đã tham gia workshop chưa
@@ -129,8 +135,9 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
      * @return Thông báo thành công nếu chấp nhận kết nối thành công.
      * @throws AppException Nếu không tìm thấy kết nối hoặc kết nối đã được chấp nhận trước đó.
      */
+    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
-    public String acceptBusiness(WorkShopBusinessRequest workShopBusinessRequest) {
+    public String acceptBusiness(WorkShopBusinessRequest workShopBusinessRequest) throws ParseException {
 
         // Kiểm tra sự tồn tại của kết nối giữa workshop và business dựa vào workshopID và businessID.
         WorkshopBusiness workshopBusiness = workShopBussinessRepository.checkExistWorkShop(
@@ -151,13 +158,14 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
 
         // Lưu trạng thái kết nối đã cập nhật vào cơ sở dữ liệu.
         workShopBussinessRepository.save(workshopBusiness);
-
+        String message = String.format("%s: %s", APPROVED_BUSINESS_WORKSHOP, workshopBusiness.getWorkshop().getTitle());
+        notificationService.send(NotificationSendRequest.of(Collections.singletonList(workshopBusiness.getBusiness().getEmail()), APPROVED_BUSINESS_WORKSHOP, message));
         // Trả về thông báo thành công sau khi cập nhật trạng thái.
         return SUCCESS_ACCEPT_MESSAGE;
     }
-
+    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
-    public String rejectBusiness(WorkShopBusinessRequest workShopBusinessRequest) {
+    public String rejectBusiness(WorkShopBusinessRequest workShopBusinessRequest) throws ParseException {
         WorkshopBusiness workshopBusiness = workShopBussinessRepository.checkExistWorkShop(
                 workShopBusinessRequest.getWorkshopID(), workShopBusinessRequest.getBusinessID());
 
@@ -176,10 +184,12 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
 
         // Lưu trạng thái kết nối đã cập nhật vào cơ sở dữ liệu.
         workShopBussinessRepository.save(workshopBusiness);
+        String message = String.format("%s: %s", REJECT_BUSINESS_WORKSHOP, workshopBusiness.getWorkshop().getTitle());
+        notificationService.send(NotificationSendRequest.of(Collections.singletonList(workshopBusiness.getBusiness().getEmail()), REJECT_BUSINESS_WORKSHOP, message));
+        // Trả về thông báo thành công sau khi cập nhật trạng thái.
+        return REJECT_ACCEPT_MESSAGE;
+    }
 
-    // Trả về thông báo thành công sau khi cập nhật trạng thái.
-    return REJECT_ACCEPT_MESSAGE;
-  }
     @Override
     public StateWorkShopBusinessResponse getWorkShopStatusBusiness(Integer workshopId, Integer businessId) {
         WorkshopBusiness workshopBusiness =  workShopBussinessRepository.checkExistWorkShop(workshopId,businessId);
@@ -194,7 +204,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
     }
   @Override
   public List<Map<String, Object>> countWorkShopAndStatusConnected() {
-      List<Workshop> workshops = workShopRepository.findAll();
+      List<Workshop> workshops = workShopService.findAll();
       List<Map<String, Object>> result = new ArrayList<>();
       for (Workshop workshop : workshops) {
           long approveCompanies = workShopBussinessRepository.countByWorkshopAndStatusConnected(

@@ -80,7 +80,8 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/webjars/**",
-            "/api/administrative/**"
+            "/api/administrative/**",
+            "/api/notification/stream/*"
     };
 
 
