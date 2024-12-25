@@ -32,8 +32,12 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             + "AND (:statusBrowse IS NULL OR job.statusBrowse = :statusBrowse) "
             + "AND (:industryId IS NULL OR job.industry.id = :industryId) "
             + "ORDER BY job.createdAt DESC ")
-    Page<JobResponse> getAllJobOfBusinessPaging(Integer businessId, @Param("industryId") Integer  industryId,
+    Page<JobResponse> getAllJobOfBusinessPaging(Integer businessId,
+                                                @Param("keyword") String keyword,
+                                                @Param("statusBrowse") State statusBrowse,
+                                                @Param("industryId") Integer  industryId,
                                                 Pageable pageable);
+
     /**
      * Lấy tất cả công việc paging
      */

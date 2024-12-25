@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.converter.ConvertJob;
 import com.backend.autocarrerbridge.dto.ApiResponse;
+
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_JOB_STATE;
@@ -26,6 +27,7 @@ import com.backend.autocarrerbridge.dto.response.industry.JobIndustryResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
+
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -122,7 +124,7 @@ public class JobServiceImpl implements JobService {
      * Lấy danh sách tất cả công việc
      */
     @Override
-    public ApiResponse<Object> getAllJob(String keyword, Pageable pageable){
+    public ApiResponse<Object> getAllJob(String keyword, Pageable pageable) {
         Page<JobResponse> jobResponses = jobRepository.getAllJob(keyword, pageable);
         PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobResponses);
         return ApiResponse.builder().data(pagingResponse).build();
@@ -305,7 +307,7 @@ public class JobServiceImpl implements JobService {
 
 
         String message = String.format("Tin tuyển dụng \"%s\" của bạn đã được phê duyệt", job.getTitle());
-        NotificationSendRequest sendReq =NotificationSendRequest.of(Arrays.asList(emailBusiness, emailEmployee), APPROVED_JOB, message);
+        NotificationSendRequest sendReq = NotificationSendRequest.of(Arrays.asList(emailBusiness, emailEmployee), APPROVED_JOB, message);
         NotificationResponse notification = notificationService.send(sendReq);
         return JobApprovedResponse.of(Boolean.TRUE, notification);
     }
@@ -331,7 +333,7 @@ public class JobServiceImpl implements JobService {
 
         // Gửi thông báo hệ thống
         String message = String.format("Tin tuyển dụng \"%s\" của bạn đã bị từ chối. Lý do: %s", job.getTitle(), req.getMessage());
-        NotificationSendRequest sendReq  = NotificationSendRequest.of(Arrays.asList(emailBusiness, emailEmployee), REJECTED_JOB, message);
+        NotificationSendRequest sendReq = NotificationSendRequest.of(Arrays.asList(emailBusiness, emailEmployee), REJECTED_JOB, message);
         NotificationResponse notification = notificationService.send(sendReq);
 
         return JobRejectedResponse.of(Boolean.TRUE, notification);
@@ -391,16 +393,17 @@ public class JobServiceImpl implements JobService {
             throw new AppException(ERROR_INVALID_JOB_STATE);
         }
     }
+
     @Override
     public List<BusinessTotalResponse> getBusinessJob(Pageable pageable) {
         return jobRepository.findAllBusinessWithTotalJob(pageable).getContent();
     }
 
     @Override
-    public PagingResponse<BusinessJobResponse>getJobBusinessByRegion(Pageable pageable, Integer regionId) {
-        Page<BusinessJobResponse> page = jobRepository.findJobByRegion(pageable,regionId);
-        if(Objects.isNull(page) || page.getContent().isEmpty()){
-            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+    public PagingResponse<BusinessJobResponse> getJobBusinessByRegion(Pageable pageable, Integer regionId) {
+        Page<BusinessJobResponse> page = jobRepository.findJobByRegion(pageable, regionId);
+        if (Objects.isNull(page) || page.getContent().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
         // Lấy danh sách Job từ repository
         return new PagingResponse<>(page);
@@ -408,9 +411,9 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public PagingResponse<BusinessJobResponse> getJobBusinessByProvince(Pageable pageable, Integer provinceId) {
-        Page<BusinessJobResponse> page = jobRepository.findJobByProvince(pageable,provinceId);
-        if(Objects.isNull(page) || page.getContent().isEmpty()){
-            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        Page<BusinessJobResponse> page = jobRepository.findJobByProvince(pageable, provinceId);
+        if (Objects.isNull(page) || page.getContent().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
         // Lấy danh sách Job từ repository
         return new PagingResponse<>(page);
@@ -418,9 +421,9 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public PagingResponse<BusinessJobResponse> getJobBusinessByDistrict(Pageable pageable, Integer districtId) {
-        Page<BusinessJobResponse> page = jobRepository.findJobByDistrict(pageable,districtId);
-        if(Objects.isNull(page) || page.getContent().isEmpty()){
-            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        Page<BusinessJobResponse> page = jobRepository.findJobByDistrict(pageable, districtId);
+        if (Objects.isNull(page) || page.getContent().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
         return new PagingResponse<>(page);
     }
@@ -428,26 +431,26 @@ public class JobServiceImpl implements JobService {
     @Override
     public PagingResponse<BusinessJobResponse> getAllJobBusiness(Pageable pageable) {
         Page<BusinessJobResponse> page = jobRepository.findAllJobBusiness(pageable);
-        if(Objects.isNull(page) || page.getContent().isEmpty()){
-            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        if (Objects.isNull(page) || page.getContent().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
         return new PagingResponse<>(page);
     }
 
     @Override
     public PagingResponse<BusinessJobResponse> getAllJobBusinessBySalary(Pageable pageable, Long minSalary, Long maxSalary) {
-        Page<BusinessJobResponse> page = jobRepository.findJobBySalary(pageable,minSalary,maxSalary);
-        if(Objects.isNull(page) || page.getContent().isEmpty()){
-            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        Page<BusinessJobResponse> page = jobRepository.findJobBySalary(pageable, minSalary, maxSalary);
+        if (Objects.isNull(page) || page.getContent().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
         return new PagingResponse<>(page);
     }
 
     @Override
     public PagingResponse<BusinessJobResponse> getAllJobBusinessByIndustry(Pageable pageable, Integer industryId) {
-        Page<BusinessJobResponse> page = jobRepository.findJobByIndustry(pageable,industryId);
-        if(Objects.isNull(page) || page.getContent().isEmpty()){
-            throw  new AppException(ErrorCode.ERROR_NO_CONTENT);
+        Page<BusinessJobResponse> page = jobRepository.findJobByIndustry(pageable, industryId);
+        if (Objects.isNull(page) || page.getContent().isEmpty()) {
+            throw new AppException(ErrorCode.ERROR_NO_CONTENT);
         }
         return new PagingResponse<>(page);
     }
