@@ -35,5 +35,4 @@ public class UniversityResponse {
   String createdBy;
   String updatedBy;
   Integer userAccountId;
-  UserAccountResponse userAccount;
 }

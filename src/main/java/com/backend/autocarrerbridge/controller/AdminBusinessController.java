@@ -68,7 +68,7 @@ public class AdminBusinessController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách doanh nghiệp.
      */
-    @GetMapping("/all-businesses")
+    @GetMapping("/get-all-businesses")
     public ApiResponse<PagingResponse<BusinessResponse>> getAllBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam(value = "keyword", required = false) String keyword) {
         var res = businessService.getAllBusinesses(PageInfo.of(pageNo, pageSize, keyword));
 
@@ -83,7 +83,7 @@ public class AdminBusinessController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách doanh nghiệp đã được phê duyệt.
      */
-    @GetMapping("/approved-businesses")
+    @GetMapping("/get-approved-businesses")
     public ApiResponse<PagingResponse<BusinessResponse>> getApprovedBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam(value = "keyword", required = false) String keyword) {
         var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.APPROVED);
         return new ApiResponse<>(res);
@@ -97,7 +97,7 @@ public class AdminBusinessController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách doanh nghiệp đang chờ phê duyệt.
      */
-    @GetMapping("/pending-businesses")
+    @GetMapping("/get-pending-businesses")
     public ApiResponse<PagingResponse<BusinessResponse>> getPendingBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam(value = "keyword", required = false) String keyword) {
         var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.PENDING);
         return new ApiResponse<>(res);
@@ -111,7 +111,7 @@ public class AdminBusinessController {
      * @param keyword  Từ khóa tìm kiếm (không bắt buộc).
      * @return ApiResponse chứa danh sách doanh nghiệp đã bị từ chối.
      */
-    @GetMapping("/rejected-businesses")
+    @GetMapping("/get-rejected-businesses")
     public ApiResponse<PagingResponse<BusinessResponse>> getRejectedBusinesses(@RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, @RequestParam(value = "keyword", required = false) String keyword) {
         var res = businessService.getPagingByState(PageInfo.of(pageNo, pageSize, keyword), State.REJECTED);
         return new ApiResponse<>(res);
