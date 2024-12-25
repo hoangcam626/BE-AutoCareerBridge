@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.dto.response.business;
 import java.time.LocalDateTime;
 
 import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
+import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
 import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import com.backend.autocarrerbridge.entity.Business;
 
@@ -33,6 +34,7 @@ public class BusinessResponse {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     LocationResponse location;
+    String industryOfBusiness;
     UserAccountResponse userAccount;
 
     public BusinessResponse(Business business) {
@@ -47,5 +49,7 @@ public class BusinessResponse {
         this.description = business.getDescription();
         this.businessImageId = business.getBusinessImageId();
         this.licenseImageId = business.getLicenseImageId();
+        this.createdAt = business.getCreatedAt();
+        this.updatedAt = business.getUpdatedAt();
     }
 }

@@ -81,7 +81,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
         j.jobDescription,
         j.workingTime,\s
          j.requirement,
@@ -113,7 +114,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,\s
          j.requirement,
@@ -145,7 +147,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,\s
         j.requirement,
@@ -177,7 +180,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,\s
           j.requirement,
@@ -208,7 +212,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,\s
         j.expireDate,\s
         j.level,\s
-        j.salary,\s
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,\s
           j.requirement,
@@ -240,7 +245,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
         j.title,
         j.expireDate,
         j.level,
-        j.salary,
+        j.fromSalary,\s
+        j.toSalary,\s
          j.jobDescription,
         j.workingTime,
         j.requirement,
@@ -260,8 +266,8 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
     FROM Job j
     JOIN FETCH Business b ON j.business.id = b.id
     JOIN FETCH Location l ON b.location.id = l.id
-    WHERE (:minSalary IS NULL OR j.salary >= :minSalary)
-    AND (:maxSalary IS NULL OR j.salary <= :maxSalary)
+    WHERE (:minSalary IS NULL OR j.fromSalary >= :minSalary)
+    AND (:maxSalary IS NULL OR j.toSalary <= :maxSalary)
     ORDER BY j.expireDate DESC
 """)
     Page<BusinessJobResponse> findJobBySalary(Pageable pageable,

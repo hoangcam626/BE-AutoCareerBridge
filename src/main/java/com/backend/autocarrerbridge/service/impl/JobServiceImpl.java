@@ -50,8 +50,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_ACCOUNT_IS_NULL;
-import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_INDUSTRY;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FROM_SALARY_TO;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_INVALID_JOB_STATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_APPROVED;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_JOB_ALREADY_REJECTED;
@@ -161,12 +161,14 @@ public class JobServiceImpl implements JobService {
      * Xem chi tiết công việc
      */
     @Override
-    public ApiResponse<Object> getJobDetail(Integer jobId) throws ParseException {
+    public ApiResponse<Object> getJobDetail(Integer jobId){
         // Lấy thông tin chi tiết công việc
         Job job = jobRepository.getJobDetail(jobId);
         if (job == null) {
             throw new AppException(ERROR_NO_EXIST_JOB);
         }
+        System.out.println(job);
+
         // Trả về jobDetailResponse
         JobDetailResponse jobDetailResponse = convertJob.toJobDetailResponse(job, job.getIndustry(), job.getBusiness(), job.getEmployee());
         return ApiResponse.builder().data(jobDetailResponse).build();
@@ -182,8 +184,15 @@ public class JobServiceImpl implements JobService {
         // Lấy username từ token
         String usernameToken = tokenService.getClaim(token, "sub");
         Validation.validateTitle(jobRequest.getTitle());
-        Validation.validateSalary(jobRequest.getSalary());
+        Validation.validateSalary(jobRequest.getFromSalary());
+        Validation.validateSalary(jobRequest.getToSalary());
+
+        if (jobRequest.getFromSalary() > jobRequest.getToSalary()) {
+            throw new AppException(ERROR_FROM_SALARY_TO);
+        }
+
         Validation.validateExpireDate(jobRequest.getExpireDate());
+
         UserAccount userAccount = userAccountRepository.findByUsername(usernameToken);
         if (userAccount == null) {
             throw new AppException(ERROR_ACCOUNT_IS_NULL);
@@ -203,7 +212,6 @@ public class JobServiceImpl implements JobService {
                 .jobDescription(jobRequest.getJobDescription())
                 .expireDate(jobRequest.getExpireDate())
                 .level(jobRequest.getLevel())
-                .salary(jobRequest.getSalary())
                 .requirement(jobRequest.getRequirement())
                 .benefit(jobRequest.getBenefit())
                 .workingTime(jobRequest.getWorkingTime())
@@ -212,6 +220,13 @@ public class JobServiceImpl implements JobService {
                 .employee(getEmployeeViaToken())
                 .statusBrowse(State.PENDING)
                 .build();
+        job.setFromSalary(jobRequest.getFromSalary());
+        job.setToSalary(jobRequest.getToSalary());
+        job.setRankOfJob(jobRequest.getRank());
+        job.setQuantity(jobRequest.getQuantity());
+        job.setGender(jobRequest.getGender());
+        job.setSalaryType(jobRequest.getSalaryType());
+        job.setWorkForm(jobRequest.getWorkForm());
         job.setStatus(Status.ACTIVE);
         job.setCreatedBy(usernameToken);
         jobRepository.save(job);
@@ -225,7 +240,8 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> updateJob(Integer jobId, JobRequest jobRequest) throws ParseException {
         Validation.validateTitle(jobRequest.getTitle());
-        Validation.validateSalary(jobRequest.getSalary());
+        Validation.validateSalary(jobRequest.getFromSalary());
+        Validation.validateSalary(jobRequest.getToSalary());
         Validation.validateExpireDate(jobRequest.getExpireDate());
         // Tìm job theo ID
         Job job = findById(jobId);
@@ -245,7 +261,13 @@ public class JobServiceImpl implements JobService {
         job.setJobDescription(jobRequest.getJobDescription());
         job.setExpireDate(jobRequest.getExpireDate());
         job.setLevel(jobRequest.getLevel());
-        job.setSalary(jobRequest.getSalary());
+        job.setSalaryType(jobRequest.getSalaryType());
+        job.setFromSalary(jobRequest.getFromSalary());
+        job.setToSalary(jobRequest.getToSalary());
+        job.setRankOfJob(jobRequest.getRank());
+        job.setQuantity(jobRequest.getQuantity());
+        job.setGender(jobRequest.getGender());
+        job.setWorkForm(jobRequest.getWorkForm());
         job.setRequirement(jobRequest.getRequirement());
         job.setBenefit(jobRequest.getBenefit());
         job.setWorkingTime(jobRequest.getWorkingTime());

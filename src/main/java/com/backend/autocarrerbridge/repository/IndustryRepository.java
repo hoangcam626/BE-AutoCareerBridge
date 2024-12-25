@@ -61,12 +61,12 @@ public interface IndustryRepository extends JpaRepository<Industry, Integer> {
     /**
      * Thống kê mức lương trung bình của từng ngành nghề
      */
-    @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustrySalaryDTO(i.name, AVG(j.salary)) " +
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustrySalaryDTO(i.name, AVG((j.fromSalary + j.toSalary) / 2)) " +
             "FROM Job j " +
             "JOIN j.industry i " +
-            "WHERE j.salary IS NOT NULL " +
+            "WHERE j.fromSalary IS NOT NULL AND j.toSalary IS NOT NULL " +
             "GROUP BY i.name " +
-            "ORDER BY AVG(j.salary) DESC")
+            "ORDER BY AVG((j.fromSalary + j.toSalary) / 2) DESC")
     List<IndustrySalaryDTO> getAverageSalaryByIndustry(Integer id);
 
 
