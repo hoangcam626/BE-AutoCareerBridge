@@ -87,6 +87,7 @@ public class UniversityServiceImpl implements UniversityService {
         userAccount.setRole(role);
         userAccount.setUsername(userUniversityRequest.getEmail());
         userAccount.setState(State.PENDING);
+
         // Đăng ký tài khoản
         UserAccount savedUserAccount = userAccountService.registerUser(userAccount);
 
@@ -94,7 +95,17 @@ public class UniversityServiceImpl implements UniversityService {
         University university = new University();
         university.setUserAccount(savedUserAccount);
         modelMapper.map(userUniversityRequest, university);
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setWardId(userUniversityRequest.getWardId());
+        locationRequest.setProvinceId(userUniversityRequest.getProvinceId());
+        locationRequest.setDistrictId(userUniversityRequest.getDistrictId());
+        Location location = locationService.saveLocationLogin(locationRequest);
 
+        // Tạo và lưu Business
+        if(Objects.isNull(location)){
+            throw new AppException(ErrorCode.ERROR_LOCATION_NOT_FOUND);
+        }
+        university.setLocation(location);
         // Lưu thông tin đại học vào DB
         universityRepository.save(university);
 
