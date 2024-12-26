@@ -68,6 +68,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FROM_SALARY_TO;
+import static com.backend.autocarrerbridge.util.Validation.sanitizeKeyword;
 
 @Service
 @RequiredArgsConstructor
@@ -138,9 +139,12 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> getAllJobOfBusinessPaging(
             String keyword, State statusBrowse, Integer industryId, Pageable pageable) throws ParseException {
+
+        String sanitizedKeyword = Validation.escapeKeywordForQuery(keyword);
+
         // Lấy danh sách công việc của doanh nghiệp
         Page<JobResponse> jobs =
-                jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), keyword,
+                jobRepository.getAllJobOfBusinessPaging(getBusinessViaToken().getId(), sanitizedKeyword,
                         statusBrowse, industryId, pageable);
 
         // Kiểm tra và cập nhật trạng thái nếu expireDate quá ngày hôm nay

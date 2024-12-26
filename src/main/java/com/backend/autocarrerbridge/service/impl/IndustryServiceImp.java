@@ -21,6 +21,7 @@ import com.backend.autocarrerbridge.repository.IndustryRepository;
 import com.backend.autocarrerbridge.repository.JobRepository;
 import com.backend.autocarrerbridge.service.IndustryService;
 import com.backend.autocarrerbridge.service.TokenService;
+import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -92,7 +93,8 @@ public class IndustryServiceImp implements IndustryService {
      */
     @Override
     public ApiResponse<Object> getAllIndustryPaging(String keyword, Pageable pageable) {
-        Page<IndustryResponse> industryList = industryRepository.getAllIndustryActivePag(keyword, pageable);
+        String sanitizedKeyword = Validation.escapeKeywordForQuery(keyword);
+        Page<IndustryResponse> industryList = industryRepository.getAllIndustryActivePag(sanitizedKeyword, pageable);
         PagingResponse<IndustryResponse> pagingResponse = new PagingResponse<>(industryList);
         return ApiResponse.builder().data(pagingResponse).build();
     }
