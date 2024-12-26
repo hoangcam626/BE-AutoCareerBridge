@@ -7,6 +7,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -115,5 +116,22 @@ public class BusinessController {
        return ApiResponse.builder()
                .data(businessService.getFeatureBusiness(industryId, PageRequest.of(0,9)))
                .build();
+    }
+    @GetMapping("/list-home")
+    ApiResponse<Object> getBusinessListHome() {
+        return ApiResponse.builder()
+                .data(businessService.getBusinessListHome())
+                .build();
+    }
+    @GetMapping("/get-all-business-page")
+    public ApiResponse<Object> getAllBusinessPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ApiResponse.builder()
+                .data(businessService.getAllBusinessPage(keyword, pageable))
+                .build();
     }
 }

@@ -125,12 +125,12 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public UserNotificationMarkReadResponse markReadNotification(UserNotificationMarkReadRequest req) {
         UserNotification userNotification = getById(req.getId());
-        if (userNotification.getStatusRead() == StatusRead.UNREAD) {
+        if (userNotification.getStatusRead() == StatusRead.READ) {
             throw new AppException(ERROR_NOTIFICATION_ALREADY_READ);
         }
         userNotification.setStatusRead(StatusRead.READ);
         userNotificationRepository.save(userNotification);
-        return UserNotificationMarkReadResponse.of(Boolean.TRUE);
+        return UserNotificationMarkReadResponse.of(userNotification.getId(), Boolean.TRUE);
     }
 
     /**
@@ -144,7 +144,7 @@ public class NotificationServiceImpl implements NotificationService {
         List<UserNotification> unreadList = userNotificationRepository.findAllUnread(usernameLogin);
         unreadList.forEach(userNotification -> userNotification.setStatusRead(StatusRead.READ));
         userNotificationRepository.saveAll(unreadList);
-        return UserNotificationMarkReadResponse.of(Boolean.TRUE);
+        return UserNotificationMarkReadResponse.of(null, Boolean.TRUE);
     }
 
     /**

@@ -8,9 +8,11 @@ import com.backend.autocarrerbridge.dto.request.business.BusinessRejectedRequest
 import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.business.BusinessApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.business.BusinessListHome;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRegisterResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
+import com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage;
 import com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.entity.Business;
@@ -45,4 +47,7 @@ public interface BusinessService {
 
     List<IntroduceBusiness> getFeatureBusiness(Integer industryId, Pageable pageable);
 
+    List<BusinessListHome> getBusinessListHome();
+
+    PagingResponse<BusinessSearchPage> getAllBusinessPage(String keyword, Pageable pageable);
 }
