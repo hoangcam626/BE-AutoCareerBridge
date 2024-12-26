@@ -28,8 +28,9 @@ import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.AdminWorkshopResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopStateBusiness;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.entity.Location;
@@ -46,7 +47,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopResponse;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.exception.AppException;
@@ -81,11 +82,11 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Danh sách các Workshop phản hồi
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShop(Pageable pageable, String keyword) {
+    public List<WorkshopResponse> getAllWorkShop(Pageable pageable, String keyword) {
         List<Workshop> list =
                 workShopRepository.getAllWorkShop(keyword, pageable).getContent();
         return list.stream()
-                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+                .map(workshop -> modelMapper.map(workshop, WorkshopResponse.class))
                 .toList();
     }
 
@@ -98,17 +99,17 @@ public class WorkShopServiceImpl implements WorkShopService {
      */
     @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
-    public WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
+    public WorkshopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
         Page<Workshop> list = workShopRepository
                 .getAllWorkShopByUniversity(pageable, universityId, keyword);
 
         if (list.isEmpty()) {
             throw new AppException(ERROR_NO_CONTENT);
         }
-        List<WorkShopResponse> workshops = list.stream()
-                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+        List<WorkshopResponse> workshops = list.stream()
+                .map(workshop -> modelMapper.map(workshop, WorkshopResponse.class))
                 .toList();
-        WorkShopUniversityResponse workShopUniversityResponse = new WorkShopUniversityResponse();
+        WorkshopUniversityResponse workShopUniversityResponse = new WorkshopUniversityResponse();
         workShopUniversityResponse.setWorkshops(workshops);
         workShopUniversityResponse.setTotalRecords((int) list.getTotalElements());
         workShopUniversityResponse.setUniversity(modelMapper.map(universityService.findById(universityId), UniversityResponse.class));
@@ -124,7 +125,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      */
     @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
-    public WorkShopResponse createWorkShop(WorkShopRequest workShopRequest) {
+    public WorkshopResponse createWorkShop(WorkShopRequest workShopRequest) {
         validateWorkShop(workShopRequest); // Kiểm tra tính hợp lệ của Workshop
         Integer imageId = imageService.uploadFile(workShopRequest.getImageWorkshop()); // Tải ảnh lên
         workShopRequest.setStatus(ACTIVE); // Đặt trạng thái ACTIVE
@@ -145,7 +146,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         workshop.setWorkshopImageId(imageId); // Gắn ảnh cho Workshop
         workshop.setUniversity(university);// Gắn trường đại học cho Workshop
         workshop.setLocation(location);
-        return modelMapper.map(workShopRepository.save(workshop), WorkShopResponse.class);
+        return modelMapper.map(workShopRepository.save(workshop), WorkshopResponse.class);
     }
 
     /**
@@ -156,7 +157,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu không có nội dung
      */
     @Override
-    public List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword) {
+    public List<WorkshopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword) {
         List<Workshop> list = workShopRepository
                 .getAllWorkshopByState(pageable, state, keyword)
                 .getContent();
@@ -164,12 +165,12 @@ public class WorkShopServiceImpl implements WorkShopService {
             throw new AppException(ERROR_NO_CONTENT);
         }
         return list.stream()
-                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+                .map(workshop -> modelMapper.map(workshop, WorkshopResponse.class))
                 .toList();
     }
 
     @Override
-    public List<WorkShopResponse> getAllWorkShopByLocation(Pageable pageable, Integer provinceId) {
+    public List<WorkshopResponse> getAllWorkShopByLocation(Pageable pageable, Integer provinceId) {
         List<Workshop> list = workShopRepository
                 .getAllWorkShopByLocation(pageable, provinceId)
                 .getContent();
@@ -177,7 +178,7 @@ public class WorkShopServiceImpl implements WorkShopService {
             throw new AppException(ERROR_NO_CONTENT);
         }
         return list.stream()
-                .map(workshop -> modelMapper.map(workshop, WorkShopResponse.class))
+                .map(workshop -> modelMapper.map(workshop, WorkshopResponse.class))
                 .toList();
     }
 
@@ -190,7 +191,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      */
     @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
-    public WorkShopResponse updateWordShop(Integer id, WorkShopRequest workShopRequest) {
+    public WorkshopResponse updateWordShop(Integer id, WorkShopRequest workShopRequest) {
         // Kiểm tra tính hợp lệ của yêu cầu cập nhật Workshop
         validateWorkShop(workShopRequest);
 
@@ -222,7 +223,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         // Xóa ảnh cũ nếu có
 
         // Trả về đối tượng phản hồi với thông tin Workshop đã cập nhật
-        return modelMapper.map(savedWorkShop, WorkShopResponse.class);
+        return modelMapper.map(savedWorkShop, WorkshopResponse.class);
     }
 
     private Workshop findWorkshopById(Integer id) {
@@ -326,14 +327,14 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu Workshop không tồn tại
      */
     @Override
-    public WorkShopResponse removeWorkShop(Integer id) {
+    public WorkshopResponse removeWorkShop(Integer id) {
         Workshop workshop = workShopRepository.findById(id).orElse(null);
         if (Objects.isNull(workshop)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu Workshop không tồn tại
         }
         workshop.setStatus(Status.INACTIVE);
         workShopRepository.save(workshop);
-        return modelMapper.map(workshop, WorkShopResponse.class);
+        return modelMapper.map(workshop, WorkshopResponse.class);
     }
 
     /**
@@ -344,12 +345,12 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @throws AppException Nếu Workshop không tồn tại
      */
     @Override
-    public WorkShopResponse getWorkShopById(Integer id) {
+    public WorkshopResponse getWorkShopById(Integer id) {
         Workshop workshopById = workShopRepository.findById(id).orElse(null);
         if (Objects.isNull(workshopById)) {
             throw new AppException(ERROR_NO_CONTENT);
         }
-        return modelMapper.map(workshopById, WorkShopResponse.class);
+        return modelMapper.map(workshopById, WorkshopResponse.class);
     }
 
     /**
@@ -439,15 +440,25 @@ public class WorkShopServiceImpl implements WorkShopService {
     public List<Workshop> findAll() {
         return workShopRepository.findAll();
     }
+    @PreAuthorize("hasAuthority('SCOPE_BUSINESS')")
+    @Override
+    public PagingResponse<WorkshopStateBusiness> getAllWorkShopByPracticeBusiness(Pageable pageable, Integer businessID, String keyword,State state) {
+        Page<WorkshopStateBusiness> workshops = workShopRepository.findAllWorkShopByBusinessId(businessID,state,sanitizeKeyword(keyword),pageable);
+        if(Objects.isNull(workshops)){
+            throw new AppException(ERROR_NO_CONTENT);
+        }
+        return new PagingResponse<>(workshops);
+    }
+
 
     @Override
-    public PagingResponse<WorkShopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate, LocalDate endDate, Integer provinceId,Integer universityId, String keyword) {
+    public PagingResponse<WorkshopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate, LocalDate endDate, Integer provinceId, Integer universityId, String keyword) {
         // Chuyển đổi LocalDate thành LocalDateTime
         LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = (endDate != null) ? endDate.atTime(23, 59, 59) : null;
 
         String sanitizedKeyword = sanitizeKeyword(keyword);
-        Page<WorkShopPortalResponse> workshops = workShopRepository.getAllWorkshopApprovedAndLocation(
+        Page<WorkshopPortalResponse> workshops = workShopRepository.getAllWorkshopApprovedAndLocation(
                 pageable,
                 APPROVED,
                 provinceId,
@@ -462,8 +473,8 @@ public class WorkShopServiceImpl implements WorkShopService {
     }
 
     @Override
-    public WorkShopPortalResponse getWorkShopPortalById(Integer workShopId) {
-        WorkShopPortalResponse workShopPortalResponse = workShopRepository.getWorkShopDetailsById(workShopId,APPROVED);
+    public WorkshopPortalResponse getWorkShopPortalById(Integer workShopId) {
+        WorkshopPortalResponse workShopPortalResponse = workShopRepository.getWorkShopDetailsById(workShopId,APPROVED);
         if(Objects.isNull(workShopPortalResponse)){
             throw new AppException(ERROR_NO_CONTENT);
         }

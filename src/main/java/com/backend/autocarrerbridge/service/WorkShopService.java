@@ -5,36 +5,37 @@ import java.time.LocalDate;
 import java.util.List;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.AdminWorkshopResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopStateBusiness;
 import com.backend.autocarrerbridge.entity.Workshop;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopRejectedRequest;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopUniversityResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopApprovedResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopRejectedResponse;
 import com.backend.autocarrerbridge.util.enums.State;
 
 public interface WorkShopService {
-    List<WorkShopResponse> getAllWorkShop(Pageable pageable, String keyword);
+    List<WorkshopResponse> getAllWorkShop(Pageable pageable, String keyword);
 
-    WorkShopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword);
+    WorkshopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword);
 
-    WorkShopResponse createWorkShop(WorkShopRequest workShopRequest);
+    WorkshopResponse createWorkShop(WorkShopRequest workShopRequest);
 
-    List<WorkShopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword);
+    List<WorkshopResponse> getAllWorkShopByState(Pageable pageable, State state, String keyword);
 
-    List<WorkShopResponse> getAllWorkShopByLocation(Pageable pageable, Integer provinceId);
+    List<WorkshopResponse> getAllWorkShopByLocation(Pageable pageable, Integer provinceId);
 
-    WorkShopResponse updateWordShop(Integer id, WorkShopRequest workShopRequest);
+    WorkshopResponse updateWordShop(Integer id, WorkShopRequest workShopRequest);
 
-    WorkShopResponse removeWorkShop(Integer id);
+    WorkshopResponse removeWorkShop(Integer id);
 
-    WorkShopResponse getWorkShopById(Integer id);
+    WorkshopResponse getWorkShopById(Integer id);
 
     WorkshopApprovedResponse approved(WorkshopApprovedRequest req) throws ParseException;
 
@@ -44,13 +45,15 @@ public interface WorkShopService {
 
     long countWorkShop();
 
-    PagingResponse<WorkShopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate,LocalDate endDate, Integer provinceId,Integer universityId, String keyword);
+    PagingResponse<WorkshopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate, LocalDate endDate, Integer provinceId, Integer universityId, String keyword);
 
-    WorkShopPortalResponse getWorkShopPortalById(Integer workShopId);
+    WorkshopPortalResponse getWorkShopPortalById(Integer workShopId);
 
     PagingResponse<AdminWorkshopResponse> getPagingWorkshop(PageInfo req);
 
     AdminWorkshopResponse detail(Integer id);
 
     List<Workshop> findAll();
+
+    PagingResponse<WorkshopStateBusiness> getAllWorkShopByPracticeBusiness(Pageable pageable,Integer businessID, String keyword,State state);
 }

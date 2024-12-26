@@ -9,7 +9,7 @@ import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKS
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
 import java.text.ParseException;
 import java.util.Collections;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopBusinessResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.entity.WorkshopBusiness;
@@ -63,13 +63,13 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
      * @return - Thông tin về workshop và danh sách các doanh nghiệp tham gia.
      */
     @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
-    public WorkShopBusinessResponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
+    public WorkshopBusinessResponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
         if (state != State.PENDING && state != State.APPROVED && state != State.REJECTED) {
             throw new AppException(ERROR_NO_CONTENT);
         }
 
         // Lấy thông tin workshop theo ID
-        WorkShopResponse workShopResponse = workShopService.getWorkShopById(workshopId);
+        WorkshopResponse workShopResponse = workShopService.getWorkShopById(workshopId);
 
         // Lấy danh sách các doanh nghiệp tham gia workshop
         List<Business> businesses = workShopBussinessRepository
@@ -84,7 +84,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
                 .toList();
 
         // Tạo và trả về response chứa thông tin workshop và danh sách doanh nghiệp
-        WorkShopBusinessResponse workShopBusinessResponse = new WorkShopBusinessResponse();
+        WorkshopBusinessResponse workShopBusinessResponse = new WorkshopBusinessResponse();
         workShopBusinessResponse.setWorkshop(workShopResponse);
         workShopBusinessResponse.setBusinessList(businessResponses);
 
