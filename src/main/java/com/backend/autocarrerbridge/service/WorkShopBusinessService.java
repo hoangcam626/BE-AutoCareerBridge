@@ -23,4 +23,6 @@ public interface WorkShopBusinessService {
     List<Map<String,Object>> countWorkShopAndStatusConnected();
 
     StateWorkShopBusinessResponse getWorkShopStatusBusiness(Integer workshopId, Integer businessId);
+
+    String cancelAttendWorkshop(Integer businessId,Integer workshopId) throws ParseException;
 }

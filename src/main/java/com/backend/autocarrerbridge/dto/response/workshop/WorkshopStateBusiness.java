@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.dto.response.workshop;
 
 
+import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,6 +18,9 @@ public class WorkshopStateBusiness {
         private Integer universityId;
         private Integer logoImageUniversityId;
         private String nameUniversity;
+        private String email;
+        private String phoneNumber;
+        private String website;
         private String title;
         private String description;
         private Status status;
@@ -37,8 +41,11 @@ public class WorkshopStateBusiness {
         private LocalDateTime createdAt;
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
         private LocalDateTime updatedAt;
-        public WorkshopStateBusiness(Integer id, Integer universityId, Integer logoImageUniversityId, String nameUniversity, String title, String description, Status status, State statusBrowse, State statusBusiness, LocalDateTime startDate, LocalDateTime endDate, LocalDate expireDate, Integer workshopImageId, String address, String province, String district, String ward,LocalDateTime createdAt,LocalDateTime updatedAt) {
+        public WorkshopStateBusiness(Integer id, Integer universityId, Integer logoImageUniversityId, String nameUniversity,String email,String phoneNumber,String website, String title, String description, Status status, State statusBrowse, State statusBusiness, LocalDateTime startDate, LocalDateTime endDate, LocalDate expireDate, Integer workshopImageId, String address, String province, String district, String ward,LocalDateTime createdAt,LocalDateTime updatedAt) {
                 this.id = id;
+                this.website = website;
+                this.email = email;
+                this.phoneNumber = phoneNumber;
                 this.createdAt = createdAt;
                 this.updatedAt = updatedAt;
                 this.universityId = universityId;

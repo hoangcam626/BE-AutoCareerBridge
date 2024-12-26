@@ -249,4 +249,8 @@ public class WorkShopController {
     Pageable pageable = PageRequest.of(page, size);
     return ApiResponse.builder().data(workShopService.getAllWorkShopByPracticeBusiness(pageable,businessId,keyword,state)).build();
   }
+  @PutMapping("business/cancel")
+  public ApiResponse<Object> cancelAttendWorkshop(@RequestParam("businessId") Integer businessId,@RequestParam("workshopId") Integer workshopId) throws ParseException {
+    return ApiResponse.builder().data(workShopBusinessService.cancelAttendWorkshop(businessId,workshopId)).build();
+  }
 }

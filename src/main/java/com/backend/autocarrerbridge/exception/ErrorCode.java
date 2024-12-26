@@ -13,6 +13,7 @@ import static com.backend.autocarrerbridge.util.Constant.ADDRESS_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CANCEL_RELATION;
+import static com.backend.autocarrerbridge.util.Constant.CANCEL_WORK_SHOP;
 import static com.backend.autocarrerbridge.util.Constant.CODE_EXIT_SUB_ADMIN_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CODE_MAJOR_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.CONTENT_TOO_LONG_MESSAGE;
@@ -191,6 +192,7 @@ public enum ErrorCode {
     ERROR_FIND_IMAGE(BAD_REQUEST, NOT_FOUND_FILE_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_OPEN_IMAGE(BAD_REQUEST, OPEN_IMAGE_MESSAGE, HttpStatus.BAD_REQUEST),
 
+    ERROR_WORK_SHOP_CANCEL(NOT_FOUND, CANCEL_WORK_SHOP, HttpStatus.NOT_FOUND),
     NO_CHANGE_DETECTED(SUCCESS, NO_CHANGES_DETECTED, HttpStatus.OK),
     ERROR_NO_CODE_SUB_ADMIN(BAD_REQUEST, NO_CODE_SUB_ADMIN, HttpStatus.BAD_REQUEST),
     ERROR_NOT_FOUND_SUB_ADMIN(BAD_REQUEST, NOT_FOUND_SUB_ADMIN, HttpStatus.BAD_REQUEST),

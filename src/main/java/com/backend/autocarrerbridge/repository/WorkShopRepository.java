@@ -136,6 +136,9 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "ws.university.id, " +
             "ws.university.logoImageId," +
             "ws.university.name," +
+            "ws.university.email," +
+            "ws.university.phone," +
+            "ws.university.website," +
             "ws.title, " +
             "ws.description, " +
             "ws.status, " +
@@ -154,7 +157,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             ") " +
             "FROM Workshop ws " +
             "LEFT JOIN WorkshopBusiness wsb ON ws.id = wsb.workshop.id " +
-            "where wsb.business.id =:businessId AND wsb.statusConnected =:state AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ESCAPE '\\')")
-    Page<WorkshopStateBusiness> findAllWorkShopByBusinessId(@Param("businessId") Integer businessId,@Param("state") State state, @Param("keyword") String keyword, Pageable pageable);
+            "where wsb.business.id =:businessId  AND (wsb.status =:status) AND (wsb.statusConnected = :state OR :state IS NULL) AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ESCAPE '\\')")
+    Page<WorkshopStateBusiness> findAllWorkShopByBusinessId(@Param("status") Status status,@Param("businessId") Integer businessId,@Param("state") State state, @Param("keyword") String keyword, Pageable pageable);
 
 }

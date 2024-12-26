@@ -443,12 +443,13 @@ public class WorkShopServiceImpl implements WorkShopService {
     @PreAuthorize("hasAuthority('SCOPE_BUSINESS')")
     @Override
     public PagingResponse<WorkshopStateBusiness> getAllWorkShopByPracticeBusiness(Pageable pageable, Integer businessID, String keyword,State state) {
-        Page<WorkshopStateBusiness> workshops = workShopRepository.findAllWorkShopByBusinessId(businessID,state,sanitizeKeyword(keyword),pageable);
+        Page<WorkshopStateBusiness> workshops = workShopRepository.findAllWorkShopByBusinessId(ACTIVE,businessID,state,sanitizeKeyword(keyword),pageable);
         if(Objects.isNull(workshops)){
             throw new AppException(ERROR_NO_CONTENT);
         }
         return new PagingResponse<>(workshops);
     }
+
 
 
     @Override
