@@ -94,7 +94,7 @@ public class NotificationServiceImpl implements NotificationService {
     public SseEmitter createConnection(int userId) {
         UserAccount userAccount = userAccountService.getUserById(userId);
         String username = userAccount.getUsername();
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        SseEmitter emitter = new SseEmitter();
         sseEmitters.put(username, emitter);
         emitter.onCompletion(() -> sseEmitters.remove(username));
         emitter.onTimeout(() -> sseEmitters.remove(username));

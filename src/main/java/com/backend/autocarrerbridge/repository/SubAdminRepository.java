@@ -39,4 +39,8 @@ public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
 
     @Query("SELECT MAX(sa.id) AS latestId FROM SubAdmin sa")
     Integer latestId();
+
+    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM SubAdmin sa WHERE sa.phone = :phone AND sa.status <> 0")
+    boolean existsByPhone(String phone);
 }
