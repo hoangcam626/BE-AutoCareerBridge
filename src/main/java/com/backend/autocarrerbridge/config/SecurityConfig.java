@@ -57,6 +57,8 @@ public class SecurityConfig {
             "/api/accounts/login",
             "/api/accounts/verify",
             "/api/business/verify-business",
+            "/api/business/list-home",
+            "/api/business/get-all-business-page",
             "/api/university/verify-university",
             "/api/accounts/forgot-code",
             "/api/accounts/forgot-pass",
@@ -115,7 +117,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000","https://autocareerbridge.web.app"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTION"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedHeaders(List.of("*"));
