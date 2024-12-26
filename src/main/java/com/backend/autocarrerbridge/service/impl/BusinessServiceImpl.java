@@ -3,6 +3,8 @@ package com.backend.autocarrerbridge.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.dto.response.business.BusinessListHome;
+import com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage;
 import com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
@@ -262,6 +264,17 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public List<IntroduceBusiness> getFeatureBusiness(Integer industryId,Pageable page) {
         return businessRepository.getBusinessFeaturedByIndustry(industryId,page);
+    }
+
+    @Override
+    public List<BusinessListHome> getBusinessListHome() {
+        return businessRepository.getListBusinessFollowNumberJob();
+    }
+
+    @Override
+    public PagingResponse<BusinessSearchPage> getAllBusinessPage(String keyword, Pageable pageable) {
+        Page<BusinessSearchPage> businessSearchPages = businessRepository.getBusinessForPaging(keyword, pageable);
+        return new PagingResponse<>(businessSearchPages);
     }
 
 

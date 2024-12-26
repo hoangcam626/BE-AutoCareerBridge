@@ -57,6 +57,8 @@ public class SecurityConfig {
             "/api/accounts/login",
             "/api/accounts/verify",
             "/api/business/verify-business",
+            "/api/business/list-home",
+            "/api/business/get-all-business-page",
             "/api/university/verify-university",
             "/api/accounts/forgot-code",
             "/api/accounts/forgot-pass",
