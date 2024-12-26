@@ -16,8 +16,16 @@ import com.backend.autocarrerbridge.entity.BusinessUniversity;
 public interface BusinessUniversityRepository extends JpaRepository<BusinessUniversity, Integer> {
     BusinessUniversity findByBusinessIdAndUniversityId(Integer businessId, Integer universityId);
 
-    @Query("SELECT bu FROM BusinessUniversity bu where bu.business.id = :id")
-    List<BusinessUniversity> getSentRequestOfBusiness(Integer id);
+    @Query("SELECT bu FROM BusinessUniversity bu where bu.business.id = :id "
+            + "AND bu.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
+            + "AND (:keyword IS NULL OR :keyword = '' "
+            + "OR bu.business.name like :keyword ESCAPE '\\' or bu.business.email like  :keyword ESCAPE '\\' )"
+            + "AND (:statusConnected IS NULL OR bu.statusConnected = :statusConnected) "
+            + "ORDER BY bu.createdAt DESC ")
+    Page<BusinessUniversity> getSentRequestOfBusiness(Integer id,
+                                                      @Param("keyword") String keyword,
+                                                      @Param("status") State statusConnected,
+                                                      Pageable pageable);
 
     @Query("SELECT bu FROM BusinessUniversity bu where bu.university.id = :id")
     List<BusinessUniversity> getAllRequestOfUniversity(Integer id);
@@ -43,7 +51,7 @@ public interface BusinessUniversityRepository extends JpaRepository<BusinessUniv
             + "FROM BusinessUniversity cooperation WHERE cooperation.university.email = :email "
             + "AND cooperation.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
             + "AND (:keyword IS NULL OR :keyword = '' "
-            + "OR cooperation.business.name like %:keyword% or cooperation.business.email like %:keyword%)"
+            + "OR cooperation.business.name like %:keyword%  or cooperation.business.email like %:keyword% )"
             + "AND (:statusConnected IS NULL OR cooperation.statusConnected = :statusConnected) "
             + "ORDER BY cooperation.createdAt DESC ")
     Page<BusinessUniversity> getCooperationForPaging(String email,

@@ -1,34 +1,16 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
-import static com.backend.autocarrerbridge.util.Constant.APPROVE_COOPERATION_MESSAGE;
-import static com.backend.autocarrerbridge.util.Constant.REJECT_COOPERATION_MESSAGE;
-
+import com.backend.autocarrerbridge.converter.SentRequestConverter;
+import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRequest;
 import com.backend.autocarrerbridge.dto.request.cooperation.CooperationRejectRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationRejectResponse;
-import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
-import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
-import com.backend.autocarrerbridge.service.NotificationService;
-import com.backend.autocarrerbridge.service.TokenService;
-
-import java.text.ParseException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import com.backend.autocarrerbridge.util.email.EmailDTO;
-import com.backend.autocarrerbridge.util.email.SendEmail;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import com.backend.autocarrerbridge.converter.SentRequestConverter;
-import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.SentRequestResponse;
+import com.backend.autocarrerbridge.dto.response.notification.NotificationResponse;
+import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.BusinessUniversity;
 import com.backend.autocarrerbridge.entity.University;
@@ -39,19 +21,39 @@ import com.backend.autocarrerbridge.repository.BusinessRepository;
 import com.backend.autocarrerbridge.repository.BusinessUniversityRepository;
 import com.backend.autocarrerbridge.repository.UniversityRepository;
 import com.backend.autocarrerbridge.service.BusinessUniversityService;
+import com.backend.autocarrerbridge.service.NotificationService;
+import com.backend.autocarrerbridge.service.TokenService;
 import com.backend.autocarrerbridge.util.Constant;
+import com.backend.autocarrerbridge.util.Validation;
+import com.backend.autocarrerbridge.util.email.EmailDTO;
+import com.backend.autocarrerbridge.util.email.SendEmail;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_APPROVED_RELATION;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CANCEL_RELATION;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_CODE_NOT_FOUND;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EXIST_RELATION;
+import static com.backend.autocarrerbridge.util.Constant.APPROVE_COOPERATION_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.REJECT_COOPERATION_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.REQUEST_COOPERATION;
 
 @Service
 @RequiredArgsConstructor // Tự động tạo constructor cho các trường được đánh dấu final
 @FieldDefaults(
-    level = AccessLevel.PRIVATE,
-    makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
+        level = AccessLevel.PRIVATE,
+        makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
 public class BusinessUniversityServiceImpl implements BusinessUniversityService {
 
     // Khai báo các thành phần cần thiết trong service
@@ -94,14 +96,21 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
      * Lấy danh sách các yêu cầu đã gửi từ doanh nghiệp
      */
     @Override
-    public ApiResponse<Object> getSentRequest() throws ParseException {
-        List<BusinessUniversity> universities = businessUniversityRepository.getSentRequestOfBusiness(
-                getBusinessViaToken().getId());
-        if (universities.isEmpty()) { // Nếu danh sách trống
-            throw new AppException(ERROR_CODE_NOT_FOUND);
-        }
-        List<SentRequestResponse> sentRequestResponse = sentRequestConverter.toSentRequestResponse(universities);
-        return ApiResponse.builder().data(sentRequestResponse).build();
+    public ApiResponse<Object> getSentRequest(String keyword, State statusConnected, Pageable pageable) throws ParseException {
+        String sanitizedKeyword = Validation.escapeKeywordForQuery(keyword);
+
+        Page<BusinessUniversity> universities = businessUniversityRepository.getSentRequestOfBusiness(
+                getBusinessViaToken().getId(), sanitizedKeyword, statusConnected, pageable);
+        List<SentRequestResponse> sentRequestResponse = sentRequestConverter.toSentRequestResponse(universities.getContent());
+
+        PagingResponse<SentRequestResponse> pagingResponse = new PagingResponse<>(
+                universities.getTotalPages(),
+                universities.getTotalElements(),
+                universities.getSize(),
+                universities.getNumber() + 1,
+                sentRequestResponse
+        );
+        return ApiResponse.builder().data(pagingResponse).build();
     }
 
     /**
@@ -121,6 +130,7 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
         // Kiểm tra thông tin trong bảng BusinessUniversity
         BusinessUniversity existingRelation =
                 businessUniversityRepository.findByBusinessIdAndUniversityId(business.getId(), universityId);
+        String message = String.format(" Bạn nhận được yêu cầu hợp tác của %s ", business.getName());
 
         // Nếu đã tồn tại mối quan hệ hợp tác
         if (existingRelation != null) {
@@ -133,6 +143,10 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
                 existingRelation.setStatusConnected(State.PENDING);
                 existingRelation.setUpdatedBy(business.getUserAccount().getUsername());
                 businessUniversityRepository.save(existingRelation);
+                NotificationSendRequest sendReq =
+                        NotificationSendRequest.of(
+                                Collections.singletonList(university.getEmail()), REQUEST_COOPERATION, message);
+                notificationService.send(sendReq);
             }
             throw new AppException(ERROR_EXIST_RELATION);
         } else {
@@ -145,6 +159,10 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
             newRelation.setStatus(Status.ACTIVE);
             newRelation.setCreatedBy(business.getUserAccount().getUsername());
             businessUniversityRepository.save(newRelation);
+            NotificationSendRequest sendReq =
+                    NotificationSendRequest.of(
+                            Collections.singletonList(university.getEmail()), REQUEST_COOPERATION, message);
+            notificationService.send(sendReq);
         }
         return ApiResponse.builder().data(Constant.SEND_REQUEST_SUCCESS).build();
     }
@@ -299,8 +317,8 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     }
 
 
-  @Override
-  public long countBussinessUniversity() {
-    return businessUniversityRepository.count();
-  }
+    @Override
+    public long countBussinessUniversity() {
+        return businessUniversityRepository.count();
+    }
 }
