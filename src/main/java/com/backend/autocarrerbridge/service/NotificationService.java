@@ -19,7 +19,7 @@ public interface NotificationService {
 
     PagingResponse<UserNotificationResponse> getAllUserNotificationPaging(PageInfo req) throws ParseException;
 
-    UserNotificationMarkReadResponse markReadNotification(UserNotificationMarkReadRequest req) throws ParseException;
+    UserNotificationMarkReadResponse markReadNotification(UserNotificationMarkReadRequest req);
 
     UserNotificationMarkReadResponse markReadAllNotification() throws ParseException;
 

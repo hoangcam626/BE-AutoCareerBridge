@@ -1,7 +1,11 @@
 package com.backend.autocarrerbridge.repository;
 
+import com.backend.autocarrerbridge.dto.response.business.BusinessListHome;
+import com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage;
 import com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness;
+import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -71,10 +75,12 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     SELECT new com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness(
         b.id, 
         b.name, 
+        b.description,
         bi.industry.id,
         bi.industry.name,
         COUNT(j), 
-        b.businessImageId
+        b.businessImageId,
+        b.licenseImageId
     )
     FROM Business b
     JOIN BusinessIndustry bi ON b.id = bi.business.id
@@ -85,6 +91,43 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
 """)
     List<IntroduceBusiness> getBusinessFeaturedByIndustry(@Param("industryId") Integer industryId, Pageable pageable);
 
+    @Query("""
+    SELECT new com.backend.autocarrerbridge.dto.response.business.BusinessListHome(
+        b.id,
+        b.name,
+        b.description,
+        COUNT(j),
+        b.businessImageId,
+        b.licenseImageId
+    )
+    from Business b
+    LEFT JOIN Job j ON j.business.id = b.id
+    GROUP BY b.id, b.name, b.description, b.businessImageId, b.licenseImageId
+    ORDER BY COUNT(j) DESC
+    LIMIT 9
+    """)
+    List<BusinessListHome> getListBusinessFollowNumberJob();
 
+    @Query("""
+    SELECT new com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage(
+        b.id,
+        b.name,
+        b.description,
+        b.location.province.fullName,
+        b.location.district.fullName,
+        b.location.ward.fullName,
+        b.location.description,
+        COUNT(j)
+    )
+    from Business b
+    LEFT JOIN Job j ON j.business.id = b.id AND j.status = 1 AND j.statusBrowse = 1 
+    WHERE (:keyword IS NULL OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+    GROUP BY b.id, b.name, b.description, b.location.province.fullName, b.location.district.fullName, b.location.ward.fullName, b.location.description
+    ORDER BY COUNT(j) DESC
+    """)
+    Page<BusinessSearchPage> getBusinessForPaging(
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
 }
 

@@ -11,6 +11,7 @@ public class CharacterSet {
     };
     public static final char[] NUMERIC_CHARACTERS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     public static final char[] SPECIAL_CHARACTERS = {
-        '!', '@', '#', '$', '%', '^', '&', '*', '-', '_', '=', '+', '<', '>', '?'
+        '!', '@', '#', '$', '%', '^', '&', '*'
+
     };
 }

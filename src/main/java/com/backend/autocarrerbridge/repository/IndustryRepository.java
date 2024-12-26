@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.repository;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.response.industry.IndustryJobCountDTO;
+import com.backend.autocarrerbridge.dto.response.industry.IndustrySalaryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,4 +57,17 @@ public interface IndustryRepository extends JpaRepository<Industry, Integer> {
             "GROUP BY bi.name " +
             "ORDER BY COUNT(j) DESC")
     List<IndustryJobCountDTO> findMostUsedIndustryByBusiness(Integer businessId);
+
+    /**
+     * Thống kê mức lương trung bình của từng ngành nghề
+     */
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustrySalaryDTO(i.name, AVG((j.fromSalary + j.toSalary) / 2)) " +
+            "FROM Job j " +
+            "JOIN j.industry i " +
+            "WHERE j.fromSalary IS NOT NULL AND j.toSalary IS NOT NULL " +
+            "GROUP BY i.name " +
+            "ORDER BY AVG((j.fromSalary + j.toSalary) / 2) DESC")
+    List<IndustrySalaryDTO> getAverageSalaryByIndustry(Integer id);
+
+
 }

@@ -24,7 +24,8 @@ public class BusinessJobResponse {
     String title;
     String expireDate;
     String level;
-    Integer salary;
+    Integer toSalary;
+    Integer fromSalary;
     String description;
     String workingTime;
     String benefit;
@@ -51,7 +52,8 @@ public class BusinessJobResponse {
             String title,
             LocalDate expireDateInput,
             String level,
-            Integer salary,
+            Integer toSalary,
+            Integer fromSalary,
             String description,
             String workingTime,
             String requirement,
@@ -71,9 +73,10 @@ public class BusinessJobResponse {
         this.businessName = businessName;
         this.jobId = jobId;
         this.title = title;
-        this.expireDate = PREFIX_DATE +  ChronoUnit.DAYS.between(LocalDate.now(), expireDateInput) + POSTFIX_DATE;
+        this.expireDate = PREFIX_DATE + ChronoUnit.DAYS.between(LocalDate.now(), expireDateInput) + POSTFIX_DATE;
         this.level = level;
-        this.salary = salary;
+        this.fromSalary = fromSalary;
+        this.toSalary = toSalary;
         this.workingTime = workingTime;
         this.requirement = requirement;
         this.statusBrowse = statusBrowse;

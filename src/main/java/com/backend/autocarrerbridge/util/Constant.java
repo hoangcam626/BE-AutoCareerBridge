@@ -239,6 +239,7 @@ public class Constant {
     public static final String INVALID_SALARY = "Lương phải là số dương";
     public static final String INVALID_EXPIRED_DATE = "Ngày hết hạn không được để trống";
     public static final String INVALID_EXPIRED_DATE_FUTRURE = "Ngày hết hạn phải là ngày trong tương lai";
+    public static final String ERROR_FROM_GREAT_TO_SALARY = "Lương nhập không hợp lệ";
 
     // Workshop
     public static final String NO_EXIST_WORKSHOP = "Công việc không tồn tại";
