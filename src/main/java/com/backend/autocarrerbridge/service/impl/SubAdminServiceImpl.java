@@ -2,6 +2,7 @@ package com.backend.autocarrerbridge.service.impl;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_EXIST;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_SUB_ADMIN;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_PHONE_EXIST;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SUB_ADMIN_CODE_EXIST;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_EMAIL;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_PHONE;
@@ -249,14 +250,17 @@ public class SubAdminServiceImpl implements SubAdminService {
         if (Objects.nonNull(req.getPhone()) && !Validation.isValidPhoneNumber(req.getPhone())) {
             throw new AppException(ERROR_VALID_PHONE);
         }
+        if (subAdminRepository.existsByPhone(req.getPhone())) {
+            throw new AppException(ERROR_PHONE_EXIST);
+        }
         if (subAdminRepository.existsByEmail(req.getEmail())) {
             throw new AppException(ERROR_EMAIL_EXIST);
         }
     }
 
-    private String renderSubAdminCode(){
-        String code = String.format("%s%d", PREFIX_SUB_ADMIN_CODE, (subAdminRepository.latestId()+1));
-        if(subAdminRepository.existsBySubAdminCode(code)){
+    private String renderSubAdminCode() {
+        String code = String.format("%s%d", PREFIX_SUB_ADMIN_CODE, (subAdminRepository.latestId() + 1));
+        if (subAdminRepository.existsBySubAdminCode(code)) {
             throw new AppException(ERROR_SUB_ADMIN_CODE_EXIST);
         }
         return code;
