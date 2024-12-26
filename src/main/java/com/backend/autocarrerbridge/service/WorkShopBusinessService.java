@@ -6,13 +6,13 @@ import java.util.Map;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopBusinessResponse;
 import com.backend.autocarrerbridge.util.enums.State;
 
 import java.text.ParseException;
 
 public interface WorkShopBusinessService {
-    WorkShopBusinessResponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state);
+    WorkshopBusinessResponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state);
 
     String requestToAttend(WorkShopBusinessRequest workShopBusinessRequest);
 
@@ -23,4 +23,6 @@ public interface WorkShopBusinessService {
     List<Map<String,Object>> countWorkShopAndStatusConnected();
 
     StateWorkShopBusinessResponse getWorkShopStatusBusiness(Integer workshopId, Integer businessId);
+
+    String cancelAttendWorkshop(Integer businessId,Integer workshopId) throws ParseException;
 }

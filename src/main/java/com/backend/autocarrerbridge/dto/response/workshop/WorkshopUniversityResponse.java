@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkShopUniversityResponse {
+public class WorkshopUniversityResponse {
     private UniversityResponse university;
-    private List<WorkShopResponse> workshops;
+    private List<WorkshopResponse> workshops;
     private Integer totalRecords;
 }

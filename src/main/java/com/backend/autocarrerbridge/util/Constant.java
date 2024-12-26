@@ -33,6 +33,7 @@ public class Constant {
     public static final String REJECT_ACCEPT_MESSAGE = "Từ chối thành công!";
     public static final String APPROVE_COOPERATION_MESSAGE= " đã chấp nhận yêu cầu hợp tác của bạn";
     public static final String REJECT_COOPERATION_MESSAGE= "đã từ chối yêu cầu hợp tác của bạn";
+    public static final String CANCEL_WORK_SHOP = "Không thể huỷ hội thảo vì nó sắp diễn ra! Vui lòng liên hệ trường học!";
     // Thông báo khác
     public static final String UNAUTHORIZED_MESSAGE = "Truy cập không được phép";
     public static final String FORBIDDEN_MESSAGE = "Truy cập bị từ chối";
@@ -130,7 +131,7 @@ public class Constant {
     public static final String REJECT_BUSINESS_WORKSHOP = "Yêu cầu tham gia hội thảo của bạn đã bị từ chối.";
     public static final String APPROVED_JOB = "Tin tuyển dụng của bạn đã được phê duyệt.";
     public static final String REJECTED_JOB = "Tin tuyển dụng của bạn đã bị từ chối phê duyệt.";
-
+    public static final String CANCEL_BUSINESS_WORK_SHOP = "Vì một số lý do khách quan công ty huỷ bỏ tham gia hội thảo.";
     public static final String EMAIL_REQUIRED_MESSAGE = "Email không được để trống.";
     public static final String EMAIL_INVALID_MESSAGE = "Định dạng email không hợp lệ.";
 
