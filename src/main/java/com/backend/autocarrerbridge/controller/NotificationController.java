@@ -6,9 +6,9 @@ import com.backend.autocarrerbridge.dto.response.notification.UnReadAmountRespon
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,10 +46,9 @@ public class NotificationController {
      *
      * @param req đối tượng chứa ID thông báo cần đánh dấu.
      * @return trạng thái thành công việc đánh dấu thông báo đã đọc.
-     * @throws ParseException đánh dấu lỗi của việc lấy tên người dùng từ token
      */
     @PostMapping("/mark-read")
-    public ApiResponse<UserNotificationMarkReadResponse> markRead(@Valid @ModelAttribute UserNotificationMarkReadRequest req) throws ParseException {
+    public ApiResponse<UserNotificationMarkReadResponse> markRead(@Valid @RequestBody UserNotificationMarkReadRequest req){
         var res = notificationService.markReadNotification(req);
         return new ApiResponse<>(res);
     }

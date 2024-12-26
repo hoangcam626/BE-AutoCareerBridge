@@ -17,4 +17,6 @@ public interface InstructionalRepository extends JpaRepository<Instructional, In
 
   @Query("SELECT i FROM Instructional i WHERE i.status =com.backend.autocarrerbridge.util.enums.Status.INACTIVE")
   Page<Instructional> findAllInactive(Pageable pageable);
+
+
 }

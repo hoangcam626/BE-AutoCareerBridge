@@ -67,7 +67,6 @@ public class NotificationServiceImpl implements NotificationService {
         String usernameLogin = getUserNameLogin();
         notification.setCreatedBy(usernameLogin);
         notification = notificationRepository.save(notification);
-        NotificationResponse res = modelMapper.map(notification, NotificationResponse.class);
 
         // Lưu thông báo đến danh sách người dùng chỉ định
         for (String username : req.getToUsernames()) {
@@ -77,12 +76,12 @@ public class NotificationServiceImpl implements NotificationService {
                     .notification(notification)
                     .statusRead(StatusRead.UNREAD)
                     .build();
-            userNotificationRepository.save(userNotification);
+            userNotification = userNotificationRepository.save(userNotification);
 
             // Gọi hàm gửi nội dung thông báo realtime tới người dùng bằng SSE
-            pushNotificationToUser(userAccount.getUsername(), res);
+            pushNotificationToUser(userAccount.getUsername(), new UserNotificationResponse(userNotification));
         }
-        return res;
+        return modelMapper.map(notification, NotificationResponse.class);
     }
 
     /**
@@ -126,12 +125,12 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public UserNotificationMarkReadResponse markReadNotification(UserNotificationMarkReadRequest req) {
         UserNotification userNotification = getById(req.getId());
-        if (userNotification.getStatusRead() == StatusRead.UNREAD) {
+        if (userNotification.getStatusRead() == StatusRead.READ) {
             throw new AppException(ERROR_NOTIFICATION_ALREADY_READ);
         }
         userNotification.setStatusRead(StatusRead.READ);
         userNotificationRepository.save(userNotification);
-        return UserNotificationMarkReadResponse.of(Boolean.TRUE);
+        return UserNotificationMarkReadResponse.of(userNotification.getId(), Boolean.TRUE);
     }
 
     /**
@@ -145,7 +144,7 @@ public class NotificationServiceImpl implements NotificationService {
         List<UserNotification> unreadList = userNotificationRepository.findAllUnread(usernameLogin);
         unreadList.forEach(userNotification -> userNotification.setStatusRead(StatusRead.READ));
         userNotificationRepository.saveAll(unreadList);
-        return UserNotificationMarkReadResponse.of(Boolean.TRUE);
+        return UserNotificationMarkReadResponse.of(null, Boolean.TRUE);
     }
 
     /**
@@ -163,7 +162,7 @@ public class NotificationServiceImpl implements NotificationService {
      * @param username     tên đăng nhập của người dùng nhận thông báo.
      * @param notification đối tượng NotificationResponse chứa thông tin thông báo cần gửi.
      */
-    private void pushNotificationToUser(String username, NotificationResponse notification) {
+    private void pushNotificationToUser(String username, UserNotificationResponse notification) {
         SseEmitter emitter = sseEmitters.get(username);
         if (emitter != null) {
             try {

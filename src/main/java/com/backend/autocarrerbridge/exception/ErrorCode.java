@@ -9,6 +9,7 @@ import lombok.Getter;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT_ALREADY_APPROVED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.ADDRESS_DESCRIPTION;
 import static com.backend.autocarrerbridge.util.Constant.ADDRESS_INVALID_SPACE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ADDRESS_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.ALREADY_INACTIVE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_RELATION;
 import static com.backend.autocarrerbridge.util.Constant.CANCEL_RELATION;
@@ -19,10 +20,12 @@ import static com.backend.autocarrerbridge.util.Constant.DATE_WORKSHOP_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.DISTRICT_NOT_FOUND_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.EMAIL_INVALID_SPACE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_FROM_GREAT_TO_SALARY;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_INVALID_PHONE;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_INVALID_PHONE_NUMBER;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_LIST_EMPTY_MESAGE;
 import static com.backend.autocarrerbridge.util.Constant.ERROR_PW_INCORRECT_FORMAT;
+import static com.backend.autocarrerbridge.util.Constant.ERROR_TAX_CODE_EXIST;
 import static com.backend.autocarrerbridge.util.Constant.FILED_DB_NOT_UNIQUE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.FOUNDED_YEAR_UNIVERSITY_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.HAVE_RELATION;
@@ -67,7 +70,6 @@ import static com.backend.autocarrerbridge.util.Constant.FORGOT_CODE_INVALID_MES
 import static com.backend.autocarrerbridge.util.Constant.FORGOT_CODE_REQUIRED_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.GENDER_NOT_BLANK_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INACTIVE;
-import static com.backend.autocarrerbridge.util.Constant.INVALID_ACCOUNT_STATE_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_EXPIRED_DATE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_EXPIRED_DATE_FUTRURE;
 import static com.backend.autocarrerbridge.util.Constant.INVALID_JOB_STATE_MESSAGE;
@@ -196,6 +198,7 @@ public enum ErrorCode {
     ERROR_VALID_EMAIL(BAD_REQUEST, ERROR_INVALID_EMAIL, HttpStatus.BAD_REQUEST),
     ERROR_VALID_PHONE(BAD_REQUEST, ERROR_INVALID_PHONE, HttpStatus.BAD_REQUEST),
     ERROR_EMAIL_EXIST(BAD_REQUEST, ERROR_EXIST, HttpStatus.BAD_REQUEST),
+    ERROR_TAX_EXIST(BAD_REQUEST, ERROR_TAX_CODE_EXIST, HttpStatus.BAD_REQUEST),
     ERROR_EMAIL_NOT_FOUND(BAD_REQUEST, ERROR_NOT_FOUND, HttpStatus.BAD_REQUEST),
     ERROR_USER(BAD_REQUEST, ERROR_USER_EXIST, HttpStatus.BAD_REQUEST),
     ERROR_USER_NOT_FOUND(BAD_REQUEST, USER_NOT_FOUND, HttpStatus.BAD_REQUEST),
@@ -292,6 +295,7 @@ public enum ErrorCode {
     ERROR_SALARY(BAD_REQUEST, INVALID_SALARY, HttpStatus.BAD_REQUEST),
     ERROR_EXPIRED_DATE(BAD_REQUEST, INVALID_EXPIRED_DATE, HttpStatus.BAD_REQUEST),
     ERROR_EXPIRED_DATE_FUTRURE(BAD_REQUEST, INVALID_EXPIRED_DATE_FUTRURE, HttpStatus.BAD_REQUEST),
+    ERROR_FROM_SALARY_TO(BAD_REQUEST, ERROR_FROM_GREAT_TO_SALARY, HttpStatus.BAD_REQUEST),
 
     // Database
     FILED_DB_NOT_UNIQUE(BAD_REQUEST, FILED_DB_NOT_UNIQUE_MESSAGE, HttpStatus.BAD_REQUEST),
@@ -300,6 +304,7 @@ public enum ErrorCode {
     ERROR_ACCOUNT_ALREADY_REJECTED(BAD_REQUEST, ACCOUNT_ALREADY_REJECTED_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_INVALID_ACCOUNT_STATE(BAD_REQUEST, INVALID_ACCOUNT_STATE_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_ACCOUNT_IS_NULL(BAD_REQUEST, ACCOUNT_IS_NULL, HttpStatus.BAD_REQUEST),
+    ERROR_NOT_FOUND_ADDRESS(BAD_REQUEST, ADDRESS_NOT_FOUND, HttpStatus.BAD_REQUEST),
 
     // Các lỗi liên quan đến đơn vị hành chính
     ERROR_PROVINCE_NOT_FOUND(BAD_REQUEST, PROVINCE_NOT_FOUND_MESSAGE, HttpStatus.BAD_REQUEST),

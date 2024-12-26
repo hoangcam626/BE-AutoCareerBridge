@@ -1,7 +1,13 @@
 package com.backend.autocarrerbridge.service.impl;
 
-import static com.backend.autocarrerbridge.exception.ErrorCode.*;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_EMAIL_EXIST;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NOT_FOUND_SUB_ADMIN;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_SUB_ADMIN_CODE_EXIST;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_EMAIL;
+import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_VALID_PHONE;
+import static com.backend.autocarrerbridge.exception.ErrorCode.NO_CHANGE_DETECTED;
 import static com.backend.autocarrerbridge.util.Constant.ACCOUNT;
+import static com.backend.autocarrerbridge.util.Constant.PREFIX_SUB_ADMIN_CODE;
 import static com.backend.autocarrerbridge.util.Constant.SUB;
 
 import java.text.ParseException;
@@ -63,8 +69,6 @@ public class SubAdminServiceImpl implements SubAdminService {
     private final ModelMapper modelMapper;
     private final SendEmail sendEmail;
 
-
-
     /**
      * Tạo một sub-admin mới
      *
@@ -82,6 +86,8 @@ public class SubAdminServiceImpl implements SubAdminService {
             var imgId = imageService.uploadFile(req.getSubAdminImage()); // Gọi hàm lưu ảnh
             subAdmin.setSubAdminImageId(imgId);
         }
+
+        subAdmin.setSubAdminCode(renderSubAdminCode());
 
         // Gọi hàm sinh password tự động và khởi tạo tài khoản người dùng
         PasswordGenerator pw = new PasswordGenerator(8, 12);
@@ -202,7 +208,8 @@ public class SubAdminServiceImpl implements SubAdminService {
     @Override
     public Page<SubAdminSelfResponse> pageSubAdmins(PageInfo req) {
         Pageable pageable = PageRequest.of(req.getPageNo(), req.getPageSize());
-        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable, req.getKeyword());
+        String keyword = Validation.escapeKeywordForQuery(req.getKeyword());
+        Page<SubAdmin> subAdmins = subAdminRepository.findAllPageable(pageable, keyword);
         return subAdmins.map(subAdmin -> modelMapper.map(subAdmin, SubAdminSelfResponse.class));
     }
 
@@ -242,11 +249,16 @@ public class SubAdminServiceImpl implements SubAdminService {
         if (Objects.nonNull(req.getPhone()) && !Validation.isValidPhoneNumber(req.getPhone())) {
             throw new AppException(ERROR_VALID_PHONE);
         }
-        if (subAdminRepository.existsBySubAdminCode(req.getSubAdminCode())) {
-            throw new AppException(ERROR_SUB_ADMIN_CODE_EXIST);
-        }
         if (subAdminRepository.existsByEmail(req.getEmail())) {
             throw new AppException(ERROR_EMAIL_EXIST);
         }
+    }
+
+    private String renderSubAdminCode(){
+        String code = String.format("%s%d", PREFIX_SUB_ADMIN_CODE, (subAdminRepository.latestId()+1));
+        if(subAdminRepository.existsBySubAdminCode(code)){
+            throw new AppException(ERROR_SUB_ADMIN_CODE_EXIST);
+        }
+        return code;
     }
 }

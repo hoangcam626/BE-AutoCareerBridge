@@ -166,4 +166,8 @@ public class CooperationController {
                 .data(businessUniversityService.gegetAllCooperationOfUniversityPage(keyword, statusConnected, pageable))
                 .build();
     }
+    @GetMapping("/count-total")
+    public long countCooperation(){
+        return businessUniversityService.countBussinessUniversity();
+    }
 }
