@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkShopResponse {
+public class WorkshopResponse {
 
     private Integer id;
     private String title;

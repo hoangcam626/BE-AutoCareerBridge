@@ -3,13 +3,19 @@ package com.backend.autocarrerbridge.service.impl;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FAIL_WORK_SHOP;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_NO_CONTENT;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_BUSINESS_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Constant.CANCEL_BUSINESS_WORK_SHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECT_ACCEPT_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.REJECT_BUSINESS_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.REQUEST_TO_ATTEND_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Constant.SUCCESS_ACCEPT_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
+
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopBusinessResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopBusinessResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +25,8 @@ import com.backend.autocarrerbridge.dto.request.notification.NotificationSendReq
 import com.backend.autocarrerbridge.dto.response.workshop.StateWorkShopBusinessResponse;
 import com.backend.autocarrerbridge.service.NotificationService;
 import java.util.Map;
+
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +34,7 @@ import org.springframework.stereotype.Service;
 
 import com.backend.autocarrerbridge.dto.request.workshop.WorkShopBusinessRequest;
 import com.backend.autocarrerbridge.dto.response.business.BusinessColabResponse;
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopResponse;
 import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.entity.WorkshopBusiness;
@@ -63,13 +71,13 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
      * @return - Thông tin về workshop và danh sách các doanh nghiệp tham gia.
      */
     @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
-    public WorkShopBusinessResponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
+    public WorkshopBusinessResponse getAllColabBusiness(Integer workshopId, Pageable pageable, State state) {
         if (state != State.PENDING && state != State.APPROVED && state != State.REJECTED) {
             throw new AppException(ERROR_NO_CONTENT);
         }
 
         // Lấy thông tin workshop theo ID
-        WorkShopResponse workShopResponse = workShopService.getWorkShopById(workshopId);
+        WorkshopResponse workShopResponse = workShopService.getWorkShopById(workshopId);
 
         // Lấy danh sách các doanh nghiệp tham gia workshop
         List<Business> businesses = workShopBussinessRepository
@@ -84,7 +92,7 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
                 .toList();
 
         // Tạo và trả về response chứa thông tin workshop và danh sách doanh nghiệp
-        WorkShopBusinessResponse workShopBusinessResponse = new WorkShopBusinessResponse();
+        WorkshopBusinessResponse workShopBusinessResponse = new WorkshopBusinessResponse();
         workShopBusinessResponse.setWorkshop(workShopResponse);
         workShopBusinessResponse.setBusinessList(businessResponses);
 
@@ -202,7 +210,33 @@ public class WorkShopBusinessServiceImpl implements WorkShopBusinessService {
         workShopBusinessResponse.setStatusConnected(workshopBusiness.getStatusConnected());
         return workShopBusinessResponse;
     }
-  @Override
+    @PreAuthorize("hasAuthority('SCOPE_BUSINESS')")
+    @Override
+    public String cancelAttendWorkshop(Integer businessId, Integer workshopId) throws ParseException {
+        // Kiểm tra sự tồn tại của workshop
+        WorkshopBusiness workshopBusiness = workShopBussinessRepository.checkExistWorkShop(workshopId, businessId);
+
+        // Lấy ngày bắt đầu của workshop
+        LocalDateTime startDate = workshopBusiness.getWorkshop().getStartDate();
+        LocalDate currentDate = LocalDate.now();
+
+        // Tính toán số ngày giữa hiện tại và ngày bắt đầu
+        long daysBeforeStart = ChronoUnit.DAYS.between(currentDate, startDate);
+
+        // Nếu còn 2 ngày hoặc ít hơn, không cho phép hủy
+        if (daysBeforeStart <= 2 || !workshopBusiness.getStatusConnected().equals(State.APPROVED)) {
+           throw new AppException(ErrorCode.ERROR_WORK_SHOP_CANCEL);
+        }
+        String message = String.format("%s: %s", workshopBusiness.getBusiness().getName() +": " +  CANCEL_BUSINESS_WORK_SHOP, workshopBusiness.getWorkshop().getTitle());
+        notificationService.send(NotificationSendRequest.of(Collections.singletonList(workshopBusiness.getWorkshop().getUniversity().getEmail()), CANCEL_BUSINESS_WORK_SHOP, message));
+        // Nếu còn hơn 2 ngày, cho phép hủy và thay đổi trạng thái
+        workshopBusiness.setStatus(Status.INACTIVE);
+        workShopBussinessRepository.save(workshopBusiness);
+        return SUCCESS_MESSAGE;
+    }
+
+
+    @Override
   public List<Map<String, Object>> countWorkShopAndStatusConnected() {
       List<Workshop> workshops = workShopService.findAll();
       List<Map<String, Object>> result = new ArrayList<>();
