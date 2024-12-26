@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
 public class UserNotificationMarkReadResponse {
+    private Integer id;
     private Boolean success;
 }
