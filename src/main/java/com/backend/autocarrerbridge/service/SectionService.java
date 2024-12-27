@@ -14,7 +14,7 @@ public interface SectionService {
 
   List<SectionRequest> deleteSection(List<Integer> ids);
 
-  List<SectionRequest> getAllSection();
+  List<SectionRequest> getAllSection(Integer universityId);
 
   List<SectionRequest> getSectionById(int id);
 
@@ -22,7 +22,7 @@ public interface SectionService {
 
   SectionRequest setSectionActive(int id);
 
-  long countSection();
+  long countSection(Integer universityId);
 
   Map<String, Long> countMajorsInSections();
 }

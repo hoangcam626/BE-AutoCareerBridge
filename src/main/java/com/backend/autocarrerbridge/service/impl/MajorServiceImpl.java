@@ -131,9 +131,9 @@ public class MajorServiceImpl implements MajorService {
    * @return Danh sách các MajorRequest.
    */
   @Override
-  public List<MajorRequest> getAllMajor() {
+  public List<MajorRequest> getAllMajor(Integer universityId) {
     // Tìm tất cả các major từ cơ sở dữ liệu
-    List<Major> majors = majorRepository.findAll();
+    List<Major> majors = majorRepository.findByUniversityIdAndSection(universityId);
 
     // Sắp xếp danh sách major theo thứ tự giảm dần của ID
     majors.sort(Comparator.comparingLong(Major::getId).reversed());
@@ -179,18 +179,18 @@ public class MajorServiceImpl implements MajorService {
   }
 
   @Override
-  public long countMajor() {
-    return majorRepository.count();
+  public long countMajor(Integer universityId) {
+    return majorRepository.countMajorByUniversityId(universityId);
   }
 
   @Override
-  public int getTotalNumberStudents() {
-    return majorRepository.getTotalStudent();
+  public int getTotalNumberStudents(Integer universityId) {
+    return majorRepository.getTotalStudent(universityId);
   }
 
   @Override
-  public Map<String, Integer> getNumberStudentsInMajor() {
-    List<Object[]> results = majorRepository.countStudentInMajor();
+  public Map<String, Integer> getNumberStudentsInMajor(Integer universityId) {
+    List<Object[]> results = majorRepository.countStudentInMajor(universityId);
     return results.stream().collect(Collectors.toMap(
         result -> (String) result[0],
         result -> (int) result[1]
