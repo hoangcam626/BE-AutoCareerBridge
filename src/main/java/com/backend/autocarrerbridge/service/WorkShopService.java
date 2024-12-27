@@ -33,7 +33,7 @@ public interface WorkShopService {
 
     WorkshopResponse updateWordShop(Integer id, WorkShopRequest workShopRequest);
 
-    WorkshopResponse removeWorkShop(Integer id);
+    WorkshopResponse removeWorkShop(Integer id,String content) throws ParseException;
 
     WorkshopResponse getWorkShopById(Integer id);
 
