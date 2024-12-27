@@ -52,4 +52,6 @@ public interface BusinessService {
     PagingResponse<BusinessSearchPage> getAllBusinessPage(String keyword, Pageable pageable);
 
 
+
+    Long countBusiness();
 }

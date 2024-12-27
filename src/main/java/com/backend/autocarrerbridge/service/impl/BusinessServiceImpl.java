@@ -288,6 +288,11 @@ public class BusinessServiceImpl implements BusinessService {
         return new PagingResponse<>(businessSearchPages);
     }
 
+    @Override
+    public Long countBusiness() {
+        return businessRepository.countAll(Status.ACTIVE);
+    }
+
 
     public void checkValidateRegister(UserBusinessRequest userBusinessRequest) {
         if (Objects.isNull(userBusinessRequest)) {

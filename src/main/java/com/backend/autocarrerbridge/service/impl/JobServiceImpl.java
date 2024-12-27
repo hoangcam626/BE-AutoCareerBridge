@@ -68,7 +68,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_FROM_SALARY_TO;
-import static com.backend.autocarrerbridge.util.Validation.sanitizeKeyword;
+
 
 @Service
 @RequiredArgsConstructor
@@ -398,6 +398,11 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<Object> countJobsByDateRange(LocalDate startDate, LocalDate endDate) throws ParseException {
         return ApiResponse.builder().data(jobRepository.countJobsByBusinessAndDateRange(getBusinessViaToken().getId(), startDate, endDate)).build();
+    }
+
+    @Override
+    public Long countTotalJob() {
+        return jobRepository.countJobs(State.APPROVED,Status.ACTIVE);
     }
 
     /**

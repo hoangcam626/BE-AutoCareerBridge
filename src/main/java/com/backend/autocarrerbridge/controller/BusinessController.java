@@ -134,4 +134,9 @@ public class BusinessController {
                 .data(businessService.getAllBusinessPage(keyword, pageable))
                 .build();
     }
+
+    @GetMapping("/countTotalBusiness")
+    public ApiResponse<Object> getTotalBusiness() {
+        return ApiResponse.builder().data(businessService.countBusiness()).build();
+    }
 }
