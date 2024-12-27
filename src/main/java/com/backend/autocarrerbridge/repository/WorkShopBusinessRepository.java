@@ -12,6 +12,8 @@ import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.WorkshopBusiness;
 import com.backend.autocarrerbridge.util.enums.State;
 
+import java.time.LocalDate;
+
 @Repository
 public interface WorkShopBusinessRepository extends JpaRepository<WorkshopBusiness, Integer> {
     @Query("select bs from Business bs " + "join WorkshopBusiness wsb on wsb.business = bs "
@@ -26,5 +28,9 @@ public interface WorkShopBusinessRepository extends JpaRepository<WorkshopBusine
     long countByWorkshopAndStatusConnected(Workshop workshop, State statusConnected);
 
 
-//    countByWorkshopAndStatusConnected
+    @Query("SELECT count(wsb.id) FROM WorkshopBusiness wsb WHERE wsb.status = 1 AND wsb.statusConnected = 1")
+    Long countWorkshopBusiness ();
+
+    @Query("SELECT count(wsb.id) FROM WorkshopBusiness wsb WHERE wsb.createdAt = :date")
+    Long countWorkshopBusinessByDate(@Param("date") LocalDate date);
 }

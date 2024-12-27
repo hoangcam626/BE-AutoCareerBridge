@@ -4,7 +4,6 @@ import com.backend.autocarrerbridge.dto.response.business.BusinessListHome;
 import com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage;
 import com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness;
 import com.backend.autocarrerbridge.util.enums.State;
-import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.backend.autocarrerbridge.entity.Business;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -131,5 +131,11 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
 
     @Query("SELECT COUNT(bs.id) FROM Business bs WHERE bs.status =:status")
     Long countAll(@Param("status") Status status);
+
+    @Query("SELECT count(b.id) FROM Business b WHERE b.status <> 0 AND b.userAccount.state = 1")
+    Long countBusiness ();
+
+    @Query("SELECT count(b.id) FROM Business b WHERE b.createdAt = :date")
+    Long countBusinessByDate(@Param("date") LocalDate date);
 }
 

@@ -14,12 +14,14 @@ import org.springframework.stereotype.Repository;
 import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.util.enums.State;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
     Workshop findById(int id);
+
     // Tìm kiếm trong tiêu đề workshop
     @Query("SELECT ws FROM Workshop ws " +
             "WHERE (:keyword IS NULL " +
@@ -40,11 +42,11 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
     Page<Workshop> getAllWorkShopByLocation(Pageable pageable, @Param("idProvinces") Integer idProvinces);
 
 
-  // Tìm kiếm theo trạng thái duyệt (statusBrowse)
-  @Query("SELECT ws FROM Workshop ws WHERE " + "(:approved IS NULL OR ws.statusBrowse = :approved) "
-      + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
-  Page<Workshop> getAllWorkshopByState(
-      Pageable pageable, @Param("approved") State approved, @Param("keyword") String keyword);
+    // Tìm kiếm theo trạng thái duyệt (statusBrowse)
+    @Query("SELECT ws FROM Workshop ws WHERE " + "(:approved IS NULL OR ws.statusBrowse = :approved) "
+            + "AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<Workshop> getAllWorkshopByState(
+            Pageable pageable, @Param("approved") State approved, @Param("keyword") String keyword);
 
     @Query("SELECT ws " +
             "FROM Workshop ws " +
@@ -103,7 +105,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
             @Param("universityId") Integer universityId,
-            @Param("status")Status status,
+            @Param("status") Status status,
             @Param("keyword") String keyword);
 
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse(" +
@@ -159,7 +161,8 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "FROM Workshop ws " +
             "LEFT JOIN WorkshopBusiness wsb ON ws.id = wsb.workshop.id " +
             "where wsb.business.id =:businessId  AND (wsb.status =:status) AND (ws.status =:status) AND (wsb.statusConnected = :state OR :state IS NULL) AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ESCAPE '\\')")
-    Page<WorkshopStateBusiness> findAllWorkShopByBusinessId(@Param("status") Status status,@Param("businessId") Integer businessId,@Param("state") State state, @Param("keyword") String keyword, Pageable pageable);
+    Page<WorkshopStateBusiness> findAllWorkShopByBusinessId(@Param("status") Status status, @Param("businessId") Integer businessId, @Param("state") State state, @Param("keyword") String keyword, Pageable pageable);
+
     @Query(value = "SELECT business.email " +
             "FROM workshop " +
             "JOIN workshop_business ON workshop.id = workshop_business.workshop_id " +
@@ -169,9 +172,15 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
     List<String> listEmailJoinWorkShop(@Param("workShopId") Integer workShopId);
 
 
-    @Query("SELECT  count(ws.id) from Workshop ws where ws.status =:status and ws.statusBrowse =:state")
-    Long countWorkShop(@Param("status") Status status,@Param("state")State state);
+    @Query("SELECT count(ws.id) FROM Workshop ws WHERE ws.status <> 0 AND ws.statusBrowse = 1")
+    Long countWorkshop();
 
-  @Query("SELECT COUNT(w) FROM Workshop w WHERE w.university.id = :universityId")
-  long countWorkShopByUniversityId(@Param("universityId") Integer universityId);
+    @Query("SELECT count(ws.id) FROM Workshop ws WHERE ws.createdAt = :date")
+    Long countWorkshopByDate(@Param("date") LocalDate date);
+
+    @Query("SELECT  count(ws.id) from Workshop ws where ws.status =:status and ws.statusBrowse =:state")
+    Long countWorkShop(@Param("status") Status status, @Param("state") State state);
+
+    @Query("SELECT COUNT(w) FROM Workshop w WHERE w.university.id = :universityId")
+    long countWorkShopByUniversityId(@Param("universityId") Integer universityId);
 }

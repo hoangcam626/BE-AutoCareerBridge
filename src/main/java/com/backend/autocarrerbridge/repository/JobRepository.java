@@ -327,4 +327,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
 
     @Query("SELECT COUNT(j.id) from Job j where j.statusBrowse =:state and j.status =:status")
     Long countJobs(@Param("state") State state,@Param("status") Status status);
+
+    @Query("SELECT count(j.id) FROM Job j WHERE j.status <> 0 AND j.statusBrowse = 1")
+    Long countJob ();
+
+    @Query("SELECT count(j.id) FROM Job j WHERE j.createdAt = :date")
+    Long countJobByDate(@Param("date") LocalDate date);
 }
