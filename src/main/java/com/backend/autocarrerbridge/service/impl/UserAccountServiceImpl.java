@@ -401,11 +401,14 @@ public class UserAccountServiceImpl implements UserAccountService {
             redisLockUserTemplate.opsForValue().set(userAccountRequest.getUsername(), failCount + 1, 60, TimeUnit.MINUTES);
         }
 
-        if (failCount != null && failCount >= 5) {
+        if (failCount != null && failCount >= 5 ) {
             throw new AppException(ErrorCode.LOCK_ERROR);
         }
         if (!passwordEncoder.matches(inputPassword, storedPassword)) {
             throw new AppException(ErrorCode.ERROR_PASSWORD_INCORRECT);
+        }
+        if(failCount != null) {
+            redisLockUserTemplate.delete(userAccountRequest.getUsername());
         }
     }
 
