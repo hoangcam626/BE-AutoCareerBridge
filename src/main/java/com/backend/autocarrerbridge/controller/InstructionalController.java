@@ -79,8 +79,8 @@ public class InstructionalController {
    */
   @GetMapping("/get-all")
   public ResponseEntity<ApiResponse<Object>> getAllInstructional( @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "3") int size) {
-    PagingResponse<InstructionalResponse> instructionalPage = instructionalService.getAllInstructional(page, size);
+      @RequestParam(defaultValue = "3") int size ,@RequestParam Integer universityId) {
+    PagingResponse<InstructionalResponse> instructionalPage = instructionalService.getAllInstructional(universityId,page, size);
     ApiResponse<Object> response = new ApiResponse<>().setCode(SUCCESS).setMessage(SUCCESS_MESSAGE)
         .setData(instructionalPage);
     return ResponseEntity.ok(response);
@@ -131,8 +131,8 @@ public class InstructionalController {
    */
   @GetMapping("/get-all-active")
   public ResponseEntity<ApiResponse<Object>> getAllActiveInstructional(@RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "3") int size) {
-    PagingResponse<InstructionalResponse> instructionalPage = instructionalService.getALlInstructionalActive(page, size);
+      @RequestParam(defaultValue = "3") int size , @RequestParam Integer universityId) {
+    PagingResponse<InstructionalResponse> instructionalPage = instructionalService.getALlInstructionalActive(universityId,page, size);
     ApiResponse<Object> response = new ApiResponse<>().setCode(SUCCESS).setMessage(SUCCESS_MESSAGE)
         .setData(instructionalPage);
     return ResponseEntity.ok(response);
@@ -144,15 +144,15 @@ public class InstructionalController {
    */
   @GetMapping("/get-all-inactive")
   public ResponseEntity<ApiResponse<Object>> getAllInActiveInstructional(@RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "3") int size) {
-    PagingResponse<InstructionalResponse> instructionalPage = instructionalService.getALlInstructionalInactive(page, size);
+      @RequestParam(defaultValue = "3") int size, @RequestParam Integer universityId) {
+    PagingResponse<InstructionalResponse> instructionalPage = instructionalService.getALlInstructionalInactive(universityId,page, size);
     ApiResponse<Object> response = new ApiResponse<>().setCode(SUCCESS).setMessage(SUCCESS_MESSAGE)
         .setData(instructionalPage);
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("count-total")
-  public long countInstructionals() {
-    return instructionalService.countInstructional();
+  @GetMapping("count-total/{universityId}")
+  public long countInstructionals(@PathVariable Integer universityId) {
+    return instructionalService.countInstructional(universityId);
   }
 }

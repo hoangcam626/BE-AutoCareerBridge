@@ -168,4 +168,6 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             nativeQuery = true)
     List<String> listEmailJoinWorkShop(@Param("workShopId") Integer workShopId);
 
+  @Query("SELECT COUNT(w) FROM Workshop w WHERE w.university.id = :universityId")
+  long countWorkShopByUniversityId(@Param("universityId") Integer universityId);
 }

@@ -34,7 +34,7 @@ public interface BusinessUniversityService {
 
     CooperationRejectResponse rejectRequestCooperation(CooperationRejectRequest request) throws ParseException;
 
-    long countBussinessUniversity();
+    long countBussinessUniversity(Integer universityId);
 
     PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, State statusConnected, Pageable pageable) throws ParseException;
 

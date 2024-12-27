@@ -318,7 +318,7 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
 
 
     @Override
-    public long countBussinessUniversity() {
-        return businessUniversityRepository.count();
+    public long countBussinessUniversity(Integer universityId) {
+        return businessUniversityRepository.countBussinessUniversityId(universityId);
     }
 }

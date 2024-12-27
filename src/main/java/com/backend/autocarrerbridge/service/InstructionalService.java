@@ -17,13 +17,13 @@ public interface InstructionalService {
 
   List<InstructionalResponse> deleteInstructional(List<Integer> ids);
 
-  PagingResponse<InstructionalResponse> getAllInstructional(int page, int size);
+  PagingResponse<InstructionalResponse> getAllInstructional(Integer universityId, int page, int size);
 
   List<InstructionalResponse> getInstructionalById(int id);
 
-  PagingResponse<InstructionalResponse> getALlInstructionalActive(int page, int size);
+  PagingResponse<InstructionalResponse> getALlInstructionalActive( Integer universityId, int page, int size);
 
-  PagingResponse<InstructionalResponse> getALlInstructionalInactive(int page, int size);
+  PagingResponse<InstructionalResponse> getALlInstructionalInactive(Integer universityId, int page, int size);
 
- long countInstructional();
+ long countInstructional(Integer universityId);
 }
