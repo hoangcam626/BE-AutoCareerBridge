@@ -62,11 +62,11 @@ public class MajorController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/get-all")
-  public ResponseEntity<ApiResponse<Object>> getAll() {
+  @GetMapping("/get-all/{universityId}")
+  public ResponseEntity<ApiResponse<Object>> getAll(@PathVariable Integer universityId) {
     ApiResponse<Object> response =
         new ApiResponse<>().setCode(SUCCESS).setMessage(SUCCESS_MESSAGE)
-            .setData(majorService.getAllMajor());
+            .setData(majorService.getAllMajor(universityId));
     return ResponseEntity.ok(response);
   }
 
@@ -86,17 +86,17 @@ public class MajorController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("count-total")
-  public long countMajor() {
-    return majorService.countMajor();
+  @GetMapping("count-total/{universityId}")
+  public long countMajor(@PathVariable Integer universityId) {
+    return majorService.countMajor(universityId);
   }
 
-  @GetMapping("count-total-student")
-  public int countStudent() {
-    return majorService.getTotalNumberStudents();
+  @GetMapping("count-total-student/{universityId}")
+  public int countStudent(@PathVariable Integer universityId) {
+    return majorService.getTotalNumberStudents(universityId);
   }
-  @GetMapping("/count-student")
-  public Map<String, Integer> countStudentInMajor(){
-    return majorService.getNumberStudentsInMajor();
+  @GetMapping("/count-student/{universityId}")
+  public Map<String, Integer> countStudentInMajor(@PathVariable Integer universityId){
+    return majorService.getNumberStudentsInMajor(universityId);
   }
 }

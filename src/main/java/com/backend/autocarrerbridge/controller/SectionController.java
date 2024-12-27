@@ -65,12 +65,12 @@ public class SectionController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/get-all")
-  public ResponseEntity<ApiResponse<Object>> getAll() {
+  @GetMapping("/get-all/{universityId}")
+  public ResponseEntity<ApiResponse<Object>> getAll(@PathVariable Integer universityId) {
     ApiResponse<Object> response = new ApiResponse<>()
         .setCode(SUCCESS)
         .setMessage(SUCCESS_MESSAGE)
-        .setData(sectionService.getAllSection());
+        .setData(sectionService.getAllSection(universityId));
     return ResponseEntity.ok(response);
   }
 
@@ -90,9 +90,9 @@ public class SectionController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/count-total")
-  public long countSection() {
-    return sectionService.countSection();
+  @GetMapping("/count-total/{universityId}")
+  public long countSection(@PathVariable Integer universityId) {
+    return sectionService.countSection(universityId);
   }
 
   @GetMapping("/count-majors")

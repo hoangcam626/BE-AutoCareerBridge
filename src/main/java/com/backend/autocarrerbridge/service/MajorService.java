@@ -13,7 +13,7 @@ public interface MajorService {
 
   List<MajorRequest> deleteMajor(List<Integer> ids);
 
-  List<MajorRequest> getAllMajor();
+  List<MajorRequest> getAllMajor(Integer universityId);
 
   List<MajorRequest> getMajorById(int id);
 
@@ -21,9 +21,9 @@ public interface MajorService {
 
   MajorRequest setMajorActive(int id);
 
-  long countMajor();
+  long countMajor(Integer universityId);
 
-  int getTotalNumberStudents();
+  int getTotalNumberStudents(Integer universityId);
 
-  Map<String, Integer> getNumberStudentsInMajor();
+  Map<String, Integer> getNumberStudentsInMajor(Integer universityId);
 }
