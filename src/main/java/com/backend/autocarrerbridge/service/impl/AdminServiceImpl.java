@@ -30,6 +30,7 @@ public class AdminServiceImpl implements AdminService {
 
     public AdminStatisticResponse total() {
         AdminStatisticResponse res = new AdminStatisticResponse();
+        res.setUniversitiesTotal(universityRepository.countUniversity());
         res.setBusinessesTotal(businessRepository.countBusiness());
         res.setJobsTotal(jobRepository.countJob());
         res.setWorkshopsTotal(workShopRepository.countWorkshop());
