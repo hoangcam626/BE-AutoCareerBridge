@@ -167,6 +167,35 @@ public class JobServiceImpl implements JobService {
         return ApiResponse.builder().data(pagingResponse).build();
     }
 
+    @Override
+    public ApiResponse<Object> getAllJobOfBusinessPagingPortal(Integer businessId, String keyword, State statusBrowse, Integer industryId, Pageable pageable){
+
+        String sanitizedKeyword = Validation.escapeKeywordForQuery(keyword);
+
+        // Lấy danh sách công việc của doanh nghiệp
+        Page<JobResponse> jobs =
+                jobRepository.getAllJobOfBusinessPaging(businessId, sanitizedKeyword,
+                        statusBrowse, industryId, pageable);
+
+        // Kiểm tra và cập nhật trạng thái nếu expireDate quá ngày hôm nay
+        LocalDate today = LocalDate.now();
+        jobs.forEach(job -> {
+            if (job.getExpireDate() != null && job.getExpireDate().isBefore(today)) {
+                Job entity = findById(job.getJobId());
+                if (entity != null && entity.getStatus() != Status.INACTIVE) {
+                    entity.setStatus(Status.INACTIVE);
+                    try {
+                        entity.setUpdatedBy(getUsernameViaToken());
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                    jobRepository.save(entity);
+                }
+            }
+        });
+        PagingResponse<JobResponse> pagingResponse = new PagingResponse<>(jobs);
+        return ApiResponse.builder().data(pagingResponse).build();    }
+
     /**
      * Xem chi tiết công việc
      */
