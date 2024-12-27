@@ -15,10 +15,11 @@ import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.util.enums.State;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
-
+    Workshop findById(int id);
     // Tìm kiếm trong tiêu đề workshop
     @Query("SELECT ws FROM Workshop ws " +
             "WHERE (:keyword IS NULL " +
@@ -157,7 +158,14 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             ") " +
             "FROM Workshop ws " +
             "LEFT JOIN WorkshopBusiness wsb ON ws.id = wsb.workshop.id " +
-            "where wsb.business.id =:businessId  AND (wsb.status =:status) AND (wsb.statusConnected = :state OR :state IS NULL) AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ESCAPE '\\')")
+            "where wsb.business.id =:businessId  AND (wsb.status =:status) AND (ws.status =:status) AND (wsb.statusConnected = :state OR :state IS NULL) AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ESCAPE '\\')")
     Page<WorkshopStateBusiness> findAllWorkShopByBusinessId(@Param("status") Status status,@Param("businessId") Integer businessId,@Param("state") State state, @Param("keyword") String keyword, Pageable pageable);
+    @Query(value = "SELECT business.email " +
+            "FROM workshop " +
+            "JOIN workshop_business ON workshop.id = workshop_business.workshop_id " +
+            "JOIN business ON workshop_business.business_id = business.id " +
+            "WHERE workshop.id = :workShopId",
+            nativeQuery = true)
+    List<String> listEmailJoinWorkShop(@Param("workShopId") Integer workShopId);
 
 }
