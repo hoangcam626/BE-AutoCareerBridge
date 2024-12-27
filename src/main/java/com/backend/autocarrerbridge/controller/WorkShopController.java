@@ -256,6 +256,6 @@ public class WorkShopController {
   }
   @GetMapping("/countTotalWorkshop")
   public ApiResponse<Object> getTotalWorkshop() {
-    return ApiResponse.builder().data(workShopService.countWorkShop()).build();
+    return ApiResponse.builder().data(workShopService.countTotalWorkShop()).build();
   }
 }
