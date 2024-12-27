@@ -7,6 +7,7 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_AL
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Constant.DELETE_WORK_SHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Validation.sanitizeKeyword;
 import static com.backend.autocarrerbridge.util.enums.State.APPROVED;
@@ -39,6 +40,7 @@ import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
+import jakarta.validation.constraints.Email;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -326,13 +328,19 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Thông tin phản hồi của Workshop đã xoá mềm
      * @throws AppException Nếu Workshop không tồn tại
      */
+    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
-    public WorkshopResponse removeWorkShop(Integer id) {
+    public WorkshopResponse removeWorkShop(Integer id,String content) throws ParseException {
         Workshop workshop = workShopRepository.findById(id).orElse(null);
         if (Objects.isNull(workshop)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu Workshop không tồn tại
         }
         workshop.setStatus(Status.INACTIVE);
+        List<String> listEmail = workShopRepository.listEmailJoinWorkShop(id);
+        if (listEmail != null && !listEmail.isEmpty()) {
+            String message = String.format("%s: %s", workshop.getTitle(),DELETE_WORK_SHOP);
+            notificationService.send(NotificationSendRequest.of(listEmail, message, content));
+        }
         workShopRepository.save(workshop);
         return modelMapper.map(workshop, WorkshopResponse.class);
     }

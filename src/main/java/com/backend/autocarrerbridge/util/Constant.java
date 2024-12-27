@@ -134,6 +134,7 @@ public class Constant {
     public static final String CANCEL_BUSINESS_WORK_SHOP = "Vì một số lý do khách quan công ty huỷ bỏ tham gia hội thảo.";
     public static final String EMAIL_REQUIRED_MESSAGE = "Email không được để trống.";
     public static final String EMAIL_INVALID_MESSAGE = "Định dạng email không hợp lệ.";
+    public static final String DELETE_WORK_SHOP = "Hội thảo đã bị huỷ!";
 
     public static final String FORGOT_CODE_REQUIRED_MESSAGE = "Mã khôi phục không được để trống.";
     public static final String FORGOT_CODE_INVALID_MESSAGE = "Mã khôi phục không hợp lệ.";

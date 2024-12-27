@@ -147,11 +147,11 @@ public class WorkShopController {
    * @param idWorkShop ID của workshop cần xoá .
    * @return ApiResponse chứa workshop đã được xoá.
    */
-  @DeleteMapping("/id/{idWorkShop}")
-  public ApiResponse<Object> removeWorkShop(@PathVariable("idWorkShop") Integer idWorkShop) {
+  @PutMapping("/idRemove/{idWorkShop}")
+  public ApiResponse<Object> removeWorkShop(@PathVariable("idWorkShop") Integer idWorkShop, @RequestBody String content) throws ParseException {
     return ApiResponse.builder()
-        .data(workShopService.removeWorkShop(idWorkShop))
-        .build();
+            .data(workShopService.removeWorkShop(idWorkShop, content))
+            .build();
   }
 
   /**
