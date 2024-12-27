@@ -117,12 +117,13 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
         b.location.district.fullName,
         b.location.ward.fullName,
         b.location.description,
+        b.businessImageId,
         COUNT(j)
     )
     from Business b
-    LEFT JOIN Job j ON j.business.id = b.id AND j.status = 1 AND j.statusBrowse = 1 
-    WHERE (:keyword IS NULL OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
-    GROUP BY b.id, b.name, b.description, b.location.province.fullName, b.location.district.fullName, b.location.ward.fullName, b.location.description
+    LEFT JOIN Job j ON j.business.id = b.id AND j.status = 1 AND j.statusBrowse = 1
+    WHERE (:keyword IS NULL OR LOWER(b.name) LIKE :keyword ESCAPE '\\')
+    GROUP BY b.id, b.name, b.description, b.location.province.fullName, b.location.district.fullName, b.location.ward.fullName, b.location.description, b.businessImageId
     ORDER BY COUNT(j) DESC
     """)
     Page<BusinessSearchPage> getBusinessForPaging(

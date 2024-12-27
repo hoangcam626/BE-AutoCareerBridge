@@ -11,9 +11,10 @@ public class BusinessSearchPage {
     private String district;
     private String ward;
     private String locationDescription;
+    private Integer imageID;
     private Long totalJobRecruit;
 
-    public BusinessSearchPage(Integer id, String name, String description, String province, String district, String ward, String locationDescription, Long totalJobRecruit) {
+    public BusinessSearchPage(Integer id, String name, String description, String province, String district, String ward, String locationDescription, Integer imageID, Long totalJobRecruit) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -21,6 +22,7 @@ public class BusinessSearchPage {
         this.district = district;
         this.ward = ward;
         this.locationDescription = locationDescription;
+        this.imageID = imageID;
         this.totalJobRecruit = totalJobRecruit;
     }
 }

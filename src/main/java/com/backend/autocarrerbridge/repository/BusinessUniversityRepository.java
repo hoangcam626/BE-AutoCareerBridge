@@ -43,7 +43,7 @@ public interface BusinessUniversityRepository extends JpaRepository<BusinessUniv
             + "FROM BusinessUniversity cooperation WHERE cooperation.university.email = :email "
             + "AND cooperation.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
             + "AND (:keyword IS NULL OR :keyword = '' "
-            + "OR cooperation.business.name like %:keyword% or cooperation.business.email like %:keyword%)"
+            + "OR cooperation.business.name LIKE :keyword ESCAPE '\\' or cooperation.business.email LIKE :keyword ESCAPE '\\')"
             + "AND (:statusConnected IS NULL OR cooperation.statusConnected = :statusConnected) "
             + "ORDER BY cooperation.createdAt DESC ")
     Page<BusinessUniversity> getCooperationForPaging(String email,

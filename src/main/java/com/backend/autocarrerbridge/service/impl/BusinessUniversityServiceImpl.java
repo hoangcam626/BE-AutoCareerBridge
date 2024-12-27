@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
 import org.springframework.data.domain.Page;
@@ -292,7 +293,8 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     public PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, State statusConnected, Pageable pageable) throws ParseException {
         String emailLogin = getUniversityFromToken().getEmail();
         //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keyword, statusConnected, pageable);
+        String keywordValidate = Validation.escapeKeywordForQuery(keyword);
+        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keywordValidate, statusConnected, pageable);
         //Chuyển đổi danh sách từ entity sang respone
         Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
         return new PagingResponse<>(list);
