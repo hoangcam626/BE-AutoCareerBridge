@@ -23,13 +23,13 @@ import java.util.List;
 public interface JobRepository extends JpaRepository<Job, Integer> {
 
     /**
-     * Lấy danh sách công việc của doanh nghiệp
+     * Lấy danh sách công việc paging
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
             + "FROM Job job join job.business business where business.id =:businessId "
             + "AND job.status = 1"
             + "AND (:keyword IS NULL OR :keyword = '' "
-            + "OR job.level like %:keyword% or job.title like %:keyword%)"
+            + "OR job.level like :keyword ESCAPE '\\' or job.title like :keyword ESCAPE '\\')"
             + "AND (:statusBrowse IS NULL OR job.statusBrowse = :statusBrowse) "
             + "AND (:industryId IS NULL OR job.industry.id = :industryId) "
             + "ORDER BY job.createdAt DESC ")
@@ -40,12 +40,12 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
                                                 Pageable pageable);
 
     /**
-     * Lấy tất cả công việc paging
+     * Lấy tất cả công việc của doanh nghiệp
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
             + "FROM Job job where job.status = 1"
             + "AND (:keyword IS NULL OR :keyword = '' "
-            + "OR job.level like %:keyword% or job.title like %:keyword%)"
+            + "OR job.level like %:keyword% or job.title like %:keyword% ESCAPE '\\')"
             + "ORDER BY job.createdAt DESC ")
     Page<JobResponse> getAllJob(@RequestParam("keyword") String keyword, Pageable pageable);
 

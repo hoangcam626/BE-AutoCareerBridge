@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface BusinessUniversityService {
-    ApiResponse<Object> getSentRequest() throws ParseException;
+    ApiResponse<Object> getSentRequest(String keyword, State statusConnected, Pageable pageable) throws ParseException;
 
     ApiResponse<Object> sendRequest(Integer universityId) throws ParseException;
 
@@ -31,6 +31,7 @@ public interface BusinessUniversityService {
     List<CooperationUniversityResponse> getAllCooperationOfUniversityReject() throws ParseException;
 
     CooperationApproveResponse approveRequestCooperation(CooperationApproveRequest request) throws ParseException;
+
     CooperationRejectResponse rejectRequestCooperation(CooperationRejectRequest request) throws ParseException;
 
     long countBussinessUniversity();

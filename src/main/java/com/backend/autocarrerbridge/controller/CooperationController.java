@@ -1,7 +1,6 @@
 package com.backend.autocarrerbridge.controller;
 
 
-
 import java.text.ParseException;
 import java.util.List;
 
@@ -49,8 +48,14 @@ public class CooperationController {
      * @throws ParseException nếu có lỗi khi xử lý dữ liệu ngày tháng
      */
     @GetMapping("/get-request")
-    ApiResponse<Object> getSentRequest() throws ParseException {
-        return businessUniversityService.getSentRequest();
+    ApiResponse<Object> getSentRequest(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword,
+            @RequestParam(required = false) State statusConnected
+    ) throws ParseException {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return businessUniversityService.getSentRequest(keyword, statusConnected, pageable);
     }
 
     /**
@@ -135,6 +140,7 @@ public class CooperationController {
     /**
      * API để phê duyệt yêu cầu hợp tác của doanh nghiệp
      * &#064;ReqestBody  CooperationApproveRequest  của yêu cầu hợp tác
+     *
      * @return thông báo thành công
      */
     @PostMapping("/approve-request")
@@ -147,10 +153,9 @@ public class CooperationController {
     @PostMapping("/reject-request")
     ApiResponse<CooperationRejectResponse> rejectRequestCooperation(@RequestBody CooperationRejectRequest request) throws ParseException {
         return ApiResponse.<CooperationRejectResponse>builder()
-                .data( businessUniversityService.rejectRequestCooperation(request))
+                .data(businessUniversityService.rejectRequestCooperation(request))
                 .build();
     }
-
 
 
     //phan trang get list
@@ -160,14 +165,15 @@ public class CooperationController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam String keyword,
             @RequestParam(required = false) State statusConnected
-            ) throws ParseException {
+    ) throws ParseException {
         Pageable pageable = PageRequest.of(page - 1, size);
         return ApiResponse.builder()
                 .data(businessUniversityService.gegetAllCooperationOfUniversityPage(keyword, statusConnected, pageable))
                 .build();
     }
+
     @GetMapping("/count-total")
-    public long countCooperation(){
+    public long countCooperation() {
         return businessUniversityService.countBussinessUniversity();
     }
 }
