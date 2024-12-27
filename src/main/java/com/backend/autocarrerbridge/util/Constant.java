@@ -278,4 +278,8 @@ public class Constant {
     public static final String PHONE_REGEX= "^(\\+84|0)[0-9]\\d{8}$";
     // Thông báo validate
     public static final String CONTENT_TOO_LONG_MESSAGE = "Nội dung quá 200 từ";
+
+    //Yêu cầu hợp tác
+    public static final String REQUEST_COOPERATION = "Yêu cầu hợp tác";
+
 }
