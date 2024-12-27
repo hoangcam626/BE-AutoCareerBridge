@@ -519,7 +519,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         }
     }
     @Override
-    public long countWorkShop() {
-        return workShopRepository.count();
+    public long countWorkShop(Integer universityId) {
+        return workShopRepository.countWorkShopByUniversityId(universityId);
     }
 }

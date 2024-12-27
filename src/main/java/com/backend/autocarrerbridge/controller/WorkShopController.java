@@ -236,9 +236,9 @@ public class WorkShopController {
     public ApiResponse<Object> getWorkShopStatus(@RequestParam Integer workShopId,@RequestParam Integer businessId){
         return ApiResponse.builder().data(workShopBusinessService.getWorkShopStatusBusiness(workShopId,businessId)).build();
     }
-    @GetMapping("/count-total")
-    public long countWorkShop() {
-        return workShopService.countWorkShop();
+    @GetMapping("/count-total/{universityId}")
+    public long countWorkShop(@PathVariable Integer universityId) {
+        return workShopService.countWorkShop(universityId);
     }
 
     @GetMapping("/business-details")

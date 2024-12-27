@@ -45,7 +45,7 @@ public interface WorkShopService {
 
     PagingResponse<AdminWorkshopResponse> getPagingByState(PageInfo info, State state);
 
-    long countWorkShop();
+    long countWorkShop(Integer universityId);
 
     PagingResponse<WorkshopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate, LocalDate endDate, Integer provinceId, Integer universityId, String keyword);
 
