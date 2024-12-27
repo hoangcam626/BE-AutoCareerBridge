@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.dto.response.university.UniversityTotalResponse;
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,4 +47,7 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
 
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.university.UniversityTotalResponse(u.id,u.name) from University u")
     List<UniversityTotalResponse> getUniversityTotal();
+
+    @Query("SELECT count(u.id) from University u where u.status =:status")
+    Long countUniversity(@Param("status") Status status);
 }

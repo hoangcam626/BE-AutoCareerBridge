@@ -44,4 +44,6 @@ public interface UniversityService {
     AdminUniversityResponse detail(Integer id);
 
     List<UniversityTotalResponse> getAllTotalUniversity();
+
+    Long countUniversityTotal();
 }

@@ -3,7 +3,6 @@ package com.backend.autocarrerbridge.repository;
 import com.backend.autocarrerbridge.dto.response.business.BusinessListHome;
 import com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage;
 import com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness;
-import com.backend.autocarrerbridge.entity.Employee;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Page;
@@ -129,5 +128,8 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
             @Param("keyword") String keyword,
             Pageable pageable
     );
+
+    @Query("SELECT COUNT(bs.id) FROM Business bs WHERE bs.status =:status")
+    Long countAll(@Param("status") Status status);
 }
 

@@ -257,6 +257,11 @@ public class UniversityServiceImpl implements UniversityService {
         return universityRepository.getUniversityTotal();
     }
 
+    @Override
+    public Long countUniversityTotal() {
+        return universityRepository.countUniversity(Status.ACTIVE);
+    }
+
     public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
         if(!Validation.isValidPassword(userUniversityRequest.getPassword())){
             throw  new AppException(ERROR_FORMAT_PW);
