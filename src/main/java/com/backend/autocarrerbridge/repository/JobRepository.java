@@ -8,6 +8,7 @@ import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.entity.Job;
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -323,4 +324,7 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Query("SELECT COUNT(j.id) from Job j where j.statusBrowse =:state and j.status =:status")
+    Long countJobs(@Param("state") State state,@Param("status") Status status);
 }

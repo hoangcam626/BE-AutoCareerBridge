@@ -50,4 +50,6 @@ public interface BusinessService {
     List<BusinessListHome> getBusinessListHome();
 
     PagingResponse<BusinessSearchPage> getAllBusinessPage(String keyword, Pageable pageable);
+
+    Long countBusiness();
 }

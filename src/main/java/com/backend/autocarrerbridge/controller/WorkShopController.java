@@ -1,12 +1,13 @@
 package com.backend.autocarrerbridge.controller;
 
+import com.backend.autocarrerbridge.dto.request.notification.ContentDeleteWorkShopRequest;
 import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -148,7 +149,7 @@ public class WorkShopController {
    * @return ApiResponse chứa workshop đã được xoá.
    */
   @PutMapping("/idRemove/{idWorkShop}")
-  public ApiResponse<Object> removeWorkShop(@PathVariable("idWorkShop") Integer idWorkShop, @RequestBody String content) throws ParseException {
+  public ApiResponse<Object> removeWorkShop(@PathVariable("idWorkShop") Integer idWorkShop, @RequestBody ContentDeleteWorkShopRequest content) throws ParseException {
     return ApiResponse.builder()
             .data(workShopService.removeWorkShop(idWorkShop, content))
             .build();
@@ -252,5 +253,9 @@ public class WorkShopController {
   @PutMapping("business/cancel")
   public ApiResponse<Object> cancelAttendWorkshop(@RequestParam("businessId") Integer businessId,@RequestParam("workshopId") Integer workshopId) throws ParseException {
     return ApiResponse.builder().data(workShopBusinessService.cancelAttendWorkshop(businessId,workshopId)).build();
+  }
+  @GetMapping("/countTotalWorkshop")
+  public ApiResponse<Object> getTotalWorkshop() {
+    return ApiResponse.builder().data(workShopService.countWorkShop()).build();
   }
 }

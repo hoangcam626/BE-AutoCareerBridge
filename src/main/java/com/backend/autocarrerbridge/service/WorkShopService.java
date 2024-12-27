@@ -3,6 +3,8 @@ package com.backend.autocarrerbridge.service;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.backend.autocarrerbridge.dto.request.notification.ContentDeleteWorkShopRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse;
@@ -33,7 +35,7 @@ public interface WorkShopService {
 
     WorkshopResponse updateWordShop(Integer id, WorkShopRequest workShopRequest);
 
-    WorkshopResponse removeWorkShop(Integer id,String content) throws ParseException;
+    WorkshopResponse removeWorkShop(Integer id, ContentDeleteWorkShopRequest content) throws ParseException;
 
     WorkshopResponse getWorkShopById(Integer id);
 
@@ -54,6 +56,8 @@ public interface WorkShopService {
     AdminWorkshopResponse detail(Integer id);
 
     List<Workshop> findAll();
+
+    Long countTotalWorkShop();
 
     PagingResponse<WorkshopStateBusiness> getAllWorkShopByPracticeBusiness(Pageable pageable,Integer businessID, String keyword,State state);
 
