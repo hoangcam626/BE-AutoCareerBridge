@@ -207,9 +207,9 @@ public class InstructionalServiceImpl implements InstructionalService {
    */
   @Transactional
   @Override
-  public PagingResponse<InstructionalResponse> getAllInstructional(int page, int size) {
+  public PagingResponse<InstructionalResponse> getAllInstructional(Integer universityId, int page, int size) {
     Pageable pageable = PageRequest.of(page - 1, size);
-    Page<Instructional> instructionalPage = instructionalRepository.findAll(pageable);
+    Page<Instructional> instructionalPage = instructionalRepository.findAllByUniversityId(universityId,pageable);
     Page<InstructionalResponse> instructionalResponsePage = instructionalPage.map(
         InstructionalConverter::toResponse);
     return new PagingResponse<>(instructionalResponsePage);
@@ -226,9 +226,9 @@ public class InstructionalServiceImpl implements InstructionalService {
    * trang.
    */
   @Override
-  public PagingResponse<InstructionalResponse> getALlInstructionalActive(int page, int size) {
+  public PagingResponse<InstructionalResponse> getALlInstructionalActive(Integer universityId,int page, int size) {
     Pageable pageable = PageRequest.of(page - 1, size);
-    Page<Instructional> instructionalPage = instructionalRepository.findAllActive(pageable);
+    Page<Instructional> instructionalPage = instructionalRepository.findAllActive(universityId,pageable);
     Page<InstructionalResponse> instructionalResponsePage = instructionalPage.map(
         InstructionalConverter::toResponse);
     return new PagingResponse<>(instructionalResponsePage);
@@ -245,16 +245,16 @@ public class InstructionalServiceImpl implements InstructionalService {
    * trang.
    */
   @Override
-  public PagingResponse<InstructionalResponse> getALlInstructionalInactive(int page, int size) {
+  public PagingResponse<InstructionalResponse> getALlInstructionalInactive(Integer universityId,int page, int size) {
     Pageable pageable = PageRequest.of(page - 1, size);
-    Page<Instructional> instructionalPage = instructionalRepository.findAllInactive(pageable);
+    Page<Instructional> instructionalPage = instructionalRepository.findAllInactive(universityId,pageable);
     Page<InstructionalResponse> instructionalResponsePage = instructionalPage.map(
         InstructionalConverter::toResponse);
     return new PagingResponse<>(instructionalResponsePage);
   }
 
   @Override
-  public long countInstructional() {
-    return instructionalRepository.count();
+  public long countInstructional(Integer universityId) {
+    return instructionalRepository.countInstructionalByUniversityId(universityId);
   }
 }

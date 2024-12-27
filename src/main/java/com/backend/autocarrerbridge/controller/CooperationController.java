@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -172,8 +173,8 @@ public class CooperationController {
                 .build();
     }
 
-    @GetMapping("/count-total")
-    public long countCooperation() {
-        return businessUniversityService.countBussinessUniversity();
+    @GetMapping("/count-total/{universityId}")
+    public long countCooperation(@PathVariable Integer universityId) {
+        return businessUniversityService.countBussinessUniversity(universityId);
     }
 }

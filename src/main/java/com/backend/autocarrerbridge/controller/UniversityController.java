@@ -84,4 +84,8 @@ public class UniversityController {
                 .data(universityService.getAllTotalUniversity())
                 .build();
     }
+    @GetMapping("/countTotalUniversity")
+    public ApiResponse<Object> getTotalJob() {
+        return ApiResponse.builder().data(universityService.countUniversityTotal()).build();
+    }
 }

@@ -65,4 +65,6 @@ public interface JobService {
 
     PagingResponse<AdminJobResponse> getAllJobs(PageInfo req);
     ApiResponse<Object> countJobsByDateRange(LocalDate startDate, LocalDate endDate) throws ParseException;
+
+    Long countTotalJob();
 }

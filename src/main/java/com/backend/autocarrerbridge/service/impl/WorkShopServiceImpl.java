@@ -7,6 +7,7 @@ import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORKSHOP_AL
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE;
 import static com.backend.autocarrerbridge.exception.ErrorCode.ERROR_WORK_SHOP_DATE_OUT_DATE;
 import static com.backend.autocarrerbridge.util.Constant.APPROVED_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Constant.DELETE_WORK_SHOP;
 import static com.backend.autocarrerbridge.util.Constant.REJECTED_WORKSHOP;
 import static com.backend.autocarrerbridge.util.Validation.sanitizeKeyword;
 import static com.backend.autocarrerbridge.util.enums.State.APPROVED;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
+import com.backend.autocarrerbridge.dto.request.notification.ContentDeleteWorkShopRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.workshop.WorkshopApprovedRequest;
@@ -39,6 +41,7 @@ import com.backend.autocarrerbridge.service.NotificationService;
 import com.backend.autocarrerbridge.util.Validation;
 import com.backend.autocarrerbridge.util.email.EmailDTO;
 import com.backend.autocarrerbridge.util.email.SendEmail;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -326,13 +329,19 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Thông tin phản hồi của Workshop đã xoá mềm
      * @throws AppException Nếu Workshop không tồn tại
      */
+    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
-    public WorkshopResponse removeWorkShop(Integer id) {
+    public WorkshopResponse removeWorkShop(Integer id, ContentDeleteWorkShopRequest content) throws ParseException {
         Workshop workshop = workShopRepository.findById(id).orElse(null);
         if (Objects.isNull(workshop)) {
             throw new AppException(ERROR_NO_CONTENT); // Ném lỗi nếu Workshop không tồn tại
         }
         workshop.setStatus(Status.INACTIVE);
+        List<String> listEmail = workShopRepository.listEmailJoinWorkShop(id);
+        if (listEmail != null && !listEmail.isEmpty()) {
+            String message = String.format("%s: %s", workshop.getTitle(),DELETE_WORK_SHOP);
+            notificationService.send(NotificationSendRequest.of(listEmail, message, content.getContent()));
+        }
         workShopRepository.save(workshop);
         return modelMapper.map(workshop, WorkshopResponse.class);
     }
@@ -440,6 +449,12 @@ public class WorkShopServiceImpl implements WorkShopService {
     public List<Workshop> findAll() {
         return workShopRepository.findAll();
     }
+
+    @Override
+    public Long countTotalWorkShop() {
+        return workShopRepository.countWorkShop(ACTIVE,APPROVED);
+    }
+
     @PreAuthorize("hasAuthority('SCOPE_BUSINESS')")
     @Override
     public PagingResponse<WorkshopStateBusiness> getAllWorkShopByPracticeBusiness(Pageable pageable, Integer businessID, String keyword,State state) {
@@ -504,7 +519,7 @@ public class WorkShopServiceImpl implements WorkShopService {
         }
     }
     @Override
-    public long countWorkShop() {
-        return workShopRepository.count();
+    public long countWorkShop(Integer universityId) {
+        return workShopRepository.countWorkShopByUniversityId(universityId);
     }
 }

@@ -1,12 +1,13 @@
 package com.backend.autocarrerbridge.controller;
 
+import com.backend.autocarrerbridge.dto.request.notification.ContentDeleteWorkShopRequest;
 import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -147,11 +148,11 @@ public class WorkShopController {
    * @param idWorkShop ID của workshop cần xoá .
    * @return ApiResponse chứa workshop đã được xoá.
    */
-  @DeleteMapping("/id/{idWorkShop}")
-  public ApiResponse<Object> removeWorkShop(@PathVariable("idWorkShop") Integer idWorkShop) {
+  @PutMapping("/idRemove/{idWorkShop}")
+  public ApiResponse<Object> removeWorkShop(@PathVariable("idWorkShop") Integer idWorkShop, @RequestBody ContentDeleteWorkShopRequest content) throws ParseException {
     return ApiResponse.builder()
-        .data(workShopService.removeWorkShop(idWorkShop))
-        .build();
+            .data(workShopService.removeWorkShop(idWorkShop, content))
+            .build();
   }
 
   /**
@@ -235,9 +236,9 @@ public class WorkShopController {
     public ApiResponse<Object> getWorkShopStatus(@RequestParam Integer workShopId,@RequestParam Integer businessId){
         return ApiResponse.builder().data(workShopBusinessService.getWorkShopStatusBusiness(workShopId,businessId)).build();
     }
-    @GetMapping("/count-total")
-    public long countWorkShop() {
-        return workShopService.countWorkShop();
+    @GetMapping("/count-total/{universityId}")
+    public long countWorkShop(@PathVariable Integer universityId) {
+        return workShopService.countWorkShop(universityId);
     }
 
     @GetMapping("/business-details")
@@ -252,5 +253,9 @@ public class WorkShopController {
   @PutMapping("business/cancel")
   public ApiResponse<Object> cancelAttendWorkshop(@RequestParam("businessId") Integer businessId,@RequestParam("workshopId") Integer workshopId) throws ParseException {
     return ApiResponse.builder().data(workShopBusinessService.cancelAttendWorkshop(businessId,workshopId)).build();
+  }
+  @GetMapping("/countTotalWorkshop")
+  public ApiResponse<Object> getTotalWorkshop() {
+    return ApiResponse.builder().data(workShopService.countTotalWorkShop()).build();
   }
 }

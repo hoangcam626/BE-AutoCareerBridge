@@ -197,4 +197,9 @@ public class JobController {
         return jobService.countJobsByDateRange(startDate, endDate);
     }
 
+
+    @GetMapping("/countTotalJob")
+    public ApiResponse<Object> getTotalJob() {
+        return ApiResponse.builder().data(jobService.countTotalJob()).build();
+    }
 }
