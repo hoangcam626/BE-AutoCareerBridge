@@ -60,4 +60,6 @@ public interface BusinessUniversityRepository extends JpaRepository<BusinessUniv
                                                      Pageable pageable
     );
 
+    @Query("SELECT COUNT(w) FROM BusinessUniversity w WHERE w.university.id = :universityId")
+    long countBussinessUniversityId(@org.springframework.data.repository.query.Param("universityId") Integer universityId);
 }

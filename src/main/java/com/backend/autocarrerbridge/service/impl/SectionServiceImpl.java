@@ -130,9 +130,9 @@ public class SectionServiceImpl implements SectionService {
    * @return Danh sách các SectionRequest.
    */
   @Override
-  public List<SectionRequest> getAllSection() {
+  public List<SectionRequest> getAllSection(Integer universityId) {
     // Tìm tất cả các section từ cơ sở dữ liệu
-    List<Section> sectionList = sectionRepository.findAll();
+    List<Section> sectionList = sectionRepository.findAllByUniversityId(universityId);
 
     // Sắp xếp danh sách section theo thứ tự giảm dần của ID
     sectionList.sort(Comparator.comparingLong(Section::getId).reversed());
@@ -189,8 +189,8 @@ public class SectionServiceImpl implements SectionService {
   }
 
   @Override
-  public long countSection() {
-    return sectionRepository.count();
+  public long countSection(Integer universityId) {
+    return sectionRepository.countSectionByUniversityId(universityId);
   }
 
   @Override
