@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkShopBusinessResponse {
-    private WorkShopResponse workshop;
+public class WorkshopBusinessResponse {
+    private WorkshopResponse workshop;
     private List<BusinessColabResponse> businessList;
 }

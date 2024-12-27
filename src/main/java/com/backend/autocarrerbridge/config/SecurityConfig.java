@@ -83,7 +83,8 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/webjars/**",
             "/api/administrative/**",
-            "/api/notification/stream/*"
+            "/api/notification/stream/*",
+            "/api/job/get-detail"
     };
 
 
@@ -117,7 +118,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000","https://autocareerbridge.web.app"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTION"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedHeaders(List.of("*"));

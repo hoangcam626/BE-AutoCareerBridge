@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-public class WorkShopPortalResponse {
+public class WorkshopPortalResponse {
     private Integer id;
     private String hostWorkshop;
     private Integer imageUniversity;
@@ -36,7 +36,7 @@ public class WorkShopPortalResponse {
     private LocalDateTime updatedAt;
 
 
-    public WorkShopPortalResponse(Integer id, String hostWorkshop,Integer imageUniversity, String title, String description, LocalDateTime startDate, LocalDateTime endDate, LocalDate expireDate, Integer imageId, String address, String province, String district, String ward,Long totalCompany,LocalDateTime createdAt,LocalDateTime updatedAt) {
+    public WorkshopPortalResponse(Integer id, String hostWorkshop, Integer imageUniversity, String title, String description, LocalDateTime startDate, LocalDateTime endDate, LocalDate expireDate, Integer imageId, String address, String province, String district, String ward, Long totalCompany, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.totalCompany = totalCompany;
         this.imageUniversity = imageUniversity;

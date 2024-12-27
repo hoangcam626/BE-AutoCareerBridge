@@ -147,11 +147,11 @@ public class WorkShopController {
    * @param idWorkShop ID của workshop cần xoá .
    * @return ApiResponse chứa workshop đã được xoá.
    */
-  @DeleteMapping("/id/{idWorkShop}")
-  public ApiResponse<Object> removeWorkShop(@PathVariable("idWorkShop") Integer idWorkShop) {
+  @PutMapping("/idRemove/{idWorkShop}")
+  public ApiResponse<Object> removeWorkShop(@PathVariable("idWorkShop") Integer idWorkShop, @RequestBody String content) throws ParseException {
     return ApiResponse.builder()
-        .data(workShopService.removeWorkShop(idWorkShop))
-        .build();
+            .data(workShopService.removeWorkShop(idWorkShop, content))
+            .build();
   }
 
   /**
@@ -227,15 +227,15 @@ public class WorkShopController {
                 .data(workShopService.getAllWorkShopApprovedAndLocation(pageable,startDate,endDate,provinceId,universityId,keyword)).build();
     }
 
-    @GetMapping("display/{workShopId}")
+    @GetMapping("/display/{workShopId}")
     public ApiResponse<Object> getWorkShopPortalById(@PathVariable("workShopId") Integer workShopId){
         return ApiResponse.builder().data(workShopService.getWorkShopPortalById(workShopId)).build();
     }
-    @GetMapping("status")
+    @GetMapping("/status")
     public ApiResponse<Object> getWorkShopStatus(@RequestParam Integer workShopId,@RequestParam Integer businessId){
         return ApiResponse.builder().data(workShopBusinessService.getWorkShopStatusBusiness(workShopId,businessId)).build();
     }
-    @GetMapping("count-total")
+    @GetMapping("/count-total")
     public long countWorkShop() {
         return workShopService.countWorkShop();
     }
@@ -244,4 +244,13 @@ public class WorkShopController {
     public List<Map<String, Object>> getWorkshopBusinessDetails() {
         return workShopBusinessService.countWorkShopAndStatusConnected();
     }
+  @GetMapping("business/{businessId}")
+  public ApiResponse<Object> getWorkshopStateBusiness(@RequestParam(defaultValue = "0") Integer page,@RequestParam(defaultValue = "7")Integer size,@RequestParam(required = false) String keyword,@RequestParam(required = false) State state,@PathVariable("businessId") Integer businessId){
+    Pageable pageable = PageRequest.of(page, size);
+    return ApiResponse.builder().data(workShopService.getAllWorkShopByPracticeBusiness(pageable,businessId,keyword,state)).build();
+  }
+  @PutMapping("business/cancel")
+  public ApiResponse<Object> cancelAttendWorkshop(@RequestParam("businessId") Integer businessId,@RequestParam("workshopId") Integer workshopId) throws ParseException {
+    return ApiResponse.builder().data(workShopBusinessService.cancelAttendWorkshop(businessId,workshopId)).build();
+  }
 }

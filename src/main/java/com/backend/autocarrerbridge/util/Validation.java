@@ -24,7 +24,6 @@ public class Validation {
     private static final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*])[A-Za-z\\d!@#$%^&*]{8,}$";
 
 
-
     // Kiểm tra xem chuỗi có phải là email hợp lệ không
     public static boolean isValidEmail(String email) {
         return email != null && EMAIL_PATTERN.matcher(email).matches();
@@ -72,6 +71,7 @@ public class Validation {
             throw new AppException(ERROR_EXPIRED_DATE_FUTRURE);
         }
     }
+
     public static String sanitizeKeyword(String keyword) {
         if (keyword == null || keyword.isEmpty()) {
             return "";
@@ -112,11 +112,11 @@ public class Validation {
     }
 
     public static String escapeKeywordForQuery(String keyword) {
-        if (keyword==null || keyword.isEmpty()) return null;
+        if (keyword == null || keyword.isEmpty()) return null;
         keyword = keyword.trim().toLowerCase()
                 .replace("\\", "\\\\")
                 .replace("_", "\\_")
-                .replace("%", '\\'+ "%");
+                .replace("%", '\\' + "%");
         return "%" + keyword + "%";
     }
 }

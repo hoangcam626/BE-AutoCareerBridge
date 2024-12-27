@@ -1,12 +1,11 @@
 package com.backend.autocarrerbridge.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
 import com.backend.autocarrerbridge.dto.response.cooperation.SentRequestResponse;
 import com.backend.autocarrerbridge.entity.BusinessUniversity;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SentRequestConverter {
@@ -14,14 +13,12 @@ public class SentRequestConverter {
     /**
      * Chuyển đổi đối tượng BusinessUniversity thành SentRequestResponse
      */
-    public List<SentRequestResponse> toSentRequestResponse(List<BusinessUniversity> businessUniversity) {
-        List<SentRequestResponse> sentRequestResponses = new ArrayList<>();
-        if (businessUniversity != null) {
-            for (BusinessUniversity businessUniversities : businessUniversity) {
-                SentRequestResponse sentRequestResponse = new SentRequestResponse(businessUniversities);
-                sentRequestResponses.add(sentRequestResponse);
-            }
+    public List<SentRequestResponse> toSentRequestResponse(List<BusinessUniversity> businessUniversities) {
+        if (businessUniversities == null || businessUniversities.isEmpty()) {
+            return List.of(); // Trả về danh sách rỗng nếu đầu vào null hoặc trống
         }
-        return sentRequestResponses;
+        return businessUniversities.stream()
+                .map(SentRequestResponse::new) // Tạo SentRequestResponse từ từng BusinessUniversity
+                .collect(Collectors.toList());
     }
 }

@@ -18,8 +18,12 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SentRequestResponse {
     Integer id;
+    Integer businessId;
     String businessName;
+    Integer universityId;
     String universityName;
+    Integer businessImageId;
+    Integer universityImageId;
     State statusConnected;
     Status status;
     LocalDateTime createAt;
@@ -29,8 +33,12 @@ public class SentRequestResponse {
 
     public SentRequestResponse(BusinessUniversity businessUniversity) {
         this.id = businessUniversity.getId();
+        this.businessId = businessUniversity.getBusiness().getId();
+        this.universityId = businessUniversity.getUniversity().getId();
         this.businessName = businessUniversity.getBusiness().getName();
         this.universityName = businessUniversity.getUniversity().getName();
+        this.businessImageId = businessUniversity.getBusiness().getBusinessImageId();
+        this.universityImageId = businessUniversity.getUniversity().getLogoImageId();
         this.statusConnected = businessUniversity.getStatusConnected();
         this.status = businessUniversity.getStatus();
         this.createAt = businessUniversity.getCreatedAt();

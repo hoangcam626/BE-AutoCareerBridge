@@ -1,7 +1,9 @@
 package com.backend.autocarrerbridge.repository;
 
-import com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopStateBusiness;
 import com.backend.autocarrerbridge.util.enums.Status;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,10 +15,11 @@ import com.backend.autocarrerbridge.entity.Workshop;
 import com.backend.autocarrerbridge.util.enums.State;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
-
+    Workshop findById(int id);
     // Tìm kiếm trong tiêu đề workshop
     @Query("SELECT ws FROM Workshop ws " +
             "WHERE (:keyword IS NULL " +
@@ -62,7 +65,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "ORDER BY ws.updatedAt DESC ")
     Page<Workshop> findAll(Pageable pageable, String keyword);
 
-    @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse(" +
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse(" +
             "ws.id, " +
             "ws.university.name, " +
             "ws.university.logoImageId, " +
@@ -93,7 +96,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "GROUP BY ws.id, ws.university.name, ws.title, ws.description, ws.startDate, ws.endDate, " +
             "ws.expireDate, ws.workshopImageId, ws.location.description, ws.location.province.name, " +
             "ws.location.district.name, ws.location.ward.name order by ws.expireDate ASC ")
-    Page<WorkShopPortalResponse> getAllWorkshopApprovedAndLocation(
+    Page<WorkshopPortalResponse> getAllWorkshopApprovedAndLocation(
             Pageable pageable,
             @Param("approved") State approved,
             @Param("provinceId") Integer provinceId,
@@ -103,7 +106,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             @Param("status")Status status,
             @Param("keyword") String keyword);
 
-    @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkShopPortalResponse(" +
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse(" +
             "ws.id, " +
             "ws.university.name, " +
             "ws.university.logoImageId, " +
@@ -127,8 +130,42 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             "GROUP BY ws.id, ws.university.name, ws.title, ws.description, ws.startDate, ws.endDate, " +
             "ws.expireDate, ws.workshopImageId, ws.location.description, ws.location.province.name, " +
             "ws.location.district.name, ws.location.ward.name  ")
-    WorkShopPortalResponse getWorkShopDetailsById(@Param("workShopId") Integer workShopId,@Param("state") State state);
+    WorkshopPortalResponse getWorkShopDetailsById(@Param("workShopId") Integer workShopId, @Param("state") State state);
 
-
+    @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkshopStateBusiness(" +
+            "ws.id, " +
+            "ws.university.id, " +
+            "ws.university.logoImageId," +
+            "ws.university.name," +
+            "ws.university.email," +
+            "ws.university.phone," +
+            "ws.university.website," +
+            "ws.title, " +
+            "ws.description, " +
+            "ws.status, " +
+            "ws.statusBrowse, " +
+            "wsb.statusConnected, " +
+            "ws.startDate, " +
+            "ws.endDate, " +
+            "ws.expireDate, " +
+            "ws.workshopImageId, " +
+            "ws.location.description, " +
+            "ws.location.province.name, " +
+            "ws.location.district.fullName, " +
+            "ws.location.ward.fullName, " +
+            "ws.createdAt, " +
+            "ws.updatedAt " +
+            ") " +
+            "FROM Workshop ws " +
+            "LEFT JOIN WorkshopBusiness wsb ON ws.id = wsb.workshop.id " +
+            "where wsb.business.id =:businessId  AND (wsb.status =:status) AND (ws.status =:status) AND (wsb.statusConnected = :state OR :state IS NULL) AND (:keyword IS NULL OR LOWER(ws.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ESCAPE '\\')")
+    Page<WorkshopStateBusiness> findAllWorkShopByBusinessId(@Param("status") Status status,@Param("businessId") Integer businessId,@Param("state") State state, @Param("keyword") String keyword, Pageable pageable);
+    @Query(value = "SELECT business.email " +
+            "FROM workshop " +
+            "JOIN workshop_business ON workshop.id = workshop_business.workshop_id " +
+            "JOIN business ON workshop_business.business_id = business.id " +
+            "WHERE workshop.id = :workShopId",
+            nativeQuery = true)
+    List<String> listEmailJoinWorkShop(@Param("workShopId") Integer workShopId);
 
 }
