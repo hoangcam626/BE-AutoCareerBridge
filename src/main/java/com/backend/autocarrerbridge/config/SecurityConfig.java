@@ -86,6 +86,7 @@ public class SecurityConfig {
             "/api/notification/stream/*",
             "/api/job/get-detail",
             "/api/job/get-all-job-of-business-paging-portal"
+            "/api/statistic/**",
     };
 
 
