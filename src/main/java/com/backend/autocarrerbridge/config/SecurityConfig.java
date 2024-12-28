@@ -84,7 +84,8 @@ public class SecurityConfig {
             "/webjars/**",
             "/api/administrative/**",
             "/api/notification/stream/*",
-            "/api/job/get-detail"
+            "/api/job/get-detail",
+            "/api/statistic/**",
     };
 
 

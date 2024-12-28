@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.backend.autocarrerbridge.util.enums.State;
@@ -50,4 +51,10 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
 
     @Query("SELECT count(u.id) from University u where u.status =:status")
     Long countUniversity(@Param("status") Status status);
+
+    @Query("SELECT count(u.id) FROM University u WHERE u.status <> 0 AND u.userAccount.state = 1")
+    Long countUniversity();
+
+    @Query("SELECT count(u.id) FROM University u WHERE u.createdAt between :date and :nextDate")
+    Long countUniversityByDate(LocalDateTime date, LocalDateTime nextDate);
 }
