@@ -16,4 +16,6 @@ public class AdminStatisticResponse {
     private Long jobsTotal;
     private Long workshopsTotal;
     private Long universityBusinessTotal;
+    private Long jobUniversitiesTotal;
+    private Long workshopBusinessesTotal;
 }

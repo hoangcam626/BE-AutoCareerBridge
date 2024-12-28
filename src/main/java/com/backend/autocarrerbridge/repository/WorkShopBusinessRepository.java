@@ -13,6 +13,7 @@ import com.backend.autocarrerbridge.entity.WorkshopBusiness;
 import com.backend.autocarrerbridge.util.enums.State;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public interface WorkShopBusinessRepository extends JpaRepository<WorkshopBusiness, Integer> {
@@ -31,6 +32,6 @@ public interface WorkShopBusinessRepository extends JpaRepository<WorkshopBusine
     @Query("SELECT count(wsb.id) FROM WorkshopBusiness wsb WHERE wsb.status = 1 AND wsb.statusConnected = 1")
     Long countWorkshopBusiness ();
 
-    @Query("SELECT count(wsb.id) FROM WorkshopBusiness wsb WHERE wsb.createdAt = :date")
-    Long countWorkshopBusinessByDate(@Param("date") LocalDate date);
+    @Query("SELECT count(wb) FROM WorkshopBusiness wb WHERE wb.createdAt between :date and :nextDate")
+    Long countWorkshopBusinessByDate(LocalDateTime date, LocalDateTime nextDate);
 }

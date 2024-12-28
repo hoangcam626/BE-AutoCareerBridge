@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.backend.autocarrerbridge.entity.Business;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -135,7 +136,7 @@ public interface BusinessRepository extends JpaRepository<Business, Integer> {
     @Query("SELECT count(b.id) FROM Business b WHERE b.status <> 0 AND b.userAccount.state = 1")
     Long countBusiness ();
 
-    @Query("SELECT count(b.id) FROM Business b WHERE b.createdAt = :date")
-    Long countBusinessByDate(@Param("date") LocalDate date);
+    @Query("SELECT count(b.id) FROM Business b WHERE b.createdAt between :date and :nextDate ")
+    Long countBusinessByDate(LocalDateTime date, LocalDateTime nextDate);
 }
 

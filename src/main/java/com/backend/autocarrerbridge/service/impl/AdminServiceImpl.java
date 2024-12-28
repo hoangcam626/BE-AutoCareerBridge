@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ public class AdminServiceImpl implements AdminService {
         res.setJobsTotal(jobRepository.countJob());
         res.setWorkshopsTotal(workShopRepository.countWorkshop());
         res.setUniversityBusinessTotal(businessUniversityRepository.countBusinessUniversity());
+        res.setWorkshopBusinessesTotal(workShopBusinessRepository.countWorkshopBusiness());
         return res;
     }
 
@@ -43,14 +45,16 @@ public class AdminServiceImpl implements AdminService {
             throw new AppException(ErrorCode.ERROR_WORK_SHOP_DATE);
         }
         Map<LocalDate, DateStatisticResponse> res = new LinkedHashMap<>();
-        LocalDate date = startDate;
-        while (!date.isAfter(endDate)) { // Sử dụng isAfter để kiểm tra phạm vi
+        LocalDateTime endDateTime = (endDate != null) ? endDate.atStartOfDay() : null;
+        LocalDateTime date =   startDate.atStartOfDay();
+        while (!date.isAfter(endDateTime)) { // Sử dụng isAfter để kiểm tra phạm vi
+            LocalDateTime nextDate = date.plusDays(1);
             DateStatisticResponse dateRes = new DateStatisticResponse();
-            dateRes.setJobsNo(jobRepository.countJobByDate(date));
-            dateRes.setWorkshopsNo(workShopRepository.countWorkshopByDate(date));
-            dateRes.setUniversityBusinessNo(businessUniversityRepository.countBusinessUniversityByDate(date));
-            dateRes.setWorkshopsBusinessesNo(workShopBusinessRepository.countWorkshopBusinessByDate(date));
-            res.put(date, dateRes);
+            dateRes.setJobsNo(jobRepository.countJobByDate(date, nextDate));
+            dateRes.setWorkshopsNo(workShopRepository.countWorkshopByDate(date, nextDate));
+            dateRes.setUniversityBusinessNo(businessUniversityRepository.countBusinessUniversityByDate(date, nextDate));
+            dateRes.setWorkshopsBusinessesNo(workShopBusinessRepository.countWorkshopBusinessByDate(date, nextDate));
+            res.put(date.toLocalDate(), dateRes);
             date = date.plusDays(1);
         }
         return res;

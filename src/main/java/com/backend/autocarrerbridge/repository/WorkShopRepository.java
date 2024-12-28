@@ -171,12 +171,11 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
             nativeQuery = true)
     List<String> listEmailJoinWorkShop(@Param("workShopId") Integer workShopId);
 
-
     @Query("SELECT count(ws.id) FROM Workshop ws WHERE ws.status <> 0 AND ws.statusBrowse = 1")
     Long countWorkshop();
 
-    @Query("SELECT count(ws.id) FROM Workshop ws WHERE ws.createdAt = :date")
-    Long countWorkshopByDate(@Param("date") LocalDate date);
+    @Query(value = "SELECT count(ws.id) FROM Workshop ws WHERE ws.createdAt between :date and :nextDate")
+    Long countWorkshopByDate(LocalDateTime date, LocalDateTime nextDate);
 
     @Query("SELECT  count(ws.id) from Workshop ws where ws.status =:status and ws.statusBrowse =:state")
     Long countWorkShop(@Param("status") Status status, @Param("state") State state);

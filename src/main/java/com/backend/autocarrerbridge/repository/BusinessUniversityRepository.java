@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.backend.autocarrerbridge.util.enums.State;
@@ -66,7 +67,7 @@ public interface BusinessUniversityRepository extends JpaRepository<BusinessUniv
     @Query("SELECT count(bu.id) FROM BusinessUniversity bu WHERE bu.status <> 0 AND bu.statusConnected = 1")
     Long countBusinessUniversity ();
 
-    @Query("SELECT count(bu.id) FROM BusinessUniversity bu WHERE bu.createdAt = :date")
-    Long countBusinessUniversityByDate(LocalDate date);
+    @Query("SELECT count(bu.id) FROM BusinessUniversity bu WHERE bu.createdAt between :date and :nextDate")
+    Long countBusinessUniversityByDate(LocalDateTime date, LocalDateTime nextDate);
 
 }
