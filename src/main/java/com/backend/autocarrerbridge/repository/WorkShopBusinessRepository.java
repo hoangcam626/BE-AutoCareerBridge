@@ -12,7 +12,6 @@ import com.backend.autocarrerbridge.entity.Business;
 import com.backend.autocarrerbridge.entity.WorkshopBusiness;
 import com.backend.autocarrerbridge.util.enums.State;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Repository

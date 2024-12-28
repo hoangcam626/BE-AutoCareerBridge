@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DateStatisticResponse {
+    private Long universitiesNo;
+    private Long businessesNo;
     private Long jobsNo;
     private Long workshopsNo;
     private Long jobUniversitiesNo;

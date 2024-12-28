@@ -41,15 +41,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     public Map<LocalDate, DateStatisticResponse> totalOnDate(LocalDate startDate, LocalDate endDate) {
-        if(startDate.isAfter(endDate)) {
+        if (startDate.isAfter(endDate)) {
             throw new AppException(ErrorCode.ERROR_WORK_SHOP_DATE);
         }
         Map<LocalDate, DateStatisticResponse> res = new LinkedHashMap<>();
         LocalDateTime endDateTime = (endDate != null) ? endDate.atStartOfDay() : null;
-        LocalDateTime date =   startDate.atStartOfDay();
+        LocalDateTime date = startDate.atStartOfDay();
         while (!date.isAfter(endDateTime)) { // Sử dụng isAfter để kiểm tra phạm vi
             LocalDateTime nextDate = date.plusDays(1);
             DateStatisticResponse dateRes = new DateStatisticResponse();
+            dateRes.setBusinessesNo(businessRepository.countBusinessByDate(date, nextDate));
+            dateRes.setUniversitiesNo(universityRepository.countUniversityByDate(date, nextDate));
             dateRes.setJobsNo(jobRepository.countJobByDate(date, nextDate));
             dateRes.setWorkshopsNo(workShopRepository.countWorkshopByDate(date, nextDate));
             dateRes.setUniversityBusinessNo(businessUniversityRepository.countBusinessUniversityByDate(date, nextDate));
