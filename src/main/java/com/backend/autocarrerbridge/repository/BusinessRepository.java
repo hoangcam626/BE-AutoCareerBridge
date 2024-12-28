@@ -4,6 +4,7 @@ import com.backend.autocarrerbridge.dto.response.business.BusinessListHome;
 import com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage;
 import com.backend.autocarrerbridge.dto.response.business.IntroduceBusiness;
 import com.backend.autocarrerbridge.util.enums.State;
+import com.backend.autocarrerbridge.util.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
