@@ -62,6 +62,23 @@ public class JobController {
     }
 
     /**
+     * API lấy danh sách tất cả công việc đã được đăng tuyển của doanh nghiệp.
+     *
+     * @return Danh sách các công việc đã đăng tuyển.
+     * @apiNote Sử dụng để truy vấn danh sách công việc trong cơ sở dữ liệu.
+     */
+    @GetMapping("/get-all-job-of-business-paging-portal")
+    public ApiResponse<Object> getAllJobOfBusinessPaging(@RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "10") int size,
+                                                         @RequestParam String keyword,
+                                                         @RequestParam Integer businessId,
+                                                         @RequestParam(required = false) State statusBrowse ,
+                                                         @RequestParam(required = false) Integer industryId) throws ParseException {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return jobService.getAllJobOfBusinessPagingPortal(businessId, keyword, statusBrowse, industryId, pageable);
+    }
+
+    /**
      * API để lấy chi tiết công việc đã đăng tuyển
      *
      * @apiNote để truy vấn chi tiết công việc trong cơ sở dữ liệu
