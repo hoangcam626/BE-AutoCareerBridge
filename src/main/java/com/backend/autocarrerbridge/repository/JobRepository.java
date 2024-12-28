@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -327,4 +328,10 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
 
     @Query("SELECT COUNT(j.id) from Job j where j.statusBrowse =:state and j.status =:status")
     Long countJobs(@Param("state") State state,@Param("status") Status status);
+
+    @Query("SELECT count(j.id) FROM Job j WHERE j.status <> 0 AND j.statusBrowse = 1")
+    Long countJob ();
+
+    @Query("SELECT count(job.id) FROM Job job WHERE job.createdAt between :date and :nextDate")
+    Long countJobByDate(LocalDateTime date, LocalDateTime nextDate);
 }
