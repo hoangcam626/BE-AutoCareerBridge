@@ -34,11 +34,14 @@ public class JobResponse {
     String workingTime;
     State statusBrowse;
     Status status;
+    Integer businessImageId;
     LocalDateTime createAt;
     String createBy;
     LocalDateTime updateAt;
     String updateBy;
-
+    String wards;
+    String districts;
+    String province;
 
     public JobResponse(Job job) {
         this.jobId = job.getId();
@@ -55,9 +58,13 @@ public class JobResponse {
         this.workingTime = job.getWorkingTime();
         this.statusBrowse = job.getStatusBrowse();
         this.status = job.getStatus();
+        this.businessImageId = job.getBusiness().getBusinessImageId();
         this.createAt = job.getCreatedAt();
         this.createBy = job.getCreatedBy();
         this.updateAt = job.getUpdatedAt();
         this.updateBy = job.getUpdatedBy();
+        this.wards = job.getBusiness().getLocation().getWard().getName();
+        this.districts = job.getBusiness().getLocation().getDistrict().getName();
+        this.province = job.getBusiness().getLocation().getProvince().getName();
     }
 }

@@ -40,6 +40,9 @@ public class JobDetailResponse {
     String workingTime;
     State statusBrowse;
     Status status;
+    String wards;
+    String districts;
+    String province;
     LocalDateTime createAt;
     String createBy;
     LocalDateTime updateAt;
@@ -66,6 +69,9 @@ public class JobDetailResponse {
         this.workingTime = job.getWorkingTime();
         this.statusBrowse = job.getStatusBrowse();
         this.status = job.getStatus();
+        this.wards = job.getBusiness().getLocation().getWard().getName();
+        this.districts = job.getBusiness().getLocation().getDistrict().getName();
+        this.province = job.getBusiness().getLocation().getProvince().getName();
         this.createAt = job.getCreatedAt();
         this.createBy = job.getCreatedBy();
         this.updateAt = job.getUpdatedAt();
