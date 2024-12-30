@@ -18,6 +18,7 @@ public class Constant {
     public static final String DESCRIPTION_UNIVERSITY = "Trường học";
     public static final String DESCRIPTION_EMPLOYEE = "Nhân viên";
     public static final String DESCRIPTION_SUB_ADMIN = "Quản trị viên con";
+    public static final String DESCRIPTION_INSTRUCTIONAL = "Giáo vụ";
 
     // Thông báo phản hồi
     public static final String NOTIFICATION_NEW_PW = "Mật khẩu mới đã được gửi đến email của bạn";
