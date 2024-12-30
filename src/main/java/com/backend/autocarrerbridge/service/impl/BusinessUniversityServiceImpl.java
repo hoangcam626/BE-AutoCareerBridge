@@ -54,8 +54,8 @@ import static com.backend.autocarrerbridge.util.Constant.REQUEST_COOPERATION;
 @Service
 @RequiredArgsConstructor // Tự động tạo constructor cho các trường được đánh dấu final
 @FieldDefaults(
-        level = AccessLevel.PRIVATE,
-        makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
+    level = AccessLevel.PRIVATE,
+    makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
 public class BusinessUniversityServiceImpl implements BusinessUniversityService {
 
     // Khai báo các thành phần cần thiết trong service
@@ -312,7 +312,8 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     public PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, State statusConnected, Pageable pageable) throws ParseException {
         String emailLogin = getUniversityFromToken().getEmail();
         //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keyword, statusConnected, pageable);
+        String keywordValidate = Validation.escapeKeywordForQuery(keyword);
+        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keywordValidate, statusConnected, pageable);
         //Chuyển đổi danh sách từ entity sang respone
         Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
         return new PagingResponse<>(list);

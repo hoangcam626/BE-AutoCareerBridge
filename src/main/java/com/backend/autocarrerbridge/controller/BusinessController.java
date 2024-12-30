@@ -81,7 +81,7 @@ public class BusinessController {
      * @param businessId ID của doanh nghiệp cần lấy thông tin.
      * @return Thông tin chi tiết của doanh nghiệp.
      */
-    @GetMapping("/{businessId}")
+    @GetMapping("/get-by-id/{businessId}")
     ApiResponse<BusinessResponse> getBusiness(@PathVariable Integer businessId) {
         return ApiResponse.<BusinessResponse>builder()
                 .data(businessService.getBusinessResponseById(businessId))

@@ -1,6 +1,7 @@
 package com.backend.autocarrerbridge.controller;
 
 import com.backend.autocarrerbridge.dto.request.notification.ContentDeleteWorkShopRequest;
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopCountResponse;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -257,5 +258,9 @@ public class WorkShopController {
   @GetMapping("/countTotalWorkshop")
   public ApiResponse<Object> getTotalWorkshop() {
     return ApiResponse.builder().data(workShopService.countTotalWorkShop()).build();
+  }
+  @GetMapping("/countWorkshopApproved")
+  public List<WorkshopCountResponse> countWorkshopByApproved(@RequestParam Integer universityId,@RequestParam State state) {
+    return workShopService.countWorkshopByApproved(universityId, state);
   }
 }
