@@ -34,7 +34,7 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             + "OR job.level like :keyword ESCAPE '\\' or job.title like :keyword ESCAPE '\\')"
             + "AND (:statusBrowse IS NULL OR job.statusBrowse = :statusBrowse) "
             + "AND (:industryId IS NULL OR job.industry.id = :industryId) "
-            + "ORDER BY job.createdAt DESC ")
+            + "ORDER BY job.updatedAt DESC ")
     Page<JobResponse> getAllJobOfBusinessPaging(Integer businessId,
                                                 @Param("keyword") String keyword,
                                                 @Param("statusBrowse") State statusBrowse,
@@ -48,7 +48,7 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
             + "FROM Job job where job.status = 1"
             + "AND (:keyword IS NULL OR :keyword = '' "
             + "OR job.level like %:keyword% or job.title like %:keyword% ESCAPE '\\')"
-            + "ORDER BY job.createdAt DESC ")
+            + "ORDER BY job.updatedAt DESC ")
     Page<JobResponse> getAllJob(@RequestParam("keyword") String keyword, Pageable pageable);
 
 
