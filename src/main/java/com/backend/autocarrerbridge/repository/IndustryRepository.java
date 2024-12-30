@@ -27,7 +27,7 @@ public interface IndustryRepository extends JpaRepository<Industry, Integer> {
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.IndustryResponse(industry) "
             + "FROM Industry industry WHERE industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
             + "AND (:keyword IS NULL OR :keyword = ''OR industry.name like :keyword ESCAPE '\\'  or industry.code like :keyword ESCAPE '\\' ) " +
-            "ORDER BY industry.createdAt DESC")
+            "ORDER BY industry.updatedAt DESC")
     Page<IndustryResponse> getAllIndustryActivePag(@Param("keyword") String keyword, Pageable pageable);
 
     /**
