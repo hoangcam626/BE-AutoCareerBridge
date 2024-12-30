@@ -283,7 +283,8 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     public PagingResponse<BusinessSearchPage> getAllBusinessPage(String keyword, Pageable pageable) {
-        Page<BusinessSearchPage> businessSearchPages = businessRepository.getBusinessForPaging(keyword, pageable);
+        String keywordValidate = Validation.escapeKeywordForQuery(keyword);
+        Page<BusinessSearchPage> businessSearchPages = businessRepository.getBusinessForPaging(keywordValidate, pageable);
         return new PagingResponse<>(businessSearchPages);
     }
 

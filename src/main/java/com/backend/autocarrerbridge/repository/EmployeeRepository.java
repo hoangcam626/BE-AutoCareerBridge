@@ -32,7 +32,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query("SELECT e "
             + "FROM Employee e WHERE e.business.email = :email "
             + "AND (:keyword IS NULL OR :keyword = '' "
-            + "OR e.name like %:keyword% or e.employeeCode like %:keyword% or e.email like %:keyword%)"
+            + "OR e.name LIKE :keyword ESCAPE '\\' or e.employeeCode LIKE :keyword ESCAPE '\\' or e.email LIKE :keyword ESCAPE '\\')"
             + "AND (:status IS NULL OR e.status = :status) "
             + "ORDER BY e.updatedAt DESC ")
     Page<Employee>  getEmployeeForPaging(String email,
