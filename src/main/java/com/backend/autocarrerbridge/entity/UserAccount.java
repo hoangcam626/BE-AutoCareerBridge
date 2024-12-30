@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.entity;
 
-import com.backend.autocarrerbridge.util.enums.State;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,18 +9,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "user_account")
 public class UserAccount extends AbstractAudit {
@@ -46,18 +50,4 @@ public class UserAccount extends AbstractAudit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        UserAccount that = (UserAccount) object;
-        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(password, that.password) && state == that.state && Objects.equals(refreshToken, that.refreshToken) && Objects.equals(role, that.role);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id, username, password, state, refreshToken, role);
-    }
 }

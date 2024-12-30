@@ -1,6 +1,5 @@
 package com.backend.autocarrerbridge.dto.response.adminstrative;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

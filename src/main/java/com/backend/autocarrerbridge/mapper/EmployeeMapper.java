@@ -13,5 +13,5 @@ public interface EmployeeMapper {
 
     EmployeeResponse toEmployeeResponse(Employee employee);
 
-    void udpateEmployee(@MappingTarget Employee employee, EmployeeRequest request);
+    void updateEmployee(@MappingTarget Employee employee, EmployeeRequest request);
 }

@@ -6,19 +6,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "permission")
 public class Permission extends AbstractAudit {
@@ -32,18 +34,4 @@ public class Permission extends AbstractAudit {
 
     @Column(name = "description")
     private String description;
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        Permission that = (Permission) object;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id, name, description);
-    }
 }

@@ -9,19 +9,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "university")
 public class University extends AbstractAudit {
@@ -58,18 +60,4 @@ public class University extends AbstractAudit {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        University that = (University) object;
-        return Objects.equals(id, that.id) && Objects.equals(logoImageId, that.logoImageId) && Objects.equals(name, that.name) && Objects.equals(website, that.website) && Objects.equals(foundedYear, that.foundedYear) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone) && Objects.equals(description, that.description) && Objects.equals(userAccount, that.userAccount) && Objects.equals(location, that.location);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id, logoImageId, name, website, foundedYear, email, phone, description, userAccount, location);
-    }
 }
