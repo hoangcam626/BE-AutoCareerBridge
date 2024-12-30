@@ -32,7 +32,7 @@ public interface BusinessIndustryRepository extends JpaRepository<BusinessIndust
             + "AND bi.industry.status = com.backend.autocarrerbridge.util.enums.Status.ACTIVE "
             + "AND (:keyword IS NULL OR :keyword = '' "
             + "OR bi.industry.name like %:keyword% or bi.industry.code like %:keyword%)"
-            + "ORDER BY bi.createdAt DESC ")
+            + "ORDER BY bi.updatedAt DESC ")
     Page<BusinessIndustryDto> getIndustryOfBusiness(Integer id, @Param("keyword") String keyword, Pageable pageable);
 
     /**
@@ -40,6 +40,6 @@ public interface BusinessIndustryRepository extends JpaRepository<BusinessIndust
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto (bi) "
             + "FROM BusinessIndustry bi WHERE bi.business.id = :id "
-            + "ORDER BY bi.createdAt DESC ")
+            + "ORDER BY bi.updatedAt DESC ")
     List<BusinessIndustryDto> getIndustryOfBusinessNoPag(Integer id);
 }
