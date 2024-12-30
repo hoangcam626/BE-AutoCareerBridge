@@ -128,6 +128,25 @@ public class WorkShopController {
                 .build();
     }
 
+  /**
+   * Lấy danh sách các workshop theo trường đại học với phân trang.
+   *
+   * @param page Số trang cần lấy (mặc định là 0).
+   * @param size Số lượng workshop trên mỗi trang (mặc định là 5).
+   * @param universityId ID của trường đại học để lọc workshop.
+   * @return ApiResponse chứa danh sách các workshop của trường đại học đã chọn.
+   */
+  @GetMapping("/get-by-university")
+  public ApiResponse<Object> getAllWorkShopByUniversityId(
+          @RequestParam(defaultValue = "0") Integer page,
+          @RequestParam(defaultValue = "10") Integer size,
+          @RequestParam(required = false) String keyword,
+          @RequestParam("universityId") Integer universityId) {
+    return ApiResponse.builder()
+            .data(workShopService.getAllWorkShopByUniversity(PageRequest.of(page, size), universityId, keyword))
+            .build();
+  }
+
     /**
      * Cập nhật thông tin của một workshop đã tồn tại.
      *
