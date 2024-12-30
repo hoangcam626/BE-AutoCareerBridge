@@ -1,5 +1,6 @@
 package com.backend.autocarrerbridge.service;
 
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopCountResponse;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
@@ -61,4 +62,5 @@ public interface WorkShopService {
 
     PagingResponse<WorkshopStateBusiness> getAllWorkShopByPracticeBusiness(Pageable pageable,Integer businessID, String keyword,State state);
 
+    List<WorkshopCountResponse> countWorkshopByApproved(Integer universityId, State state);
 }
