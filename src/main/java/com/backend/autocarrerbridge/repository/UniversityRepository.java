@@ -3,6 +3,10 @@ package com.backend.autocarrerbridge.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.response.business.BusinessListHome;
+import com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage;
+import com.backend.autocarrerbridge.dto.response.university.UniversityListHome;
+import com.backend.autocarrerbridge.dto.response.university.UniversitySearchPage;
 import com.backend.autocarrerbridge.util.enums.State;
 import com.backend.autocarrerbridge.dto.response.university.UniversityTotalResponse;
 import com.backend.autocarrerbridge.util.enums.Status;
@@ -57,4 +61,46 @@ public interface UniversityRepository extends JpaRepository<University, Integer>
 
     @Query("SELECT count(u.id) FROM University u WHERE u.createdAt between :date and :nextDate")
     Long countUniversityByDate(LocalDateTime date, LocalDateTime nextDate);
+
+    @Query("""
+    SELECT new com.backend.autocarrerbridge.dto.response.university.UniversityListHome(
+        u.id,
+        u.name,
+        u.description,
+        u.logoImageId,
+        COUNT(j)
+    )
+    from University u
+    LEFT JOIN BusinessUniversity j ON j.university.id = u.id
+    GROUP BY u.id, u.name, u.description, u.logoImageId
+    ORDER BY COUNT(j) DESC
+    LIMIT 9
+    """)
+    List<UniversityListHome> getListUniversityFollowNumberJob();
+
+    @Query("""
+    SELECT new com.backend.autocarrerbridge.dto.response.university.UniversitySearchPage(
+        u.id,
+        u.name,
+        u.description,
+        u.location.province.fullName,
+        u.location.district.fullName,
+        u.location.ward.fullName,
+        u.location.description,
+        u.logoImageId,
+        COUNT(bu)
+
+    )
+    from University u
+    LEFT JOIN BusinessUniversity bu ON bu.university.id = u.id AND bu.status = 1 AND bu.statusConnected = 1
+    WHERE (:keyword IS NULL OR LOWER(u.name) LIKE :keyword ESCAPE '\\')
+    GROUP BY u.id, u.name, u.description, u.location.province.fullName, u.location.district.fullName, u.location.ward.fullName, u.location.description, u.logoImageId
+    ORDER BY COUNT(bu) DESC
+    """)
+    Page<UniversitySearchPage> getUniversityForPaging(
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
 }
+
+

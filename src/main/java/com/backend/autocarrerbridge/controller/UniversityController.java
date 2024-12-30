@@ -7,6 +7,8 @@ import static com.backend.autocarrerbridge.util.Constant.SUCCESS_MESSAGE;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -87,5 +89,23 @@ public class UniversityController {
     @GetMapping("/countTotalUniversity")
     public ApiResponse<Object> getTotalJob() {
         return ApiResponse.builder().data(universityService.countUniversityTotal()).build();
+    }
+
+    @GetMapping("/list-home")
+    ApiResponse<Object> getBusinessListHome() {
+        return ApiResponse.builder()
+                .data(universityService.getUniversityListHome())
+                .build();
+    }
+    @GetMapping("/get-all-university-page")
+    public ApiResponse<Object> getAllUniversityPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ApiResponse.builder()
+                .data(universityService.getAllUniversityPage(keyword, pageable))
+                .build();
     }
 }

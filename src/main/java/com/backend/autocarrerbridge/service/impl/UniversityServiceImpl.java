@@ -2,6 +2,8 @@ package com.backend.autocarrerbridge.service.impl;
 
 import com.backend.autocarrerbridge.dto.request.location.LocationRequest;
 
+import com.backend.autocarrerbridge.dto.response.university.UniversityListHome;
+import com.backend.autocarrerbridge.dto.response.university.UniversitySearchPage;
 import com.backend.autocarrerbridge.entity.Location;
 import com.backend.autocarrerbridge.service.LocationService;
 import java.util.Comparator;
@@ -260,6 +262,18 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public Long countUniversityTotal() {
         return universityRepository.countUniversity(Status.ACTIVE);
+    }
+
+    @Override
+    public List<UniversityListHome> getUniversityListHome() {
+        return universityRepository.getListUniversityFollowNumberJob();
+    }
+
+    @Override
+    public PagingResponse<UniversitySearchPage> getAllUniversityPage(String keyword, Pageable pageable) {
+        String keywordEscaped = Validation.escapeKeywordForQuery(keyword);
+        Page<UniversitySearchPage> universitySearchPages= universityRepository.getUniversityForPaging(keywordEscaped, pageable);
+        return new PagingResponse<>(universitySearchPages);
     }
 
     public void checkValidateUniversity(UserUniversityRequest userUniversityRequest) {
