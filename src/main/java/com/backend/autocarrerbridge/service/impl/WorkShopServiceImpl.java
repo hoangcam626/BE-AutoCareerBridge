@@ -101,7 +101,7 @@ public class WorkShopServiceImpl implements WorkShopService {
      * @return Danh sách các Workshop của trường đại học
      * @throws AppException Nếu không có nội dung
      */
-    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
+//    @PreAuthorize("hasAuthority('SCOPE_UNIVERSITY')")
     @Override
     public WorkshopUniversityResponse getAllWorkShopByUniversity(Pageable pageable, Integer universityId, String keyword) {
         Page<Workshop> list = workShopRepository
