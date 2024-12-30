@@ -7,6 +7,7 @@ import java.util.List;
 import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRequest;
 import com.backend.autocarrerbridge.dto.request.cooperation.CooperationRejectRequest;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationDetailResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationRejectResponse;
 
 import com.backend.autocarrerbridge.util.enums.State;
@@ -176,5 +177,11 @@ public class CooperationController {
     @GetMapping("/count-total/{universityId}")
     public long countCooperation(@PathVariable Integer universityId) {
         return businessUniversityService.countBussinessUniversity(universityId);
+    }
+
+    @GetMapping("/detail-request")
+    public ApiResponse<CooperationDetailResponse> getDetail(@RequestParam("id") Integer id){
+        var res = businessUniversityService.detail(id);
+        return new ApiResponse<>(res);
     }
 }

@@ -28,6 +28,8 @@ public interface JobService {
 
     ApiResponse<Object> getAllJobOfBusinessPaging(String keyword, State statusBrowse, Integer industryId, Pageable pageable) throws ParseException;
 
+    ApiResponse<Object> getAllJobOfBusinessPagingPortal(Integer businessId, String keyword, State statusBrowse, Integer industryId, Pageable pageable) throws ParseException;
+
     ApiResponse<Object> createJob(JobRequest jobRequest) throws ParseException;
 
     ApiResponse<Object> getJobDetail(Integer jobId) throws ParseException;

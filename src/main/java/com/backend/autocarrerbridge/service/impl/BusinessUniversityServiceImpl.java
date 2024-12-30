@@ -6,6 +6,7 @@ import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRe
 import com.backend.autocarrerbridge.dto.request.cooperation.CooperationRejectRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationDetailResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationRejectResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.SentRequestResponse;
@@ -32,6 +33,7 @@ import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,7 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     BusinessUniversityMapper businessUniversityMapper; // Mapper để chuyển đổi giữa các DTO và Entity
     SendEmail sendEmail;
     NotificationService notificationService;
-
+    ModelMapper modelMapper;
     /**
      * Lấy thông tin doanh nghiệp dựa vào token
      */
@@ -314,6 +316,12 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
         //Chuyển đổi danh sách từ entity sang respone
         Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
         return new PagingResponse<>(list);
+    }
+
+    @Override
+    public CooperationDetailResponse detail(Integer id) {
+        BusinessUniversity bu = businessUniversityRepository.findBusinessUniversityById(id);
+        return modelMapper.map(bu, CooperationDetailResponse.class);
     }
 
 
