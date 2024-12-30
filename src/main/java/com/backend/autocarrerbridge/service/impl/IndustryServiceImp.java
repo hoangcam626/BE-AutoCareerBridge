@@ -359,4 +359,12 @@ public class IndustryServiceImp implements IndustryService {
         return ApiResponse.builder()
                 .data(list).build();
     }
+
+    /**
+     *  Lấy danh sách ngaành nghề của doanh nghiệp chỉ định
+     */
+    @Override
+    public List<BusinessIndustryDto> getIndustryOfBusiness(Integer businessId) {
+        return businessIndustryRepository.getIndustryOfBusinessNoPag(businessId);
+    }
 }

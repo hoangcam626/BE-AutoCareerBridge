@@ -1,9 +1,11 @@
 package com.backend.autocarrerbridge.service;
 
 import java.text.ParseException;
+import java.util.List;
 
 
 import com.backend.autocarrerbridge.dto.request.industry.DeleteIndustryRequest;
+import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import org.springframework.data.domain.Pageable;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
@@ -39,4 +41,5 @@ public interface IndustryService {
 
     ApiResponse<Object> getAverageSalaryByIndustry() throws ParseException;
 
+    List<BusinessIndustryDto> getIndustryOfBusiness(Integer businessId);
 }

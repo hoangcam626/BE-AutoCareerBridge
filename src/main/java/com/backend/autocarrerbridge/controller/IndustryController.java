@@ -4,9 +4,9 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.backend.autocarrerbridge.dto.request.industry.DeleteIndustryRequest;
+import com.backend.autocarrerbridge.dto.response.industry.BusinessIndustryDto;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -120,6 +120,14 @@ public class IndustryController {
         return industryService.getIndustryOfBusinessNoPag();
     }
 
+    /**
+     *  Lấy danh sách ngaành nghề của doanh nghiệp chỉ định
+     */
+    @GetMapping("/get-all-industry-of-business")
+    public ApiResponse<List<BusinessIndustryDto>> getIndustryOfBusiness(@RequestParam(value = "businessId") Integer businessId) {
+        var res = industryService.getIndustryOfBusiness(businessId);
+        return new ApiResponse<>(res);
+    }
     /**
      * API Xem chi tiết ngành nghề của doanh nghiệp.
      *
