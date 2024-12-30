@@ -14,6 +14,7 @@ import static com.backend.autocarrerbridge.util.enums.State.APPROVED;
 import static com.backend.autocarrerbridge.util.enums.State.PENDING;
 import static com.backend.autocarrerbridge.util.enums.Status.ACTIVE;
 
+import com.backend.autocarrerbridge.dto.response.workshop.WorkshopCountResponse;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -465,8 +466,6 @@ public class WorkShopServiceImpl implements WorkShopService {
         return new PagingResponse<>(workshops);
     }
 
-
-
     @Override
     public PagingResponse<WorkshopPortalResponse> getAllWorkShopApprovedAndLocation(Pageable pageable, LocalDate startDate, LocalDate endDate, Integer provinceId, Integer universityId, String keyword) {
         // Chuyển đổi LocalDate thành LocalDateTime
@@ -521,5 +520,10 @@ public class WorkShopServiceImpl implements WorkShopService {
     @Override
     public long countWorkShop(Integer universityId) {
         return workShopRepository.countWorkShopByUniversityId(universityId);
+    }
+
+    @Override
+    public List<WorkshopCountResponse> countWorkshopByApproved(Integer universityId, State state) {
+        return workShopRepository.countWorkshopByApproved(universityId, state);
     }
 }
