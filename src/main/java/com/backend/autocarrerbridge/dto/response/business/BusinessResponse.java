@@ -1,12 +1,17 @@
 package com.backend.autocarrerbridge.dto.response.business;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.backend.autocarrerbridge.dto.response.account.UserAccountResponse;
+import com.backend.autocarrerbridge.dto.response.industry.IndustryResponse;
+import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
 import com.backend.autocarrerbridge.entity.Business;
 
-import com.backend.autocarrerbridge.dto.response.location.LocationResponse;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
@@ -26,9 +31,10 @@ public class BusinessResponse {
     String description;
     Integer businessImageId;
     Integer licenseImageId;
-    LocalDate createdAt;
-    LocalDate updatedAt;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
     LocationResponse location;
+    String industryOfBusiness;
     UserAccountResponse userAccount;
 
     public BusinessResponse(Business business) {
@@ -43,5 +49,7 @@ public class BusinessResponse {
         this.description = business.getDescription();
         this.businessImageId = business.getBusinessImageId();
         this.licenseImageId = business.getLicenseImageId();
+        this.createdAt = business.getCreatedAt();
+        this.updatedAt = business.getUpdatedAt();
     }
 }

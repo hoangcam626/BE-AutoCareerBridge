@@ -3,6 +3,7 @@ package com.backend.autocarrerbridge.service;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import org.springframework.data.domain.Page;
 
 import com.backend.autocarrerbridge.dto.request.subadmin.SubAdminCreateRequest;
@@ -19,11 +20,11 @@ public interface SubAdminService {
 
     SubAdminUpdateResponse update(SubAdminUpdateRequest req) throws ParseException;
 
-    SubAdminSelfResponse self(SubAdminSelfRequest req);
+    SubAdminSelfResponse detail(SubAdminSelfRequest req);
 
     SubAdminDeleteResponse delete(SubAdminDeleteRequest req);
 
-    Page<SubAdminSelfResponse> pageSubAdmins(int page, int pageSize);
+    Page<SubAdminSelfResponse> pageSubAdmins(PageInfo req);
 
     List<SubAdminSelfResponse> listSubAdmins();
 }

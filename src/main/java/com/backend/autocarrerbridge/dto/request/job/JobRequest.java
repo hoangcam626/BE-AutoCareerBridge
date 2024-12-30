@@ -1,14 +1,13 @@
 package com.backend.autocarrerbridge.dto.request.job;
 
-import com.backend.autocarrerbridge.entity.Industry;
+import java.time.LocalDate;
+
+import com.backend.autocarrerbridge.util.enums.SalaryType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
-
 
 @Data
 @AllArgsConstructor
@@ -18,7 +17,13 @@ public class JobRequest {
     String title;
     LocalDate expireDate;
     String level;
-    Integer salary;
+    Integer fromSalary;
+    Integer toSalary;
+    SalaryType salaryType;
+    String rank;
+    Integer quantity;
+    String workForm;
+    String gender;
     String jobDescription;
     String requirement;
     String benefit;

@@ -9,19 +9,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(callSuper = true)
+
 @Entity
 @Table(name = "location")
 public class Location extends AbstractAudit {
@@ -36,31 +38,15 @@ public class Location extends AbstractAudit {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "provinces_code", nullable = false)
-    private Province provinces;
+    private Province province;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "districts_code", nullable = false)
-    private District districts;
+    private District district;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "wards_code", nullable = false)
-    private Ward wards;
+    private Ward ward;
 
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
-        Location location = (Location) object;
-        return Objects.equals(id, location.id)
-                && Objects.equals(description, location.description)
-                && Objects.equals(provinces, location.provinces)
-                && Objects.equals(districts, location.districts)
-                && Objects.equals(wards, location.wards);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id, description, provinces, districts, wards);
-    }
 }

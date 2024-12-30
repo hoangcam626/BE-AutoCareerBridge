@@ -3,7 +3,7 @@ package com.backend.autocarrerbridge.util.enums;
 import lombok.Getter;
 
 @Getter
-public enum         State {
+public enum State {
     PENDING(0),
     APPROVED(1),
     REJECTED(2);

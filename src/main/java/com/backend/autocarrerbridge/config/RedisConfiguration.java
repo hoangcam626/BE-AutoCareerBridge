@@ -12,11 +12,11 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 
 @Configuration
 public class RedisConfiguration {
-    @Value("${spring.data.redis.port}")
-    private Integer redisPort;
-
     @Value("${spring.data.redis.host}")
     private String redisHost;
+
+    @Value("${spring.data.redis.port}")
+    private Integer redisPort;
 
     // set 2 tham so redisPort va redisHost de ket noi vao redis
     @Bean

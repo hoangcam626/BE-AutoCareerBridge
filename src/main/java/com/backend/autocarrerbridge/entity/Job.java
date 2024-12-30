@@ -1,7 +1,12 @@
 package com.backend.autocarrerbridge.entity;
 
+import java.time.LocalDate;
+
+import com.backend.autocarrerbridge.util.enums.SalaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,21 +15,22 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import com.backend.autocarrerbridge.util.enums.State;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
-import com.backend.autocarrerbridge.util.enums.State;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 @Entity
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "job")
 public class Job extends AbstractAudit {
     @Id
@@ -41,16 +47,24 @@ public class Job extends AbstractAudit {
     @Column(name = "level")
     private String level;
 
-    @Column(name = "salary")
-    private Integer salary;
+    @Column(name = "from_salary")
+    private Integer fromSalary;
 
-    @Column(name = "job_description")
+    @Column(name = "to_salary")
+    private Integer toSalary;
+
+
+    @Column(name = "salary_type")
+    @Enumerated(EnumType.STRING)  // Chỉ định kiểu enum
+    private SalaryType salaryType;
+
+    @Column(name = "job_description", columnDefinition = "TEXT")
     private String jobDescription;
 
-    @Column(name = "requirement")
+    @Column(name = "requirement", columnDefinition = "TEXT")
     private String requirement;
 
-    @Column(name = "benefit")
+    @Column(name = "benefit", columnDefinition = "TEXT")
     private String benefit;
 
     @Column(name = "working_time")
@@ -58,6 +72,18 @@ public class Job extends AbstractAudit {
 
     @Column(name = "status_browse")
     private State statusBrowse;
+
+    @Column(name = "rank_of_job")
+    private String rankOfJob;
+
+    @Column(name = "quantity")
+    private Integer quantity;
+
+    @Column(name = "work_form")
+    private String workForm;
+
+    @Column(name = "gender")
+    private String gender;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "business_id", nullable = false)
