@@ -7,16 +7,20 @@ import com.backend.autocarrerbridge.dto.request.page.PageInfo;
 import com.backend.autocarrerbridge.dto.request.university.UniversityApprovedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRejectedRequest;
 import com.backend.autocarrerbridge.dto.request.university.UniversityRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessSearchPage;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 import com.backend.autocarrerbridge.dto.response.university.AdminUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityApprovedResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversityListHome;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRegisterResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityRejectedResponse;
 import com.backend.autocarrerbridge.dto.response.university.UniversityResponse;
+import com.backend.autocarrerbridge.dto.response.university.UniversitySearchPage;
 import com.backend.autocarrerbridge.dto.response.university.UniversityTotalResponse;
 import com.backend.autocarrerbridge.entity.University;
 import com.backend.autocarrerbridge.util.email.EmailCode;
 import com.backend.autocarrerbridge.util.enums.State;
+import org.springframework.data.domain.Pageable;
 
 public interface UniversityService {
     UniversityRegisterResponse registerUniversity(UserUniversityRequest userUniversityRequest);
@@ -46,4 +50,8 @@ public interface UniversityService {
     List<UniversityTotalResponse> getAllTotalUniversity();
 
     Long countUniversityTotal();
+
+    List<UniversityListHome> getUniversityListHome();
+
+    PagingResponse<UniversitySearchPage> getAllUniversityPage(String keyword, Pageable pageable);
 }
