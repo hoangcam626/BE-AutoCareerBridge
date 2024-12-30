@@ -63,6 +63,8 @@ public class SecurityConfig {
             "/api/university/verify-university",
             "/api/university/get-all-university-page",
             "/api/university/list-home",
+            "/api/university/getById/*",
+            "/api/work-shop/get-by-university/**",
             "/api/accounts/forgot-code",
             "/api/accounts/forgot-pass",
             "/api/job/business-total-job",
