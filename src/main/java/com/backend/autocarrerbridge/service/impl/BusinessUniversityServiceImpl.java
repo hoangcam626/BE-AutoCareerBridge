@@ -6,6 +6,7 @@ import com.backend.autocarrerbridge.dto.request.cooperation.CooperationApproveRe
 import com.backend.autocarrerbridge.dto.request.cooperation.CooperationRejectRequest;
 import com.backend.autocarrerbridge.dto.request.notification.NotificationSendRequest;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationApproveResponse;
+import com.backend.autocarrerbridge.dto.response.cooperation.CooperationDetailResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationRejectResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.CooperationUniversityResponse;
 import com.backend.autocarrerbridge.dto.response.cooperation.SentRequestResponse;
@@ -32,6 +33,7 @@ import com.backend.autocarrerbridge.util.enums.Status;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,8 +54,8 @@ import static com.backend.autocarrerbridge.util.Constant.REQUEST_COOPERATION;
 @Service
 @RequiredArgsConstructor // Tự động tạo constructor cho các trường được đánh dấu final
 @FieldDefaults(
-        level = AccessLevel.PRIVATE,
-        makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
+    level = AccessLevel.PRIVATE,
+    makeFinal = true) // Thiết lập phạm vi mặc định là private và các trường là final
 public class BusinessUniversityServiceImpl implements BusinessUniversityService {
 
     // Khai báo các thành phần cần thiết trong service
@@ -65,7 +67,7 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     BusinessUniversityMapper businessUniversityMapper; // Mapper để chuyển đổi giữa các DTO và Entity
     SendEmail sendEmail;
     NotificationService notificationService;
-
+    ModelMapper modelMapper;
     /**
      * Lấy thông tin doanh nghiệp dựa vào token
      */
@@ -310,10 +312,17 @@ public class BusinessUniversityServiceImpl implements BusinessUniversityService 
     public PagingResponse<CooperationUniversityResponse> gegetAllCooperationOfUniversityPage(String keyword, State statusConnected, Pageable pageable) throws ParseException {
         String emailLogin = getUniversityFromToken().getEmail();
         //lấy dữ liệu phân trang từ repo
-        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keyword, statusConnected, pageable);
+        String keywordValidate = Validation.escapeKeywordForQuery(keyword);
+        var cooperations = businessUniversityRepository.getCooperationForPaging(emailLogin, keywordValidate, statusConnected, pageable);
         //Chuyển đổi danh sách từ entity sang respone
         Page<CooperationUniversityResponse> list = cooperations.map(businessUniversityMapper::toCooperationUniversityResponse);
         return new PagingResponse<>(list);
+    }
+
+    @Override
+    public CooperationDetailResponse detail(Integer id) {
+        BusinessUniversity bu = businessUniversityRepository.findBusinessUniversityById(id);
+        return modelMapper.map(bu, CooperationDetailResponse.class);
     }
 
 

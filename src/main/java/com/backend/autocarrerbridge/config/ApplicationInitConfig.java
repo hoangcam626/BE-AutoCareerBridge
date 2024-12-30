@@ -5,11 +5,13 @@ import static com.backend.autocarrerbridge.util.Constant.DEFAULT_USERNAME;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_BUSINESS;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_EMPLOYEE;
+import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_INSTRUCTIONAL;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_SUB_ADMIN;
 import static com.backend.autocarrerbridge.util.Constant.DESCRIPTION_UNIVERSITY;
 import static com.backend.autocarrerbridge.util.enums.PredefinedRole.ADMIN;
 import static com.backend.autocarrerbridge.util.enums.PredefinedRole.BUSINESS;
 import static com.backend.autocarrerbridge.util.enums.PredefinedRole.EMPLOYEE;
+import static com.backend.autocarrerbridge.util.enums.PredefinedRole.INSTRUCTIONAL;
 import static com.backend.autocarrerbridge.util.enums.PredefinedRole.SUB_ADMIN;
 import static com.backend.autocarrerbridge.util.enums.PredefinedRole.UNIVERSITY;
 
@@ -36,41 +38,42 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationInitConfig {
 
-    final PasswordEncoder passwordEncoder;
+  final PasswordEncoder passwordEncoder;
 
-    final RoleRepository roleRepository;
+  final RoleRepository roleRepository;
 
-    @Bean
-    ApplicationRunner applicationRunner(UserAccountRepository accountRepository) {
+  @Bean
+  ApplicationRunner applicationRunner(UserAccountRepository accountRepository) {
 
-        return args -> {
-            initializeRoles();
-            initializeDefaultAdmin(accountRepository);
-        };
+    return args -> {
+      initializeRoles();
+      initializeDefaultAdmin(accountRepository);
+    };
+  }
+
+  private void initializeRoles() {
+    if (roleRepository.findAll().isEmpty()) {
+      List<Role> roles = Arrays.asList(
+          new Role(ADMIN.getValue(), ADMIN.name(), DESCRIPTION_ADMIN),
+          new Role(BUSINESS.getValue(), BUSINESS.name(), DESCRIPTION_BUSINESS),
+          new Role(UNIVERSITY.getValue(), UNIVERSITY.name(), DESCRIPTION_UNIVERSITY),
+          new Role(EMPLOYEE.getValue(), EMPLOYEE.name(), DESCRIPTION_EMPLOYEE),
+          new Role(SUB_ADMIN.getValue(), SUB_ADMIN.name(), DESCRIPTION_SUB_ADMIN),
+          new Role(INSTRUCTIONAL.getValue(), INSTRUCTIONAL.name(), DESCRIPTION_INSTRUCTIONAL));
+      roleRepository.saveAll(roles);
     }
+  }
 
-    private void initializeRoles() {
-        if (roleRepository.findAll().isEmpty()) {
-            List<Role> roles = Arrays.asList(
-                    new Role(ADMIN.getValue(), ADMIN.name(), DESCRIPTION_ADMIN),
-                    new Role(BUSINESS.getValue(), BUSINESS.name(), DESCRIPTION_BUSINESS),
-                    new Role(UNIVERSITY.getValue(), UNIVERSITY.name(), DESCRIPTION_UNIVERSITY),
-                    new Role(EMPLOYEE.getValue(), EMPLOYEE.name(), DESCRIPTION_EMPLOYEE),
-                    new Role(SUB_ADMIN.getValue(), SUB_ADMIN.name(), DESCRIPTION_SUB_ADMIN));
-            roleRepository.saveAll(roles);
-        }
+  private void initializeDefaultAdmin(UserAccountRepository accountRepository) {
+    Role role = roleRepository.findById(ADMIN.getValue()).orElse(null);
+    if (accountRepository.findByUsername(DEFAULT_USERNAME) == null) {
+      UserAccount userAccounts = UserAccount.builder()
+          .username(DEFAULT_USERNAME)
+          .password(passwordEncoder.encode(DEFAULT_PW))
+          .role(role)
+          .state(State.APPROVED)
+          .build();
+      accountRepository.save(userAccounts);
     }
-
-    private void initializeDefaultAdmin(UserAccountRepository accountRepository) {
-        Role role = roleRepository.findById(ADMIN.getValue()).orElse(null);
-        if (accountRepository.findByUsername(DEFAULT_USERNAME) == null) {
-            UserAccount userAccounts = UserAccount.builder()
-                    .username(DEFAULT_USERNAME)
-                    .password(passwordEncoder.encode(DEFAULT_PW))
-                    .role(role)
-                    .state(State.APPROVED)
-                    .build();
-            accountRepository.save(userAccounts);
-        }
-    }
+  }
 }

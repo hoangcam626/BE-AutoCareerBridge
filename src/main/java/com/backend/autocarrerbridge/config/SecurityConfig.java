@@ -58,8 +58,11 @@ public class SecurityConfig {
             "/api/accounts/verify",
             "/api/business/verify-business",
             "/api/business/list-home",
+            "/api/business/get-by-id/*",
             "/api/business/get-all-business-page",
             "/api/university/verify-university",
+            "/api/university/get-all-university-page",
+            "/api/university/list-home",
             "/api/accounts/forgot-code",
             "/api/accounts/forgot-pass",
             "/api/job/business-total-job",
@@ -85,7 +88,7 @@ public class SecurityConfig {
             "/api/administrative/**",
             "/api/notification/stream/*",
             "/api/job/get-detail",
-            "/api/job/get-all-job-of-business-paging-portal"
+            "/api/job/get-all-job-of-business-paging-portal",
             "/api/statistic/**",
     };
 

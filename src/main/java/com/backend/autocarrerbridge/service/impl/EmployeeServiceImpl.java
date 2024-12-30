@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
+import com.backend.autocarrerbridge.util.Validation;
 import jakarta.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -224,7 +225,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new AppException(ErrorCode.ERROR_TOKEN_INVALID);
         }
         // Lấy dữ liệu phân trang từ repository
-        var employees = employeeRepository.getEmployeeForPaging(emailAccountLogin, keyword, status,pageable);
+        String keywordValidated = Validation.escapeKeywordForQuery(keyword);
+        var employees = employeeRepository.getEmployeeForPaging(emailAccountLogin, keywordValidated, status,pageable);
 
         // Chuyển đổi danh sách các employee sang Page<EmployeeResponse>
         Page<EmployeeResponse> list = employees.map(employee -> {
