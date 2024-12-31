@@ -72,6 +72,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
 
   @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse(" +
       "ws.id, " +
+          "ws.university.id, " +
       "ws.university.name, " +
       "ws.university.logoImageId, " +
       "ws.title, " +
@@ -114,6 +115,7 @@ public interface WorkShopRepository extends JpaRepository<Workshop, Integer> {
 
   @Query("SELECT new com.backend.autocarrerbridge.dto.response.workshop.WorkshopPortalResponse(" +
       "ws.id, " +
+          "ws.university.id, " +
       "ws.university.name, " +
       "ws.university.logoImageId, " +
       "ws.title, " +
