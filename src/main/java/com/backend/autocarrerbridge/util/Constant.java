@@ -283,5 +283,11 @@ public class Constant {
 
     //Yêu cầu hợp tác
     public static final String REQUEST_COOPERATION = "Yêu cầu hợp tác";
+    public static final String UNIVERSITY_JOB_EXITS = "Trường học đã đăng ký tin tuyển dụng.";
+    public static final String UNIVERSITY_JOB_NOT_FOUND = "Yêu cầu không tồn tại.";
+    public static final String NO_PENDING_UNIVERSITY_JOB = "Trạng thái ứng tuyển không hợp lệ ";
+    public static final String APPROVED_UNIVERSITY_JOB = "Yêu cầu ứng tuyển của bạn đã được chấp thuận";
+    public static final String REJECTED_UNIVERSITY_JOB = "Yêu cầu ứng tuyển của bạn đã bị từ chối";
+
 
 }

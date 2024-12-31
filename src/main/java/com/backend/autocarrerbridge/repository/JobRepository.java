@@ -45,7 +45,7 @@ public interface JobRepository extends JpaRepository<Job, Integer> {
      * Lấy tất cả công việc của doanh nghiệp
      */
     @Query("SELECT new com.backend.autocarrerbridge.dto.response.job.JobResponse(job) "
-            + "FROM Job job where job.status = 1"
+            + "FROM Job job where job.status = 1 AND job.statusBrowse = 1 "
             + "AND (:keyword IS NULL OR :keyword = '' "
             + "OR job.level like %:keyword% or job.title like %:keyword% ESCAPE '\\')"
             + "ORDER BY job.updatedAt DESC ")
