@@ -9,6 +9,7 @@ import com.backend.autocarrerbridge.dto.response.job.BusinessJobResponse;
 import com.backend.autocarrerbridge.dto.response.job.BusinessTotalResponse;
 import com.backend.autocarrerbridge.dto.response.paging.PagingResponse;
 
+import com.backend.autocarrerbridge.entity.Job;
 import com.backend.autocarrerbridge.util.enums.State;
 import org.springframework.data.domain.Pageable;
 
@@ -67,4 +68,6 @@ public interface JobService {
     ApiResponse<Object> countJobsByDateRange(LocalDate startDate, LocalDate endDate) throws ParseException;
 
     Long countTotalJob();
+
+    Job findById(Integer id);
 }
