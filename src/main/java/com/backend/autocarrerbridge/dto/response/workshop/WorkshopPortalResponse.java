@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class WorkshopPortalResponse {
     private Integer id;
+    private Integer idUniversity;
     private String hostWorkshop;
     private Integer imageUniversity;
     private String title;
@@ -36,8 +37,9 @@ public class WorkshopPortalResponse {
     private LocalDateTime updatedAt;
 
 
-    public WorkshopPortalResponse(Integer id, String hostWorkshop, Integer imageUniversity, String title, String description, LocalDateTime startDate, LocalDateTime endDate, LocalDate expireDate, Integer imageId, String address, String province, String district, String ward, Long totalCompany, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public WorkshopPortalResponse(Integer id,Integer idUniversity, String hostWorkshop, Integer imageUniversity, String title, String description, LocalDateTime startDate, LocalDateTime endDate, LocalDate expireDate, Integer imageId, String address, String province, String district, String ward, Long totalCompany, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
+        this.idUniversity = idUniversity;
         this.totalCompany = totalCompany;
         this.imageUniversity = imageUniversity;
         this.createdAt = createdAt;
