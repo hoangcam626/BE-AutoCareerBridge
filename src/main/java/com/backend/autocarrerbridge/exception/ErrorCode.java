@@ -111,6 +111,7 @@ import static com.backend.autocarrerbridge.util.Constant.NO_EDIT_JOB;
 import static com.backend.autocarrerbridge.util.Constant.NO_EXIST_INDUSTRY;
 import static com.backend.autocarrerbridge.util.Constant.NO_EXIST_JOB;
 import static com.backend.autocarrerbridge.util.Constant.NO_EXIST_WORKSHOP;
+import static com.backend.autocarrerbridge.util.Constant.NO_PENDING_UNIVERSITY_JOB;
 import static com.backend.autocarrerbridge.util.Constant.NUMBER_MAX_STUDENT_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.NUMBER_MIN_STUDENT_MAJOR_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.OPEN_IMAGE_MESSAGE;
@@ -142,6 +143,8 @@ import static com.backend.autocarrerbridge.util.Constant.TOO_LONG_ADDRESS_MESSAG
 import static com.backend.autocarrerbridge.util.Constant.TOO_LONG_EMAIL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.TOO_LONG_NAME_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.TYPE_FILE_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.UNIVERSITY_JOB_EXITS;
+import static com.backend.autocarrerbridge.util.Constant.UNIVERSITY_JOB_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.UNIVERSITY_SECTION_NOT_NULL_MESSAGE;
 import static com.backend.autocarrerbridge.util.Constant.USER_NOT_FOUND;
 import static com.backend.autocarrerbridge.util.Constant.USER_PENDING;
@@ -360,6 +363,9 @@ public enum ErrorCode {
     ERROR_NOTIFICATION_ALREADY_READ(BAD_REQUEST, NOTIFICATION_ALREADY_READ_MESSAGE, HttpStatus.BAD_REQUEST),
     ERROR_CONTENT_TOO_LONG(BAD_REQUEST,CONTENT_TOO_LONG_MESSAGE, HttpStatus.BAD_REQUEST),
 
+    ERROR_UNIVERSITY_JOB_EXITS(BAD_REQUEST, UNIVERSITY_JOB_EXITS, HttpStatus.BAD_REQUEST),
+    ERROR_UNIVERSITY_JOB_NOT_FOUND(BAD_REQUEST, UNIVERSITY_JOB_NOT_FOUND, HttpStatus.BAD_REQUEST),
+    ERROR_NO_PENDING_UNIVERSITY_JOB(BAD_REQUEST, NO_PENDING_UNIVERSITY_JOB, HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;
