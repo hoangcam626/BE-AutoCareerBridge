@@ -259,7 +259,11 @@ public class SubAdminServiceImpl implements SubAdminService {
     }
 
     private String renderSubAdminCode() {
-        String code = String.format("%s%d", PREFIX_SUB_ADMIN_CODE, (subAdminRepository.latestId() + 1));
+        Integer suffixCode = 0;
+        if(!Objects.isNull(subAdminRepository.latestId())){
+            suffixCode = subAdminRepository.latestId();
+        }
+        String code = String.format("%s%d", PREFIX_SUB_ADMIN_CODE, (suffixCode+ 1));
         if (subAdminRepository.existsBySubAdminCode(code)) {
             throw new AppException(ERROR_SUB_ADMIN_CODE_EXIST);
         }
