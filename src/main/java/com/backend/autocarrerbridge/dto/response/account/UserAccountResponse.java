@@ -2,7 +2,13 @@ package com.backend.autocarrerbridge.dto.response.account;
 
 import com.backend.autocarrerbridge.dto.response.RoleResponse;
 
-import lombok.*;
+import com.backend.autocarrerbridge.util.enums.State;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @NoArgsConstructor
@@ -16,7 +22,7 @@ public class UserAccountResponse {
 
     String username;
 
-    String password;
+    State state;
 
     RoleResponse role;
 }

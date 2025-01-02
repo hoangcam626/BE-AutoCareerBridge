@@ -1,5 +1,10 @@
 package com.backend.autocarrerbridge.dto.request.subadmin;
 
+import static com.backend.autocarrerbridge.util.Constant.EMAIL_REQUIRED_MESSAGE;
+import static com.backend.autocarrerbridge.util.Constant.NAME_NOT_BLANK_MESSAGE;
+
+import jakarta.validation.constraints.NotBlank;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
@@ -9,21 +14,17 @@ import lombok.Data;
 @AllArgsConstructor(staticName = "of")
 public class SubAdminCreateRequest {
 
-    private String subAdminCode;
-
+    @NotBlank(message = NAME_NOT_BLANK_MESSAGE)
     private String name;
 
     private String gender;
 
+    @NotBlank(message = EMAIL_REQUIRED_MESSAGE)
     private String email;
 
     private String phone;
 
     private String address;
-
-    private String password;
-
-    private String rePassword;
 
     private MultipartFile subAdminImage;
 }

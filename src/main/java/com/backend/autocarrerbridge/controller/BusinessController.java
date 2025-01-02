@@ -1,42 +1,32 @@
 package com.backend.autocarrerbridge.controller;
 
-import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
-import com.backend.autocarrerbridge.dto.ApiResponse;
-import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
-import com.backend.autocarrerbridge.dto.request.job.JobRequest;
-import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
-import com.backend.autocarrerbridge.service.BusinessService;
-import com.backend.autocarrerbridge.service.JobService;
-import com.backend.autocarrerbridge.util.Constant;
+import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
+import static com.backend.autocarrerbridge.util.Constant.SEND_CODE;
+import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
+import java.util.List;
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
-
-import static com.backend.autocarrerbridge.util.Constant.REGISTER_BUSINESS;
-import static com.backend.autocarrerbridge.util.Constant.SUCCESS;
 import com.backend.autocarrerbridge.dto.ApiResponse;
 import com.backend.autocarrerbridge.dto.request.account.UserBusinessRequest;
+import com.backend.autocarrerbridge.dto.request.business.BusinessUpdateRequest;
+import com.backend.autocarrerbridge.dto.response.business.BusinessResponse;
 import com.backend.autocarrerbridge.service.BusinessService;
-import com.backend.autocarrerbridge.service.JobService;
+import com.backend.autocarrerbridge.util.Constant;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 /**
  * Controller xử lý các API liên quan đến quản lý doanh nghiệp.
@@ -47,7 +37,6 @@ import java.util.List;
 @RequestMapping("api/business")
 public class BusinessController {
     BusinessService businessService;
-    JobService jobService;
 
     /**
      * API đăng ký thông tin doanh nghiệp.
@@ -63,53 +52,14 @@ public class BusinessController {
                 .data(businessService.registerBusiness(userBusinessRequest))
                 .build();
     }
-
-    /**
-     * API lấy danh sách tất cả công việc đã được đăng tuyển.
-     * @apiNote Sử dụng để truy vấn danh sách công việc trong cơ sở dữ liệu.
-     * @return Danh sách các công việc đã đăng tuyển.
-     */
-    @GetMapping("/get-all-job")
-    private ApiResponse<Object> getAllJob() throws ParseException {
-        return jobService.getAllJob();
+    @PostMapping("/verify-business")
+    public ApiResponse<Object> verifyBusiness(@ModelAttribute @Valid UserBusinessRequest userBusinessRequest){
+        return ApiResponse.builder()
+                .code(SUCCESS)
+                .message(SEND_CODE)
+                .data(businessService.generateEmailCode(userBusinessRequest))
+                .build();
     }
-
-    /**
-     * API để lấy chi tiết công việc đã đăng tuyển
-     * @apiNote để truy vấn chi tiết công việc trong cơ sở dữ liệu
-     */
-    @GetMapping("/get-detail")
-    private ApiResponse<Object> getDetail(@RequestParam Integer id) throws ParseException {
-        return jobService.getJobDetail(id);
-    }
-
-    /**
-     * API để tao công việc
-     * @apiNote để để thêm công việc vào cơ sở dữ liệu
-     */
-    @PostMapping("/create-job")
-    private ApiResponse<Object> createJob(@RequestBody JobRequest jobRequest) throws ParseException {
-        return jobService.createJob(jobRequest);
-    }
-
-    /**
-     * API để cập nhật công việc
-     * @apiNote để để cập nhật thông tin công việc vào cơ sở dữ liệu
-     */
-    @PutMapping("/update-job")
-    private ApiResponse<Object> updateJob(@RequestParam Integer jobId, @RequestBody JobRequest jobRequest) throws ParseException {
-        return jobService.updateJob(jobId, jobRequest);
-    }
-
-    /**
-     * API để vô hiệu hóa công việc
-     * @apiNote để để vô hiệu hóa công việc đã đăng
-     */
-    @PutMapping("/inactive-job")
-    private ApiResponse<Object> inactiveJob(@RequestParam Integer jobId) throws ParseException {
-        return jobService.inactiveJob(jobId);
-    }
-
     /**
      * API cập nhật thông tin doanh nghiệp.
      * @apiNote Sử dụng để chỉnh sửa thông tin của một doanh nghiệp dựa trên ID doanh nghiệp.
@@ -118,7 +68,8 @@ public class BusinessController {
      * @return Thông tin doanh nghiệp sau khi được cập nhật.
      */
     @PostMapping("/{businessId}")
-    ApiResponse<BusinessResponse> updateBusiness(@PathVariable Integer businessId, @RequestBody @Valid BusinessUpdateRequest request) {
+    ApiResponse<BusinessResponse> updateBusiness(
+            @PathVariable Integer businessId, @Valid BusinessUpdateRequest request) {
         return ApiResponse.<BusinessResponse>builder()
                 .data(businessService.updateBusiness(businessId, request))
                 .build();
@@ -130,7 +81,7 @@ public class BusinessController {
      * @param businessId ID của doanh nghiệp cần lấy thông tin.
      * @return Thông tin chi tiết của doanh nghiệp.
      */
-    @GetMapping("/{businessId}")
+    @GetMapping("/get-by-id/{businessId}")
     ApiResponse<BusinessResponse> getBusiness(@PathVariable Integer businessId) {
         return ApiResponse.<BusinessResponse>builder()
                 .data(businessService.getBusinessResponseById(businessId))
@@ -158,8 +109,34 @@ public class BusinessController {
     @DeleteMapping("/{businessId}")
     ApiResponse<String> deleteBusiness(@PathVariable Integer businessId) {
         businessService.deleteBusiness(businessId);
-        return ApiResponse.<String>builder()
-                .data(Constant.SUCCESS_MESSAGE)
+        return ApiResponse.<String>builder().data(Constant.SUCCESS_MESSAGE).build();
+    }
+    @GetMapping("/feature-business")
+    ApiResponse<Object> getTopFeatureBusiness(@RequestParam(required = false) Integer industryId) {
+       return ApiResponse.builder()
+               .data(businessService.getFeatureBusiness(industryId, PageRequest.of(0,9)))
+               .build();
+    }
+    @GetMapping("/list-home")
+    ApiResponse<Object> getBusinessListHome() {
+        return ApiResponse.builder()
+                .data(businessService.getBusinessListHome())
                 .build();
+    }
+    @GetMapping("/get-all-business-page")
+    public ApiResponse<Object> getAllBusinessPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ApiResponse.builder()
+                .data(businessService.getAllBusinessPage(keyword, pageable))
+                .build();
+    }
+
+    @GetMapping("/countTotalBusiness")
+    public ApiResponse<Object> getTotalBusiness() {
+        return ApiResponse.builder().data(businessService.countBusiness()).build();
     }
 }

@@ -3,15 +3,18 @@ package com.backend.autocarrerbridge.controller;
 import java.text.ParseException;
 import java.util.List;
 
+import com.backend.autocarrerbridge.util.enums.Status;
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.autocarrerbridge.dto.ApiResponse;
@@ -27,7 +30,7 @@ import lombok.experimental.FieldDefaults;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("employees")
+@RequestMapping("api/employees")
 public class EmployeeController {
     EmployeeService employeeService;
 
@@ -38,7 +41,7 @@ public class EmployeeController {
      * @return Thông tin chi tiết của nhân viên vừa được tạo.
      */
     @PostMapping("/create")
-    ApiResponse<EmployeeResponse> createEmployee(@RequestBody @Valid EmployeeRequest request) {
+    ApiResponse<EmployeeResponse> createEmployee(@Valid EmployeeRequest request) {
         return ApiResponse.<EmployeeResponse>builder()
                 .data(employeeService.addEmployee(request))
                 .build();
@@ -78,10 +81,17 @@ public class EmployeeController {
      * @return Thông tin chi tiết của nhân viên sau khi cập nhật.
      */
     @PutMapping("/{employeeId}")
-    ApiResponse<EmployeeResponse> updateEmployee(
-            @PathVariable Integer employeeId, @RequestBody @Valid EmployeeRequest request) {
+    ApiResponse<EmployeeResponse> updateEmployee(@PathVariable Integer employeeId, @Valid EmployeeRequest request) {
         return ApiResponse.<EmployeeResponse>builder()
                 .data(employeeService.updateEmployee(employeeId, request))
+                .build();
+    }
+
+    @PostMapping("/restore/{employeeId}")
+    ApiResponse<String> restoreEmployee(@PathVariable Integer employeeId) throws ParseException {
+        employeeService.restoreEmployee(employeeId);
+        return ApiResponse.<String>builder()
+                .data(Constant.SUCCESS_MESSAGE)
                 .build();
     }
 
@@ -95,5 +105,19 @@ public class EmployeeController {
     ApiResponse<String> deleteEmployee(@PathVariable Integer employeeId) {
         employeeService.deleteEmployee(employeeId);
         return ApiResponse.<String>builder().data(Constant.SUCCESS_MESSAGE).build();
+    }
+
+    //phan trang get list
+    @GetMapping("/get-all-employee-of-business")
+    public ApiResponse<Object> getEmployeePage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String keyword,
+            @RequestParam(required = false) Status status
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        return ApiResponse.builder()
+                .data(employeeService.getAllEmployeeOfBusinessPage(keyword, status, pageable))
+                .build();
     }
 }
