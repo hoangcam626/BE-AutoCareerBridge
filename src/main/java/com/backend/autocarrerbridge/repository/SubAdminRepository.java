@@ -13,13 +13,34 @@ import com.backend.autocarrerbridge.entity.SubAdmin;
 @Repository
 public interface SubAdminRepository extends JpaRepository<SubAdmin, Integer> {
 
+    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM SubAdmin sa WHERE sa.email = :email AND sa.status <> 0")
     boolean existsByEmail(String email);
 
+    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM SubAdmin sa WHERE sa.subAdminCode = :code AND sa.status <> 0")
     boolean existsBySubAdminCode(String code);
 
-    @Query("select sa from SubAdmin sa where sa.status <> 0")
-    Page<SubAdmin> findAllPageable(Pageable pageable);
+    @Query(value = "SELECT sa " +
+            "FROM SubAdmin sa " +
+            "WHERE (:keyword IS NULL OR " +
+            "       LOWER(sa.name) LIKE :keyword ESCAPE '\\' OR " +
+            "       LOWER(sa.email) LIKE :keyword ESCAPE '\\' OR " +
+            "       LOWER(sa.subAdminCode) LIKE :keyword ESCAPE '\\')" +
+            "AND sa.status <> 0 " +
+            "ORDER BY sa.updatedAt DESC ")
+    Page<SubAdmin> findAllPageable(Pageable pageable, String keyword);
 
     @Query("select sa from SubAdmin sa where sa.status <> 0")
     List<SubAdmin> findAllByStatus();
+
+    @Query("select sa from SubAdmin sa where sa.email = :email AND sa.status <> 0")
+    SubAdmin findByEmail(String email);
+
+    @Query("SELECT MAX(sa.id) AS latestId FROM SubAdmin sa")
+    Integer latestId();
+
+    @Query("SELECT CASE WHEN COUNT(sa) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM SubAdmin sa WHERE sa.phone = :phone AND sa.status <> 0")
+    boolean existsByPhone(String phone);
 }

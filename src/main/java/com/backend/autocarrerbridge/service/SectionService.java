@@ -1,9 +1,10 @@
 package com.backend.autocarrerbridge.service;
 
-import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
-import com.backend.autocarrerbridge.entity.Major;
+
 import java.util.List;
 
+import com.backend.autocarrerbridge.dto.request.section.SectionRequest;
+import java.util.Map;
 
 public interface SectionService {
 
@@ -11,10 +12,17 @@ public interface SectionService {
 
   SectionRequest updateSection(int id, SectionRequest sectionRequest);
 
-  SectionRequest deleteSection(int id);
+  List<SectionRequest> deleteSection(List<Integer> ids);
 
-  List<SectionRequest> getAllSection();
+  List<SectionRequest> getAllSection(Integer universityId);
 
   List<SectionRequest> getSectionById(int id);
 
+  SectionRequest setSectionInactive(int id);
+
+  SectionRequest setSectionActive(int id);
+
+  long countSection(Integer universityId);
+
+  Map<String, Long> countMajorsInSections();
 }

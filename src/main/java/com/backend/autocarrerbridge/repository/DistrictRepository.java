@@ -1,10 +1,11 @@
 package com.backend.autocarrerbridge.repository;
 
-import com.backend.autocarrerbridge.entity.District;
-import com.backend.autocarrerbridge.entity.Location;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
+import com.backend.autocarrerbridge.entity.District;
 
 public interface DistrictRepository extends JpaRepository<District, Integer> {
-
+    List<District> findByProvinceId(Integer provinceId);
 }

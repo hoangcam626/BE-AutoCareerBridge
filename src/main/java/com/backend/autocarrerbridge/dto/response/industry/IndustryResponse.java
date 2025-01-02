@@ -1,26 +1,29 @@
 package com.backend.autocarrerbridge.dto.response.industry;
 
+import java.time.LocalDateTime;
+
 import com.backend.autocarrerbridge.entity.Industry;
 import com.backend.autocarrerbridge.util.enums.Status;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class IndustryResponse {
-    private Integer id;
-    private String name;
-    private String code;
-    private Status status;
-    private LocalDateTime createAt;
-    private String createBy;
-    private LocalDateTime updateAt;
-    private String updateBy;
+    Integer id;
+    String name;
+    String code;
+    Status status;
+    LocalDateTime createAt;
+    String createBy;
+    LocalDateTime updateAt;
+    String updateBy;
 
     public IndustryResponse(Industry industry) {
         this.id = industry.getId();
@@ -31,6 +34,5 @@ public class IndustryResponse {
         this.createBy = industry.getCreatedBy();
         this.updateAt = industry.getUpdatedAt();
         this.updateBy = industry.getUpdatedBy();
-
     }
 }
